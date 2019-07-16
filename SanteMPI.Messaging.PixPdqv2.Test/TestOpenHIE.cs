@@ -132,5 +132,42 @@ namespace SanteMPI.Messaging.PixPdqv2.Test
             Assert.AreEqual("ISO", resp.QUERY_RESPONSE.PID.GetPatientIdentifierList().First().AssigningAuthority.UniversalIDType.Value);
 
         }
+
+        /// <summary>
+        /// This test ensures that the receiver rejects messages which contain identifiers assigned from authorities which are unknown.
+        /// </summary>
+        [TestMethod]
+        public void TestOhieCr03()
+        {
+
+            // Remove any reference to TEST_BLOCK or OID 2.16.840.1.113883.3.72.5.9.4 
+            var aaRepo = ApplicationServiceContext.Current.GetService<IAssigningAuthorityRepositoryService>();
+            var aa = aaRepo.Get("TEST_BLOCK");
+            if (aa != null)
+                aaRepo.Obsolete(aa.Key.Value);
+            aa = aaRepo.Get(new Uri("urn:oid:2.16.840.1.113883.3.72.5.9.4"));
+            if (aa != null)
+                aaRepo.Obsolete(aa.Key.Value);
+
+            // Test harness sends ADT A01 with 2.16.840.1.113883.3.72.5.9.4 as OID
+            var message = TestUtil.GetMessageEvent("OHIE-CR-03-10");
+            var result = new PixAdtMessageHandler().HandleMessage(message);
+            
+            // Response is ACK A01
+            Assert.AreEqual("ACK", (result.GetStructure("MSH") as MSH).MessageType.MessageCode.Value);
+            Assert.AreEqual("A01", (result.GetStructure("MSH") as MSH).MessageType.TriggerEvent.Value);
+            Assert.IsTrue(new String[] { "AR", "CR" }.Any(a => a == (result.GetStructure("MSA") as MSA).AcknowledgmentCode.Value));
+
+            // Test harness sends ADT A01 with TEST_BLOCK as AA
+            message = TestUtil.GetMessageEvent("OHIE-CR-03-20");
+            result = new PixAdtMessageHandler().HandleMessage(message);
+
+            // Response is ACK A01
+            Assert.AreEqual("ACK", (result.GetStructure("MSH") as MSH).MessageType.MessageCode.Value);
+            Assert.AreEqual("A01", (result.GetStructure("MSH") as MSH).MessageType.TriggerEvent.Value);
+            Assert.IsTrue(new String[] { "AR", "CR" }.Any(a => a == (result.GetStructure("MSA") as MSA).AcknowledgmentCode.Value));
+
+
+        }
     }
 }

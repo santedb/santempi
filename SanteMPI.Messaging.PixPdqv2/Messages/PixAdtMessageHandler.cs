@@ -1,5 +1,7 @@
 ﻿using NHapi.Base.Model;
+using NHapi.Model.V25.Segment;
 using SanteDB.Core.Model.Collection;
+using SanteDB.Messaging.HL7.Exceptions;
 using SanteDB.Messaging.HL7.Messages;
 using SanteDB.Messaging.HL7.TransportProtocol;
 using System;
@@ -15,9 +17,17 @@ namespace SanteMPI.Messaging.PixPdqv2.Messages
     /// </summary>
     public class PixAdtMessageHandler : AdtMessageHandler
     {
-        protected override IMessage HandleMessageInternal(Hl7MessageReceivedEventArgs e, Bundle parsed)
+
+        /// <summary>
+        /// Creates the negative ack 
+        /// </summary>
+        /// <remarks>This overridden method allows for capturing of errors</remarks>
+        protected override IMessage CreateNACK(Type nackType, IMessage request, Exception error, Hl7MessageReceivedEventArgs receiveData)
         {
-            return base.HandleMessageInternal(e, parsed);
+            var retVal = base.CreateNACK(nackType, request, error, receiveData);
+            if (error is AssigningAuthorityNotFoundException)
+                (retVal.GetStructure("MSA") as MSA).AcknowledgmentCode.Value = "AR";
+            return retVal;
         }
     }
 }
