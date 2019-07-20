@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Linq;
+using System.Security.Principal;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NHapi.Model.V25.Message;
 using NHapi.Model.V25.Segment;
 using SanteDB.Core;
+using SanteDB.Core.Security.Claims;
+using SanteDB.Core.Security.Services;
 using SanteDB.Core.Services;
 using SanteDB.Core.TestFramework;
 using SanteDB.Messaging.HL7.Messages;
@@ -25,6 +28,10 @@ namespace SanteMPI.Messaging.PixPdqv2.Test
     [TestClass]
     public class TestOpenHIE : DataTest
     {
+
+        // Device secret
+        private readonly byte[] DeviceSecretA = new byte[] { 0x1, 0x2, 0x3, 0x4, 0x5, 0x6 };
+        private readonly byte[] DeviceSecretB = new byte[] { 0x6, 0x5, 0x4, 0x3, 0x2, 0x1 };
 
         /// <summary>
         /// Initialize SanteMPI Test Context
@@ -160,6 +167,39 @@ namespace SanteMPI.Messaging.PixPdqv2.Test
 
             // Test harness sends ADT A01 with TEST_BLOCK as AA
             message = TestUtil.GetMessageEvent("OHIE-CR-03-20");
+            result = new PixAdtMessageHandler().HandleMessage(message);
+
+            // Response is ACK A01
+            Assert.AreEqual("ACK", (result.GetStructure("MSH") as MSH).MessageType.MessageCode.Value);
+            Assert.AreEqual("A01", (result.GetStructure("MSH") as MSH).MessageType.TriggerEvent.Value);
+            Assert.IsTrue(new String[] { "AR", "CR" }.Any(a => a == (result.GetStructure("MSA") as MSA).AcknowledgmentCode.Value));
+
+
+        }
+
+        /// <summary>
+        /// This test ensures that two assigning authorities cannot assign identifiers from the other’s assigning domain. In this test, the harness mimics two authorities (TEST_HARNESS_A and TEST_HARNESS_B). They each register a patient and the harness then verifies that TEST_HARNESS_B does not assign an identifier from TEST_HARNESS_A’s identity domain.
+        /// </summary>
+        [TestMethod]
+        public void TestOhieCr04()
+        {
+
+            // Setup: Ensure that TEST_HARNESS_A is created with 
+            TestUtil.CreateAuthority("TEST_A", "2.16.840.1.113883.3.72.5.9.2", "TEST_HARNESS_A", DeviceSecretA);
+            // Setup: Ensure that TEST_HARNESS_B is created with 
+            TestUtil.CreateAuthority("TEST_B", "2.16.840.1.113883.3.72.5.9.3", "TEST_HARNESS_B", DeviceSecretB);
+
+            // Step 20 - Harness A sends ADT^A01
+            var message = TestUtil.GetMessageEvent("OHIE-CR-04-20", DeviceSecretA);
+            var result = new PixAdtMessageHandler().HandleMessage(message);
+
+            // Response is ACK A01
+            Assert.AreEqual("ACK", (result.GetStructure("MSH") as MSH).MessageType.MessageCode.Value);
+            Assert.AreEqual("A01", (result.GetStructure("MSH") as MSH).MessageType.TriggerEvent.Value);
+            Assert.IsTrue(new String[] { "AA", "CA" }.Any(a => a == (result.GetStructure("MSA") as MSA).AcknowledgmentCode.Value));
+
+            // TEST HARNESS B attempts to send for authority A
+            message = TestUtil.GetMessageEvent("OHIE-CR-04-30", DeviceSecretB);
             result = new PixAdtMessageHandler().HandleMessage(message);
 
             // Response is ACK A01

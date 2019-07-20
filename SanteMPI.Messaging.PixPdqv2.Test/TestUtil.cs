@@ -1,9 +1,13 @@
 ﻿using NHapi.Base.Model;
-using NHapi.Base.Parser;
+using SanteDB.Core;
+using SanteDB.Core.Model.Security;
+using SanteDB.Core.Security;
+using SanteDB.Core.Services;
 using SanteDB.Messaging.HL7.TransportProtocol;
 using SanteDB.Messaging.HL7.Utils;
 using System;
 using System.IO;
+using System.Linq;
 
 namespace SanteMPI.Messaging.PixPdqv2.Test
 {
@@ -38,12 +42,76 @@ namespace SanteMPI.Messaging.PixPdqv2.Test
         }
 
         /// <summary>
+        /// Get the message from the test assembly
+        /// </summary>
+        public static Hl7MessageReceivedEventArgs GetMessageEvent(String messageName, byte[] deviceSecret)
+        {
+            return new AuthenticatedHl7MessageReceivedEventArgs(
+                message: GetMessage(messageName),
+                solicitorEp: new Uri("test://sut"),
+                receiveEp: new Uri("test://test"),
+                timestamp: DateTime.Now,
+                authorization: deviceSecret
+            );
+        }
+        /// <summary>
         /// Represent message as string
         /// </summary>
         public static String ToString(IMessage msg)
         {
             
             return MessageUtils.EncodeMessage(msg, "2.5.1");
+        }
+
+        /// <summary>
+        /// Create the specified authority
+        /// </summary>
+        public static void CreateAuthority(string nsid, string oid, string applicationName, byte[] deviceSecret)
+        {
+            // Create the test harness device / application
+            var securityDevService = ApplicationServiceContext.Current.GetService<IRepositoryService<SecurityDevice>>();
+            var securityAppService = ApplicationServiceContext.Current.GetService<IRepositoryService<SecurityApplication>>();
+            var metadataService = ApplicationServiceContext.Current.GetService<IAssigningAuthorityRepositoryService>();
+
+            AuthenticationContext.Current = new AuthenticationContext(AuthenticationContext.SystemPrincipal);
+            var device = securityDevService.Find(o => o.Name == $"{applicationName}|TEST").FirstOrDefault();
+            if (device == null)
+            {
+                device = new SecurityDevice()
+                {
+                    DeviceSecret = BitConverter.ToString(deviceSecret).Replace("-", ""),
+                    Name = $"{applicationName}|TEST"
+                };
+                device.AddPolicy(PermissionPolicyIdentifiers.LoginAsService);
+                device = securityDevService.Insert(device);
+            }
+
+            // Application
+            var app = securityAppService.Find(o => o.Name == applicationName).FirstOrDefault();
+            if(app == null)
+            {
+                app = new SecurityApplication()
+                {
+                    Name = applicationName,
+                    ApplicationSecret = BitConverter.ToString(deviceSecret).Replace("-", "")
+                };
+                app.AddPolicy(PermissionPolicyIdentifiers.LoginAsService);
+                app.AddPolicy(PermissionPolicyIdentifiers.UnrestrictedClinicalData);
+                app.AddPolicy(PermissionPolicyIdentifiers.ReadMetadata);
+                app = securityAppService.Insert(app);
+            }
+
+            // Create AA
+            var aa = metadataService.Get(nsid);
+            if(aa == null)
+            {
+                aa = new SanteDB.Core.Model.DataTypes.AssigningAuthority(nsid, nsid, oid)
+                {
+                    AssigningApplicationKey = app.Key
+                };
+                metadataService.Insert(aa);
+            }
+
         }
     }
 }
