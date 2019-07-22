@@ -207,7 +207,43 @@ namespace SanteMPI.Messaging.PixPdqv2.Test
             Assert.AreEqual("A01", (result.GetStructure("MSH") as MSH).MessageType.TriggerEvent.Value);
             Assert.IsTrue(new String[] { "AR", "CR" }.Any(a => a == (result.GetStructure("MSA") as MSA).AcknowledgmentCode.Value));
 
+        }
+
+        /// <summary>
+        /// This test ensures that the receiver does not reject a message containing only an identifier, and one of gender, date of birth, mother’s identifier. This test makes no assertion about merging/matching patients
+        /// </summary>
+        [TestMethod]
+        public void TestOhieCr05()
+        {
+            // Setup: Ensure that TEST_HARNESS is created with authority over TEST
+            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "TEST_HARNESS", DeviceSecretA);
+
+            // Ensure that patient is registered with minimal data
+            var message = TestUtil.GetMessageEvent("OHIE-CR-05-10", DeviceSecretA);
+            var result = new PixAdtMessageHandler().HandleMessage(message);
+            Assert.IsTrue(new String[] { "AA", "CA" }.Any(a => a == (result.GetStructure("MSA") as MSA).AcknowledgmentCode.Value));
+
+            // Test harness sends ADT^A01 message with minimal data set
+            message = TestUtil.GetMessageEvent("OHIE-CR-05-20", DeviceSecretA);
+            result = new PixAdtMessageHandler().HandleMessage(message);
+            Assert.AreEqual("ACK", (result.GetStructure("MSH") as MSH).MessageType.MessageCode.Value);
+            Assert.AreEqual("A01", (result.GetStructure("MSH") as MSH).MessageType.TriggerEvent.Value);
+            Assert.IsTrue(new String[] { "AA", "CA" }.Any(a => a == (result.GetStructure("MSA") as MSA).AcknowledgmentCode.Value));
+
+            // Test harness verifies infant record created 
+            message = TestUtil.GetMessageEvent("OHIE-CR-05-30");
+            result = new QbpMessageHandler().HandleMessage(message);
+           
+            // Exactly one PID segment
+            var resp = result as RSP_K23;
+            Assert.IsNotNull(resp.QUERY_RESPONSE);
+            Assert.AreEqual("RJ-441", resp.QUERY_RESPONSE.PID.GetPatientIdentifierList().First().IDNumber.Value);
+            Assert.AreEqual("TEST", resp.QUERY_RESPONSE.PID.GetPatientIdentifierList().First().AssigningAuthority.NamespaceID.Value);
+            Assert.AreEqual("2.16.840.1.113883.3.72.5.9.1", resp.QUERY_RESPONSE.PID.GetPatientIdentifierList().First().AssigningAuthority.UniversalID.Value);
+            Assert.AreEqual("ISO", resp.QUERY_RESPONSE.PID.GetPatientIdentifierList().First().AssigningAuthority.UniversalIDType.Value);
 
         }
+
+
     }
 }
