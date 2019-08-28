@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<MatchConfigurationCollection xmlns="http://santedb.org/matcher" id="mpi-sample">
+  <configuration id="default" matchThreshold="0.8" nonmatchThreshold="0.4">
+    <target resource="Patient">
+      <event>BeforeInsert</event>
+      <event>BeforeUpdate</event>
+    </target>
+    <blocking maxResults="1000" op="and">
+      <imsiExpression>identifier[NID].value=$input.identifier[NID].value</imsiExpression>
+    </blocking>
+  </configuration>
+</MatchConfigurationCollection>

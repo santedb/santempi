@@ -107,7 +107,8 @@ namespace SanteMPI.Messaging.PixPdqv2.Test
             {
                 aa = new SanteDB.Core.Model.DataTypes.AssigningAuthority(nsid, nsid, oid)
                 {
-                    AssigningApplicationKey = app.Key
+                    AssigningApplicationKey = app.Key,
+                    IsUnique = true
                 };
                 metadataService.Insert(aa);
             }

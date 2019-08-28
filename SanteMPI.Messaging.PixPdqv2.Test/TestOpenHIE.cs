@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Security.Principal;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NHapi.Base.Parser;
 using NHapi.Model.V25.Message;
 using NHapi.Model.V25.Segment;
 using SanteDB.Core;
@@ -64,7 +65,7 @@ namespace SanteMPI.Messaging.PixPdqv2.Test
             Assert.AreEqual("A01", (result.GetStructure("MSH") as MSH).MessageType.TriggerEvent.Value);
 
             // Receiver rejects message with AR or AE
-            Assert.IsTrue(new String[] { "AR", "CR", "CE", "AE" }.Any(a => a == (result.GetStructure("MSA") as MSA).AcknowledgmentCode.Value));
+            Assert.IsTrue(new String[] { "AR", "CR", "CE", "AE" }.Any(a => a == (result.GetStructure("MSA") as MSA).AcknowledgmentCode.Value), new PipeParser().Encode(result));
 
         }
 
@@ -77,7 +78,9 @@ namespace SanteMPI.Messaging.PixPdqv2.Test
 
             // Pre-Conditions: Setup receiver so that OID is configured
             var aaService = ApplicationContext.Current.GetService<IAssigningAuthorityRepositoryService>();
-            if (aaService.Get("TEST") == null)
+            var aa = aaService.Get("TEST");
+            if (aa != null)
+                aaService.Obsolete(aa.Key.Value);
                 aaService.Insert(new SanteDB.Core.Model.DataTypes.AssigningAuthority("TEST", "TEST", "2.16.840.1.113883.3.72.5.9.1"));
 
             // Test harness sends ADT^A01 Message where CX.4.1 of PID is missing by message containss 4.2 and 4.3
@@ -87,7 +90,7 @@ namespace SanteMPI.Messaging.PixPdqv2.Test
             // Response is ACK A01
             Assert.AreEqual("ACK", (result.GetStructure("MSH") as MSH).MessageType.MessageCode.Value);
             Assert.AreEqual("A01", (result.GetStructure("MSH") as MSH).MessageType.TriggerEvent.Value);
-            Assert.IsTrue(new String[] { "AA", "CA" }.Any(a => a == (result.GetStructure("MSA") as MSA).AcknowledgmentCode.Value));
+            Assert.IsTrue(new String[] { "AA", "CA" }.Any(a => a == (result.GetStructure("MSA") as MSA).AcknowledgmentCode.Value), new PipeParser().Encode(result));
 
             // MSH-5 and MSH-6 match
             Assert.AreEqual("TEST_HARNESS", (result.GetStructure("MSH") as MSH).ReceivingApplication.NamespaceID.Value);
@@ -100,7 +103,7 @@ namespace SanteMPI.Messaging.PixPdqv2.Test
             // Response is RSP K23
             Assert.AreEqual("RSP", (result.GetStructure("MSH") as MSH).MessageType.MessageCode.Value);
             Assert.AreEqual("K23", (result.GetStructure("MSH") as MSH).MessageType.TriggerEvent.Value);
-            Assert.IsTrue(new String[] { "AA", "CA" }.Any(a => a == (result.GetStructure("MSA") as MSA).AcknowledgmentCode.Value));
+            Assert.IsTrue(new String[] { "AA", "CA" }.Any(a => a == (result.GetStructure("MSA") as MSA).AcknowledgmentCode.Value), new PipeParser().Encode(result));
 
             // Exactly one PID segment
             var resp = result as RSP_K23;
@@ -116,7 +119,7 @@ namespace SanteMPI.Messaging.PixPdqv2.Test
             // Response is ACK A01
             Assert.AreEqual("ACK", (result.GetStructure("MSH") as MSH).MessageType.MessageCode.Value);
             Assert.AreEqual("A01", (result.GetStructure("MSH") as MSH).MessageType.TriggerEvent.Value);
-            Assert.IsTrue(new String[] { "AA", "CA" }.Any(a => a == (result.GetStructure("MSA") as MSA).AcknowledgmentCode.Value));
+            Assert.IsTrue(new String[] { "AA", "CA" }.Any(a => a == (result.GetStructure("MSA") as MSA).AcknowledgmentCode.Value), new PipeParser().Encode(result));
 
             // MSH-5 and MSH-6 match
             Assert.AreEqual("TEST_HARNESS", (result.GetStructure("MSH") as MSH).ReceivingApplication.NamespaceID.Value);
@@ -129,7 +132,7 @@ namespace SanteMPI.Messaging.PixPdqv2.Test
             // Response is RSP K23
             Assert.AreEqual("RSP", (result.GetStructure("MSH") as MSH).MessageType.MessageCode.Value);
             Assert.AreEqual("K23", (result.GetStructure("MSH") as MSH).MessageType.TriggerEvent.Value);
-            Assert.IsTrue(new String[] { "AA", "CA" }.Any(a => a == (result.GetStructure("MSA") as MSA).AcknowledgmentCode.Value));
+            Assert.IsTrue(new String[] { "AA", "CA" }.Any(a => a == (result.GetStructure("MSA") as MSA).AcknowledgmentCode.Value), new PipeParser().Encode(result));
 
             // Exactly one PID segment
             resp = result as RSP_K23;
@@ -163,7 +166,7 @@ namespace SanteMPI.Messaging.PixPdqv2.Test
             // Response is ACK A01
             Assert.AreEqual("ACK", (result.GetStructure("MSH") as MSH).MessageType.MessageCode.Value);
             Assert.AreEqual("A01", (result.GetStructure("MSH") as MSH).MessageType.TriggerEvent.Value);
-            Assert.IsTrue(new String[] { "AR", "CR" }.Any(a => a == (result.GetStructure("MSA") as MSA).AcknowledgmentCode.Value));
+            Assert.IsTrue(new String[] { "AR", "CR" }.Any(a => a == (result.GetStructure("MSA") as MSA).AcknowledgmentCode.Value), new PipeParser().Encode(result));
 
             // Test harness sends ADT A01 with TEST_BLOCK as AA
             message = TestUtil.GetMessageEvent("OHIE-CR-03-20");
@@ -172,7 +175,7 @@ namespace SanteMPI.Messaging.PixPdqv2.Test
             // Response is ACK A01
             Assert.AreEqual("ACK", (result.GetStructure("MSH") as MSH).MessageType.MessageCode.Value);
             Assert.AreEqual("A01", (result.GetStructure("MSH") as MSH).MessageType.TriggerEvent.Value);
-            Assert.IsTrue(new String[] { "AR", "CR" }.Any(a => a == (result.GetStructure("MSA") as MSA).AcknowledgmentCode.Value));
+            Assert.IsTrue(new String[] { "AR", "CR" }.Any(a => a == (result.GetStructure("MSA") as MSA).AcknowledgmentCode.Value), new PipeParser().Encode(result));
 
 
         }
@@ -196,7 +199,7 @@ namespace SanteMPI.Messaging.PixPdqv2.Test
             // Response is ACK A01
             Assert.AreEqual("ACK", (result.GetStructure("MSH") as MSH).MessageType.MessageCode.Value);
             Assert.AreEqual("A01", (result.GetStructure("MSH") as MSH).MessageType.TriggerEvent.Value);
-            Assert.IsTrue(new String[] { "AA", "CA" }.Any(a => a == (result.GetStructure("MSA") as MSA).AcknowledgmentCode.Value));
+            Assert.IsTrue(new String[] { "AA", "CA" }.Any(a => a == (result.GetStructure("MSA") as MSA).AcknowledgmentCode.Value), new PipeParser().Encode(result));
 
             // TEST HARNESS B attempts to send for authority A
             message = TestUtil.GetMessageEvent("OHIE-CR-04-30", DeviceSecretB);
@@ -205,7 +208,7 @@ namespace SanteMPI.Messaging.PixPdqv2.Test
             // Response is ACK A01
             Assert.AreEqual("ACK", (result.GetStructure("MSH") as MSH).MessageType.MessageCode.Value);
             Assert.AreEqual("A01", (result.GetStructure("MSH") as MSH).MessageType.TriggerEvent.Value);
-            Assert.IsTrue(new String[] { "AR", "CR" }.Any(a => a == (result.GetStructure("MSA") as MSA).AcknowledgmentCode.Value));
+            Assert.IsTrue(new String[] { "AR", "CR" }.Any(a => a == (result.GetStructure("MSA") as MSA).AcknowledgmentCode.Value), new PipeParser().Encode(result));
 
         }
 
@@ -221,14 +224,14 @@ namespace SanteMPI.Messaging.PixPdqv2.Test
             // Ensure that patient is registered with minimal data
             var message = TestUtil.GetMessageEvent("OHIE-CR-05-10", DeviceSecretA);
             var result = new PixAdtMessageHandler().HandleMessage(message);
-            Assert.IsTrue(new String[] { "AA", "CA" }.Any(a => a == (result.GetStructure("MSA") as MSA).AcknowledgmentCode.Value));
+            Assert.IsTrue(new String[] { "AA", "CA" }.Any(a => a == (result.GetStructure("MSA") as MSA).AcknowledgmentCode.Value), new PipeParser().Encode(result));
 
             // Test harness sends ADT^A01 message with minimal data set
             message = TestUtil.GetMessageEvent("OHIE-CR-05-20", DeviceSecretA);
             result = new PixAdtMessageHandler().HandleMessage(message);
             Assert.AreEqual("ACK", (result.GetStructure("MSH") as MSH).MessageType.MessageCode.Value);
             Assert.AreEqual("A01", (result.GetStructure("MSH") as MSH).MessageType.TriggerEvent.Value);
-            Assert.IsTrue(new String[] { "AA", "CA" }.Any(a => a == (result.GetStructure("MSA") as MSA).AcknowledgmentCode.Value));
+            Assert.IsTrue(new String[] { "AA", "CA" }.Any(a => a == (result.GetStructure("MSA") as MSA).AcknowledgmentCode.Value), new PipeParser().Encode(result));
 
             // Test harness verifies infant record created 
             message = TestUtil.GetMessageEvent("OHIE-CR-05-30");
@@ -237,13 +240,48 @@ namespace SanteMPI.Messaging.PixPdqv2.Test
             // Exactly one PID segment
             var resp = result as RSP_K23;
             Assert.IsNotNull(resp.QUERY_RESPONSE);
-            Assert.AreEqual("RJ-441", resp.QUERY_RESPONSE.PID.GetPatientIdentifierList().First().IDNumber.Value);
-            Assert.AreEqual("TEST", resp.QUERY_RESPONSE.PID.GetPatientIdentifierList().First().AssigningAuthority.NamespaceID.Value);
-            Assert.AreEqual("2.16.840.1.113883.3.72.5.9.1", resp.QUERY_RESPONSE.PID.GetPatientIdentifierList().First().AssigningAuthority.UniversalID.Value);
-            Assert.AreEqual("ISO", resp.QUERY_RESPONSE.PID.GetPatientIdentifierList().First().AssigningAuthority.UniversalIDType.Value);
+            Assert.AreEqual("RJ-441", resp.QUERY_RESPONSE.PID.GetPatientIdentifierList().Last().IDNumber.Value);
+            Assert.AreEqual("TEST", resp.QUERY_RESPONSE.PID.GetPatientIdentifierList().Last().AssigningAuthority.NamespaceID.Value);
+            Assert.AreEqual("2.16.840.1.113883.3.72.5.9.1", resp.QUERY_RESPONSE.PID.GetPatientIdentifierList().Last().AssigningAuthority.UniversalID.Value);
+            Assert.AreEqual("ISO", resp.QUERY_RESPONSE.PID.GetPatientIdentifierList().Last().AssigningAuthority.UniversalIDType.Value);
 
         }
 
+        /// <summary>
+        /// This test ensures that the receiver is able to merge patient data from an assigning authority (TEST_A) which has an national patient identifier (assigning authority NID). The demographics data does not match, this is to test that matching is done on explicit identifiers.
+        /// </summary>
+        [TestMethod]
+        public void TestOhieCr06()
+        {
+
+            // Setup: Ensure that TEST_HARNESS_A is created with 
+            TestUtil.CreateAuthority("TEST_A", "2.16.840.1.113883.3.72.5.9.2", "TEST_HARNESS_A", DeviceSecretA);
+            // Setup: Ensure that NID is created with 
+            TestUtil.CreateAuthority("NID", "2.16.840.1.113883.3.72.5.9.9", "NID_AUTH", DeviceSecretA);
+
+            var message = TestUtil.GetMessageEvent("OHIE-CR-06-20", DeviceSecretA);
+            var result = new PixAdtMessageHandler().HandleMessage(message);
+            Assert.IsTrue(new String[] { "AA", "CA" }.Any(a => a == (result.GetStructure("MSA") as MSA).AcknowledgmentCode.Value), new PipeParser().Encode(result));
+
+            message = TestUtil.GetMessageEvent("OHIE-CR-06-30", DeviceSecretA);
+            result = new PixAdtMessageHandler().HandleMessage(message);
+            Assert.IsTrue(new String[] { "AA", "CA" }.Any(a => a == (result.GetStructure("MSA") as MSA).AcknowledgmentCode.Value), new PipeParser().Encode(result));
+
+            // Verify linkage
+            message = TestUtil.GetMessageEvent("OHIE-CR-06-40", DeviceSecretA);
+            result = new QbpMessageHandler().HandleMessage(message);
+            Assert.IsTrue(new String[] { "AA", "CA" }.Any(a => a == (result.GetStructure("MSA") as MSA).AcknowledgmentCode.Value), new PipeParser().Encode(result));
+
+            // Verify that only one person is registered with matching identifier
+            var rsp = result as RSP_K23;
+            Assert.IsNotNull(rsp.QUERY_RESPONSE);
+            Assert.AreEqual(3, rsp.QUERY_RESPONSE.PID.GetPatientIdentifierList().Count());
+            Assert.IsTrue(rsp.QUERY_RESPONSE.PID.GetPatientIdentifierList().Any(o=>o.AssigningAuthority.NamespaceID.Value == "NID" && o.IDNumber.Value == "NID-000345435"), "Misisng NID");
+            Assert.IsTrue(rsp.QUERY_RESPONSE.PID.GetPatientIdentifierList().Any(o => o.AssigningAuthority.NamespaceID.Value == "TEST_A" && o.IDNumber.Value == "RJ-449"), "Missing Local ID");
+
+
+
+        }
 
     }
 }
