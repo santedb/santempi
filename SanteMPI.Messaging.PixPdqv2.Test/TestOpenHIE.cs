@@ -6,6 +6,7 @@ using NHapi.Base.Parser;
 using NHapi.Model.V25.Message;
 using NHapi.Model.V25.Segment;
 using SanteDB.Core;
+using SanteDB.Core.Security;
 using SanteDB.Core.Security.Claims;
 using SanteDB.Core.Security.Services;
 using SanteDB.Core.Services;
@@ -77,14 +78,15 @@ namespace SanteMPI.Messaging.PixPdqv2.Test
         {
 
             // Pre-Conditions: Setup receiver so that OID is configured
+            AuthenticationContext.Current = new AuthenticationContext(AuthenticationContext.SystemPrincipal);
             var aaService = ApplicationContext.Current.GetService<IAssigningAuthorityRepositoryService>();
+            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "TEST_HARNESS", DeviceSecretA);
             var aa = aaService.Get("TEST");
-            if (aa != null)
-                aaService.Obsolete(aa.Key.Value);
+            if (aa == null)
                 aaService.Insert(new SanteDB.Core.Model.DataTypes.AssigningAuthority("TEST", "TEST", "2.16.840.1.113883.3.72.5.9.1"));
 
             // Test harness sends ADT^A01 Message where CX.4.1 of PID is missing by message containss 4.2 and 4.3
-            var message = TestUtil.GetMessageEvent("OHIE-CR-02-10");
+            var message = TestUtil.GetMessageEvent("OHIE-CR-02-10", DeviceSecretA);
             var result = new PixAdtMessageHandler().HandleMessage(message);
 
             // Response is ACK A01
@@ -97,7 +99,7 @@ namespace SanteMPI.Messaging.PixPdqv2.Test
             Assert.AreEqual("TEST", (result.GetStructure("MSH") as MSH).ReceivingFacility.NamespaceID.Value);
 
             // Test harness ensures that patient was registered and receiver has populated 4.1, 4.2, and 4.3
-            message = TestUtil.GetMessageEvent("OHIE-CR-02-20");
+            message = TestUtil.GetMessageEvent("OHIE-CR-02-20", DeviceSecretA);
             result = new QbpMessageHandler().HandleMessage(message);
 
             // Response is RSP K23
@@ -108,12 +110,12 @@ namespace SanteMPI.Messaging.PixPdqv2.Test
             // Exactly one PID segment
             var resp = result as RSP_K23;
             Assert.IsNotNull(resp.QUERY_RESPONSE);
-            Assert.AreEqual("TEST", resp.QUERY_RESPONSE.PID.GetPatientIdentifierList().First().AssigningAuthority.NamespaceID.Value);
-            Assert.AreEqual("2.16.840.1.113883.3.72.5.9.1", resp.QUERY_RESPONSE.PID.GetPatientIdentifierList().First().AssigningAuthority.UniversalID.Value);
-            Assert.AreEqual("ISO", resp.QUERY_RESPONSE.PID.GetPatientIdentifierList().First().AssigningAuthority.UniversalIDType.Value);
+            Assert.AreEqual("TEST", resp.QUERY_RESPONSE.PID.GetPatientIdentifierList().Last().AssigningAuthority.NamespaceID.Value);
+            Assert.AreEqual("2.16.840.1.113883.3.72.5.9.1", resp.QUERY_RESPONSE.PID.GetPatientIdentifierList().Last().AssigningAuthority.UniversalID.Value);
+            Assert.AreEqual("ISO", resp.QUERY_RESPONSE.PID.GetPatientIdentifierList().Last().AssigningAuthority.UniversalIDType.Value);
 
             // Test hanress sneds ADT A01 with OID missing but namespace
-            message = TestUtil.GetMessageEvent("OHIE-CR-02-30");
+            message = TestUtil.GetMessageEvent("OHIE-CR-02-30", DeviceSecretA);
             result = new AdtMessageHandler().HandleMessage(message);
 
             // Response is ACK A01
@@ -126,7 +128,7 @@ namespace SanteMPI.Messaging.PixPdqv2.Test
             Assert.AreEqual("TEST", (result.GetStructure("MSH") as MSH).ReceivingFacility.NamespaceID.Value);
 
             // Test harnerss validates patient was registrered and populated segments properly
-            message = TestUtil.GetMessageEvent("OHIE-CR-02-40");
+            message = TestUtil.GetMessageEvent("OHIE-CR-02-40", DeviceSecretA);
             result = new QbpMessageHandler().HandleMessage(message);
 
             // Response is RSP K23
@@ -137,9 +139,9 @@ namespace SanteMPI.Messaging.PixPdqv2.Test
             // Exactly one PID segment
             resp = result as RSP_K23;
             Assert.IsNotNull(resp.QUERY_RESPONSE);
-            Assert.AreEqual("TEST", resp.QUERY_RESPONSE.PID.GetPatientIdentifierList().First().AssigningAuthority.NamespaceID.Value);
-            Assert.AreEqual("2.16.840.1.113883.3.72.5.9.1", resp.QUERY_RESPONSE.PID.GetPatientIdentifierList().First().AssigningAuthority.UniversalID.Value);
-            Assert.AreEqual("ISO", resp.QUERY_RESPONSE.PID.GetPatientIdentifierList().First().AssigningAuthority.UniversalIDType.Value);
+            Assert.AreEqual("TEST", resp.QUERY_RESPONSE.PID.GetPatientIdentifierList().Skip(1).First().AssigningAuthority.NamespaceID.Value);
+            Assert.AreEqual("2.16.840.1.113883.3.72.5.9.1", resp.QUERY_RESPONSE.PID.GetPatientIdentifierList().Skip(1).First().AssigningAuthority.UniversalID.Value);
+            Assert.AreEqual("ISO", resp.QUERY_RESPONSE.PID.GetPatientIdentifierList().Skip(1).First().AssigningAuthority.UniversalIDType.Value);
 
         }
 

@@ -74,7 +74,8 @@ namespace SanteMPI.Messaging.PixPdqv2.Test
             var metadataService = ApplicationServiceContext.Current.GetService<IAssigningAuthorityRepositoryService>();
 
             AuthenticationContext.Current = new AuthenticationContext(AuthenticationContext.SystemPrincipal);
-            var device = securityDevService.Find(o => o.Name == $"{applicationName}|TEST").FirstOrDefault();
+            string pubId = $"{applicationName}|TEST";
+            var device = securityDevService.Find(o => o.Name == pubId).FirstOrDefault();
             if (device == null)
             {
                 device = new SecurityDevice()
