@@ -1,4 +1,7 @@
-﻿using NHapi.Base.Model;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NHapi.Base.Model;
+using NHapi.Base.Parser;
+using NHapi.Model.V25.Segment;
 using SanteDB.Core;
 using SanteDB.Core.Model.Security;
 using SanteDB.Core.Security;
@@ -39,6 +42,14 @@ namespace SanteMPI.Messaging.PixPdqv2.Test
                 receiveEp: new Uri("test://test"),
                 timestamp: DateTime.Now
             );
+        }
+
+        /// <summary>
+        /// Assert the outcome of a message
+        /// </summary>
+        public static void AssertOutcome(IMessage message, params String[] acknowledgement)
+        {
+            Assert.IsTrue(acknowledgement.Any(a => a == (message.GetStructure("MSA") as MSA).AcknowledgmentCode.Value), new PipeParser().Encode(message));
         }
 
         /// <summary>
