@@ -400,6 +400,42 @@ namespace SanteMPI.Messaging.PixPdqv2.Test
             Assert.AreEqual("3", rsp.ERR.GetErrorLocation(0).FieldPosition.Value);
             Assert.AreEqual("1", rsp.ERR.GetErrorLocation(0).FieldRepetition.Value);
             Assert.AreEqual("1", rsp.ERR.GetErrorLocation(0).ComponentNumber.Value);
+
+            // Harness sends PIX query for unregistered patient in random domain
+            message = TestUtil.GetMessageEvent("OHIE-CR-09-20", DeviceSecretA);
+            response = new PixQbpMessageHandler().HandleMessage(message);
+
+            // Response should be AE
+            TestUtil.AssertOutcome(response, "AE");
+            rsp = response as RSP_K23;
+            Assert.AreEqual("AE", rsp.QAK.QueryResponseStatus.Value);
+            Assert.AreEqual("QPD", rsp.ERR.GetErrorLocation(0).SegmentID.Value);
+            Assert.AreEqual("1", rsp.ERR.GetErrorLocation(0).SegmentSequence.Value);
+            Assert.AreEqual("3", rsp.ERR.GetErrorLocation(0).FieldPosition.Value);
+            Assert.AreEqual("1", rsp.ERR.GetErrorLocation(0).FieldRepetition.Value);
+            Assert.AreEqual("4", rsp.ERR.GetErrorLocation(0).ComponentNumber.Value);
+
+            // Harness sends registering patient
+            message = TestUtil.GetMessageEvent("OHIE-CR-09-30", DeviceSecretA);
+            response = new PixAdtMessageHandler().HandleMessage(message);
+
+            // Assert success
+            TestUtil.AssertOutcome(response, "AA", "CA");
+
+            // Harness accepts message for xref
+            message = TestUtil.GetMessageEvent("OHIE-CR-09-40", DeviceSecretA);
+            response = new PixQbpMessageHandler().HandleMessage(message);
+
+            // Assert success
+            TestUtil.AssertOutcome(response, "AA");
+            rsp = response as RSP_K23;
+            Assert.AreEqual("OK", rsp.QAK.QueryResponseStatus.Value);
+            Assert.AreEqual("RJ-443", rsp.QUERY_RESPONSE.PID.GetPatientIdentifierList().Last().IDNumber.Value);
+            Assert.AreEqual("TEST", rsp.QUERY_RESPONSE.PID.GetPatientIdentifierList().Last().AssigningAuthority.NamespaceID.Value);
+            Assert.AreEqual("2.16.840.1.113883.3.72.5.9.1", rsp.QUERY_RESPONSE.PID.GetPatientIdentifierList().Last().AssigningAuthority.UniversalID.Value);
+            Assert.AreEqual("ISO", rsp.QUERY_RESPONSE.PID.GetPatientIdentifierList().Last().AssigningAuthority.UniversalIDType.Value);
+
+
         }
     }
 }

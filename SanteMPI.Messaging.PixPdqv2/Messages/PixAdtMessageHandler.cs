@@ -25,8 +25,17 @@ namespace SanteMPI.Messaging.PixPdqv2.Messages
         protected override IMessage CreateNACK(Type nackType, IMessage request, Exception error, Hl7MessageReceivedEventArgs receiveData)
         {
             var retVal = base.CreateNACK(nackType, request, error, receiveData);
-            if (error is AssigningAuthorityNotFoundException)
-                (retVal.GetStructure("MSA") as MSA).AcknowledgmentCode.Value = "AR";
+
+            var ex = error;
+            while (ex != null)
+            {
+                if (ex is KeyNotFoundException)
+                {
+                    (retVal.GetStructure("MSA") as MSA).AcknowledgmentCode.Value = "AR";
+                    break;
+                }
+                ex = ex.InnerException;
+            }
             return retVal;
         }
     }
