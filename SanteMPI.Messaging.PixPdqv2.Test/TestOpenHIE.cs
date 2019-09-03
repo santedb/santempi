@@ -481,5 +481,93 @@ namespace SanteMPI.Messaging.PixPdqv2.Test
             Assert.AreEqual(0, rsp.QUERY_RESPONSE.PID.PatientIdentifierListRepetitionsUsed);
         }
 
+        /// <summary>
+        /// This test case ensures that the recipient of the query can perform a patient demographics query based on the PID-3 values provided in an admit message
+        /// </summary>
+        [TestMethod]
+        public void TestOhieCr11()
+        {
+
+            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "TEST_HARNESS", DeviceSecretA);
+            TestUtil.CreateAuthority("NID", "2.16.840.1.113883.3.72.5.9.9", "NID_AUTH", DeviceSecretA);
+
+            // Ensure that the patient Jennifer Jones with RJ-439 is registered
+            var message = TestUtil.GetMessageEvent("OHIE-CR-11-10", DeviceSecretA);
+            var response = new PixAdtMessageHandler().HandleMessage(message);
+            TestUtil.AssertOutcome(response, "AA", "CA");
+
+            // Test harness sends PDQ message containing known ID to supplier
+            message = TestUtil.GetMessageEvent("OHIE-CR-11-20", DeviceSecretA);
+            response = new PdqQbpMessageHandler().HandleMessage(message);
+            TestUtil.AssertOutcome(response, "AA");
+
+            var rsp = response as RSP_K21;
+            Assert.AreEqual("OK", rsp.QAK.QueryResponseStatus.Value);
+            Assert.AreEqual(1, rsp.QUERY_RESPONSERepetitionsUsed);
+            Assert.AreEqual(2, rsp.GetQUERY_RESPONSE(0).PID.PatientIdentifierListRepetitionsUsed); // For subsequent query validation. The response layer should respond with UUID and RJ-439
+
+            Assert.AreEqual("RJ-439", rsp.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().Last().IDNumber.Value);
+            Assert.AreEqual("TEST", rsp.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().Last().AssigningAuthority.NamespaceID.Value);
+            Assert.AreEqual("2.16.840.1.113883.3.72.5.9.1", rsp.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().Last().AssigningAuthority.UniversalID.Value);
+            Assert.AreEqual("JONES", rsp.GetQUERY_RESPONSE(0).PID.GetPatientName(0).FamilyName.Surname.Value);
+            Assert.AreEqual("JENNIFER", rsp.GetQUERY_RESPONSE(0).PID.GetPatientName(0).GivenName.Value);
+            Assert.AreEqual("19840125", rsp.GetQUERY_RESPONSE(0).PID.DateTimeOfBirth.Time.Value);
+
+            // Test harness sends PDQ message with identifier that is unknown
+            message = TestUtil.GetMessageEvent("OHIE-CR-11-30", DeviceSecretA);
+            response = new PdqQbpMessageHandler().HandleMessage(message);
+            TestUtil.AssertOutcome(response, "AA");
+
+            rsp = response as RSP_K21;
+            Assert.AreEqual("NF", rsp.QAK.QueryResponseStatus.Value);
+            Assert.AreEqual(0, rsp.QUERY_RESPONSERepetitionsUsed);
+
+            // Test harness sends invalid PDQ message with invalid filter parameter
+            message = TestUtil.GetMessageEvent("OHIE-CR-11-40");
+            response = new PdqQbpMessageHandler().HandleMessage(message);
+            TestUtil.AssertOutcome(response, "AE", "AR");
+
+            rsp = response as RSP_K21;
+            Assert.AreEqual("AE", rsp.QAK.QueryResponseStatus.Value);
+            Assert.AreEqual(0, rsp.QUERY_RESPONSERepetitionsUsed);
+
+            // Test harness sends PDQ message and specified domains that should be retutrned in QPD-8
+            message = TestUtil.GetMessageEvent("OHIE-CR-11-50");
+            response = new PdqQbpMessageHandler().HandleMessage(message);
+            TestUtil.AssertOutcome(response, "AA");
+
+            rsp = response as RSP_K21;
+            Assert.AreEqual("OK", rsp.QAK.QueryResponseStatus.Value);
+            Assert.AreEqual(1, rsp.QUERY_RESPONSERepetitionsUsed);
+            Assert.AreEqual(1, rsp.GetQUERY_RESPONSE(0).PID.PatientIdentifierListRepetitionsUsed); // We specified what domains returned so there should only be one
+            Assert.AreEqual("RJ-439", rsp.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().Last().IDNumber.Value);
+            Assert.AreEqual("TEST", rsp.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().Last().AssigningAuthority.NamespaceID.Value);
+            Assert.AreEqual("2.16.840.1.113883.3.72.5.9.1", rsp.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().Last().AssigningAuthority.UniversalID.Value);
+            Assert.AreEqual("JONES", rsp.GetQUERY_RESPONSE(0).PID.GetPatientName(0).FamilyName.Surname.Value);
+            Assert.AreEqual("JENNIFER", rsp.GetQUERY_RESPONSE(0).PID.GetPatientName(0).GivenName.Value);
+            Assert.AreEqual("19840125", rsp.GetQUERY_RESPONSE(0).PID.DateTimeOfBirth.Time.Value);
+
+            // Test harness sends message what domains should be returned. What domains contains a NID which the patient does not have
+            // The system should respond with NF
+            message = TestUtil.GetMessageEvent("OHIE-CR-11-60");
+            response = new PdqQbpMessageHandler().HandleMessage(message);
+            TestUtil.AssertOutcome(response, "AA");
+
+            rsp = response as RSP_K21;
+            Assert.AreEqual("NF", rsp.QAK.QueryResponseStatus.Value);
+            Assert.AreEqual(0, rsp.QUERY_RESPONSERepetitionsUsed);
+
+            // Test harness sends message with an invalid domain specified in what domains returned. The system responds with error
+            message = TestUtil.GetMessageEvent("OHIE-CR-11-70");
+            response = new PdqQbpMessageHandler().HandleMessage(message);
+            TestUtil.AssertOutcome(response, "AE");
+
+            rsp = response as RSP_K21;
+            Assert.AreEqual("AE", rsp.QAK.QueryResponseStatus.Value);
+            Assert.AreEqual("QPD", rsp.ERR.GetErrorLocation(0).SegmentID.Value);
+            Assert.AreEqual("8", rsp.ERR.GetErrorLocation(0).FieldPosition.Value);
+            Assert.AreEqual("1", rsp.ERR.GetErrorLocation(0).SegmentSequence.Value);
+            Assert.AreEqual(0, rsp.QUERY_RESPONSERepetitionsUsed);
+        }
     }
 }
