@@ -437,5 +437,49 @@ namespace SanteMPI.Messaging.PixPdqv2.Test
 
 
         }
+
+        /// <summary>
+        /// In this test, the test harness will register a patient with a local identifier (TEST domain). The receiver is the assigning authority for the ECID domain and should generate an ECID by whatever means the software performs this task. The test harness will then ask the receiver to do a cross reference between the TEST domain and the ECID domain. This test ensures that the receiver adheres to the “What Domains Returned” query parameter.
+        /// </summary>
+        [TestMethod]
+        public void TestOhieCr10()
+        {
+
+            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "TEST_HARNESS", DeviceSecretA);
+            TestUtil.CreateAuthority("NID", "2.16.840.1.113883.3.72.5.9.9", "NID_AUTH", DeviceSecretA);
+
+            // Ensure that patient is registered
+            var message = TestUtil.GetMessageEvent("OHIE-CR-10-10", DeviceSecretA);
+            var response = new PixAdtMessageHandler().HandleMessage(message);
+            TestUtil.AssertOutcome(response, "AA", "CA");
+
+            // Test harness requests that the receiver gives it only TEST identities
+            message = TestUtil.GetMessageEvent("OHIE-CR-10-20", DeviceSecretA);
+            response = new PixQbpMessageHandler().HandleMessage(message);
+            TestUtil.AssertOutcome(response, "AA");
+            var rsp = response as RSP_K23;
+            Assert.AreEqual(1, rsp.QUERY_RESPONSE.PID.PatientIdentifierListRepetitionsUsed);
+            Assert.AreEqual("RJ-444", rsp.QUERY_RESPONSE.PID.GetPatientIdentifierList().First().IDNumber.Value);
+            Assert.AreEqual("TEST", rsp.QUERY_RESPONSE.PID.GetPatientIdentifierList().First().AssigningAuthority.NamespaceID.Value);
+            Assert.AreEqual("2.16.840.1.113883.3.72.5.9.1", rsp.QUERY_RESPONSE.PID.GetPatientIdentifierList().First().AssigningAuthority.UniversalID.Value);
+
+            // Test harness requests receiver to give it a domain that does not exist
+            message = TestUtil.GetMessageEvent("OHIE-CR-10-30", DeviceSecretA);
+            response = new PixQbpMessageHandler().HandleMessage(message);
+            TestUtil.AssertOutcome(response, "AE");
+            rsp = response as RSP_K23;
+            Assert.AreEqual("AE", rsp.QAK.QueryResponseStatus.Value);
+            Assert.AreEqual("QPD", rsp.ERR.GetErrorLocation(0).SegmentID.Value);
+            Assert.AreEqual("4", rsp.ERR.GetErrorLocation(0).FieldPosition.Value);
+
+            // Test harness requests recevier giv it a domain identifier from valid domain but for which the patient has no ID
+            message = TestUtil.GetMessageEvent("OHIE-CR-10-40", DeviceSecretA);
+            response = new PixQbpMessageHandler().HandleMessage(message);
+            TestUtil.AssertOutcome(response, "AA");
+            rsp = response as RSP_K23;
+            Assert.AreEqual("NF", rsp.QAK.QueryResponseStatus.Value);
+            Assert.AreEqual(0, rsp.QUERY_RESPONSE.PID.PatientIdentifierListRepetitionsUsed);
+        }
+
     }
 }
