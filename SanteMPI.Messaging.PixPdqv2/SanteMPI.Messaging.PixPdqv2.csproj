@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\PixPdqFeature.cs" />
     <Compile Include="Messages\PixQbpMessageHandler.cs" />
     <Compile Include="Messages\PdqQbpMessageHandler.cs" />
     <Compile Include="Messages\PixAdtMessageHandler.cs" />

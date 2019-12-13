@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SubscriptionDefinition xmlns="http://santedb.org/subscription"  uuid="81b65812-c14e-4bb4-b7a1-ca7bcee83dff" resource="Entity">
+  <server>
+    <definition invariant="npgsql">
+      <![CDATA[
+     SELECT * FROM 
+	    ENT_VRSN_TBL 
+        INNER JOIN ENT_TBL USING (ENT_ID)
+    WHERE
+	    OBSLT_UTC IS NULL 
+	    AND ENT_ID IN (
+		    SELECT ENT_ID
+		    FROM
+			    ENT_ID_TBL 
+		    WHERE
+			    AUT_ID = $authority$
+			    AND OBSLT_VRSN_SEQ_ID IS NULL
+	    )
+      ]]>
+    </definition>
+    <definition invariant="fbsql">
+      <![CDATA[
+     SELECT * FROM 
+	    ENT_VRSN_TBL 
+    WHERE
+	    OBSLT_UTC IS NULL 
+	    AND ENT_ID IN (
+		    SELECT ENT_ID
+		    FROM
+			    ENT_ID_TBL 
+		    WHERE
+			    AUT_ID = $authority$
+			    AND OBSLT_VRSN_SEQ_ID IS NULL
+	    )
+      ]]>
+    </definition>
+  </server>
+  <client>
+    <definition resource="Entity" name="mpi.subscription.entity.aa" mode="subscription" ignoreModifiedOn="false" trigger="always">
+      <guards>
+        <when>subscribed.domainName</when>
+      </guards>
+      <filters>
+        <add>_subscription=81b65812-c14e-4bb4-b7a1-ca7bcee83dff&amp;_authority=$subscribed.id$&amp;_expand=relationship&amp;_expand=participation</add>
+      </filters>
+    </definition>
+  </client>
+</SubscriptionDefinition>
