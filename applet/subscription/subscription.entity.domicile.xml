@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SubscriptionDefinition xmlns="http://santedb.org/subscription" resource="Person">
+      <client>
+      <definition resource="Person" name="ui.subscription.person.all" mode="all" ignoreModifiedOn="false" trigger="on-start on-x-net">
+        <filters>
+          <add>statusConcept=!CD4AA3C4-02D5-4CC9-9088-EF8F31E321C5</add>
+        </filters>
+      </definition>
+      <definition resource="Person" name="ui.subscription.person.state" mode="subscription" ignoreModifiedOn="false" trigger="always">
+        <guards>
+          <when>subscribed.address[Direct].component[State]  &amp;&amp; !subscribed.address[Direct].component[County]</when>
+          <when>subscribed.classConcept != 'ff34dfa7-c6d3-4f8b-bc9f-14bcdc13ba6c'</when>
+        </guards>
+        <filters>
+          <add>statusConcept=!CD4AA3C4-02D5-4CC9-9088-EF8F31E321C5&amp;address.component[State].value=$subscribed.address[Direct].component[State].value$&amp;_exclude=relationship&amp;_exclude=participation</add>
+        </filters>
+      </definition>
+      <definition resource="Person" name="ui.subscription.person.county" mode="subscription" ignoreModifiedOn="false" trigger="always">
+        <guards>
+          <when>subscribed.address[Direct].component[County] &amp;&amp; !subscribed.address[Direct].component[City]</when>
+          <when>subscribed.classConcept != 'ff34dfa7-c6d3-4f8b-bc9f-14bcdc13ba6c'</when>
+        </guards>
+        <filters>
+          <add>statusConcept=!CD4AA3C4-02D5-4CC9-9088-EF8F31E321C5&amp;address.component[State].value=$subscribed.address[Direct].component[State].value$&amp;address.component[County].value=$subscribed.address[Direct].component[County].value$&amp;_exclude=relationship&amp;_exclude=participation</add>
+        </filters>
+      </definition>
+       <definition resource="Person" name="ui.subscription.person.city" mode="subscription" ignoreModifiedOn="false" trigger="always">
+        <guards>
+          <when>subscribed.address[Direct].component[City]</when>
+          <when>subscribed.classConcept != 'ff34dfa7-c6d3-4f8b-bc9f-14bcdc13ba6c'</when>
+        </guards>
+        <filters>
+          <add>statusConcept=!CD4AA3C4-02D5-4CC9-9088-EF8F31E321C5&amp;address.component[State].value=$subscribed.address[Direct].component[State].value$&amp;address.component[County].value=$subscribed.address[Direct].component[County].value$&amp;address.component[City].value=$subscribed.address[Direct].component[City].value$&amp;_exclude=relationship&amp;_exclude=participation</add>
+        </filters>
+      </definition>
+      <definition resource="Person" name="ui.subscription.person.all" mode="subscription" ignoreModifiedOn="false" trigger="periodic">
+        <guards>
+          <when>!subscribed.address[Direct].component[County] &amp;&amp; !subscribed.address[Direct].component[State]</when>
+          <when>subscribed.classConcept != 'ff34dfa7-c6d3-4f8b-bc9f-14bcdc13ba6c'</when>
+        </guards>
+        <filters>
+          <add>statusConcept=!CD4AA3C4-02D5-4CC9-9088-EF8F31E321C5&amp;_exclude=relationship&amp;_exclude=participation</add>
+        </filters>
+      </definition>
+
+      
+      <definition resource="Person" name="ui.subscription.person.domicile" mode="subscription" ignoreModifiedOn="false" trigger="always">
+        <guards>
+          <when>subscribed.$type == 'Place'</when>
+          <when>subscribed.classConcept != 'ff34dfa7-c6d3-4f8b-bc9f-14bcdc13ba6c'</when>
+        </guards>
+        <filters>
+          <add>statusConcept=!CD4AA3C4-02D5-4CC9-9088-EF8F31E321C5&amp;relationship.target=$subscribed.id$</add>
+        </filters>
+      </definition>
+    </client>
+</SubscriptionDefinition>

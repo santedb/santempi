@@ -24,6 +24,22 @@
     <author>Fyfe Software Inc.</author>
   </info>
 
+  <menuItem context="org.santedb.admin" launch="santedb-admin.mpi.index" asset="/org.santedb.smpi/views/index.html">
+    <icon>fas fa-street-view</icon>
+    <text lang="en">SanteMPI</text>
+    <menuItem context="org.santedb.admin" launch="santedb-admin.mpi.search" asset="/org.santedb.smpi/views/search/index.html">
+      <icon>fas fa-search</icon>
+      <text lang="en">Search</text>
+    </menuItem>
+    <menuItem context="org.santedb.admin" launch="santedb-admin.mpi.conflict" asset="/org.santedb.smpi/views/duplicates/index.html">
+      <icon>fas fa-user-friends</icon>
+      <text lang="en">Conflicts</text>
+    </menuItem>
+    <menuItem context="org.santedb.admin" launch="santedb-admin.mpi.matching" asset="/org.santedb.smpi/views/match/index.html">
+      <icon>fas fa-user-cog</icon>
+      <text lang="en">Match Configuration</text>
+    </menuItem>
+  </menuItem>
   <strings lang="en">
 
     <string key="org.santedb.smpi">SanteMPI</string>
