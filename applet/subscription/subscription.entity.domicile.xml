@@ -10,6 +10,7 @@
         <guards>
           <when>subscribed.address[Direct].component[State]  &amp;&amp; !subscribed.address[Direct].component[County]</when>
           <when>subscribed.classConcept != 'ff34dfa7-c6d3-4f8b-bc9f-14bcdc13ba6c'</when>
+          <when>subscribed.$type == 'Place'</when>
         </guards>
         <filters>
           <add>statusConcept=!CD4AA3C4-02D5-4CC9-9088-EF8F31E321C5&amp;address.component[State].value=$subscribed.address[Direct].component[State].value$&amp;_exclude=relationship&amp;_exclude=participation</add>
@@ -19,6 +20,7 @@
         <guards>
           <when>subscribed.address[Direct].component[County] &amp;&amp; !subscribed.address[Direct].component[City]</when>
           <when>subscribed.classConcept != 'ff34dfa7-c6d3-4f8b-bc9f-14bcdc13ba6c'</when>
+          <when>subscribed.$type == 'Place'</when>
         </guards>
         <filters>
           <add>statusConcept=!CD4AA3C4-02D5-4CC9-9088-EF8F31E321C5&amp;address.component[State].value=$subscribed.address[Direct].component[State].value$&amp;address.component[County].value=$subscribed.address[Direct].component[County].value$&amp;_exclude=relationship&amp;_exclude=participation</add>
@@ -28,6 +30,7 @@
         <guards>
           <when>subscribed.address[Direct].component[City]</when>
           <when>subscribed.classConcept != 'ff34dfa7-c6d3-4f8b-bc9f-14bcdc13ba6c'</when>
+          <when>subscribed.$type == 'Place'</when>
         </guards>
         <filters>
           <add>statusConcept=!CD4AA3C4-02D5-4CC9-9088-EF8F31E321C5&amp;address.component[State].value=$subscribed.address[Direct].component[State].value$&amp;address.component[County].value=$subscribed.address[Direct].component[County].value$&amp;address.component[City].value=$subscribed.address[Direct].component[City].value$&amp;_exclude=relationship&amp;_exclude=participation</add>
@@ -37,6 +40,7 @@
         <guards>
           <when>!subscribed.address[Direct].component[County] &amp;&amp; !subscribed.address[Direct].component[State]</when>
           <when>subscribed.classConcept != 'ff34dfa7-c6d3-4f8b-bc9f-14bcdc13ba6c'</when>
+          <when>subscribed.$type == 'Place'</when>
         </guards>
         <filters>
           <add>statusConcept=!CD4AA3C4-02D5-4CC9-9088-EF8F31E321C5&amp;_exclude=relationship&amp;_exclude=participation</add>

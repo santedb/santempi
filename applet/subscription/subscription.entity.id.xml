@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<SubscriptionDefinition xmlns="http://santedb.org/subscription"  uuid="81b65812-c14e-4bb4-b7a1-ca7bcee83dff" resource="Entity">
+<SubscriptionDefinition xmlns="http://santedb.org/subscription"  uuid="81b65812-c14e-4bb4-b7a1-ca7bcee83dff" resource="Patient">
   <server>
     <definition invariant="npgsql">
       <![CDATA[
@@ -34,9 +34,13 @@
 	    )
       ]]>
     </definition>
+    <definition invariant="hl7">
+    <![CDATA[
+    identifier.authority=$authority$
+    ]]>]
   </server>
   <client>
-    <definition resource="Entity" name="mpi.subscription.entity.aa" mode="subscription" ignoreModifiedOn="false" trigger="always">
+    <definition resource="Entity" name="mpi.subscription.patient.aa" mode="subscription" ignoreModifiedOn="false" trigger="always">
       <guards>
         <when>subscribed.domainName</when>
       </guards>
