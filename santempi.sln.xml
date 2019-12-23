@@ -1,0 +1,16 @@
+<AppletManifest xmlns="http://santedb.org/applet">
+  <info id="santempi.sln" version="1.100.*.0">
+    <icon>/org.santedb.core/img/icon.png</icon>
+    <name lang="en">SanteDB Master Patient Index Functions</name>
+    <author>SanteSuite Contributors</author>
+    <dependency id="org.santedb.hl7" version="1.100.0.0"/>
+    <dependency id="org.santedb.sg" version="1.100.0.0"/>
+    <dependency id="org.santedb.smpi" version="1.100.0.0"/>
+    <dependency id="org.santedb.admin" version="1.100.0.0"/>
+    <dependency id="org.santedb.core" version="1.100.0.0"/>
+    <dependency id="org.santedb.uicore" version="1.100.0.0"/>
+    <dependency id="org.santedb.bicore" version="1.100.0.0"/>
+    <dependency id="org.santedb.config" version="1.100.0.0"/>
+    <dependency id="org.santedb.i18n.en" version="1.100.0.0"/>
+  </info>
+</AppletManifest>
