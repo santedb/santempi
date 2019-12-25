@@ -18,7 +18,7 @@
  - Date: 2018-7-23
  -->
 <AppletManifest xmlns="http://santedb.org/applet">
-  <info id="org.santedb.smpi" version="1.0.0.0">
+  <info id="org.santedb.smpi" version="1.100.0.0">
     <icon>/org.santedb.core/img/icon.png</icon>
     <name lang="en">SanteMPI Master Patient Index</name>
     <author>Fyfe Software Inc.</author>
@@ -27,23 +27,45 @@
   <menuItem context="org.santedb.admin" launch="santedb-admin.mpi.index" asset="/org.santedb.smpi/views/index.html">
     <icon>fas fa-street-view</icon>
     <text lang="en">SanteMPI</text>
-    <menuItem context="org.santedb.admin" launch="santedb-admin.mpi.search" asset="/org.santedb.smpi/views/search/index.html">
-      <icon>fas fa-search</icon>
-      <text lang="en">Search</text>
+    <menuItem context="org.santedb.admin" launch="santedb-admin.mpi.patients.search" asset="/org.santedb.smpi/views/patients/search.html">
+      <icon>fas fa-search-plus</icon>
+      <text lang="en">Power Search</text>
     </menuItem>
-    <menuItem context="org.santedb.admin" launch="santedb-admin.mpi.conflict" asset="/org.santedb.smpi/views/duplicates/index.html">
+    <menuItem context="org.santedb.admin" launch="santedb-admin.mpi.patients.duplicate" asset="/org.santedb.smpi/views/patients/duplicate.html">
       <icon>fas fa-user-friends</icon>
-      <text lang="en">Conflicts</text>
+      <text lang="en">Duplicates</text>
     </menuItem>
-    <menuItem context="org.santedb.admin" launch="santedb-admin.mpi.matching" asset="/org.santedb.smpi/views/match/index.html">
+    <menuItem context="org.santedb.admin" launch="santedb-admin.mpi.matching" asset="/org.santedb.smpi/views/matching/config.html">
       <icon>fas fa-user-cog</icon>
       <text lang="en">Match Configuration</text>
     </menuItem>
   </menuItem>
+
   <strings lang="en">
 
     <string key="org.santedb.smpi">SanteMPI</string>
 
+    <!-- MPI Actions -->
+    <string key="ui.mpi.action.search">Search MPI</string>
+    <!-- Dashboard String -->
+    <string key="ui.mpi.dashboard.index">MPI Dashboard</string>
+    <string key="ui.mpi.dashboard.patients.title">Locally Registered Patients</string>
+    <string key="ui.mpi.dashboard.patients.count">number of patients at this endpoint</string>
+    <string key="ui.mpi.dashboard.patients.recent">Recent Patients (&lt; 24h)</string>
 
+    <!-- Search UI -->
+    <string key="ui.mpi.patient.search.parameters">Advanced MPI Search</string>
+    <string key="ui.mpi.patient.search.parameters.name">Parameter</string>
+    <string key="ui.mpi.patient.search.parameters.operator">Operator</string>
+    <string key="ui.mpi.patient.search.parameters.value">Value</string>
+    <string key="ui.mpi.patient.search.parameters.any">Freetext (Any Field)</string>
+    <string key="ui.mpi.patient.search.parameters.givenName">Given Name</string>
+    <string key="ui.mpi.patient.search.parameters.familyName">Family Name</string>
+    <string key="ui.mpi.patient.search.parameters.identifier">Identifier</string>
+    <string key="ui.mpi.patient.search.parameters.addressSearch">Address (Search)</string>
+    <string key="ui.mpi.patient.search.parameters.gender">Gender</string>
+    <string key="ui.mpi.patient.search.parameters.dateOfBirth">Date of Birth</string>
+    <!-- Operators -->
+    <string key="ui.operator.soundslike">Sounds Like</string>
   </strings>
 </AppletManifest>

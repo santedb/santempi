@@ -37,7 +37,8 @@
     <definition invariant="hl7">
     <![CDATA[
     identifier.authority=$authority$
-    ]]>]
+    ]]>
+    </definition>
   </server>
   <client>
     <definition resource="Entity" name="mpi.subscription.patient.aa" mode="subscription" ignoreModifiedOn="false" trigger="always">
@@ -45,7 +46,7 @@
         <when>subscribed.domainName</when>
       </guards>
       <filters>
-        <add>_subscription=81b65812-c14e-4bb4-b7a1-ca7bcee83dff&amp;_authority=$subscribed.id$&amp;_expand=relationship&amp;_expand=participation</add>
+        <add>_subscription=81b65812-c14e-4bb4-b7a1-ca7bcee83dff&amp;_authority=$subscribed.id$&amp;_expand=relationship&amp;_expand=participation&amp;_includeRefs=true</add>
       </filters>
     </definition>
   </client>

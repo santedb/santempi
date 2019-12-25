@@ -1,0 +1,65 @@
+<div xmlns="http://www.w3.org/1999/xhtml" class="container-fluid" xmlns:sdb="http://santedb.org/applet">
+    <sdb:script static="false">~/controllers/index.js</sdb:script>
+    <sdb:state name="santedb-admin.mpi.index" abstract="false">
+        <sdb:url>/</sdb:url>
+        <sdb:demand>1.3.6.1.4.1.33349.3.1.5.9.2.2.0</sdb:demand>
+        <sdb:view>
+            <sdb:controller>MpiIndexController</sdb:controller>
+            <sdb:title lang="en">SanteMPI</sdb:title>
+        </sdb:view>
+    </sdb:state>
+
+    <h2>{{ 'ui.mpi.dashboard.index' | i18n }}</h2>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-3 col-sm-6">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card shadow">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col-auto">
+                                            <h1 class="mb-0">{{ dashboard.patients }}</h1>
+                                        </div>
+                                        <div class="col mr-2 ml-2">
+                                            <a ui-sref="santedb-admin.security.users.index"
+                                                class="text-xs font-weight-bold text-primary text-uppercase mb-1">{{ 'ui.mpi.dashboard.patients.title' | i18n }}</a>
+                                            <div class="h5 mb-0 font-weight-bold text-gray">
+                                                {{ 'ui.mpi.dashboard.patients.count' | i18n }} </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-user fa-2x text-gray"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer bg-light">
+                                    <div class="text-right">
+                                        <a ui-sref="santedb-admin.mpi.patients.search" class="btn btn-secondary"> <i
+                                                class="fas fa-plus-circle"></i> {{ 'ui.mpi.action.search' | i18n }}</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-9 col-sm-6">
+                <div class="card shadow">
+                    <div class="card-header bg-light">
+                        <h2 class="m-0">{{ 'ui.mpi.dashboard.patients.recent' | i18n }}</h2>
+                    </div>
+                    <div class="card-body">
+                        <entity-table id="recentPatientTable" type="Patient" search-field="any"
+                            default-query="recentPatientQuery" i18n-prefix="'ui.model.patient.'"
+                            render="{ 'name': renderName, 'dateOfBirth': renderDob, 'gender': renderGender, 'identifier': renderIdentifier }"
+                            properties="[ 'name', 'dateOfBirth', 'gender', 'identifier', 'creationTime' ]"
+                            item-actions="[ { name: 'view', demand: '1.3.6.1.4.1.33349.3.1.5.9.2.2.3', sref: 'santedb-admin.mpi.patients.view', className: 'btn-primary', icon: 'fas fa-notes-medical' } ]">
+                        </entity-table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -1,5 +1,5 @@
 <AppletManifest xmlns="http://santedb.org/applet">
-  <info id="santempi.sln" version="1.100.*.0">
+  <info id="santempi.sln" version="1.100.100.0">
     <icon>/org.santedb.core/img/icon.png</icon>
     <name lang="en">SanteDB Master Patient Index Functions</name>
     <author>SanteSuite Contributors</author>
