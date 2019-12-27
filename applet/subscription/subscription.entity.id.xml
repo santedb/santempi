@@ -13,7 +13,7 @@
 		    FROM
 			    ENT_ID_TBL 
 		    WHERE
-			    AUT_ID = $authority$
+			    AUT_ID IN ($authority$)
 			    AND OBSLT_VRSN_SEQ_ID IS NULL
 	    )
       ]]>
@@ -29,7 +29,7 @@
 		    FROM
 			    ENT_ID_TBL 
 		    WHERE
-			    AUT_ID = $authority$
+			    AUT_ID IN ($authority$)
 			    AND OBSLT_VRSN_SEQ_ID IS NULL
 	    )
       ]]>
@@ -41,7 +41,7 @@
     </definition>
   </server>
   <client>
-    <definition resource="Entity" name="mpi.subscription.patient.aa" mode="subscription" ignoreModifiedOn="false" trigger="always">
+    <definition resource="Patient" name="mpi.subscription.patient.aa" mode="subscription" ignoreModifiedOn="false" trigger="always">
       <guards>
         <when>subscribed.domainName</when>
       </guards>

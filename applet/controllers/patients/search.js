@@ -24,8 +24,8 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
     // Current search 
     $scope.search = [
         {
-            parm: "any",
-            op: "similar",
+            parm: "_any",
+            op: "eq",
             val: $stateParams.q,
             data: { type:  'string' }
         }
@@ -36,10 +36,13 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
         switch (parameter.parm) {
             case "name.component[Family].value":
             case "name.component[Given].value":
-            case "any":
             case "address.component.value":
             case "address.component[State].value":
+            case "identifier.value":
                 parameter.data =  { type: "string" };
+                break;
+            case "_any":
+                parameter.data = { type: "string" , _fts: true }
                 break;
             case "address":
                 parameter.data = { type: "entity", entity: "Place", filter: { classConcept: `!${EntityClassKeys.ServiceDeliveryLocation}` }, search: 'name.component.value' };

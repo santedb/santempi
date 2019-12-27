@@ -38,7 +38,7 @@
                                     <td>
                                         <select class="form-control" ng-model="s.parm" required="required"
                                             ng-change="s.val = ''">
-                                            <option value="any">
+                                            <option value="_any">
                                                 {{ 'ui.mpi.patient.search.parameters.any' | i18n }}</option>
                                             <option value="name.component[Given].value">
                                                 {{ 'ui.mpi.patient.search.parameters.givenName' | i18n }}</option>
@@ -57,10 +57,10 @@
                                     <td>
                                         <select class="form-control" ng-model="s.op" required="required">
                                             <option value="eq">{{ 'ui.operator.eq' | i18n }}</option>
-                                            <option value="ne">{{ 'ui.operator.ne' | i18n }}</option>
-                                            <option value="similar" ng-if="s.data.type == 'string'">
+                                            <option value="ne" ng-if="!s.data._fts">{{ 'ui.operator.ne' | i18n }}</option>
+                                            <option value="similar" ng-if="s.data.type == 'string' &amp;&amp; !s.data._fts">
                                                 {{ 'ui.operator.similar' | i18n }}</option>
-                                            <option value="soundslike" ng-if="s.data.type == 'string'">
+                                            <option value="soundslike" ng-if="s.data.type == 'string' &amp;&amp; !s.data._fts">
                                                 {{ 'ui.operator.soundslike' | i18n }}</option>
                                         </select>
                                     </td>
