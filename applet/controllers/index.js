@@ -28,17 +28,7 @@ angular.module('santedb').controller('MpiIndexController', ["$scope", "$rootScop
         "_orderBy" : "creationTime:desc"
     }
 
-    // Fetch statistics for display
-    async function fetchStats() {
-        try {
-            $scope.dashboard.patients = (await SanteDB.resources.patient.findAsync({_count:0})).totalResults;
-        }
-        catch(e) {
-            console.error(e);
-        }
-    }
-    fetchStats().then(()=>$scope.$apply());
-
+ 
     // Render the names
     $scope.renderName = function(patient) {
         

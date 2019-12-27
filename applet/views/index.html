@@ -18,30 +18,8 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-12">
-                            <div class="card shadow">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col-auto">
-                                            <h1 class="mb-0">{{ dashboard.patients }}</h1>
-                                        </div>
-                                        <div class="col mr-2 ml-2">
-                                            <a ui-sref="santedb-admin.security.users.index"
-                                                class="text-xs font-weight-bold text-primary text-uppercase mb-1">{{ 'ui.mpi.dashboard.patients.title' | i18n }}</a>
-                                            <div class="h5 mb-0 font-weight-bold text-gray">
-                                                {{ 'ui.mpi.dashboard.patients.count' | i18n }} </div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-user fa-2x text-gray"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card-footer bg-light">
-                                    <div class="text-right">
-                                        <a ui-sref="santedb-admin.mpi.patients.search" class="btn btn-secondary"> <i
-                                                class="fas fa-plus-circle"></i> {{ 'ui.mpi.action.search' | i18n }}</a>
-                                    </div>
-                                </div>
-                            </div>
+                            <report-view id="'org.santedb.bi.core.reports.patient.gender'" 
+                                view="'chart'" legend="true"/>
                         </div>
                     </div>
                     <div class="row">
