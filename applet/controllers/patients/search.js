@@ -21,16 +21,21 @@
  */
 angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$rootScope", "$state", "$templateCache", "$stateParams", function ($scope, $rootScope, $state, $templateCache, $stateParams) {
 
-    // Current search 
-    $scope.search = [
-        {
-            parm: "_any",
-            op: "eq",
-            val: $stateParams.q,
-            data: { type:  'string' }
-        }
-    ];
-
+    if($scope.$parent.lastSearch) {
+        $scope.filter = $scope.$parent.lastSearch.filter;
+        $scope.search = $scope.$parent.lastSearch.search;
+    }
+    else {
+        // Current search 
+        $scope.search = [
+            {
+                parm: "_any",
+                op: "eq",
+                val: $stateParams.q,
+                data: { type:  'string' }
+            }
+        ];
+    }
     // Get datatype of the parameter
     function setMetadata(parameter) {
         switch (parameter.parm) {
@@ -115,10 +120,14 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
 
     // Render identifiers
     $scope.renderIdentifier = function(patient) {
+
+        var preferred = $rootScope.system.config.application.setting['aa.preferred'];
+
         var retVal = "";
         if(patient.identifier) {
             Object.keys(patient.identifier).forEach(function(id) {
-                retVal += `${patient.identifier[id].value} <span class="badge badge-dark">${ patient.identifier[id].authority ? patient.identifier[id].authority.name : id }</span> ,`;
+                if(preferred && id == preferred || !preferred)
+                    retVal += `${patient.identifier[id].value} <span class="badge badge-dark">${ patient.identifier[id].authority ? patient.identifier[id].authority.name : id }</span> ,`;
             });
         }
         else retVal += "N/A ";
@@ -132,6 +141,7 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
         
         // Build query and bind query to the search table
         var queryObject = {
+            "_orderBy" : "creationTime:desc"
         };
 
         $scope.search.forEach(function(f) {
@@ -159,6 +169,10 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
             queryObject[f.parm] = sval;
         });
 
-        $scope.filter = queryObject;
+        $scope.$parent.lastSearch = {
+            search: $scope.search
+        };
+        $scope.$parent.lastSearch.filter = $scope.filter = queryObject;
+        
     }
 }]);

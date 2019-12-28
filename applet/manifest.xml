@@ -47,6 +47,7 @@
 
     <!-- MPI Actions -->
     <string key="ui.mpi.action.search">Search MPI</string>
+    <string key="ui.action.mpiSearch">Search All Patients</string>
     <!-- Dashboard String -->
     <string key="ui.mpi.dashboard.index">MPI Dashboard</string>
     <string key="ui.mpi.dashboard.patients.title">Locally Registered Patients</string>

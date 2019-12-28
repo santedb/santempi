@@ -24,7 +24,7 @@ angular.module('santedb').controller('MpiIndexController', ["$scope", "$rootScop
   
     // Recent patients query
     $scope.recentPatientQuery = {
-        "creationTime" : `>${moment(new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() - 1)).format('YYYY-MM-DD')}`,
+        "modifiedOn" : `>${moment(new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() - 1)).format('YYYY-MM-DD')}`,
         "_orderBy" : "creationTime:desc"
     }
 
@@ -74,13 +74,13 @@ angular.module('santedb').controller('MpiIndexController', ["$scope", "$rootScop
     // Render identifiers
     $scope.renderIdentifier = function(patient) {
 
-        var preferred = SanteDB.configuration.getAppSetting("mpi.prefAA");
+        var preferred = $rootScope.system.config.application.setting['aa.preferred'];
 
         var retVal = "";
         if(patient.identifier) {
             Object.keys(patient.identifier).forEach(function(id) {
                 if(preferred && id == preferred || !preferred)
-                retVal += `${patient.identifier[id].value} <span class="badge badge-dark">${ patient.identifier[id].authority ? patient.identifier[id].authority.name : id }</span> ,`;
+                    retVal += `${patient.identifier[id].value} <span class="badge badge-dark">${ patient.identifier[id].authority ? patient.identifier[id].authority.name : id }</span> ,`;
             });
         }
         else retVal += "N/A ";
