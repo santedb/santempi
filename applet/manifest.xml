@@ -66,6 +66,9 @@
     <string key="ui.mpi.patient.search.parameters.addressSearch">Address (Search)</string>
     <string key="ui.mpi.patient.search.parameters.gender">Gender</string>
     <string key="ui.mpi.patient.search.parameters.dateOfBirth">Date of Birth</string>
+
+    <!-- Patient Demographics Tab Options -->
+    <string key="org.santedb.smpi.admin.demographics">Demographics</string>
     <!-- Operators -->
     <string key="ui.operator.soundslike">Sounds Like</string>
   </strings>
