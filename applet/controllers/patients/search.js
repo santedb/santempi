@@ -21,21 +21,7 @@
  */
 angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$rootScope", "$state", "$templateCache", "$stateParams", function ($scope, $rootScope, $state, $templateCache, $stateParams) {
 
-    if($scope.$parent.lastSearch) {
-        $scope.filter = $scope.$parent.lastSearch.filter;
-        $scope.search = $scope.$parent.lastSearch.search;
-    }
-    else {
-        // Current search 
-        $scope.search = [
-            {
-                parm: "_any",
-                op: "eq",
-                val: $stateParams.q,
-                data: { type:  'string' }
-            }
-        ];
-    }
+    
     // Get datatype of the parameter
     function setMetadata(parameter) {
         switch (parameter.parm) {
@@ -75,7 +61,20 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
         }
     });
 
-    
+    // Render address
+    $scope.renderAddress = function(patient) {
+        
+        var retVal = "";
+        if(patient.address)
+            Object.keys(patient.address).forEach(function(n) 
+            {
+                retVal += `${SanteDB.display.renderEntityAddress(patient.address[n])} <span class="badge badge-info">${n}</span> ,`;
+            });
+        else 
+            retVal = "N/A ";
+        return retVal.substr(0, retVal.length - 1);
+    }
+
     // Render the names
     $scope.renderName = function(patient) {
         
@@ -136,11 +135,12 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
 
     // Search MPI
     $scope.searchMpi = function(formData) {
-        if(formData.$invalid)
+        if(formData != null && formData.$invalid)
             return;
         
         // Build query and bind query to the search table
         var queryObject = {
+            "_e" : Math.random(), 
             "_orderBy" : "creationTime:desc"
         };
 
@@ -175,4 +175,25 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
         $scope.$parent.lastSearch.filter = $scope.filter = queryObject;
         
     }
+
+    // Search if needed
+    if($scope.$parent.lastSearch) {
+        $scope.filter = $scope.$parent.lastSearch.filter;
+        $scope.search = $scope.$parent.lastSearch.search;
+    }
+    else {
+        // Current search 
+        $scope.search = [
+            {
+                parm: $rootScope.system.config.sync.mode != 'Sync' ? "identifier.value" : "_any",
+                op: "eq",
+                val: $stateParams.q,
+                data: { type:  'string' }
+            }
+        ];
+
+        if($stateParams.q)
+            $scope.searchMpi();
+    }
+    
 }]);

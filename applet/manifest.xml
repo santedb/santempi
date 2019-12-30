@@ -26,19 +26,16 @@
 
   <menuItem context="org.santedb.admin" launch="santedb-admin.mpi.index" asset="/org.santedb.smpi/views/index.html">
     <icon>fas fa-street-view</icon>
-    <text lang="en">SanteMPI</text>
-    <menuItem context="org.santedb.admin" launch="santedb-admin.mpi.patients.search" asset="/org.santedb.smpi/views/patients/search.html">
+    <text lang="en">MPI</text>
+     <menuItem context="org.santedb.admin" launch="santedb-admin.mpi.patients.search" asset="/org.santedb.smpi/views/patients/search.html">
+      <icon>fas fa-search</icon>
+      <text lang="en">Basic Search</text>
+    </menuItem>
+    <menuItem context="org.santedb.admin" launch="santedb-admin.mpi.patients.advancedSearch" asset="/org.santedb.smpi/views/patients/advSearch.html">
       <icon>fas fa-search-plus</icon>
       <text lang="en">Power Search</text>
     </menuItem>
-    <menuItem context="org.santedb.admin" launch="santedb-admin.mpi.patients.duplicate" asset="/org.santedb.smpi/views/patients/duplicate.html">
-      <icon>fas fa-user-friends</icon>
-      <text lang="en">Duplicates</text>
-    </menuItem>
-    <menuItem context="org.santedb.admin" launch="santedb-admin.mpi.matching" asset="/org.santedb.smpi/views/matching/config.html">
-      <icon>fas fa-user-cog</icon>
-      <text lang="en">Match Configuration</text>
-    </menuItem>
+    
   </menuItem>
 
   <strings lang="en">
@@ -55,18 +52,19 @@
     <string key="ui.mpi.dashboard.patients.recent">Recent Patients (&lt; 24h)</string>
 
     <!-- Search UI -->
-    <string key="ui.mpi.patient.search.parameters">Advanced MPI Search</string>
-    <string key="ui.mpi.patient.search.parameters.name">Parameter</string>
-    <string key="ui.mpi.patient.search.parameters.operator">Operator</string>
-    <string key="ui.mpi.patient.search.parameters.value">Value</string>
-    <string key="ui.mpi.patient.search.parameters.any">Freetext (Any Field)</string>
-    <string key="ui.mpi.patient.search.parameters.givenName">Given Name</string>
-    <string key="ui.mpi.patient.search.parameters.familyName">Family Name</string>
-    <string key="ui.mpi.patient.search.parameters.identifier">Identifier</string>
-    <string key="ui.mpi.patient.search.parameters.addressSearch">Address (Search)</string>
-    <string key="ui.mpi.patient.search.parameters.gender">Gender</string>
-    <string key="ui.mpi.patient.search.parameters.dateOfBirth">Date of Birth</string>
-
+    <string key="ui.mpi.patient.advSearch.parameters">Advanced MPI Search</string>
+    <string key="ui.mpi.patient.advSearch.parameters.name">Parameter</string>
+    <string key="ui.mpi.patient.advSearch.parameters.operator">Operator</string>
+    <string key="ui.mpi.patient.advSearch.parameters.value">Value</string>
+    <string key="ui.mpi.patient.advSearch.parameters.any">Freetext (Any Field)</string>
+    <string key="ui.mpi.patient.advSearch.parameters.givenName">Given Name</string>
+    <string key="ui.mpi.patient.advSearch.parameters.familyName">Family Name</string>
+    <string key="ui.mpi.patient.advSearch.parameters.identifier">Identifier</string>
+    <string key="ui.mpi.patient.advSearch.parameters.addressSearch">Address (Search)</string>
+    <string key="ui.mpi.patient.advSearch.parameters.gender">Gender</string>
+    <string key="ui.mpi.patient.advSearch.parameters.dateOfBirth">Date of Birth</string>
+    <string key="ui.mpi.patient.search.term">Search For</string>
+    <string key="ui.mpi.patient.search.results">Search Results</string>
     <!-- Patient Demographics Tab Options -->
     <string key="org.santedb.smpi.admin.demographics">Demographics</string>
     <!-- Operators -->
