@@ -54,13 +54,7 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
 
         }
     }
-    // Watch the search length
-    $scope.$watch((s) => s.search.map((o) => o.parm).reduce((e, i) => e + i), function (n, o) {
-        if (n) for (var i in $scope.search) {
-            setMetadata($scope.search[i]);
-        }
-    });
-
+   
     // Render address
     $scope.renderAddress = function(patient) {
         
@@ -185,8 +179,8 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
         // Current search 
         $scope.search = [
             {
-                parm: $rootScope.system.config.sync.mode != 'Sync' ? "identifier.value" : "_any",
-                op: "eq",
+                parm: $rootScope.system.config.sync ? "_any" : "name.component.value",
+                op: $rootScope.system.config.sync ? "eq" : "similar",
                 val: $stateParams.q,
                 data: { type:  'string' }
             }
@@ -196,4 +190,11 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
             $scope.searchMpi();
     }
     
+     // Watch the search length
+     $scope.$watch((s) => s.search.map((o) => o.parm).reduce((e, i) => e + i), function (n, o) {
+        if (n) for (var i in $scope.search) {
+            setMetadata($scope.search[i]);
+        }
+    });
+
 }]);
