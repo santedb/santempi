@@ -21,7 +21,7 @@
   <info id="org.santedb.smpi" version="1.100.0.0">
     <icon>/org.santedb.core/img/icon.png</icon>
     <name lang="en">SanteMPI Master Patient Index</name>
-    <author>Fyfe Software Inc.</author>
+    <author>SanteSuite Community Partners (see: santesuite.org)</author>
   </info>
 
   <menuItem context="org.santedb.admin" launch="santedb-admin.mpi.index" asset="/org.santedb.smpi/views/index.html">
@@ -38,6 +38,9 @@
     
   </menuItem>
 
+  <viewModel key="smpi.reverseRelationship">
+    <definition>/org.santedb.smpi/models/reverseRelationship.xml</definition>
+  </viewModel>
   <strings lang="en">
 
     <string key="org.santedb.smpi">SanteMPI</string>
@@ -69,5 +72,9 @@
     <string key="org.santedb.smpi.admin.demographics">Demographics</string>
     <!-- Operators -->
     <string key="ui.operator.soundslike">Sounds Like</string>
+
+    <!-- Relationship Viewer -->
+    <string key="org.santedb.widget.smpi.mdm.net">Entity Relationships</string>
+
   </strings>
 </AppletManifest>

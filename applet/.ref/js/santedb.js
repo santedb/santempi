@@ -358,7 +358,6 @@ if (!SanteDBWrapper)
                         data: configuration.contentType == 'application/json' ? JSON.stringify(_reorderProperties(configuration.data)) : configuration.data,
                         headers: hdr,
                         dataType: configuration.dataType ||'json',
-                        headers: configuration.headers,
                         async: !configuration.sync,
                         success: function (xhr, status, response) {
                             try {
