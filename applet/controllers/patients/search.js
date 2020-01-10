@@ -123,6 +123,7 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
                     retVal += `${patient.identifier[id].value} <span class="badge badge-dark">${ patient.identifier[id].authority ? patient.identifier[id].authority.name : id }</span> ,`;
             });
         }
+
         else retVal += "N/A ";
         return retVal.substring(0, retVal.length - 1);
     }
@@ -160,6 +161,9 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
                     sval = ">=" + sval;
                     break;
             }
+
+            if(f.data.type == "date")
+                sval = moment(sval).format("YYYY-MM-DD");
             queryObject[f.parm] = sval;
         });
 

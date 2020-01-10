@@ -56,7 +56,7 @@ angular.module('santedb').controller('EntityRelationshipDiagramController', ["$s
         }
         catch(e) {
             console.error(e);
-            return `\n??-- ${SanteDB.display.renderConcept(entityRelationship.relationshipTypeModel)} ---root`;
+            return `\n??-- ${SanteDB.display.renderConcept(entityRelationship.relationshipTypeModel || fallbackRelationship)} ---root`;
         }
     }
 

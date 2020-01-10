@@ -18,7 +18,7 @@
  - Date: 2018-7-23
  -->
 <AppletManifest xmlns="http://santedb.org/applet">
-  <info id="org.santedb.smpi" version="1.100.0.0">
+  <info id="org.santedb.smpi" version="1.116.0.0">
     <icon>/org.santedb.core/img/icon.png</icon>
     <name lang="en">SanteMPI Master Patient Index</name>
     <author>SanteSuite Community Partners (see: santesuite.org)</author>
