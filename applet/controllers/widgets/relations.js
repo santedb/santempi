@@ -33,13 +33,16 @@ angular.module('santedb').controller('EntityRelationshipDiagramController', ["$s
 
     var relationshipCount = 0;
     // Render a relationship
-    async function renderRelationship(entityRelationship, fallbackRelationship, reverse) {
+    async function renderRelationship(entity, entityRelationship, fallbackRelationship, reverse) {
         try {
+            if(entityRelationship.source && entityRelationship.source != entity.id)
+                reverse = true;
             var entity = entityRelationship.targetModel;
+
             if(reverse) 
-                entity = await SanteDB.resources.entity.getAsync(entityRelationship.holder);
+                entity = await SanteDB.resources.entity.getAsync(entityRelationship.holder || entityRelationship.source);
             else if(!entity || !entity.$ref && !entity.name)
-                entity = entityRelationship.targetModel = await SanteDB.resources.entity.getAsync(entityRelationship.target);
+                entity = entityRelationship.targetModel = await SanteDB.resources.patient.getAsync(entityRelationship.target);
 
             var retVal = "";
             if(entity && entity.name) {
@@ -49,7 +52,7 @@ angular.module('santedb').controller('EntityRelationshipDiagramController', ["$s
                 else if(!entity.$ref)
                     retVal += `\nroot-- ${SanteDB.display.renderConcept(entityRelationship.relationshipTypeModel || fallbackRelationship)} -->rel${entity.id.substr(0,8)}`;
             }
-
+            
             if(reverse)
                 retVal += `\nstyle rel${entity.id.substr(0,8)} fill:#ccf,stroke:#cc0,stroke-width:1px,stroke-dasharray: 5, 5`;
             return retVal;
@@ -71,10 +74,10 @@ angular.module('santedb').controller('EntityRelationshipDiagramController', ["$s
                         var retVal = [];
                         if(Array.isArray(n.relationship[k]))
                             retVal = n.relationship[k].map(function(r) {
-                                return renderRelationship(r, k);
+                                return renderRelationship(n, r, k);
                             });
                         else 
-                            retVal = renderRelationship(n.relationship[k], k) ;
+                            retVal = renderRelationship(n, n.relationship[k], k) ;
                         return retVal;
                     }).flat();
                     var results = await Promise.all(promises);
@@ -86,7 +89,7 @@ angular.module('santedb').controller('EntityRelationshipDiagramController', ["$s
                 if(reverseRelationships.item)
                 {
                     var promises = reverseRelationships.item.map(function(r) {
-                        return renderRelationship(r, 'UNK', true) ;
+                        return renderRelationship(n, r, 'UNK', true) ;
                     }).flat();
                     var results = await Promise.all(promises);
                     results.forEach((r)=>graphDefinition += r);
