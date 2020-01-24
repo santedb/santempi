@@ -8,8 +8,15 @@
     <event>BeforeUpdate</event>
   </target>
   <blocking op="and" maxResults="1000">
+    <!-- Any patient who was born the same year -->
     <filter>dateOfBirth=:(date_diff|$input.dateOfBirth)&lt;1y</filter>
-    <filter>name.component[Given].value=:(levenshtein|$input.name.component.value)&lt;2</filter>
+    <!-- Any patient who has a matching given name within 2 characters -->
+    <filter>name.component[Given].value=$input.name.component[Given].value</filter>
+    <!-- Any patient who has a matching family name -->
+    <filter>name.component[Family].value=$input.name.component[Family].value</filter>
+  </blocking>
+  <blocking op="or" maxResults="100">
+    <filter>identifier.value=$input.identifier.value&amp;identifier.authority.id=$input.identifier.authority.id&amp;identifier.authority.isUnique=true</filter>
   </blocking>
   <classification>
     <!-- Week of birth -->
@@ -22,6 +29,5 @@
         </transform>
       </assert>
     </vector>
-    
   </classification>
 </MatchConfiguration>

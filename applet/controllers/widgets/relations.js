@@ -45,8 +45,12 @@ angular.module('santedb').controller('EntityRelationshipDiagramController', ["$s
                 entity = entityRelationship.targetModel = await SanteDB.resources.patient.getAsync(entityRelationship.target);
 
             var retVal = "";
-            if(entity && entity.name) {
-                retVal += `\nrel${entity.id.substr(0,8)}[${SanteDB.display.renderEntityName(entity.name)}]`;
+            if(entity) {
+                if(entity.name)
+                    retVal += `\nrel${entity.id.substr(0,8)}[${SanteDB.display.renderEntityName(entity.name)}]`;
+                else if(entity.identifier)
+                    retVal += `\nrel${entity.id.substr(0,8)}[${SanteDB.display.renderIdentifier(entity.identifier)}]`;
+
                 if(reverse)
                     retVal += `\nrel${entity.id.substr(0,8)}-- ${SanteDB.display.renderConcept(entityRelationship.relationshipTypeModel || fallbackRelationship)} -->root`;
                 else if(!entity.$ref)
