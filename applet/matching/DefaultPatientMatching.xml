@@ -1,33 +1,45 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <MatchConfiguration xmlns="http://santedb.org/matcher"
                     id="org.santedb.smpi.matching.default"
-                    nonmatchThreshold="0.5"
-                    matchThreshold="0.9">
+                    nonmatchThreshold="0.6"
+                    matchThreshold="0.8">
   <target resource="Patient">
     <event>BeforeInsert</event>
     <event>BeforeUpdate</event>
   </target>
-  <blocking op="and" maxResults="1000">
+  <blocking op="or" maxResults="5">
+    <filter>identifier[MOHS_GEN_NHID].value=$input.identifier[MOHS_GEN_NHID].value</filter>
+    <!-- Exclude Patients With Detected Issues (Data Quality) -->
+    <!-- <filter>extension[http://santedb.org/extensions/core/detectedIssue]=null</filter> -->
+  </blocking>
+  <blocking op="or" maxResults="5">
+    <filter>identifier[MOHS_DC_HIV_NAP].value=$input.identifier[MOHS_DC_HIV_NAP].value</filter>
+    <!-- Exclude Patients With Detected Issues (Data Quality) -->
+    <!-- <filter>extension[http://santedb.org/extensions/core/detectedIssue]=null</filter> -->
+  </blocking>
+  <blocking op="or" maxResults="1000">
     <!-- Any patient who was born the same year -->
-    <filter>dateOfBirth=:(date_diff|$input.dateOfBirth)&lt;1y</filter>
+    <filter>dateOfBirth=:(date_diff|$input.dateOfBirth)&lt;2y</filter>
     <!-- Any patient who has a matching given name within 2 characters -->
     <filter>name.component[Given].value=$input.name.component[Given].value</filter>
-    <!-- Any patient who has a matching family name -->
-    <filter>name.component[Family].value=$input.name.component[Family].value</filter>
-  </blocking>
-  <blocking op="or" maxResults="100">
-    <filter>identifier.value=$input.identifier.value&amp;identifier.authority.id=$input.identifier.authority.id&amp;identifier.authority.isUnique=true</filter>
+    <!-- Exclude Patients With Detected Issues (Data Quality) -->
+    <!-- <filter>extension[http://santedb.org/extensions/core/detectedIssue]=null</filter> -->
   </blocking>
   <classification>
     <!-- Week of birth -->
-    <vector property="dateOfBirth" u="0.019" m="0.98" whenNull="nonmatch" required="true" >
+    <vector property="dateOfBirth" u="0.25" m="0.75" whenNull="nonmatch" required="true" >
       <assert op="eq">
         <transform name="date_extract">
           <args>
-            <string>w</string>
+            <string>y</string>
           </args>
         </transform>
       </assert>
     </vector>
+    <!-- Identifier -->
+    <vector property="identifier[MOHS_GEN_NHID].value identifier[MOHS_DC_HIV_NAP].value" u="0.01" m="0.98" whenNull="nonmatch" >
+      <assert op="eq" />
+    </vector>
+    
   </classification>
 </MatchConfiguration>
