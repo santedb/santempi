@@ -25,7 +25,8 @@ angular.module('santedb').controller('MpiIndexController', ["$scope", "$rootScop
     // Recent patients query
     $scope.recentPatientQuery = {
         "modifiedOn" : `>${moment(new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() - 1)).format('YYYY-MM-DD')}`,
-        "_orderBy" : "creationTime:desc"
+        "_orderBy" : "creationTime:desc",
+        "obsoletionTime": "null"
     }
 
  
