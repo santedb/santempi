@@ -90,9 +90,9 @@ angular.module('santedb').controller('EntityRelationshipDiagramController', ["$s
 
                 // reverse relationships
                 var reverseRelationships = await SanteDB.resources.entityRelationship.findAsync({ target: n.id, _viewModel: 'smpi.reverseRelationship' });
-                if(reverseRelationships.item)
+                if(reverseRelationships.resource)
                 {
-                    var promises = reverseRelationships.item.map(function(r) {
+                    var promises = reverseRelationships.resource.map(function(r) {
                         return renderRelationship(n, r, 'UNK', true) ;
                     }).flat();
                     var results = await Promise.all(promises);

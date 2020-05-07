@@ -41,7 +41,7 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
             case "genderConcept":
                 parameter.data =  { type: "list" };
                 SanteDB.resources.concept.findAsync({ conceptSet : "e9eecd3c-7b80-47f9-9cb6-55c8d3110fb0" }).then((r) => {
-                    parameter.data.list = r.item;
+                    parameter.data.list = r.resource;
                     $scope.$apply();
                 }).catch((e) => {
                     console.error(e);

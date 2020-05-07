@@ -7219,7 +7219,7 @@ function Bundle (copyData) {
 	/** @type {string} */
 	this.entry = copyData.entry;
 	/** @type {IdentifiedData} */
-	this.item = copyData.item;
+	this.resource = copyData.resource;
 	/** @type {Date} */
 	this.modifiedOn = copyData.modifiedOn;
 	}
