@@ -32,4 +32,6 @@ angular.module('santedb').controller('MpiPatientViewController', ["$scope", "$ro
         }
     }
     loadPatient($stateParams.id);
+
+    
 }]);

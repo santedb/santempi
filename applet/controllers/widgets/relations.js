@@ -27,34 +27,46 @@ angular.module('santedb').controller('EntityRelationshipDiagramController', ["$s
         "theme": "default",
         flowchart:{
             useMaxWidth:true,
-            htmlLabels:false
-        }
+            htmlLabels: true
+        },
+        securityLevel: 'loose'
       });
 
+    var relationshipDrawn = false;
     var relationshipCount = 0;
     // Render a relationship
     async function renderRelationship(entity, entityRelationship, fallbackRelationship, reverse) {
         try {
-            if(entityRelationship.source && entityRelationship.source != entity.id)
+            if(entityRelationship.source && entityRelationship.source != entity.id && entityRelationship.target == entity.id)
                 reverse = true;
             var entity = entityRelationship.targetModel;
 
-            if(reverse) 
+            if(reverse) {
                 entity = await SanteDB.resources.entity.getAsync(entityRelationship.holder || entityRelationship.source);
+            }
             else if(!entity || !entity.$ref && !entity.name)
                 entity = entityRelationship.targetModel = await SanteDB.resources.patient.getAsync(entityRelationship.target);
 
             var retVal = "";
             if(entity) {
-                if(entity.name)
-                    retVal += `\nrel${entity.id.substr(0,8)}[${SanteDB.display.renderEntityName(entity.name)}]`;
-                else if(entity.identifier)
-                    retVal += `\nrel${entity.id.substr(0,8)}[${SanteDB.display.renderIdentifier(entity.identifier)}]`;
 
+                // Is this a patient? Then provide a link
+                if(entity.$type == "Patient") {
+                    if(entity.name)
+                        retVal += `\nrel${entity.id.substr(0,8)}["<a class='mr-2' href='#!/mpi/patient/${entity.id}'>${SanteDB.display.renderEntityName(entity.name).replace("(", ":").replace(")",":")}</a>"]`;
+                    else if(entity.identifier)
+                        retVal += `\nrel${entity.id.substr(0,8)}["<a class='mr-2' href='#!/mpi/patient/${entity.id}'>${SanteDB.display.renderIdentifier(entity.identifier)}</a>"]`;
+                }
+                else {
+                    if(entity.name)
+                        retVal += `\nrel${entity.id.substr(0,8)}["<span class='mr-2'>${SanteDB.display.renderEntityName(entity.name).replace("(", ":").replace(")",":")}</span>"]`;
+                    else if(entity.identifier)
+                        retVal += `\nrel${entity.id.substr(0,8)}[<span class='mr-2'>${entity.$type} ${SanteDB.display.renderIdentifier(entity.identifier)}</span>]`;
+                }
                 if(reverse)
-                    retVal += `\nrel${entity.id.substr(0,8)}-- ${SanteDB.display.renderConcept(entityRelationship.relationshipTypeModel || fallbackRelationship)} -->root`;
+                    retVal += `\nrel${entity.id.substr(0,8)}-- <span class='mr-2'>${SanteDB.display.renderConcept(entityRelationship.relationshipTypeModel || fallbackRelationship)}</span> -->root`;
                 else if(!entity.$ref)
-                    retVal += `\nroot-- ${SanteDB.display.renderConcept(entityRelationship.relationshipTypeModel || fallbackRelationship)} -->rel${entity.id.substr(0,8)}`;
+                    retVal += `\nroot-- <span class='mr-2'>${SanteDB.display.renderConcept(entityRelationship.relationshipTypeModel || fallbackRelationship)}</span> -->rel${entity.id.substr(0,8)}`;
             }
             
             if(reverse)
@@ -68,9 +80,9 @@ angular.module('santedb').controller('EntityRelationshipDiagramController', ["$s
     }
 
     $scope.$watch("scopedObject", async function(n, o) {
-        if(n) {
+        if(n && !relationshipDrawn) {
             try {
-                var graphDefinition = `graph TD\nroot((${SanteDB.display.renderEntityName(n.name)}))\nstyle root fill:#afa,stroke:#0c0,stroke-width:2px`;
+                var graphDefinition = `graph LR\nroot((<span class='mr-2'>${SanteDB.display.renderEntityName(n.name)}</span>))\nstyle root fill:#afa,stroke:#0c0,stroke-width:2px`;
 
                 // Root is scoped object
                 if(n.relationship) {
@@ -100,6 +112,7 @@ angular.module('santedb').controller('EntityRelationshipDiagramController', ["$s
                 }
 
                 mermaid.mermaidAPI.render('entityNetworkDiagram', graphDefinition, (svg)=> $("#renderSvg").html(svg));
+                relationshipDrawn = true;
             }
             catch (e) {
                 $rootScope.errorHandler(e);

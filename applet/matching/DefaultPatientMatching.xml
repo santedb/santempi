@@ -7,12 +7,12 @@
     <event>BeforeInsert</event>
     <event>BeforeUpdate</event>
   </target>
-  <blocking op="or" maxResults="5">
+  <blocking op="or" maxResults="100">
     <filter>identifier[MOHS_GEN_NHID].value=$input.identifier[MOHS_GEN_NHID].value</filter>
     <!-- Exclude Patients With Detected Issues (Data Quality) -->
     <!-- <filter>extension[http://santedb.org/extensions/core/detectedIssue]=null</filter> -->
   </blocking>
-  <blocking op="or" maxResults="5">
+  <blocking op="or" maxResults="100">
     <filter>identifier[MOHS_DC_HIV_NAP].value=$input.identifier[MOHS_DC_HIV_NAP].value</filter>
     <!-- Exclude Patients With Detected Issues (Data Quality) -->
     <!-- <filter>extension[http://santedb.org/extensions/core/detectedIssue]=null</filter> -->
