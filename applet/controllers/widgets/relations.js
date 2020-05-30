@@ -53,13 +53,13 @@ angular.module('santedb').controller('EntityRelationshipDiagramController', ["$s
                 // Is this a patient? Then provide a link
                 if(entity.$type == "Patient") {
                     if(entity.name)
-                        retVal += `\nrel${entity.id.substr(0,8)}["<a class='mr-2' href='#!/mpi/patient/${entity.id}'>${SanteDB.display.renderEntityName(entity.name).replace("(", ":").replace(")",":")}</a>"]`;
+                        retVal += `\nrel${entity.id.substr(0,8)}["<a class='mr-2' href='#!/mpi/patient/${entity.id}'>${SanteDB.display.renderEntityName(entity.name)}</a>"]`;
                     else if(entity.identifier)
                         retVal += `\nrel${entity.id.substr(0,8)}["<a class='mr-2' href='#!/mpi/patient/${entity.id}'>${SanteDB.display.renderIdentifier(entity.identifier)}</a>"]`;
                 }
                 else {
                     if(entity.name)
-                        retVal += `\nrel${entity.id.substr(0,8)}["<span class='mr-2'>${SanteDB.display.renderEntityName(entity.name).replace("(", ":").replace(")",":")}</span>"]`;
+                        retVal += `\nrel${entity.id.substr(0,8)}["<span class='mr-2'>${SanteDB.display.renderEntityName(entity.name)}</span>"]`;
                     else if(entity.identifier)
                         retVal += `\nrel${entity.id.substr(0,8)}[<span class='mr-2'>${entity.$type} ${SanteDB.display.renderIdentifier(entity.identifier)}</span>]`;
                 }

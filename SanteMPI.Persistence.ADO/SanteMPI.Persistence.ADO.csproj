@@ -4,15 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8D9FF8C9-1733-402B-895B-A51EA78EC5D6}</ProjectGuid>
+    <ProjectGuid>{CDDDCFC9-7F4E-41C9-AE70-DBA115044275}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SanteMPI.Messaging.PixPdqv2</RootNamespace>
-    <AssemblyName>SanteMPI.Messaging.PixPdqv2</AssemblyName>
+    <RootNamespace>SanteMPI.Persistence.ADO</RootNamespace>
+    <AssemblyName>SanteMPI.Persistence.ADO</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -42,27 +41,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration\PixPdqFeature.cs" />
-    <Compile Include="Messages\PixQbpMessageHandler.cs" />
-    <Compile Include="Messages\PdqQbpMessageHandler.cs" />
-    <Compile Include="Messages\PixAdtMessageHandler.cs" />
+    <Compile Include="Configuration\AdoConfigurationSection.cs" />
+    <Compile Include="Data\DbFilterFunctions.cs" />
+    <Compile Include="Data\Model\DbNameAlias.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\AdoNameAliasService.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="SanteDB.Matcher">
-      <Version>2.0.12</Version>
-    </PackageReference>
-    <PackageReference Include="SanteDB.Messaging.HL7">
-      <Version>2.0.12</Version>
-    </PackageReference>
-    <PackageReference Include="SanteDB.Server.Plugin.Data">
-      <Version>2.0.12</Version>
-    </PackageReference>
+    <EmbeddedResource Include="Data\Updates\20200529-FBSQL.sql" />
+    <EmbeddedResource Include="Data\Updates\20200529-PSQL.sql" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\SanteDB.licenseheader">
-      <Link>SanteDB.licenseheader</Link>
-    </None>
+    <PackageReference Include="SanteDB.OrmLite">
+      <Version>2.0.16</Version>
+    </PackageReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
