@@ -183,7 +183,7 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
         // Current search 
         $scope.search = [
             {
-                parm: $rootScope.system.config.sync ? "_any" : "name.component.value",
+                parm: $rootScope.system.config.sync ? "_any" : "identifier.value",
                 op: $rootScope.system.config.sync ? "eq" : "similar",
                 val: $stateParams.q,
                 data: { type:  'string' }
