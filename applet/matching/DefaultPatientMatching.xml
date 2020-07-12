@@ -1,45 +1,91 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <MatchConfiguration xmlns="http://santedb.org/matcher"
                     id="org.santedb.smpi.matching.default"
-                    nonmatchThreshold="0.6"
-                    matchThreshold="0.8">
+                    nonmatchThreshold="1"
+                    matchThreshold="20">
   <target resource="Patient">
     <event>BeforeInsert</event>
     <event>BeforeUpdate</event>
   </target>
+  
+  <!-- Patients which have the same NHID -->
   <blocking op="or" maxResults="100">
-    <filter>identifier[MOHS_GEN_NHID].value=$input.identifier[MOHS_GEN_NHID].value</filter>
-    <!-- Exclude Patients With Detected Issues (Data Quality) -->
-    <!-- <filter>extension[http://santedb.org/extensions/core/detectedIssue]=null</filter> -->
+    <filter>identifier[SSN].value=$input.identifier[SSN].value</filter>
   </blocking>
+  <!-- Patient with the same NAP ID -->
   <blocking op="or" maxResults="100">
-    <filter>identifier[MOHS_DC_HIV_NAP].value=$input.identifier[MOHS_DC_HIV_NAP].value</filter>
-    <!-- Exclude Patients With Detected Issues (Data Quality) -->
-    <!-- <filter>extension[http://santedb.org/extensions/core/detectedIssue]=null</filter> -->
+    <filter>identifier[MRN].value=$input.identifier[MRN].value</filter>
   </blocking>
-  <blocking op="or" maxResults="1000">
-    <!-- Any patient who was born the same year -->
-    <filter>dateOfBirth=:(date_diff|$input.dateOfBirth)&lt;2y</filter>
-    <!-- Any patient who has a matching given name within 2 characters -->
-    <filter>name.component[Given].value=$input.name.component[Given].value</filter>
-    <!-- Exclude Patients With Detected Issues (Data Quality) -->
-    <!-- <filter>extension[http://santedb.org/extensions/core/detectedIssue]=null</filter> -->
+  <!-- Patient which have same MDRTB Case -->
+  <blocking op="or" maxResults="100">
+    <filter>identifier[EXT_EID].value=$input.identifier[EXT_EID].value</filter>
   </blocking>
-  <classification>
-    <!-- Week of birth -->
-    <vector property="dateOfBirth" u="0.25" m="0.75" whenNull="nonmatch" required="true" >
+  <!-- Patients with same name and born within 2 y and name is within 2 corrections of one another and live in the same state -->
+  <blocking op="or" maxResults="100">
+    <filter>name.component[Given].value=:(levenshtein|$input.name?.component[Given].value)&lt;2</filter>
+    <filter>name.component[Family].value=:(levenshtein|$input.name?.component[Family].value)&lt;2</filter>
+    <filter>address.component[State].value=$input.address?.component[State].value</filter>
+    <filter>address.component[City].value=$input.address?.component[City].value</filter>
+  </blocking>
+  
+  <scoring>
+    <!-- Same YOB = 75% conf-->
+    <attribute property="dateOfBirth" u="0.25" m="0.75" whenNull="ignore" required="true" >
       <assert op="eq">
         <transform name="date_extract">
           <args>
-            <string>y</string>
+            <string>w</string>
           </args>
         </transform>
       </assert>
-    </vector>
-    <!-- Identifier -->
-    <vector property="identifier[MOHS_GEN_NHID].value identifier[MOHS_DC_HIV_NAP].value" u="0.01" m="0.98" whenNull="nonmatch" >
-      <assert op="eq" />
-    </vector>
+    </attribute>
+    <!-- Same Gender = 50/50 -->
+    <attribute property="genderConcept" u="0.5" m="0.75" whenNull="nonmatch" required="true">
+      <assert op="eq"/>
+    </attribute>
+    <!-- Same state - If there are 20 states the u would be 0.05 -->
+    <attribute id="address.state" property="address" u="0.05" m="0.75" whenNull="nonmatch" required="true">
+      <assert op="eq">
+        <transform name="addresspart_extract">
+          <args>
+            <string>State</string>
+          </args>
+        </transform>
+      </assert>
+    </attribute>
+    <!-- Same County - If on average a state has 30 counties the u = 0.033   -->
+    <attribute id="address.city" property="address" u="0.033" m="0.8" whenNull="nonmatch" required="true">
+      <when>
+        <attribute ref="address.state" op="eq" value="true"/>
+      </when>
+      <assert op="eq">
+        <transform name="addresspart_extract">
+          <args>
+            <string>City</string>
+          </args>
+        </transform>
+      </assert>
+    </attribute>
+    <attribute property="relationship[Mother].target.name" u="0.15" m="0.6" whenNull="ignore" required="false">
+      <assert op="lte" value="2">
+        <transform name="namepart_extract">
+          <args>
+            <string>Family</string>
+          </args>
+        </transform>
+        <transform name="levenshtein"/>
+      </assert>
+    </attribute>
     
-  </classification>
+    <!-- Identifier -->
+    <attribute property="identifier[EXT_EID].value" u="0.01" m="0.8" whenNull="nonmatch" >
+      <assert op="eq" />
+    </attribute>
+    <attribute property="identifier[SSN].value" u="0.01" m="0.99" whenNull="nonmatch">
+      <assert op="eq"/>
+    </attribute>
+	<attribute property="identifier[MRN].value" u="0.5" m="0.6" whenNull="nonmatch">
+      <assert op="eq"/>
+    </attribute>
+  </scoring>
 </MatchConfiguration>

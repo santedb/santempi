@@ -1,16 +1,16 @@
 <AppletManifest xmlns="http://santedb.org/applet">
-  <info id="santempi.sln" version="2.0.22.0">
+  <info id="santempi.sln" version="2.0.26.0">
     <icon>/org.santedb.core/img/icon.png</icon>
     <name lang="en">SanteDB Master Patient Index Functions</name>
     <author>SanteSuite Contributors</author>
-    <dependency id="org.santedb.hl7" version="2.0.22.0"/>
-    <dependency id="org.santedb.sg" version="2.0.22.0"/>
-    <dependency id="org.santedb.smpi" version="2.0.22.0"/>
-    <dependency id="org.santedb.admin" version="2.0.22.0"/>
-    <dependency id="org.santedb.core" version="2.0.22.0"/>
-    <dependency id="org.santedb.uicore" version="2.0.22.0"/>
-    <dependency id="org.santedb.bicore" version="2.0.22.0"/>
-    <dependency id="org.santedb.config" version="2.0.22.0"/>
-    <dependency id="org.santedb.i18n.en" version="2.0.22.0"/>
+    <dependency id="org.santedb.hl7" version="2.0.26.0"/>
+    <dependency id="org.santedb.sg" version="2.0.26.0"/>
+    <dependency id="org.santedb.smpi" version="2.0.26.0"/>
+    <dependency id="org.santedb.admin" version="2.0.26.0"/>
+    <dependency id="org.santedb.core" version="2.0.26.0"/>
+    <dependency id="org.santedb.uicore" version="2.0.26.0"/>
+    <dependency id="org.santedb.bicore" version="2.0.26.0"/>
+    <dependency id="org.santedb.config" version="2.0.26.0"/>
+    <dependency id="org.santedb.i18n.en" version="2.0.26.0"/>
   </info>
 </AppletManifest>
