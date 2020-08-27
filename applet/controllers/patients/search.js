@@ -160,6 +160,12 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
                 case "gte":
                     sval = ">=" + sval;
                     break;
+                case "soundslike":
+                    sval = `:(soundslike|"${sval}")`;
+                    break;
+                case "approx":
+                    sval = `:(approx|"${sval}")`;
+                    break;
             }
 
             if(f.data.type == "date")

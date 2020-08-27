@@ -8,7 +8,6 @@
             <sdb:title lang="en">Advanced Search</sdb:title>
         </sdb:view>
     </sdb:state>
-
     <div class="row">
         <div class="col">
             <div class="card">
@@ -62,6 +61,8 @@
                                                 {{ 'ui.operator.similar' | i18n }}</option>
                                             <option value="soundslike" ng-if="s.data.type == 'string' &amp;&amp; !s.data._fts">
                                                 {{ 'ui.operator.soundslike' | i18n }}</option>
+                                                <option value="approx" ng-if="s.data.type == 'string' &amp;&amp; !s.data._fts">
+                                                    {{ 'ui.operator.approx' | i18n }}</option>
                                         </select>
                                     </td>
                                     <td colspan="{{ $index == 0 ? 2 : 1}}">

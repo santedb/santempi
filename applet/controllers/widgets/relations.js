@@ -82,7 +82,7 @@ angular.module('santedb').controller('EntityRelationshipDiagramController', ["$s
     $scope.$watch("scopedObject", async function(n, o) {
         if(n && !relationshipDrawn) {
             try {
-                var graphDefinition = `graph LR\nroot((<span class='mr-2'>${SanteDB.display.renderEntityName(n.name)}</span>))\nstyle root fill:#afa,stroke:#0c0,stroke-width:2px`;
+                var graphDefinition = `graph LR\nroot(("<span class='mr-2'>${SanteDB.display.renderEntityName(n.name)}</span>"))\nstyle root fill:#afa,stroke:#0c0,stroke-width:2px`;
 
                 // Root is scoped object
                 if(n.relationship) {
