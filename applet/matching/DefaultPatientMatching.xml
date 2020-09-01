@@ -24,8 +24,7 @@
   <blocking op="or" maxResults="100">
     <filter>name.component[Given].value=:(levenshtein|$input.name?.component[Given].value)&lt;2</filter>
     <filter>name.component[Family].value=:(levenshtein|$input.name?.component[Family].value)&lt;2</filter>
-    <filter>address.component[State].value=$input.address?.component[State].value</filter>
-    <filter>address.component[City].value=$input.address?.component[City].value</filter>
+   
   </blocking>
   
   <scoring>
