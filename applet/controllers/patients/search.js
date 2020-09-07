@@ -21,7 +21,7 @@
  */
 angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$rootScope", "$state", "$templateCache", "$stateParams", function ($scope, $rootScope, $state, $templateCache, $stateParams) {
 
-    
+
     // Get datatype of the parameter
     function setMetadata(parameter) {
         switch (parameter.parm) {
@@ -30,17 +30,20 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
             case "address.component.value":
             case "address.component[State].value":
             case "identifier.value":
-                parameter.data =  { type: "string" };
+                parameter.data = { type: "string" };
                 break;
             case "_any":
-                parameter.data = { type: "string" , _fts: true }
+                parameter.data = { type: "string", _fts: true }
+                break;
+            case "relationship[ServiceDeliveryLocation].target":
+                parameter.data = { type: "entity", entity: "Place", filter: { classConcept: `${EntityClassKeys.ServiceDeliveryLocation}` }, search: 'name.component.value' };
                 break;
             case "address":
                 parameter.data = { type: "entity", entity: "Place", filter: { classConcept: `!${EntityClassKeys.ServiceDeliveryLocation}` }, search: 'name.component.value' };
                 break;
             case "genderConcept":
-                parameter.data =  { type: "list" };
-                SanteDB.resources.concept.findAsync({ conceptSet : "e9eecd3c-7b80-47f9-9cb6-55c8d3110fb0" }).then((r) => {
+                parameter.data = { type: "list" };
+                SanteDB.resources.concept.findAsync({ conceptSet: "e9eecd3c-7b80-47f9-9cb6-55c8d3110fb0" }).then((r) => {
                     parameter.data.list = r.resource;
                     $scope.$apply();
                 }).catch((e) => {
@@ -49,52 +52,50 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
                 break;
             case "dateOfBirth":
             case "dateOfDeath":
-                parameter.data =  { type: "date", max: moment().format("YYY-MM-DD") }
+                parameter.data = { type: "date", max: moment().format("YYY-MM-DD") }
                 break;
 
         }
     }
-   
+
     // Render address
-    $scope.renderAddress = function(patient) {
-        
+    $scope.renderAddress = function (patient) {
+
         var retVal = "";
-        if(patient.address)
-            Object.keys(patient.address).forEach(function(n) 
-            {
+        if (patient.address)
+            Object.keys(patient.address).forEach(function (n) {
                 retVal += `${SanteDB.display.renderEntityAddress(patient.address[n])} <span class="badge badge-info">${n}</span> ,`;
             });
-        else 
+        else
             retVal = "N/A ";
         return retVal.substr(0, retVal.length - 1);
     }
 
     // Render the names
-    $scope.renderName = function(patient) {
-        
+    $scope.renderName = function (patient) {
+
         var retVal = "";
-        if(patient.name)
-            Object.keys(patient.name).forEach(function(n) 
-            {
+        if (patient.name)
+            Object.keys(patient.name).forEach(function (n) {
                 retVal += `${SanteDB.display.renderEntityName(patient.name[n])} <span class="badge badge-info">${n}</span> ,`;
             });
-        else 
+        else
             retVal = "N/A ";
         return retVal.substr(0, retVal.length - 1);
     }
 
     // Render DOB
-    $scope.renderDob = function(patient) {
-        if(patient.dateOfBirth)
+    $scope.renderDob = function (patient) {
+        if (patient.dateOfBirth)
             return SanteDB.display.renderDate(patient.dateOfBirth, patient.dateOfBirthPrecision);
         else
             return "N/A";
     }
 
     // Render the patient's gender
-    $scope.renderGender = function(patient) {
+    $scope.renderGender = function (patient) {
         var retVal = "";
-        switch(patient.genderConcept) {
+        switch (patient.genderConcept) {
             case "f4e3a6bb-612e-46b2-9f77-ff844d971198":
                 retVal += '<i class="fas fa-male"></i> ';
                 break;
@@ -105,22 +106,22 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
                 retVal += '<i class="fas fa-question-circle"></i> ';
         }
 
-        if(patient.genderConceptModel.mnemonic) {
+        if (patient.genderConceptModel.mnemonic) {
             retVal += SanteDB.display.renderConcept(patient.genderConceptModel);
         }
         return retVal;
     }
 
     // Render identifiers
-    $scope.renderIdentifier = function(patient) {
+    $scope.renderIdentifier = function (patient) {
 
         var preferred = $rootScope.system.config.application.setting['aa.preferred'];
 
         var retVal = "";
-        if(patient.identifier) {
-            Object.keys(patient.identifier).forEach(function(id) {
-                if(preferred && id == preferred || !preferred)
-                    retVal += `${patient.identifier[id].value} <span class="badge badge-dark">${ patient.identifier[id].authority ? patient.identifier[id].authority.name : id }</span> ,`;
+        if (patient.identifier) {
+            Object.keys(patient.identifier).forEach(function (id) {
+                if (preferred && id == preferred || !preferred)
+                    retVal += `${patient.identifier[id].value} <span class="badge badge-dark">${patient.identifier[id].authority ? patient.identifier[id].authority.name : id}</span> ,`;
             });
         }
 
@@ -129,19 +130,19 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
     }
 
     // Search MPI
-    $scope.searchMpi = function(formData) {
-        if(formData != null && formData.$invalid)
+    $scope.searchMpi = function (formData) {
+        if (formData != null && formData.$invalid)
             return;
-        
+
         // Build query and bind query to the search table
         var queryObject = {
-            "_e" : Math.random(), 
-            "_orderBy" : "creationTime:desc"
+            "_e": Math.random(),
+            "_orderBy": "creationTime:desc"
         };
 
-        $scope.search.forEach(function(f) {
+        $scope.search.forEach(function (f) {
             var sval = f.val;
-            switch(f.op) {
+            switch (f.op) {
                 case "ne":
                     sval = "!" + sval;
                     break;
@@ -168,7 +169,7 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
                     break;
             }
 
-            if(f.data.type == "date")
+            if (f.data.type == "date")
                 sval = moment(sval).format("YYYY-MM-DD");
             queryObject[f.parm] = sval;
         });
@@ -177,11 +178,11 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
             search: $scope.search
         };
         $scope.$parent.lastSearch.filter = $scope.filter = queryObject;
-        
+
     }
 
     // Search if needed
-    if($scope.$parent.lastSearch) {
+    if ($scope.$parent.lastSearch) {
         $scope.filter = $scope.$parent.lastSearch.filter;
         $scope.search = $scope.$parent.lastSearch.search;
     }
@@ -192,16 +193,16 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
                 parm: $rootScope.system.config.sync ? "_any" : "identifier.value",
                 op: $rootScope.system.config.sync ? "eq" : "similar",
                 val: $stateParams.q,
-                data: { type:  'string' }
+                data: { type: 'string' }
             }
         ];
 
-        if($stateParams.q)
+        if ($stateParams.q)
             $scope.searchMpi();
     }
-    
-     // Watch the search length
-     $scope.$watch((s) => s.search.map((o) => o.parm).reduce((e, i) => e + i), function (n, o) {
+
+    // Watch the search length
+    $scope.$watch((s) => s.search.map((o) => o.parm).reduce((e, i) => e + i), function (n, o) {
         if (n) for (var i in $scope.search) {
             setMetadata($scope.search[i]);
         }

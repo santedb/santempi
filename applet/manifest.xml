@@ -65,6 +65,7 @@
     <string key="ui.mpi.patient.advSearch.parameters.addressSearch">Address (Search)</string>
     <string key="ui.mpi.patient.advSearch.parameters.gender">Gender</string>
     <string key="ui.mpi.patient.advSearch.parameters.dateOfBirth">Date of Birth</string>
+    <string key="ui.mpi.patient.advSearch.parameters.facility">Facility Association</string>
     <string key="ui.mpi.patient.search.term">Search For</string>
     <string key="ui.mpi.patient.search.results">Search Results</string>
     <!-- Patient Demographics Tab Options -->
