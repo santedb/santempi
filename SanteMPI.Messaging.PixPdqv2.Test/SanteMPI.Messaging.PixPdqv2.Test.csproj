@@ -55,13 +55,13 @@
       <Version>1.3.2</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Server.Plugin">
-      <Version>1.126.0</Version>
+      <Version>2.0.36</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Server.Plugin.Data">
-      <Version>1.126.0</Version>
+      <Version>2.0.36</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Server.TestFramework">
-      <Version>1.126.0</Version>
+      <Version>2.0.36</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
