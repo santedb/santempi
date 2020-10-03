@@ -2,7 +2,7 @@
 <MatchConfiguration xmlns="http://santedb.org/matcher"
                     id="org.santedb.smpi.matching.default"
                     nonmatchThreshold="1"
-                    matchThreshold="20">
+                    matchThreshold="25">
   <target resource="Patient">
     <event>BeforeInsert</event>
     <event>BeforeUpdate</event>
@@ -10,15 +10,11 @@
   
   <!-- Patients which have the same NHID -->
   <blocking op="or" maxResults="100">
-    <filter>identifier[SSN].value=$input.identifier[SSN].value</filter>
+    <filter>identifier[MOHS_GEN_NHID].value=$input.identifier[MOHS_GEN_NHID].value</filter>
   </blocking>
   <!-- Patient with the same NAP ID -->
   <blocking op="or" maxResults="100">
-    <filter>identifier[MRN].value=$input.identifier[MRN].value</filter>
-  </blocking>
-  <!-- Patient which have same MDRTB Case -->
-  <blocking op="or" maxResults="100">
-    <filter>identifier[EXT_EID].value=$input.identifier[EXT_EID].value</filter>
+    <filter>identifier[MOHS_GEN_NHID_MPI_TMP].value=$input.identifier[MOHS_GEN_NHID_MPI_TMP].value</filter>
   </blocking>
   <!-- Patients with same name and born within 2 y and name is within 2 corrections of one another and live in the same state -->
   <blocking op="or" maxResults="100">
@@ -77,14 +73,12 @@
     </attribute>
     
     <!-- Identifier -->
-    <attribute property="identifier[EXT_EID].value" u="0.01" m="0.8" whenNull="nonmatch" >
+    <attribute property="identifier[MOHS_GEN_NHID_MPI_TMP].value" u="0.01" m="0.99" whenNull="nonmatch" >
       <assert op="eq" />
     </attribute>
-    <attribute property="identifier[SSN].value" u="0.01" m="0.99" whenNull="nonmatch">
+    <attribute property="identifier[MOHS_GEN_NHID].value" u="0.01" m="0.99" whenNull="nonmatch">
       <assert op="eq"/>
     </attribute>
-	<attribute property="identifier[MRN].value" u="0.5" m="0.6" whenNull="nonmatch">
-      <assert op="eq"/>
-    </attribute>
+	
   </scoring>
 </MatchConfiguration>

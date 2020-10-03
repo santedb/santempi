@@ -51,6 +51,7 @@ angular.module('santedb').controller('EntityRelationshipDiagramController', ["$s
             if(entity) {
 
                 // Is this a patient? Then provide a link
+                var resolver = SanteDB.display.get
                 if(entity.$type == "Patient") {
                     if(entity.name)
                         retVal += `\nrel${entity.id.substr(0,8)}["<a class='mr-2' href='#!/mpi/patient/${entity.id}'>${SanteDB.display.renderEntityName(entity.name)}</a>"]`;

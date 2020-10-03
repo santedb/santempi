@@ -1,0 +1,63 @@
+<div xmlns="http://www.w3.org/1999/xhtml" xmlns:sdb="http://santedb.org/applet" class="container-fluid p-0"
+    oc-lazy-load="{ name: 'MpiPatientNextOfKinController', files: ['/org.santedb.smpi/controllers/widgets/nextOfKin.js', '/org.santedb.smpi/js/mpi.js'] }">
+    <sdb:widget order="15" name="org.santedb.widget.patient.nok" altViews="Edit" headerClass="bl-light" size="Medium"
+    type="Panel" context="org.santedb.patient.demographics" priority="1">
+        <sdb:icon>fas fa-users</sdb:icon>
+        <sdb:description lang="en">Patient Family Members</sdb:description>
+    </sdb:widget>
+    <div ng-controller="MpiPatientNextOfKinController">
+        <ul class="nav nav-tabs" role="tablist" id="demographicEditTabs">
+            <li class="nav-item"
+                ng-repeat="rel in relationships track by $index" role="presentation">
+                <a class="nav-link" ng-class="{'active': $index == 0}" data-target="#{{rel.relationshipTypeModel.mnemonic}}{{$index}}relative"
+                    data-toggle="tab">
+                    <span ng-if="rel.relationshipTypeModel">
+                        <i class="fa fa-user-friends"></i> {{ rel.relationshipTypeModel | concept }}
+                        <i class="fa fa-exclamation-triangle text-danger" ng-if="tabHasError('nok' + rel.id)"></i>
+                    </span>
+                </a>
+            </li>
+            <li class="active nav-item" role="presentation" ng-if="panel.view == 'Edit'">
+                <a class="nav-link" data-target="#otherRelative" data-toggle="tab" ng-init="rel = newRelationship">
+                    <i class="fa fa-asterisk"></i>
+                    <span ng-if="!newRelationship.relationshipTypeModel"> {{ 'ui.action.new' | i18n }}</span>
+                    <span ng-if="newRelationship.relationshipTypeModel"> {{ 'ui.action.new' | i18n }} {{ newRelationship.relationshipTypeModel |  concept }}</span>
+                    <i class="fa fa-exclamation-triangle text-danger" ng-if="tabHasError('nok' + rel.id)"></i>
+
+                </a>
+            </li>
+        </ul>
+        <div class="tab-content" ng-if="panel.view != 'Edit'">
+            <div role="tabpanel" class="tab-pane fade" id="{{rel.relationshipTypeModel.mnemonic}}{{$index}}relative"
+                ng-repeat="rel in relationships track by $index" ng-class="{'active show': $index == 0}">
+                <div class="container mt-2">
+                    <!-- #include virtual="~/views/patients/widgets/partials/nextOfKinView.html" -->
+                </div>
+            </div>
+        </div>
+        <form ng-if="panel.view == 'Edit'" name="panel.editForm" ng-submit="update(panel.editForm)" method="dialog"
+            novalidate="novalidate">
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane fade" id="{{rel.relationshipTypeModel.mnemonic}}{{$index}}relative"
+                ng-repeat="rel in relationships track by $index" ng-class="{'active show': $index == 0}">
+                <div class="container mt-2">
+                    <!-- #include virtual="~/views/patients/widgets/partials/nextOfKinEdit.html" -->
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="otherRelative">
+                <div class="container mt-2" ng-init="rel = newRelationship">
+                    <div class="form-group row">
+                        <label
+                            class="col-md-3 col-sm-12 control-label">{{ 'ui.model.entity.relationship.relationshipType' | i18n }}</label>
+                        <div class="col-md-9 col-sm-12">
+                            <concept-select concept-set="'FamilyMember'" 
+                                ng-model="rel.relationshipTypeModel" class="form-control" ng-change="rel._active = true" />
+                        </div>
+                    </div>
+                    <!-- #include virtual="~/views/patients/widgets/partials/nextOfKinEdit.html" -->
+                </div>
+            </div>
+            </div>
+        </form>
+    </div>
+</div>
