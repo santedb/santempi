@@ -44,7 +44,11 @@ angular.module('santedb').controller('MpiPatientNextOfKinController', ["$scope",
             // Now we want to update our patient object
             var patient = $scope.scopedObject;
             var relationships = angular.copy($scope.relationships);
-            if($scope.newRelationship._active)
+
+            if(!relationships)
+                relationships = [];
+                
+            if ($scope.newRelationship._active)
                 relationships.push(angular.copy($scope.newRelationship));
             var submissionBundle = new Bundle({ resource: [patient] });
 
@@ -110,44 +114,49 @@ angular.module('santedb').controller('MpiPatientNextOfKinController', ["$scope",
     // Scoped object
     $scope.$watch("scopedObject", async function (n, o) {
 
-        if (n && n.relationship) {
+        if (n) {
             try {
 
-                $scope.familyMemberRelationships = (await SanteDB.resources.concept.findAsync({ "conceptSet.mnemonic": "FamilyMember", "mnemonic": Object.keys(n.relationship) })).resource.map(o => o.mnemonic);
+                if (n.relationship) {
+                    var rels = (await SanteDB.resources.concept.findAsync({ "conceptSet.mnemonic": "FamilyMember", "mnemonic": Object.keys(n.relationship) }));
+                    if (rels.resource) {
+                        $scope.familyMemberRelationships = rels.resource.map(o => o.mnemonic);
 
-                if(n.id) // existing patient => we are in edit mode
-                    $scope.relationships = Object.keys(n.relationship).filter(o => $scope.familyMemberRelationships.indexOf(o) > -1).map(o => angular.copy(n.relationship[o])).flat();
-                else  // new patient => registration mode
-                    $scope.relationships = Object.keys(n.relationship).filter(o => $scope.familyMemberRelationships.indexOf(o) > -1).map(o => n.relationship[o]).flat();
+                        if (n.id) // existing patient => we are in edit mode
+                            $scope.relationships = Object.keys(n.relationship).filter(o => $scope.familyMemberRelationships.indexOf(o) > -1).map(o => angular.copy(n.relationship[o])).flat();
+                        else  // new patient => registration mode
+                            $scope.relationships = Object.keys(n.relationship).filter(o => $scope.familyMemberRelationships.indexOf(o) > -1).map(o => n.relationship[o]).flat();
 
-                var promises = $scope.relationships.map(async function (rel) {
+                        var promises = $scope.relationships.map(async function (rel) {
 
-                    if(rel.id)
-                        rel._active = true;
-                    else 
-                        rel.id = SanteDB.application.newGuid();
+                            if (rel.id)
+                                rel._active = true;
+                            else
+                                rel.id = SanteDB.application.newGuid();
 
-                    if (rel.source && rel.source != n.id || rel.holder && !rel.holder == n.id) {
-                        rel.sourceModel = await SanteDB.resources.entity.getAsync(rel.source || rel.holder, "full");
-                        rel.inverse = true;
+                            if (rel.source && rel.source != n.id || rel.holder && !rel.holder == n.id) {
+                                rel.sourceModel = await SanteDB.resources.entity.getAsync(rel.source || rel.holder, "full");
+                                rel.inverse = true;
+                            }
+                            else if (!rel.targetModel && rel.target) {
+                                rel.targetModel = await SanteDB.resources.entity.getAsync(rel.target, "full");
+                                rel.targetModel.relationship = rel.targetModel.relationship || {};
+                            }
+                            if (!rel.relationshipTypeModel)
+                                rel.relationshipTypeModel = await SanteDB.resources.concept.getAsync(rel.relationshipType);
+                        });
+
+                        await Promise.all(promises);
                     }
-                    else if (!rel.targetModel && rel.target) 
-                    {
-                        rel.targetModel = await SanteDB.resources.entity.getAsync(rel.target, "full");
-                        rel.targetModel.relationship = rel.targetModel.relationship || {};
-                    }
-                    if (!rel.relationshipTypeModel)
-                        rel.relationshipTypeModel = await SanteDB.resources.concept.getAsync(rel.relationshipType);
-                });
+                }
 
-                await Promise.all(promises);
 
                 $scope.newRelationship = new EntityRelationship({ id: SanteDB.application.newGuid(), targetModel: new Person({ id: SanteDB.application.newGuid() }) });
 
                 try {
                     $scope.$apply();
                 }
-                catch(e) {}
+                catch (e) { }
             }
             catch (e) {
                 console.error(`Cannot load family members: ${e}`)
