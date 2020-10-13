@@ -41,8 +41,10 @@ angular.module('santedb').controller('MpiPatientNextOfKinController', ["$scope",
         if (!form.$valid) return;
 
         try {
+
+           
             // Now we want to update our patient object
-            var patient = $scope.scopedObject;
+            var patient = $scope.editObject;
             var relationships = angular.copy($scope.relationships);
 
             if(!relationships)
@@ -51,6 +53,13 @@ angular.module('santedb').controller('MpiPatientNextOfKinController', ["$scope",
             if ($scope.newRelationship._active)
                 relationships.push(angular.copy($scope.newRelationship));
             var submissionBundle = new Bundle({ resource: [patient] });
+
+            if (patient.tag && patient.tag["$generated"]) {
+                patient.tag["$mdm.type"] = "T"; // Set a ROT tag
+                patient.determinerConcept = '6b1d6764-12be-42dc-a5dc-52fc275c4935'; // set update as a ROT
+            }
+            else 
+                patient.determinerConcept = DeterminerKeys.Specific;
 
             // Process relationships
             relationships.forEach(function (rel) {
@@ -62,7 +71,7 @@ angular.module('santedb').controller('MpiPatientNextOfKinController', ["$scope",
                 // Is the relationship active or scheduled for deletion?
                 if (!rel._active) {
                     // Find this relationship and remove it
-                    var others = existing.filter(o => o.id != rel.id);
+                    var others = existing.filter(o => o.target != rel.target);
                     if (others.length > 0) // more left
                         patient.relationship[rel.relationshipTypeModel.mnemonic] = others;
                     else  // none left, remove relationship
@@ -72,11 +81,11 @@ angular.module('santedb').controller('MpiPatientNextOfKinController', ["$scope",
                     if (!existing) // new relationship type
                         existing = patient.relationship[rel.relationshipTypeModel.mnemonic] = [];
 
-                    var instance = existing.filter(o => o.id == rel.id);
+                    var instance = existing.filter(o => o.target == rel.target);
                     if (instance.length == 0) // none currently
                         existing.push(rel);
                     else {
-                        var others = existing.filter(o => o.id != rel.id);
+                        var others = existing.filter(o => o.target != rel.target);
                         others.push(rel);
                         patient.relationship[rel.relationshipTypeModel.mnemonic] = others;
                     }
@@ -117,6 +126,28 @@ angular.module('santedb').controller('MpiPatientNextOfKinController', ["$scope",
         if (n) {
             try {
 
+                delete ($scope.editObject); // Delete the current edit object
+                if (n.tag && n.tag['$mdm.type'] == 'M') // Attempt to find a ROT
+                {
+                    if (n.relationship["MDM-RecordOfTruth"] &&
+                        n.relationship["MDM-RecordOfTruth"].target) {
+                        $scope.editObject = await SanteDB.resources.entity.getAsync(n.relationship["MDM-RecordOfTruth"].target, "full"); //angular.copy(n.relationship["MDM-RecordOfTruth"].targetModel);
+                    }
+                    else {
+                        var recordOfTruth = await SanteDB.resources.patient.findAsync({
+                            "relationship[MDM-RecordOfTruth].source": n.id,
+                            "_count": 1
+                        });
+    
+                        if (recordOfTruth.total == 0 || !recordOfTruth.resource)
+                            $scope.editObject = angular.copy(n);
+                        else
+                            $scope.editObject = recordOfTruth.resource[0];
+                    }
+                }
+                else
+                    $scope.editObject = angular.copy(n);
+                    
                 if (n.relationship) {
                     var rels = (await SanteDB.resources.concept.findAsync({ "conceptSet.mnemonic": "FamilyMember", "mnemonic": Object.keys(n.relationship) }));
                     if (rels.resource) {
@@ -129,9 +160,8 @@ angular.module('santedb').controller('MpiPatientNextOfKinController', ["$scope",
 
                         var promises = $scope.relationships.map(async function (rel) {
 
-                            if (rel.id)
-                                rel._active = true;
-                            else
+                            rel._active = true;
+                            if(!rel.id)
                                 rel.id = SanteDB.application.newGuid();
 
                             if (rel.source && rel.source != n.id || rel.holder && !rel.holder == n.id) {
@@ -149,8 +179,6 @@ angular.module('santedb').controller('MpiPatientNextOfKinController', ["$scope",
                         await Promise.all(promises);
                     }
                 }
-
-
                 $scope.newRelationship = new EntityRelationship({ id: SanteDB.application.newGuid(), targetModel: new Person({ id: SanteDB.application.newGuid() }) });
 
                 try {
