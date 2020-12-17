@@ -21,7 +21,7 @@
  */
 angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$rootScope", "$state", "$templateCache", "$stateParams", function ($scope, $rootScope, $state, $templateCache, $stateParams) {
 
-
+    registerAssetsViewers($state);
     // Get datatype of the parameter
     function setMetadata(parameter) {
         switch (parameter.parm) {
@@ -77,10 +77,16 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
         var retVal = "";
         if (patient.name)
             Object.keys(patient.name).forEach(function (n) {
-                retVal += `${SanteDB.display.renderEntityName(patient.name[n])} <span class="badge badge-info">${n}</span> ,`;
+                retVal += `${SanteDB.display.renderEntityName(patient.name[n])}  ,`;
             });
         else
             retVal = "N/A ";
+
+        retVal = retVal.substr(0, retVal.length - 1);
+        if (patient.tag && patient.tag["$upstream"] == "true") {
+            retVal += `<span class='badge badge-info'><i class='fas fa-cloud'></i> ${SanteDB.locale.getString("ui.search.onlineResult")} </span>`;
+        }
+
         return retVal.substr(0, retVal.length - 1);
     }
 
@@ -120,8 +126,12 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
         var retVal = "";
         if (patient.identifier) {
             Object.keys(patient.identifier).forEach(function (id) {
-                if (preferred && id == preferred || !preferred)
-                    retVal += `${patient.identifier[id].value} <span class="badge badge-dark">${patient.identifier[id].authority ? patient.identifier[id].authority.name : id}</span> ,`;
+                if (preferred && id == preferred || !preferred) {
+                    if (Array.isArray(patient.identifier[id]))
+                        retVal += `${patient.identifier[id].map(function (d) { return d.value }).join(' or ')} <span class="badge badge-dark">${patient.identifier[id].authority ? patient.identifier[id].authority.name : id}</span> ,`;
+                    else
+                        retVal += `${patient.identifier[id].value} <span class="badge badge-dark">${patient.identifier[id].authority ? patient.identifier[id].authority.name : id}</span> ,`;
+                }
             });
         }
 
@@ -130,55 +140,81 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
     }
 
     // Search MPI
-    $scope.searchMpi = function (formData) {
+    $scope.searchMpi = async function (formData) {
+
         if (formData != null && formData.$invalid)
             return;
 
-        // Build query and bind query to the search table
-        var queryObject = {
-            "_e": Math.random(),
-            "_orderBy": "creationTime:desc"
-        };
+        try {
+            SanteDB.display.buttonWait("#btnSearchSubmit", true);
+            // Ask the user if they want to search upstream, only if they are allowed
+            var session = await SanteDB.authentication.getSessionInfoAsync();
 
-        $scope.search.forEach(function (f) {
-            var sval = f.val;
-            switch (f.op) {
-                case "ne":
-                    sval = "!" + sval;
-                    break;
-                case "similar":
-                    sval = "~" + sval;
-                    break;
-                case "le":
-                    sval = "<" + sval;
-                    break;
-                case "ge":
-                    sval = ">" + sval;
-                    break;
-                case "lte":
-                    sval = "<=" + sval;
-                    break;
-                case "gte":
-                    sval = ">=" + sval;
-                    break;
-                case "soundslike":
-                    sval = `:(soundslike|"${sval}")`;
-                    break;
-                case "approx":
-                    sval = `:(approx|"${sval}")`;
-                    break;
+            if (session.method == "LOCAL" && $scope.search._upstream) // Local session so elevate to use the principal elevator
+            {
+                var elevator = new ApplicationPrincipalElevator(true);
+                await elevator.elevate(session);
+                SanteDB.authentication.setElevator(elevator);
             }
 
-            if (f.data.type == "date")
-                sval = moment(sval).format("YYYY-MM-DD");
-            queryObject[f.parm] = sval;
-        });
+            // Build query and bind query to the search table
+            var queryObject = {
+                "_e": Math.random(),
+                "_orderBy": "creationTime:desc",
+                "_upstream": $scope.search._upstream
+            };
 
-        $scope.$parent.lastSearch = {
-            search: $scope.search
-        };
-        $scope.$parent.lastSearch.filter = $scope.filter = queryObject;
+            $scope.search.forEach(function (f) {
+                var sval = f.val;
+                switch (f.op) {
+                    case "ne":
+                        sval = "!" + sval;
+                        break;
+                    case "similar":
+                        sval = "~" + sval;
+                        break;
+                    case "le":
+                        sval = "<" + sval;
+                        break;
+                    case "ge":
+                        sval = ">" + sval;
+                        break;
+                    case "lte":
+                        sval = "<=" + sval;
+                        break;
+                    case "gte":
+                        sval = ">=" + sval;
+                        break;
+                    case "soundslike":
+                        sval = `:(soundslike|"${sval}")`;
+                        break;
+                    case "approx":
+                        sval = `:(approx|"${sval}")`;
+                        break;
+                }
 
+                if (f.data.type == "date")
+                    sval = moment(sval).format("YYYY-MM-DD");
+                queryObject[f.parm] = sval;
+            });
+
+            $scope.$parent.lastSearch = {
+                search: $scope.search
+            };
+            $scope.$parent.lastSearch.filter = $scope.filter = queryObject;
+
+            try {
+                $scope.$apply();
+            }
+            catch(e) {}
+        }
+        catch(e) {
+            $rootScope.errorHandler(e);
+        }
+        finally {
+            SanteDB.display.buttonWait("#btnSearchSubmit", false);
+
+        }
     }
 
     // Search if needed
@@ -208,4 +244,43 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
         }
     });
 
+    // Scan 
+    $scope.scanSearch = async function () {
+        try {
+
+            SanteDB.display.buttonWait("#btnScan", true);
+
+            var result = await searchByBarcode();
+            if (!result)
+                return;
+            else if (result.$type == "Bundle") {
+                $scope.search.val = result.$search;
+                $scope.searchMpi();
+            }
+            else {
+                // now we want to redirect the state change
+                // TODO: Have this change redirection based on type of the data
+                if (SanteDB.application.callResourceViewer(result.$type, { id: result.id })) {
+                    if (result.$novalidate)
+                        toastr.warning(SanteDB.locale.getString(`ui.model.${result.$type}._code.validation`), null, {
+                            preventDuplicates: true,
+                            positionClass: "toast-bottom-center",
+                            showDuration: 500,
+                            hideDuration: 500,
+                            timeout: "0",
+                            extendedTimeout: "0"
+                        });
+                }
+                else
+                    throw new Exception("Exception", `Cannot determine how to display ${result.$type}`);
+            }
+
+        }
+        catch (e) {
+            $rootScope.errorHandler(e);
+        }
+        finally {
+            SanteDB.display.buttonWait("#btnScan", false);
+        }
+    }
 }]);

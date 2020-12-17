@@ -20,8 +20,6 @@
  */
 angular.module('santedb').controller('MpiIndexController', ["$scope", "$rootScope", "$state", "$templateCache", "$stateParams", function ($scope, $rootScope, $state, $templateCache, $stateParams) {
 
-    
-  
     // Recent patients query
     $scope.recentPatientQuery = {
         "modifiedOn" : `>${moment(new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() - 1)).format('YYYY-MM-DD')}`,
@@ -29,7 +27,7 @@ angular.module('santedb').controller('MpiIndexController', ["$scope", "$rootScop
         "obsoletionTime": "null"
     }
 
- 
+    registerAssetsViewers($state);
     // Render the names
     $scope.renderName = function(patient) {
         

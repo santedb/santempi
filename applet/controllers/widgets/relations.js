@@ -23,6 +23,7 @@
  */
 angular.module('santedb').controller('EntityRelationshipDiagramController', ["$scope", "$rootScope", "$timeout", function ($scope, $rootScope, $timeout) {
 
+    
     mermaid.mermaidAPI.initialize({
         "theme": "default",
         flowchart:{

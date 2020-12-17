@@ -126,6 +126,7 @@ angular.module('santedb').controller('MpiPatientNextOfKinController', ["$scope",
         if (n) {
             try {
 
+                var upstream = n.tag && n.tag["$upstream"];
                 delete ($scope.editObject); // Delete the current edit object
                 if (n.tag && n.tag['$mdm.type'] == 'M') // Attempt to find a ROT
                 {
@@ -165,11 +166,17 @@ angular.module('santedb').controller('MpiPatientNextOfKinController', ["$scope",
                                 rel.id = SanteDB.application.newGuid();
 
                             if (rel.source && rel.source != n.id || rel.holder && !rel.holder == n.id) {
-                                rel.sourceModel = await SanteDB.resources.entity.getAsync(rel.source || rel.holder, "full");
+                                rel.sourceModel = await SanteDB.resources.person.getAsync({ id: rel.source || rel.holder, _upstream: upstream}, "full");
                                 rel.inverse = true;
                             }
-                            else if (!rel.targetModel && rel.target) {
-                                rel.targetModel = await SanteDB.resources.entity.getAsync(rel.target, "full");
+                            else if ((!rel.targetModel || rel.targetModel.$type == 'Entity') && rel.target) {
+
+                                try  {
+                                    rel.targetModel = await SanteDB.resources.patient.getAsync({ id: rel.target, _upstream: upstream }, "full");
+                                }
+                                catch(e) {
+                                    rel.targetModel = await SanteDB.resources.person.getAsync({ id: rel.target, _upstream: upstream }, "full");
+                                }
                                 rel.targetModel.relationship = rel.targetModel.relationship || {};
                             }
                             if (!rel.relationshipTypeModel)

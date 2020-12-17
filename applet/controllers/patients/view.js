@@ -21,6 +21,8 @@
  */
 angular.module('santedb').controller('MpiPatientViewController', ["$scope", "$rootScope", "$state", "$templateCache", "$stateParams", function ($scope, $rootScope, $state, $templateCache, $stateParams) {
 
+    registerAssetsViewers($state);
+
     // Loads the specified patient
     async function loadPatient(id) {
         try {
@@ -28,10 +30,53 @@ angular.module('santedb').controller('MpiPatientViewController', ["$scope", "$ro
             $scope.$apply();
         }
         catch(e) {
+            // Remote patient perhaps?
+            if (e.$type == "FileNotFoundException" || e.cause && e.cause.$type == "FileNotFoundException") {
+                try {
+
+                    // Is this a local session? If so, we need to use the application elevator
+                    var session = await SanteDB.authentication.getSessionInfoAsync();
+                    if (session.method == "LOCAL") // Local session so elevate to use the principal elevator
+                    {
+                        var elevator = new ApplicationPrincipalElevator(true);
+                        await elevator.elevate(session);
+                        SanteDB.authentication.setElevator(elevator);
+                    }
+
+                    $scope.patient = await SanteDB.resources.patient.getAsync({ id: id, _upstream: true }, "full");
+                    $scope.patient._upstream = true;
+                    if ($scope.patient.tag) {
+                        delete $scope.patient.tag["$mdm.type"];
+                        delete $scope.patient.tag["$altkeys"];
+                        delete $scope.patient.tag["$generated"];
+                    }
+                    
+                    $scope.$apply();
+                    return;
+                }
+                catch (e) {
+                    $rootScope.errorHandler(e);
+                }
+            }
             $rootScope.errorHandler(e);
         }
     }
     loadPatient($stateParams.id);
 
+    // Download the specified record by touching it
+    $scope.downloadRecord = async function () {
+        try {
+            toastr.info(SanteDB.locale.getString("ui.model.downloading"));
+            var localPatient = await SanteDB.resources.patient.copyAsync($stateParams.id);
+            localPatient = await SanteDB.resources.patient.getAsync($stateParams.id);
+            await SanteDB.resources.patient.updateAsync($stateParams.id, localPatient);
+            toastr.info(SanteDB.locale.getString("ui.model.patient.saveSuccess"));
+            $state.reload();
+
+        }
+        catch (e) {
+            $rootScope.errorHandler(e);
+        }
+    }
     
 }]);
