@@ -7,6 +7,7 @@ using SanteMPI.Persistence.ADO.Data.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -36,7 +37,6 @@ namespace SanteMPI.Persistence.ADO.Services
             try
             {
                 name = name.ToLower();
-                var connectionString = ApplicationServiceContext.Current.GetService<IConfigurationManager>().GetSection<DataConfigurationSection>()?.ConnectionString;
                 using(var dbContext = this.m_configuration.Provider.GetReadonlyConnection())
                 {
                     return dbContext.Query<DbNameAlias>(o => o.PrimaryName.ToLower() == name)
@@ -50,6 +50,64 @@ namespace SanteMPI.Persistence.ADO.Services
                 this.m_tracer.TraceError("Error fetching aliases for {0} - {1}", name, e);
                 throw new Exception($"Error fetching name aliases for {name}", e);
             }
+        }
+
+        /// <summary>
+        /// Add an alias to the ADO provider
+        /// </summary>
+        public void AddAlias(string name, string alias, double weight)
+        {
+            try
+            {
+                using (var dbContext = this.m_configuration.Provider.GetWriteConnection())
+                {
+                    var dbNameAlias = new DbNameAlias()
+                    {
+                        PrimaryName = name.ToLower(),
+                        Synonym = alias.ToLower(),
+                        Strength = (float)weight
+                    };
+                    dbContext.Insert(dbNameAlias);
+                }
+            }
+            catch (Exception e)
+            {
+                this.m_tracer.TraceError("Error adding aliases for {0} - {1}", name, e);
+                throw new Exception($"Error adding name aliases for {name}", e);
+            }
+        }
+
+        /// <summary>
+        /// Removes the specified name aliases
+        /// </summary>
+        public void RemoveAlias(string name, string alias)
+        {
+            try
+            {
+                using (var dbContext = this.m_configuration.Provider.GetWriteConnection())
+                {
+                    dbContext.Delete<DbNameAlias>(o => o.PrimaryName.ToLower() == name.ToLower() && o.Synonym.ToLower() == alias.ToLower());
+                }
+            }
+            catch (Exception e)
+            {
+                this.m_tracer.TraceError("Error removing aliases for {0} - {1}", name, e);
+                throw new Exception($"Error removing name aliases for {name}", e);
+            }
+
+        }
+
+        /// <summary>
+        /// Get all aliases for the specified name alias
+        /// </summary>
+        public IDictionary<string, IEnumerable<ComponentAlias>> GetAllAliases(Expression<Func<string, bool>> filter, int offset, int? count, out int totalResults)
+        {
+
+            // TODO: This interface definition makes no sense, refactor it
+            // TODO: Signature should be:
+            // IDictionary<string, IEnumerable<ComponentAlias>> GetAllAliases(String primaryName, int offset, int count, out int totalResults);
+            throw new NotSupportedException();
+                   
         }
     }
 }
