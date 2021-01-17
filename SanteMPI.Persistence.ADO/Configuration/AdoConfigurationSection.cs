@@ -16,12 +16,6 @@ namespace SanteMPI.Persistence.ADO.Configuration
     [XmlType(nameof(AdoConfigurationSection), Namespace = "http://santedb.org/configuration/santempi")]
     public class AdoConfigurationSection : SanteDB.OrmLite.Configuration.OrmConfigurationBase, IConfigurationSection
     {
-        /// <summary>
-        /// Resolve the connection string
-        /// </summary>
-        protected override string ResolveConnectionString(string connectionStringName)
-        {
-            return ApplicationServiceContext.Current.GetService<IConfigurationManager>().GetConnectionString(connectionStringName)?.Value;
-        }
+       
     }
 }

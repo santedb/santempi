@@ -100,14 +100,24 @@ namespace SanteMPI.Persistence.ADO.Services
         /// <summary>
         /// Get all aliases for the specified name alias
         /// </summary>
-        public IDictionary<string, IEnumerable<ComponentAlias>> GetAllAliases(Expression<Func<string, bool>> filter, int offset, int? count, out int totalResults)
+        public IDictionary<string, IEnumerable<ComponentAlias>> GetAllAliases(string filter, int offset, int? count, out int totalResults)
         {
+            try
+            {
+                using (var dbContext = this.m_configuration.Provider.GetWriteConnection())
+                {
+                    filter = filter.ToLower();
+                    var data = dbContext.Query<DbNameAlias>(o => o.PrimaryName.ToLower().Contains(filter));
+                    totalResults = data.Count();
+                    return data.Skip(offset).Take(count ?? 100).ToArray().GroupBy(o => o.PrimaryName).ToDictionary(o => o.Key, o => o.Select(c => new ComponentAlias(c.Synonym, c.Strength)).AsEnumerable());
+                }
+            }
+            catch (Exception e)
+            {
+                this.m_tracer.TraceError("Error querying aliases for {0} - {1}", filter, e);
+                throw new Exception($"Error querying name aliases for {filter}", e);
+            }
 
-            // TODO: This interface definition makes no sense, refactor it
-            // TODO: Signature should be:
-            // IDictionary<string, IEnumerable<ComponentAlias>> GetAllAliases(String primaryName, int offset, int count, out int totalResults);
-            throw new NotSupportedException();
-                   
         }
     }
 }
