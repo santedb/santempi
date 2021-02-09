@@ -53,18 +53,19 @@ angular.module('santedb').controller('MpiIndexController', ["$scope", "$rootScop
     // Render the patient's gender
     $scope.renderGender = function(patient) {
         var retVal = "";
-        switch(patient.genderConcept) {
-            case "f4e3a6bb-612e-46b2-9f77-ff844d971198":
-                retVal += '<i class="fas fa-male"></i> ';
-                break;
-            case "094941e9-a3db-48b5-862c-bc289bd7f86c":
-                retVal += '<i class="fas fa-female"></i> ';
-                break;
-            default:
-                retVal += '<i class="fas fa-question-circle"></i> ';
-        }
+        if(patient.genderConcept)
+            switch(patient.genderConcept) {
+                case "f4e3a6bb-612e-46b2-9f77-ff844d971198":
+                    retVal += '<i class="fas fa-male"></i> ';
+                    break;
+                case "094941e9-a3db-48b5-862c-bc289bd7f86c":
+                    retVal += '<i class="fas fa-female"></i> ';
+                    break;
+                default:
+                    retVal += '<i class="fas fa-question-circle"></i> ';
+            }
 
-        if(patient.genderConceptModel.mnemonic) {
+        if(patient.genderConceptModel && patient.genderConceptModel.mnemonic) {
             retVal += SanteDB.display.renderConcept(patient.genderConceptModel);
         }
         return retVal;
