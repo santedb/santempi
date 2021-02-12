@@ -1,14 +1,13 @@
 ﻿/** 
- * <feature scope="SanteDB.Persistence.Data.ADO" id="20200529-01" name="Update:20200529-01" applyRange="1.1.0.0-1.2.0.0"  invariantName="npgsql">
+ * <feature scope="SanteDB.Persistence.Data.ADO" id="20200530-01" name="Update:20200529-01" applyRange="1.1.0.0-1.2.0.0"  invariantName="npgsql">
  *	<summary>Update: English name aliases</summary>
  *	<remarks>This adds supposrt for the IAliasProvider implementation</remarks>
- *	<isInstalled>select ck_patch('20200529-01')</isInstalled>
+ *	<isInstalled>select ck_patch('20200530-01')</isInstalled>
  * </feature>
  */
 
 BEGIN TRANSACTION ;
 
- -- @TABLE
  -- NAME SYNONYMN TABLE 
  CREATE TABLE MPI_NAME_SYN_CDTBL
  (
@@ -18,7 +17,6 @@ BEGIN TRANSACTION ;
 	CONSTRAINT PK_MPI_NAME_SYN_CDTBL PRIMARY KEY (PRI_NAME, SYN_NAME)
  );
 
- -- @INDEX
  -- LOOKUP BY PRIMARY NAME
  CREATE INDEX NAME_CMP_SYN_PRI_IDX ON MPI_NAME_SYN_CDTBL(PRI_NAME);
  CREATE INDEX NAME_CMP_SYN_SYN_IDX ON MPI_NAME_SYN_CDTBL(SYN_NAME);
@@ -549,6 +547,6 @@ INSERT INTO MPI_NAME_SYN_CDTBL (PRI_NAME, SYN_NAME, STRENGTH) VALUES ('WINNY','W
 INSERT INTO MPI_NAME_SYN_CDTBL (PRI_NAME, SYN_NAME, STRENGTH) VALUES ('WOODY','ELWOOD',0.25);
 INSERT INTO MPI_NAME_SYN_CDTBL (PRI_NAME, SYN_NAME, STRENGTH) VALUES ('ZACH','ZACHARIAH',0.75);
 
-SELECT REG_PATCH('20200529-01');
+SELECT REG_PATCH('20200530-01');
 COMMIT;
 

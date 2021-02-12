@@ -81,7 +81,7 @@ namespace SanteMPI.Messaging.PixPdqv2.Test
 
             // Pre-Conditions: Setup receiver so that OID is configured
             AuthenticationContext.Current = new AuthenticationContext(AuthenticationContext.SystemPrincipal);
-            var aaService = ApplicationContext.Current.GetService<IAssigningAuthorityRepositoryService>();
+            var aaService = ApplicationServiceContext.Current.GetService<IAssigningAuthorityRepositoryService>();
             TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "TEST_HARNESS", DeviceSecretA);
             var aa = aaService.Get("TEST");
             if (aa == null)
