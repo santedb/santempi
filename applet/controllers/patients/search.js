@@ -27,8 +27,9 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
         switch (parameter.parm) {
             case "name.component[Family].value":
             case "name.component[Given].value":
-            case "address.component.value":
             case "address.component[State].value":
+            case "address.component[Country].value":
+            case "address.component[City].value":
             case "identifier.value":
                 parameter.data = { type: "string" };
                 break;
