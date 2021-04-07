@@ -12,7 +12,7 @@
 
     <div class="row">
         <div class="col-8 offset-2">
-            <form class="form" ng-submit="searchMpi(searchForm)" name="searchForm" method="dialog" autocomplete="off" >
+            <form class="form" ng-submit="searchMpi(searchForm)" name="searchForm" method="dialog" autocomplete="off" ng-init="search[0].op = 'eq'" >
                 <div class="form-group row m-0 p-0">
                     <label class="control-label  col-sm-2 col-xs-12">
                         {{ 'ui.mpi.patient.search.term' | i18n }}

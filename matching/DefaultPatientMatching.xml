@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<MatchConfiguration xmlns="http://santedb.org/matcher"
+                    id="org.santedb.matching.patient.default"
+                    nonmatchThreshold="1"
+                    matchThreashold="5">
+  <target resource="Patient" />
+  
+  <!-- Start: Blocking Configuration -->
+  <!-- 
+      Blocking configuration instructs the matcher to load candidate records from the primary data store
+      which have attributes matching the input criteria specified 
+  -->
+
+  <!-- Retrieve patients with the same identifier in the domain XXX -->
+  <blocking op="or" maxResults="5" skipWhenNullInput="true">
+    <filter>identifier[SSN].value=$input.identifier[SSN].value</filter>
+  </blocking>
+ 
+  <!-- Retrieve patients who:
+        + Given name sounds the same, 
+        + Family name is within 1 edit 
+        + Born the same year 
+        + Lives in the same state 
+    -->
+  <blocking op="or" maxResults="10">
+    <filter>name.component[Given].value=:(soundex)$input.name?.component[Given].value</filter>
+    <filter>name.component[Family].value=:(levenshtein|$input.name?.component[Family].value)&lt;2</filter>
+    <filter>dateOfBirth=:(date_diff|$input.dateOfBirth)&lt;P1Y</filter>
+    <filter>address.component[State].value=$input.address?.component[State].value</filter>
+  </blocking>
+  
+  <!-- End: Blocking Configuration -->
+  
+  <!-- Start: Scoring Configuration -->
+  <!-- 
+      Once data records are loaded from the data store, the application service needs to perform scoring on 
+      the records. Scores are calculated using u and m probabilities configured where m is the probability of 
+      two records agreeing and actually being the same record, where u is the probability that two records which 
+      are not the same person will match by pure coincidence
+  -->
+  <scoring>
+
+    <!-- Date of birth exactly matches 
+         whenNull = ignore instructs the scoring process to assign a score of 0 if either record is null
+    -->
+    <attribute property="dateOfBirth" u="0.25" m="0.75" whenNull="ignore">
+      <!-- Assert the a.dateOfBirth == b.dateOfBirth in order for this attribute to be scored successful otherwise score as non-match -->
+      <assert op="eq" />
+    </attribute>
+    
+    <!-- Gender exactly matches - note u is 0.5 to indicate a 50/50 probability 
+          whenNull = nonmatch instructs the scoring process to disqualify the record if either value is null
+      -->
+    <attribute property="genderConcept" u="0.5" m="0.75" whenNull="nonmatch">
+      <!-- Assert the a.genderConcept == b.genderConcept in order for this attribute to be scored successful otherwise score as non-match -->
+      <assert op="eq" />
+    </attribute>
+    
+    <!-- State Exactly matches - 
+           + Here we are using address as the root because we want to compare the addresses as a single value 
+           we can use address.component[State] however that means that any address in A whose state matches any address in B
+           by using address we ensure that both addresses are the same type
+           + Here we're also limiting to the type of address
+           + We're applying an ID because we want to base the result of another score on this score
+           + U for the CANADA is calculated as 1/13 as there is a 1/13 chance of this data agreeing by chance
+    -->
+    <attribute property="address[PrimaryHome] address[Public] address[VacationHome] address[WorkPlace]" u="0.077" m="0.923">
+      <!-- We apply a transform since the scope of this assertion is currently an object -->
+      <assert op="eq">
+        <transform name="addresspart_extract">
+          <args>
+            <string>State</string>
+          </args>
+        </transform>
+      </assert>
+    </attribute>
+    
+    <!-- Mother's name matches (if provided) -->
+    <attribute property="relationship[Mother].target.name" u="0.15" m="0.6" whenNull="ignore">
+      <!-- Assert the output of the transforms is <= 1 -->
+      <assert op="lte" value="1">
+        <transform name="namepart_extract">
+          <args>
+            <string>Family</string>
+          </args>
+        </transform>
+        <transform name="levenshtein" />
+      </assert>
+    </attribute>
+    
+    <!-- Any name matches with a given name that sounds like and family name is within 1 edit -->
+    <attribute property="name" m="0.7" u="0.2">
+      <assert op="and">
+        <assert op="lte" value="1">
+          <transform name="namepart_extract">
+            <args>
+              <string>Family</string>
+            </args>
+          </transform>
+          <transform name="levenshtein"/>
+        </assert>
+        <assert op="eq">
+          <transform name="namepart_extract">
+            <args>
+              <string>Given</string>
+            </args>
+          </transform>
+          <transform name="soundex"/>
+        </assert>
+      </assert>
+    </attribute>
+
+    <!-- SSN matches -->
+    <attribute property="identifier[SSN].value" u="0.15" m="0.75" whenNull="ignore">
+      <assert op="eq"/>
+    </attribute>
+    <!-- Identifier matches -->
+    <attribute property="identifier[XXX].value" u="0.05" m="0.92" whenNull="ignore">
+      <assert op="eq"/>
+    </attribute>
+  </scoring>
+  
+</MatchConfiguration>
