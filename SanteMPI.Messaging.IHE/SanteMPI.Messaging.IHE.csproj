@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>1.0.0</Version>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(VersionNumber)' == ''">
+    <VersionNumber>2.1.6</VersionNumber>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="SanteDB.Messaging.FHIR" Version="$(VersionNumber)" />
+    <PackageReference Include="SanteDB.Messaging.HL7" Version="$(VersionNumber)" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <PackageId>SanteMPI.Messaging.IHE</PackageId>
+    <Title>SanteMPI.Messaging.IHE</Title>
+    <Version>$(VersionNumber)</Version>
+    <Description>SanteMPI Integrating the Health Enterprise (IHE) Messaging Interfaces</Description>
+    <Authors>SanteSuite Contributors</Authors>
+    <PackageTags>SanteDB</PackageTags>
+    <RepositoryUrl>https://github.com/santedb/sante-mpi</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <IncludeSymbols>true</IncludeSymbols>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Product>SanteDB</Product>
+    <Copyright>Copyright (C) 2015-2021 SanteSuite Contributors (See: NOTICES)</Copyright>
+    <Company>SanteSuite Contributors</Company>
+    <PackageIconUrl>http://santesuite.org/assets/img/logo.png</PackageIconUrl>
+    <PackageProjectUrl>http://santesuite.org</PackageProjectUrl>
+    <RootNamespace>SanteMPI.Messaging.IHE</RootNamespace>
+  </PropertyGroup>
+</Project>

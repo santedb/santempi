@@ -12,7 +12,7 @@ using System;
 using System.IO;
 using System.Linq;
 
-namespace SanteMPI.Messaging.PixPdqv2.Test
+namespace SanteMPI.Messaging.IHE.Test
 {
     /// <summary>
     /// Test utility classes
@@ -26,7 +26,7 @@ namespace SanteMPI.Messaging.PixPdqv2.Test
         public static IMessage GetMessage(String messageName)
         {
             string originalVersion = null;
-            using (var s = typeof(TestUtil).Assembly.GetManifestResourceStream($"SanteMPI.Messaging.PixPdqv2.Test.Resources.{messageName}.txt")) 
+            using (var s = typeof(TestUtil).Assembly.GetManifestResourceStream($"SanteMPI.Messaging.IHE.Test.Resources.{messageName}.txt")) 
             using (var sw = new StreamReader(s))
                 return MessageUtils.ParseMessage(sw.ReadToEnd(), out originalVersion);
         }

@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SanteMPI.Messaging.PixPdqv2.Messages
+namespace SanteMPI.Messaging.IHE.HL7
 {
     /// <summary>
     /// ADT message handler specifically designed for PIX

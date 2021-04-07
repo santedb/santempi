@@ -12,10 +12,9 @@ using SanteDB.Core.Security.Claims;
 using SanteDB.Core.Security.Services;
 using SanteDB.Core.Services;
 using SanteDB.Core.TestFramework;
-using SanteDB.Messaging.HL7.Messages;
-using SanteMPI.Messaging.PixPdqv2.Messages;
+using SanteMPI.Messaging.IHE.Messaging.HL7;
 
-namespace SanteMPI.Messaging.PixPdqv2.Test
+namespace SanteMPI.Messaging.IHE.Test
 {
     [DeploymentItem(@"santedb_test.fdb")]
     [DeploymentItem(@"fbclient.dll")]
@@ -29,7 +28,7 @@ namespace SanteMPI.Messaging.PixPdqv2.Test
     [DeploymentItem(@"plugins\engine12.dll", "plugins")]
     [DeploymentItem(@"FirebirdSql.Data.FirebirdClient.dll")]
     [TestClass]
-    public class TestOpenHIE : DataTest
+    public class TestOpenHIEPixPdq : DataTest
     {
 
         // Device secret
@@ -47,7 +46,7 @@ namespace SanteMPI.Messaging.PixPdqv2.Test
             if(ApplicationServiceContext.Current == null)
             {
                 
-                TestApplicationContext.TestAssembly = typeof(TestOpenHIE).Assembly;
+                TestApplicationContext.TestAssembly = typeof(TestOpenHIEPixPdq).Assembly;
                 TestApplicationContext.Initialize(context.DeploymentDirectory);
             }
         }
@@ -102,7 +101,7 @@ namespace SanteMPI.Messaging.PixPdqv2.Test
 
             // Test harness ensures that patient was registered and receiver has populated 4.1, 4.2, and 4.3
             message = TestUtil.GetMessageEvent("OHIE-CR-02-20", DeviceSecretA);
-            result = new QbpMessageHandler().HandleMessage(message);
+            result = new PdqQbpMessageHandler().HandleMessage(message);
 
             // Response is RSP K23
             Assert.AreEqual("RSP", (result.GetStructure("MSH") as MSH).MessageType.MessageCode.Value);
@@ -118,7 +117,7 @@ namespace SanteMPI.Messaging.PixPdqv2.Test
 
             // Test hanress sneds ADT A01 with OID missing but namespace
             message = TestUtil.GetMessageEvent("OHIE-CR-02-30", DeviceSecretA);
-            result = new AdtMessageHandler().HandleMessage(message);
+            result = new PixAdtMessageHandler().HandleMessage(message);
 
             // Response is ACK A01
             Assert.AreEqual("ACK", (result.GetStructure("MSH") as MSH).MessageType.MessageCode.Value);
@@ -131,7 +130,7 @@ namespace SanteMPI.Messaging.PixPdqv2.Test
 
             // Test harnerss validates patient was registrered and populated segments properly
             message = TestUtil.GetMessageEvent("OHIE-CR-02-40", DeviceSecretA);
-            result = new QbpMessageHandler().HandleMessage(message);
+            result = new PdqQbpMessageHandler().HandleMessage(message);
 
             // Response is RSP K23
             Assert.AreEqual("RSP", (result.GetStructure("MSH") as MSH).MessageType.MessageCode.Value);
@@ -239,7 +238,7 @@ namespace SanteMPI.Messaging.PixPdqv2.Test
 
             // Test harness verifies infant record created 
             message = TestUtil.GetMessageEvent("OHIE-CR-05-30");
-            result = new QbpMessageHandler().HandleMessage(message);
+            result = new PdqQbpMessageHandler().HandleMessage(message);
             TestUtil.AssertOutcome(result, "AA", "CA");
 
             // Exactly one PID segment
@@ -274,7 +273,7 @@ namespace SanteMPI.Messaging.PixPdqv2.Test
 
             // Verify linkage
             message = TestUtil.GetMessageEvent("OHIE-CR-06-40", DeviceSecretA);
-            result = new QbpMessageHandler().HandleMessage(message);
+            result = new PdqQbpMessageHandler().HandleMessage(message);
             TestUtil.AssertOutcome(result, "AA", "CA");
 
             // Verify that only one person is registered with matching identifier
@@ -308,7 +307,7 @@ namespace SanteMPI.Messaging.PixPdqv2.Test
 
             // Verify that the infant was created
             message = TestUtil.GetMessageEvent("OHIE-CR-07-30", DeviceSecretA);
-            result = new QbpMessageHandler().HandleMessage(message);
+            result = new PdqQbpMessageHandler().HandleMessage(message);
             TestUtil.AssertOutcome(result, "AA");
 
             var rsp = result as RSP_K23;
@@ -318,7 +317,7 @@ namespace SanteMPI.Messaging.PixPdqv2.Test
 
             // Verify that mother's record wsa linked
             message = TestUtil.GetMessageEvent("OHIE-CR-07-40", DeviceSecretA);
-            result = new QbpMessageHandler().HandleMessage(message);
+            result = new PdqQbpMessageHandler().HandleMessage(message);
             TestUtil.AssertOutcome(result, "AA");
 
             // Look for mother's info
@@ -348,7 +347,7 @@ namespace SanteMPI.Messaging.PixPdqv2.Test
 
             // Test harness verifies data by looking up created patient
             message = TestUtil.GetMessageEvent("OHIE-CR-08-30", DeviceSecretA);
-            result = new QbpMessageHandler().HandleMessage(message);
+            result = new PdqQbpMessageHandler().HandleMessage(message);
             TestUtil.AssertOutcome(result, "AA");
 
             // Verify the demographics fields were populated correctly

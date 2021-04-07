@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SanteMPI.Messaging.PixPdqv2.Configuration
+namespace SanteMPI.Messaging.IHE.Configuration
 {
     /// <summary>
     /// The SanteMPI configuration feature

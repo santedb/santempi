@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SanteMPI.Messaging.PixPdqv2.Messages
+namespace SanteMPI.Messaging.IHE.HL7
 {
     /// <summary>
     /// Represents a QBP message handler that restricts behavior to IHE PDQ
