@@ -1,10 +1,13 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Hl7.Fhir.Model;
+using Newtonsoft.Json;
 using NHapi.Base.Model;
 using NHapi.Base.Parser;
 using NHapi.Model.V25.Segment;
+using NUnit.Framework;
 using SanteDB.Core;
 using SanteDB.Core.Model.Security;
 using SanteDB.Core.Security;
+using SanteDB.Core.Security.Services;
 using SanteDB.Core.Services;
 using SanteDB.Messaging.HL7.TransportProtocol;
 using SanteDB.Messaging.HL7.Utils;
@@ -21,14 +24,24 @@ namespace SanteMPI.Messaging.IHE.Test
     {
 
         /// <summary>
+        /// Get a FHIR message
+        /// </summary>
+        public static Resource GetFhirMessage(String messageName)
+        {
+            using (var s = typeof(TestUtil).Assembly.GetManifestResourceStream($"SanteMPI.Messaging.IHE.Test.Resources.FHIR.{messageName}.json"))
+            using (var sr = new StreamReader(s))
+            using (var jr = new JsonTextReader(sr))
+                return new Hl7.Fhir.Serialization.FhirJsonParser().Parse(jr) as Resource;
+        }
+
+        /// <summary>
         /// Get the message from the test assembly
         /// </summary>
         public static IMessage GetMessage(String messageName)
         {
-            string originalVersion = null;
-            using (var s = typeof(TestUtil).Assembly.GetManifestResourceStream($"SanteMPI.Messaging.IHE.Test.Resources.{messageName}.txt")) 
+            using (var s = typeof(TestUtil).Assembly.GetManifestResourceStream($"SanteMPI.Messaging.IHE.Test.Resources.HL7.{messageName}.txt"))
             using (var sw = new StreamReader(s))
-                return MessageUtils.ParseMessage(sw.ReadToEnd(), out originalVersion);
+                return MessageUtils.ParseMessage(sw.ReadToEnd(), out string originalVersion);
         }
 
         /// <summary>
@@ -70,14 +83,14 @@ namespace SanteMPI.Messaging.IHE.Test
         /// </summary>
         public static String ToString(IMessage msg)
         {
-            
+
             return MessageUtils.EncodeMessage(msg, "2.5.1");
         }
 
         /// <summary>
         /// Create the specified authority
         /// </summary>
-        public static void CreateAuthority(string nsid, string oid, string applicationName, byte[] deviceSecret)
+        public static void CreateAuthority(string nsid, string oid, String url, string applicationName, byte[] deviceSecret)
         {
             // Create the test harness device / application
             var securityDevService = ApplicationServiceContext.Current.GetService<IRepositoryService<SecurityDevice>>();
@@ -100,7 +113,7 @@ namespace SanteMPI.Messaging.IHE.Test
 
             // Application
             var app = securityAppService.Find(o => o.Name == applicationName).FirstOrDefault();
-            if(app == null)
+            if (app == null)
             {
                 app = new SecurityApplication()
                 {
@@ -115,16 +128,47 @@ namespace SanteMPI.Messaging.IHE.Test
 
             // Create AA
             var aa = metadataService.Get(nsid);
-            if(aa == null)
+            if (aa == null)
             {
                 aa = new SanteDB.Core.Model.DataTypes.AssigningAuthority(nsid, nsid, oid)
                 {
                     AssigningApplicationKey = app.Key,
-                    IsUnique = true
+                    IsUnique = true,
+                    Url = url
                 };
                 metadataService.Insert(aa);
             }
 
+        }
+
+        /// <summary>
+        /// Assert FHIR outcome
+        /// </summary>
+        internal static void AssertFhirOutcome<TFocalResource>(Resource response, MessageHeader.ResponseType expectedResponse, out TFocalResource responseFocus)
+            where TFocalResource: class
+        {
+            Assert.IsInstanceOf<Bundle>(response);
+            var bundleResponse = response as Bundle;
+            Assert.AreEqual(1, bundleResponse.Entry.Count(o => o.Resource is MessageHeader));
+            var mh = bundleResponse.Entry.FirstOrDefault(o => o.Resource is MessageHeader)?.Resource as MessageHeader;
+            Assert.AreEqual(expectedResponse, mh.Response.Code);
+            Assert.IsNotNull(mh.Response.Details);
+            Assert.AreEqual(1, bundleResponse.Entry.Count(o => o.Resource is TFocalResource));
+            Assert.AreEqual(1, bundleResponse.Entry.Count(o => o.FullUrl == mh.Response.Details.Reference)); // Must resolve oo
+            responseFocus = bundleResponse.Entry.FirstOrDefault(o => o.FullUrl == mh.Response.Details.Reference)?.Resource as TFocalResource;
+        }
+
+        /// <summary>
+        /// Mimic an authentication
+        /// </summary>
+        internal static void AuthenticateFhir(string appId, byte[] appSecret)
+        {
+            var appIdService = ApplicationServiceContext.Current.GetService<IApplicationIdentityProviderService>();
+            var appPrincipal = appIdService.Authenticate(appId, BitConverter.ToString(appSecret).Replace("-", ""));
+            var sesPvdService = ApplicationServiceContext.Current.GetService<ISessionProviderService>();
+            var sesIdService = ApplicationServiceContext.Current.GetService<ISessionIdentityProviderService>();
+            var session = sesPvdService.Establish(appPrincipal, "http://localhost", false, null, null, null);
+            AuthenticationContext.Current = new AuthenticationContext(sesIdService.Authenticate(session));
         }
     }
 }

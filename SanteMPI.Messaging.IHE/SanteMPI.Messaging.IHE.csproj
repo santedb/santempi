@@ -6,12 +6,16 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(VersionNumber)' == ''">
-    <VersionNumber>2.1.6</VersionNumber>
+    <VersionNumber>2.1.7</VersionNumber>
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="SanteDB.Messaging.FHIR" Version="$(VersionNumber)" />
-    <PackageReference Include="SanteDB.Messaging.HL7" Version="$(VersionNumber)" />
+    <PackageReference Include="SanteDB.Messaging.FHIR" Version="2.1.10" />
+    <PackageReference Include="SanteDB.Messaging.HL7" Version="2.1.10" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\SanteMPI.i18n\SanteMPI.i18n.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

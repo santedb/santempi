@@ -1,0 +1,65 @@
+﻿{
+  "resourceType": "Bundle",
+  "type": "message",
+  "entry": [
+    {
+      "fullUrl": "MessageHeader/ohie-cr-02-30-fhir",
+      "resource": {
+        "resourceType": "MessageHeader",
+        "id": "1",
+        "eventUri": "urn:ihe:iti:pmir:2019:patient-feed",
+        "source": {
+          "endpoint": "http://ohie.org/test/harness"
+        },
+        "focus": [
+          {
+            "reference": "Bundle/ohie-cr-02-30-fhir"
+          }
+        ],
+        "destination": [
+          {
+            "endpoint": "http://ohie.org/test/endpoint/Bundle"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "Bundle/ohie-cr-02-30-fhir",
+      "resource": {
+        "resourceType": "Bundle",
+        "type": "history",
+        "entry": [
+          {
+            "fullUrl": "Patient/ohie-cr-02-30-fhir",
+            "resource": {
+              "resourceType": "Patient",
+              "id": "ohie-cr-02-30-fhir",
+              "active": true,
+              "identifier": [
+                {
+                  "system": "http://ohie.org/test/test",
+                  "value": "FHR-404"
+                }
+              ],
+              "name": [
+                {
+                  "use": "official",
+                  "family": "URL",
+                  "given": [
+                    "UMA"
+                  ]
+                }
+              ],
+              "gender": "female",
+              "birthDate": "1990-03-09"
+            },
+            "request": {
+              "method": "POST",
+              "url": "Patient/ohie-cr-02-10-fhir"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

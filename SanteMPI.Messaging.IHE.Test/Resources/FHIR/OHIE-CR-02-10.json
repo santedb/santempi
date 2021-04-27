@@ -1,0 +1,65 @@
+﻿{
+  "resourceType": "Bundle",
+  "type": "message",
+  "entry": [
+    {
+      "fullUrl": "MessageHeader/ohie-cr-02-10-fhir",
+      "resource": {
+        "resourceType": "MessageHeader",
+        "id": "1",
+        "eventUri": "urn:ihe:iti:pmir:2019:patient-feed",
+        "source": {
+          "endpoint": "http://ohie.org/test/harness"
+        },
+        "focus": [
+          {
+            "reference": "Bundle/ohie-cr-02-10-fhir"
+          }
+        ],
+        "destination": [
+          {
+            "endpoint": "http://ohie.org/test/endpoint/Bundle"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "Bundle/ohie-cr-02-10-fhir",
+      "resource": {
+        "resourceType": "Bundle",
+        "type": "history",
+        "entry": [
+          {
+            "fullUrl": "Patient/ohie-cr-02-10-fhir",
+            "resource": {
+              "resourceType": "Patient",
+              "id": "ohie-cr-02-10-fhir",
+              "active": true,
+              "identifier": [
+                {
+                  "system": "urn:oid:1.3.6.1.4.1.52820.3.72.5.9.1",
+                  "value": "FHR-403"
+                }
+              ],
+              "name": [
+                {
+                  "use": "official",
+                  "family": "OID",
+                  "given": [
+                    "OLLY"
+                  ]
+                }
+              ],
+              "gender": "male",
+              "birthDate": "1983-02-05"
+            },
+            "request": {
+              "method": "POST",
+              "url": "Patient/ohie-cr-02-10-fhir"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

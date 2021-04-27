@@ -16,6 +16,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SanteMPI.Messaging.IHE.Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SanteMPI", "SanteMPI\SanteMPI.csproj", "{D6481699-8BDE-495D-B28E-BE6F309718DE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SanteMPI.i18n", "SanteMPI.i18n\SanteMPI.i18n.csproj", "{B5773AB6-F15D-4474-A852-B355C830ABA4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,6 +40,10 @@ Global
 		{D6481699-8BDE-495D-B28E-BE6F309718DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D6481699-8BDE-495D-B28E-BE6F309718DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D6481699-8BDE-495D-B28E-BE6F309718DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5773AB6-F15D-4474-A852-B355C830ABA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5773AB6-F15D-4474-A852-B355C830ABA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5773AB6-F15D-4474-A852-B355C830ABA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5773AB6-F15D-4474-A852-B355C830ABA4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

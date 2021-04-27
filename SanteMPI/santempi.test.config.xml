@@ -370,18 +370,12 @@
   <!-- Configures the FHIR service-->
   <section xsi:type="FhirServiceConfigurationSection" restEndpoint="FHIR" index="home-page.html ">
     <resourceHandlers>
-      <add type="SanteDB.Messaging.FHIR.Handlers.EncounterResourceHandler, SanteDB.Messaging.FHIR, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null"/>
-      <add type="SanteDB.Messaging.FHIR.Handlers.AdverseEventResourceHandler, SanteDB.Messaging.FHIR, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null"/>
-      <add type="SanteDB.Messaging.FHIR.Handlers.AllergyIntoleranceResourceHandler, SanteDB.Messaging.FHIR, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null"/>
-      <add type="SanteDB.Messaging.FHIR.Handlers.ConditionResourceHandler, SanteDB.Messaging.FHIR, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null"/>
-      <add type="SanteDB.Messaging.FHIR.Handlers.LocationResourceHandler, SanteDB.Messaging.FHIR, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null"/>
-      <add type="SanteDB.Messaging.FHIR.Handlers.MedicationResourceHandler, SanteDB.Messaging.FHIR, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null"/>
-      <add type="SanteDB.Messaging.FHIR.Handlers.ObservationResourceHandler, SanteDB.Messaging.FHIR, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null"/>
-      <add type="SanteDB.Messaging.FHIR.Handlers.SubstanceResourceHandler, SanteDB.Messaging.FHIR, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null"/>
       <add type="SanteDB.Messaging.FHIR.Handlers.PatientResourceHandler, SanteDB.Messaging.FHIR, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null"/>
-      <add type="SanteDB.Messaging.FHIR.Handlers.ImmunizationRecommendationResourceHandler, SanteDB.Messaging.FHIR, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null"/>
-      <add type="SanteDB.Messaging.FHIR.Handlers.ImmunizationResourceHandler, SanteDB.Messaging.FHIR, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null"/>
+      <add type="SanteDB.Messaging.FHIR.Handlers.BundleResourceHandler, SanteDB.Messaging.FHIR, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null"/>
     </resourceHandlers>
+    <messageHandlers>
+      <add type="SanteMPI.Messaging.IHE.FHIR.MobilePatientIdentityFeed, SanteMPI.Messaging.IHE" />
+    </messageHandlers>
     <base>http://localhost:8080/fhir</base>
   </section>
   <!-- Configurations Related to GS1 -->
