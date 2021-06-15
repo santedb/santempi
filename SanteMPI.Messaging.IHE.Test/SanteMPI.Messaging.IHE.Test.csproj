@@ -53,25 +53,25 @@
       <Version>12.0.3</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Caching.Memory">
-      <Version>2.1.10</Version>
+      <Version>2.1.21</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Matcher">
-      <Version>2.1.10</Version>
+      <Version>2.1.21</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Messaging.FHIR">
-      <Version>2.1.10</Version>
+      <Version>2.1.11</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Messaging.HL7">
-      <Version>2.1.10</Version>
+      <Version>2.1.21</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Server.Plugin">
-      <Version>2.1.8</Version>
+      <Version>2.1.21</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Server.Plugin.Data">
-      <Version>2.1.8</Version>
+      <Version>2.1.21</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Server.TestFramework">
-      <Version>2.1.8</Version>
+      <Version>2.1.21</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
@@ -153,14 +153,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <EmbeddedResource Include="Resources\FHIR\OHIE-CR-04-40.json" />
-    <EmbeddedResource Include="Resources\FHIR\OHIE-CR-04-30.json" />
     <EmbeddedResource Include="Resources\FHIR\OHIE-CR-04-20.json" />
+    <EmbeddedResource Include="Resources\FHIR\OHIE-CR-04-10.json" />
     <EmbeddedResource Include="Resources\FHIR\OHIE-CR-03-20.json" />
     <EmbeddedResource Include="Resources\FHIR\OHIE-CR-03-10.json" />
     <EmbeddedResource Include="Resources\FHIR\OHIE-CR-01-10.json" />
     <EmbeddedResource Include="Resources\FHIR\OHIE-CR-02-10.json" />
     <EmbeddedResource Include="Resources\FHIR\OHIE-CR-02-30.json" />
+    <EmbeddedResource Include="Resources\FHIR\OHIE-CR-04-30.json" />
+    <EmbeddedResource Include="Resources\FHIR\OHIE-CR-05-20.json" />
+    <EmbeddedResource Include="Resources\FHIR\OHIE-CR-05-10.json" />
     <None Include="test.runsettings" />
   </ItemGroup>
   <ItemGroup>

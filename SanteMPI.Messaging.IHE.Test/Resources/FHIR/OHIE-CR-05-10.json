@@ -1,0 +1,98 @@
+﻿{
+  "resourceType": "Bundle",
+  "type": "message",
+  "entry": [
+    {
+      "fullUrl": "MessageHeader/ohie-cr-05-10-fhir",
+      "resource": {
+        "resourceType": "MessageHeader",
+        "id": "1",
+        "eventUri": "urn:ihe:iti:pmir:2019:patient-feed",
+        "source": {
+          "endpoint": "http://ohie.org/test/test_harness_b"
+        },
+        "focus": [
+          {
+            "reference": "Bundle/ohie-cr-05-10-fhir"
+          }
+        ],
+        "destination": [
+          {
+            "endpoint": "http://ohie.org/test/endpoint/Bundle"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "Bundle/ohie-cr-05-10-fhir",
+      "resource": {
+        "resourceType": "Bundle",
+        "type": "history",
+        "entry": [
+          {
+            "fullUrl": "Patient/ohie-cr-05-10-fhir",
+            "resource": {
+              "resourceType": "Patient",
+              "id": "ohie-cr-05-10-fhir",
+              "active": true,
+              "identifier": [
+                {
+                  "use": "official",
+                  "system": "http://ohie.org/test/test",
+                  "value": "FHR-4956"
+                }
+              ],
+              "name": [
+                {
+                  "use": "usual",
+                  "given": [
+                    "WIN MINH"
+                  ]
+                }
+              ],
+              "gender": "male",
+              "birthDate": "2017-04-03"
+            },
+            "request": {
+              "method": "POST",
+              "url": "Patient/ohie-cr-05-10-fhir"
+            }
+          },
+          {
+            "fullUrl": "RelatedPerson/ohie-cr-05-10-fhir-mother",
+            "resource": {
+              "resourceType": "RelatedPerson",
+              "id": "ohie-cr-05-10-fhir-mother",
+              "patient": {
+                "reference": "Patient/ohie-cr-05-10-fhir"
+              },
+              "relationship": [
+                {
+                  "coding": [
+                    {
+                      "system": "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+                      "code": "MTH"
+                    }
+                  ]
+                }
+              ],
+              "name": [
+                {
+                  "use": "usual",
+                  "given": [
+                    "SU MYAT LWIN"
+                  ]
+                }
+              ],
+              "gender": "female"
+            },
+            "request": {
+              "method": "POST",
+              "url": "RelatedPerson/ohie-cr-05-10-fhir-mother"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

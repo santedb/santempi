@@ -54,7 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="SanteDB.OrmLite">
-      <Version>2.1.7</Version>
+      <Version>2.1.21</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup />

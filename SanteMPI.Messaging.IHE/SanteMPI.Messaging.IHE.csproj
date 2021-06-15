@@ -10,8 +10,8 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="SanteDB.Messaging.FHIR" Version="2.1.10" />
-    <PackageReference Include="SanteDB.Messaging.HL7" Version="2.1.10" />
+    <PackageReference Include="SanteDB.Messaging.FHIR" Version="2.1.11" />
+    <PackageReference Include="SanteDB.Messaging.HL7" Version="2.1.21" />
   </ItemGroup>
   
   <ItemGroup>
@@ -38,5 +38,13 @@
     <PackageIconUrl>http://santesuite.org/assets/img/logo.png</PackageIconUrl>
     <PackageProjectUrl>http://santesuite.org</PackageProjectUrl>
     <RootNamespace>SanteMPI.Messaging.IHE</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>..\bin\release</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\bin\debug</OutputPath>
   </PropertyGroup>
 </Project>

@@ -1,6 +1,6 @@
-FROM santesuite/santedb-icdr:2.1.3
+FROM santesuite/santedb-icdr:2.1.21
 MAINTAINER "SanteSuite Contributors"
-COPY ./bin/Release/SanteMPI.Messaging.PixPdqv2.dll /santedb/SanteMPI.Messaging.PixPdqv2.dll
+COPY ./bin/Release/SanteMPI.Messaging.IHE.dll /santedb/SanteMPI.Messaging.IHE.dll
 COPY ./bin/Release/SanteMPI.Persistence.ADO.dll /santedb/SanteMPI.Persistence.ADO.dll
 COPY ./dist/santempi.sln.pak /santedb/applets/santempi.sln.pak
 RUN mkdir /santedb/matching

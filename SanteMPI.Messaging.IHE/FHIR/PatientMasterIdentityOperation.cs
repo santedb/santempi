@@ -3,8 +3,10 @@ using SanteDB.Core;
 using SanteDB.Core.BusinessRules;
 using SanteDB.Core.Exceptions;
 using SanteDB.Core.Interfaces;
+using SanteDB.Core.Model;
 using SanteDB.Core.Model.Constants;
 using SanteDB.Core.Model.Entities;
+using SanteDB.Core.Model.Interfaces;
 using SanteDB.Core.Services;
 using SanteDB.Messaging.FHIR;
 using SanteDB.Messaging.FHIR.Extensions;
@@ -142,7 +144,8 @@ namespace SanteMPI.Messaging.IHE.FHIR
                             else
                             {
                                 // Get all objects which the object depends on this one and don't include replaces (since that is merge instructions in this profile)
-                                var dependentObjects = sdbBundle.Item.OfType<Entity>().Where(o => o.Relationships.Any(r => r.SourceEntityKey == focalObject.Key || r.TargetEntityKey == focalObject.Key));
+                                var dependentObjects = sdbBundle.Item.OfType<Entity>().Where(o => o.Relationships.Any(r => r.SourceEntityKey == focalObject.Key || r.TargetEntityKey == focalObject.Key)).OfType<IdentifiedData>()
+                                    .Union(sdbBundle.Item.OfType<ITargetedAssociation>().Where(r=>r.TargetEntityKey == focalObject.Key || r.SourceEntityKey == focalObject.Key).OfType<IdentifiedData>());
                                 var sdbTransaction = new SanteDB.Core.Model.Collection.Bundle();
                                 sdbTransaction.Add(focalObject);
                                 sdbTransaction.Item.AddRange(dependentObjects);
