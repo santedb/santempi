@@ -370,12 +370,15 @@
   <!-- Configures the FHIR service-->
   <section xsi:type="FhirServiceConfigurationSection" restEndpoint="FHIR" index="home-page.html ">
     <resourceHandlers>
-      <add type="SanteDB.Messaging.FHIR.Handlers.PatientResourceHandler, SanteDB.Messaging.FHIR, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null"/>
-      <add type="SanteDB.Messaging.FHIR.Handlers.BundleResourceHandler, SanteDB.Messaging.FHIR, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null"/>
+      <add type="SanteDB.Messaging.FHIR.Handlers.PatientResourceHandler, SanteDB.Messaging.FHIR, Version=2.1.0.0, Culture=neutral, PublicKeyToken=null"/>
+      <add type="SanteDB.Messaging.FHIR.Handlers.BundleResourceHandler, SanteDB.Messaging.FHIR, Version=2.1.0.0, Culture=neutral, PublicKeyToken=null"/>
     </resourceHandlers>
     <messageHandlers>
-      <add type="SanteMPI.Messaging.IHE.FHIR.MobilePatientIdentityFeed, SanteMPI.Messaging.IHE" />
+      <add type="SanteMPI.Messaging.IHE.FHIR.PatientMasterIdentityOperation, SanteMPI.Messaging.IHE" />
     </messageHandlers>
+    <operationHandlers>
+      <add type="SanteMPI.Messaging.IHE.FHIR.PatientIdentityCrossReferenceMobileOperation, SanteMPI.Messaging.IHE"/>
+    </operationHandlers>
     <base>http://localhost:8080/fhir</base>
   </section>
   <!-- Configurations Related to GS1 -->
