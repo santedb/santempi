@@ -38,6 +38,19 @@ namespace SanteMPI.Messaging.IHE.FHIR
         public string Name => "ihe-pix";
 
         /// <summary>
+        /// Get the parameters for this
+        /// </summary>
+        public IDictionary<String, FHIRAllTypes> Parameters => new Dictionary<String, FHIRAllTypes>()
+        {
+            {  "sourceIdentifier", FHIRAllTypes.String },
+            { "targetDomain", FHIRAllTypes.String }
+        };
+        /// <summary>
+        /// Get whether this operation is a GET operation
+        /// </summary>
+        public bool IsGet => true;
+
+        /// <summary>
         /// Gets the URI of the definition
         /// </summary>
         public Uri Uri => new Uri("http://santedb.org/fhir/ihe/pixm");

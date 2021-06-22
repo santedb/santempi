@@ -53,16 +53,16 @@
       <Version>12.0.3</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Caching.Memory">
-      <Version>2.1.22</Version>
+      <Version>2.1.24</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Matcher">
-      <Version>2.1.22</Version>
+      <Version>2.1.24</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Messaging.FHIR">
-      <Version>2.1.22</Version>
+      <Version>2.1.24</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Messaging.HL7">
-      <Version>2.1.22</Version>
+      <Version>2.1.24</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Server.Plugin">
       <Version>2.1.21</Version>
