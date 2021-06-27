@@ -301,6 +301,55 @@ namespace SanteMPI.Messaging.IHE.Test
             Assert.AreEqual("FHR-0844", queryResult.Results.OfType<RelatedPerson>().First().Identifier.First().Value);
             Assert.AreEqual(AdministrativeGender.Female, queryResult.Results.OfType<RelatedPerson>().First().Gender);
 
+            // Query for PDQm 
+            query = new System.Collections.Specialized.NameValueCollection();
+            query.Add("mothersMaidenName", "Abels");
+            query.Add("_revinclude", "RelatedPerson:patient");
+            queryResult = patientHandler.Query(query);
+            Assert.AreEqual(1, queryResult.TotalResults);
+            Assert.AreEqual(2, queryResult.Results.Count); // patient + mother
+            Assert.AreEqual("http://ohie.org/test/test", queryResult.Results.OfType<Patient>().First().Identifier.First().System);
+            Assert.AreEqual(new Date(2021, 04, 25), queryResult.Results.OfType<Patient>().First().BirthDateElement);
+            Assert.AreEqual(AdministrativeGender.Female, queryResult.Results.OfType<Patient>().First().Gender);
+            Assert.AreEqual("FHR-4873", queryResult.Results.OfType<Patient>().First().Identifier.First().Value);
+        }
+
+        /// <summary>
+        /// Tests the processing of the OHIE CR 07 FHIR Message
+        /// </summary>
+        [Test]
+        public void TestOhieCr07Fhir()
+        {
+
+            // Create TEST Domain
+            TestUtil.CreateAuthority("TEST", "1.3.6.1.4.1.52820.3.72.5.9.1", "http://ohie.org/test/test", "TEST_HARNESS_FHIR", HarnessSecret);
+            TestUtil.CreateAuthority("TEST_ORGS", "1.3.6.1.4.1.52820.3.72.5.9.20", "http://ohie.org/test/orgs", "TEST_HARNESS_FHIR", HarnessSecret);
+            TestUtil.CreateAuthority("TEST_PROVIDERS", "1.3.6.1.4.1.52820.3.72.5.9.21", "http://ohie.org/test/practs", "TEST_HARNESS_FHIR", HarnessSecret);
+
+            // Authenticate as TEST HARNESS
+            TestUtil.AuthenticateFhir("TEST_HARNESS_FHIR", HarnessSecret);
+
+            // Register the mother/child demographics where
+            // mother is just a related person
+            var rqo = TestUtil.GetFhirMessage("OHIE-CR-07-10");
+            Assert.IsInstanceOf<Bundle>(rqo);
+          var response = this.m_serviceManager.CreateInjected<BundleResourceHandler>().Create(rqo, SanteDB.Core.Services.TransactionMode.Commit);
+            TestUtil.AssertFhirOutcome<OperationOutcome>(response, MessageHeader.ResponseType.Ok, out OperationOutcome oo);
+            Assert.IsTrue(oo.Success);
+
+            // Validate the patient is created and has a related person
+            var patientHandler = FhirResourceHandlerUtil.GetResourceHandler(ResourceType.Patient);
+            var query = new System.Collections.Specialized.NameValueCollection();
+            query.Add("identifier", "http://ohie.org/test/test|FHR-070");
+            query.Add("_revinclude", "RelatedPerson:patient");
+            var queryResult = patientHandler.Query(query);
+            Assert.AreEqual(1, queryResult.TotalResults);
+            Assert.AreEqual(2, queryResult.Results.Count); // patient + mother
+
+            Assert.AreEqual("http://ohie.org/test/test", queryResult.Results.OfType<Patient>().First().Identifier.First().System);
+            Assert.AreEqual("FLYNN", queryResult.Results.OfType<Patient>().First().Name.First().Given.First());
+            Assert.AreEqual("FHR-070", queryResult.Results.OfType<Patient>().First().Identifier.First().Value);
+            Assert.AreEqual("ALLISON", queryResult.Results.OfType<RelatedPerson>().First().Name.First().Given.First());
 
 
         }
