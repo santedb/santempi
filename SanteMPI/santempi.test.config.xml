@@ -331,8 +331,24 @@
   <!-- Configures the FHIR service-->
   <section xsi:type="FhirServiceConfigurationSection" restEndpoint="FHIR" index="home-page.html ">
     <resourceHandlers>
-      <add type="SanteDB.Messaging.FHIR.Handlers.PatientResourceHandler, SanteDB.Messaging.FHIR"/>
-      <add type="SanteDB.Messaging.FHIR.Handlers.BundleResourceHandler, SanteDB.Messaging.FHIR"/>
+      <add type="SanteDB.Messaging.FHIR.Handlers.AdverseEventResourceHandler, SanteDB.Messaging.FHIR" />
+      <add type="SanteDB.Messaging.FHIR.Handlers.AllergyIntoleranceResourceHandler, SanteDB.Messaging.FHIR" />
+      <add type="SanteDB.Messaging.FHIR.Handlers.BundleResourceHandler, SanteDB.Messaging.FHIR" />
+      <add type="SanteDB.Messaging.FHIR.Handlers.ConditionResourceHandler, SanteDB.Messaging.FHIR" />
+      <add type="SanteDB.Messaging.FHIR.Handlers.EncounterResourceHandler, SanteDB.Messaging.FHIR" />
+      <add type="SanteDB.Messaging.FHIR.Handlers.ImmunizationRecommendationResourceHandler, SanteDB.Messaging.FHIR" />
+      <add type="SanteDB.Messaging.FHIR.Handlers.ImmunizationResourceHandler, SanteDB.Messaging.FHIR" />
+      <add type="SanteDB.Messaging.FHIR.Handlers.LocationResourceHandler, SanteDB.Messaging.FHIR" />
+      <add type="SanteDB.Messaging.FHIR.Handlers.MedicationAdministrationResourceHandler, SanteDB.Messaging.FHIR" />
+      <add type="SanteDB.Messaging.FHIR.Handlers.MedicationResourceHandler, SanteDB.Messaging.FHIR" />
+      <add type="SanteDB.Messaging.FHIR.Handlers.ObservationResourceHandler, SanteDB.Messaging.FHIR" />
+      <add type="SanteDB.Messaging.FHIR.Handlers.OrganizationResourceHandler, SanteDB.Messaging.FHIR" />
+      <add type="SanteDB.Messaging.FHIR.Handlers.PatientResourceHandler, SanteDB.Messaging.FHIR" />
+      <add type="SanteDB.Messaging.FHIR.Handlers.PractitionerResourceHandler, SanteDB.Messaging.FHIR" />
+      <add type="SanteDB.Messaging.FHIR.Handlers.RelatedPersonResourceHandler, SanteDB.Messaging.FHIR" />
+      <add type="SanteDB.Messaging.FHIR.Handlers.StructureDefinitionHandler, SanteDB.Messaging.FHIR" />
+      <add type="SanteDB.Messaging.FHIR.Handlers.SubscriptionResourceHandler, SanteDB.Messaging.FHIR" />
+      <add type="SanteDB.Messaging.FHIR.Handlers.SubstanceResourceHandler, SanteDB.Messaging.FHIR" />
     </resourceHandlers>
     <messageHandlers>
       <add type="SanteMPI.Messaging.IHE.FHIR.PatientMasterIdentityOperation, SanteMPI.Messaging.IHE" />

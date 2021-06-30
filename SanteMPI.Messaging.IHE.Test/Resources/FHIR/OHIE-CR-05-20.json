@@ -74,17 +74,7 @@
                     }
                   ]
                 }
-              ],
-              "name": [
-                {
-                  "use": "usual",
-                  "family": "Abels",
-                  "given": [
-                    "Sarah"
-                  ]
-                }
-              ],
-              "gender": "female"
+              ]
             },
             "request": {
               "method": "POST",
@@ -98,14 +88,14 @@
               "id": "ohie-cr-05-10-fhir-mother",
               "identifier": [
                 {
-                  "use": "normal",
+                  "use": "official",
                   "system": "http://ohie.org/test/test",
                   "value": "FHR-0844"
                 }
               ],
               "name": [
                 {
-                  "use": "usual",
+                  "use": "maiden",
                   "family": "Abels",
                   "given": [
                     "Sarah"
@@ -116,8 +106,10 @@
               "birthDate": "1984-05-25",
               "link": [
                 {
-                  "other": "RelatedPerson/ohie-cr-05-20-fhir-mother-rp",
-                  "type": "see-also"
+                  "other": {
+                    "reference":"RelatedPerson/ohie-cr-05-20-fhir-mother-rp"
+                  },
+                  "type": "seealso"
                 }
               ]
             },

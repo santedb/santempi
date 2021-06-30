@@ -6,12 +6,12 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(VersionNumber)' == ''">
-    <VersionNumber>2.1.7</VersionNumber>
+    <VersionNumber>2.1.0-debug</VersionNumber>
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="SanteDB.Messaging.FHIR" Version="2.1.27" />
-    <PackageReference Include="SanteDB.Messaging.HL7" Version="2.1.27" />
+    <PackageReference Include="SanteDB.Messaging.FHIR" Version="$(VersionNumber)" />
+    <PackageReference Include="SanteDB.Messaging.HL7" Version="$(VersionNumber)" />
   </ItemGroup>
   
   <ItemGroup>

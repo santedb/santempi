@@ -11,18 +11,11 @@ services:
       POSTGRES_PASSWORD: SanteDB123
     restart: always
 
-  cache:
-    image: redis:5
-    container_name: sdb-redis
-    ports:
-      - "6379:6379"
-    restart: always
-
   santedb:
-    image: santesuite/santedb-mpi:2.1.3
+    image: santesuite/santedb-mpi:latest
     container_name: santedb-mpi
     environment:
-      - SDB_FEATURE=LOG;DATA_POLICY;AUDIT_REPO;ADO;PUBSUB_ADO;RAMCACHE;SEC;SWAGGER;OPENID;FHIR;HL7;HDSI;AMI;BIS;MDM;MATCHING
+      - SDB_FEATURE=LOG;DATA_POLICY;AUDIT_REPO;ADO;PUBSUB_ADO;RAMCACHE;SEC;SWAGGER;OPENID;FHIR;HL7;HDSI;AMI;BIS;MDM;MATCHING;IHE_PIXM;IHE_PDQM;IHE_PMIR
       - SDB_MATCHING_MODE=WEIGHTED
       - SDB_MDM_RESOURCE=Patient=org.santedb.matching.patient.default
       - SDB_MDM_AUTO_MERGE=false
@@ -38,5 +31,4 @@ services:
       - "2100:2100"
     depends_on:
       - db
-      - cache
     restart: always

@@ -52,11 +52,20 @@ namespace SanteMPI.Messaging.IHE.Test
                 {
                     "Patient",
                     "Bundle",
-                    "RelatedPerson"
+                    "RelatedPerson",
+                    "Practitioner",
+                    "Organization"
                 },
                 OperationHandlers = new System.Collections.Generic.List<SanteDB.Core.Configuration.TypeReferenceConfiguration>(),
-                ExtensionHandlers = new System.Collections.Generic.List<SanteDB.Core.Configuration.TypeReferenceConfiguration>(),
+                ExtensionHandlers = new System.Collections.Generic.List<SanteDB.Core.Configuration.TypeReferenceConfiguration>()
+                {
+                    new SanteDB.Core.Configuration.TypeReferenceConfiguration(typeof(MothersMaidenNameExtension))
+                },
                 ProfileHandlers = new System.Collections.Generic.List<SanteDB.Core.Configuration.TypeReferenceConfiguration>(),
+                BehaviorModifiers = new System.Collections.Generic.List<SanteDB.Core.Configuration.TypeReferenceConfiguration>()
+                {
+                    new SanteDB.Core.Configuration.TypeReferenceConfiguration(typeof(PatientDemographicsQueryModifier))
+                },
                 MessageHandlers = new System.Collections.Generic.List<SanteDB.Core.Configuration.TypeReferenceConfiguration>()
                 {
                     new SanteDB.Core.Configuration.TypeReferenceConfiguration(typeof(PatientMasterIdentityOperation))
@@ -107,9 +116,9 @@ namespace SanteMPI.Messaging.IHE.Test
             var query = new System.Collections.Specialized.NameValueCollection();
             query.Add("identifier", "http://ohie.org/test/test|FHR-403");
             var queryResult = patientHandler.Query(query);
-            Assert.AreEqual(1, queryResult.TotalResults);
-            Assert.AreEqual("OID", queryResult.Results.OfType<Patient>().First().Name.First().Family);
-            Assert.AreEqual("http://ohie.org/test/test", queryResult.Results.OfType<Patient>().First().Identifier.First().System);
+            Assert.AreEqual(1, queryResult.Total);
+            Assert.AreEqual("OID", queryResult.Entry.Select(o=>o.Resource).OfType<Patient>().First().Name.First().Family);
+            Assert.AreEqual("http://ohie.org/test/test", queryResult.Entry.Select(o=>o.Resource).OfType<Patient>().First().Identifier.First().System);
 
             // Register Uma URL
             rqo = TestUtil.GetFhirMessage("OHIE-CR-02-30");
@@ -123,9 +132,9 @@ namespace SanteMPI.Messaging.IHE.Test
             query = new System.Collections.Specialized.NameValueCollection();
             query.Add("identifier", "urn:oid:1.3.6.1.4.1.52820.3.72.5.9.1|FHR-404");
             queryResult = patientHandler.Query(query);
-            Assert.AreEqual(1, queryResult.TotalResults);
-            Assert.AreEqual("URL", queryResult.Results.OfType<Patient>().First().Name.First().Family);
-            Assert.AreEqual("http://ohie.org/test/test", queryResult.Results.OfType<Patient>().First().Identifier.First().System);
+            Assert.AreEqual(1, queryResult.Total);
+            Assert.AreEqual("URL", queryResult.Entry.Select(o=>o.Resource).OfType<Patient>().First().Name.First().Family);
+            Assert.AreEqual("http://ohie.org/test/test", queryResult.Entry.Select(o=>o.Resource).OfType<Patient>().First().Identifier.First().System);
 
         }
 
@@ -192,8 +201,8 @@ namespace SanteMPI.Messaging.IHE.Test
             var query = new System.Collections.Specialized.NameValueCollection();
             query.Add("identifier", "http://ohie.org/test/test_a|FHRA-0392");
             var queryResult = patientHandler.Query(query);
-            Assert.AreEqual(1, queryResult.TotalResults);
-            Assert.AreEqual("http://ohie.org/test/test_a", queryResult.Results.OfType<Patient>().First().Identifier.First().System);
+            Assert.AreEqual(1, queryResult.Total);
+            Assert.AreEqual("http://ohie.org/test/test_a", queryResult.Entry.Select(o=>o.Resource).OfType<Patient>().First().Identifier.First().System);
 
             // Authenticate TEST HARNESS B
             TestUtil.AuthenticateFhir("TEST_HARNESS_FHIR_B", HarnessSecret);
@@ -216,9 +225,9 @@ namespace SanteMPI.Messaging.IHE.Test
             query = new System.Collections.Specialized.NameValueCollection();
             query.Add("identifier", "http://ohie.org/test/test_b|FHRB-4736");
             queryResult = patientHandler.Query(query);
-            Assert.AreEqual(1, queryResult.TotalResults);
-            Assert.IsTrue(queryResult.Results.OfType<Patient>().First().Identifier.Any(o=>o.System == "http://ohie.org/test/test_a" && o.Value == "FHRA-0392" ));
-            Assert.IsTrue(queryResult.Results.OfType<Patient>().First().Identifier.Any(o=>o.System == "http://ohie.org/test/test_b" && o.Value == "FHRB-4736"));
+            Assert.AreEqual(1, queryResult.Total);
+            Assert.IsTrue(queryResult.Entry.Select(o=>o.Resource).OfType<Patient>().First().Identifier.Any(o=>o.System == "http://ohie.org/test/test_a" && o.Value == "FHRA-0392" ));
+            Assert.IsTrue(queryResult.Entry.Select(o=>o.Resource).OfType<Patient>().First().Identifier.Any(o=>o.System == "http://ohie.org/test/test_b" && o.Value == "FHRB-4736"));
 
         }
 
@@ -250,13 +259,13 @@ namespace SanteMPI.Messaging.IHE.Test
             query.Add("identifier", "http://ohie.org/test/test|FHR-4956");
             query.Add("_revinclude", "RelatedPerson:patient");
             var queryResult = patientHandler.Query(query);
-            Assert.AreEqual(1, queryResult.TotalResults);
-            Assert.AreEqual(2, queryResult.Results.Count); // patient + mother
+            Assert.AreEqual(1, queryResult.Total);
+            Assert.AreEqual(2, queryResult.Entry.Count); // patient + mother
             
-            Assert.AreEqual("http://ohie.org/test/test", queryResult.Results.OfType<Patient>().First().Identifier.First().System);
-            Assert.AreEqual("WIN MINH", queryResult.Results.OfType<Patient>().First().Name.First().Given.First());
-            Assert.AreEqual("FHR-4956", queryResult.Results.OfType<Patient>().First().Identifier.First().Value);
-            Assert.AreEqual("SU MYAT LWIN", queryResult.Results.OfType<RelatedPerson>().First().Name.First().Given.First());
+            Assert.AreEqual("http://ohie.org/test/test", queryResult.Entry.Select(o=>o.Resource).OfType<Patient>().First().Identifier.First().System);
+            Assert.AreEqual("WIN MINH", queryResult.Entry.Select(o=>o.Resource).OfType<Patient>().First().Name.First().Given.First());
+            Assert.AreEqual("FHR-4956", queryResult.Entry.Select(o=>o.Resource).OfType<Patient>().First().Identifier.First().Value);
+            Assert.AreEqual("SU MYAT LWIN", queryResult.Entry.Select(o=>o.Resource).OfType<RelatedPerson>().First().Name.First().Given.First());
 
             // Register Mother Patient and Newborn Demographics in Tx bundle
             rqo = TestUtil.GetFhirMessage("OHIE-CR-05-20");
@@ -267,51 +276,47 @@ namespace SanteMPI.Messaging.IHE.Test
 
             // Validate the newborn record
             query = new System.Collections.Specialized.NameValueCollection();
-            query.Add("identifier", "http://ohie.org/test/test|FHR-4873");
+            query.Add("identifier", "http://ohie.org/test/test|FHR-4837");
             query.Add("_revinclude", "RelatedPerson:patient");
             queryResult = patientHandler.Query(query);
-            Assert.AreEqual(1, queryResult.TotalResults);
-            Assert.AreEqual(2, queryResult.Results.Count); // patient + mother
-            Assert.AreEqual("http://ohie.org/test/test", queryResult.Results.OfType<Patient>().First().Identifier.First().System);
-            Assert.AreEqual(new Date(2021, 04, 25), queryResult.Results.OfType<Patient>().First().BirthDateElement);
-            Assert.AreEqual(AdministrativeGender.Female, queryResult.Results.OfType<Patient>().First().Gender);
-            Assert.AreEqual("FHR-4873", queryResult.Results.OfType<Patient>().First().Identifier.First().Value);
-            
+            Assert.AreEqual(1, queryResult.Total);
+            Assert.AreEqual(2, queryResult.Entry.Count); // patient + mother
+            Assert.AreEqual("http://ohie.org/test/test", queryResult.Entry.Select(o=>o.Resource).OfType<Patient>().First().Identifier.First().System);
+            Assert.AreEqual(new Date(2021, 04, 25), queryResult.Entry.Select(o=>o.Resource).OfType<Patient>().First().BirthDateElement);
+            Assert.AreEqual(AdministrativeGender.Female, queryResult.Entry.Select(o=>o.Resource).OfType<Patient>().First().Gender);
+            Assert.AreEqual("FHR-4837", queryResult.Entry.Select(o=>o.Resource).OfType<Patient>().First().Identifier.First().Value);
+            Assert.AreEqual("Sarah Abels", queryResult.Entry.Select(o => o.Resource).OfType<Patient>().First().Extension.First(o => o.Url == "http://hl7.org/fhir/StructureDefinition/patient-mothersMaidenName").Value.ToString());
             // Validate mother RP
-            Assert.AreEqual("Sarah", queryResult.Results.OfType<RelatedPerson>().First().Name.First().Given.First());
-            Assert.AreEqual("Abels", queryResult.Results.OfType<RelatedPerson>().First().Name.First().Family);
-            Assert.AreEqual("FHR-0844", queryResult.Results.OfType<RelatedPerson>().First().Identifier.First().Value);
-            Assert.AreEqual(AdministrativeGender.Female, queryResult.Results.OfType<RelatedPerson>().First().Gender);
+            Assert.AreEqual("Sarah", queryResult.Entry.Select(o=>o.Resource).OfType<RelatedPerson>().First().Name.First().Given.First());
+            Assert.AreEqual("Abels", queryResult.Entry.Select(o=>o.Resource).OfType<RelatedPerson>().First().Name.First().Family);
+            Assert.AreEqual("FHR-0844", queryResult.Entry.Select(o=>o.Resource).OfType<RelatedPerson>().First().Identifier.First().Value);
+            Assert.AreEqual(AdministrativeGender.Female, queryResult.Entry.Select(o=>o.Resource).OfType<RelatedPerson>().First().Gender);
 
             // Query for the mother's patient :)
             query = new System.Collections.Specialized.NameValueCollection();
             query.Add("identifier", "http://ohie.org/test/test|FHR-0844");
-            query.Add("_include", "RelatedPerson:link");
             queryResult = patientHandler.Query(query);
-            Assert.AreEqual(1, queryResult.TotalResults);
-            Assert.AreEqual(2, queryResult.Results.Count); // mother patient + mother rp
+            Assert.AreEqual(1, queryResult.Total);
 
-            Assert.AreEqual("http://ohie.org/test/test", queryResult.Results.OfType<Patient>().First().Identifier.First().System);
-            Assert.AreEqual("Sarah", queryResult.Results.OfType<Patient>().First().Name.First().Given.First());
-            Assert.AreEqual("Abels", queryResult.Results.OfType<Patient>().First().Name.First().Family);
-            Assert.AreEqual(AdministrativeGender.Female, queryResult.Results.OfType<Patient>().First().Gender);
-            Assert.AreEqual("FHR-0844", queryResult.Results.OfType<Patient>().First().Identifier.First().Value);
+            Assert.AreEqual("http://ohie.org/test/test", queryResult.Entry.Select(o=>o.Resource).OfType<Patient>().First().Identifier.First().System);
+            Assert.AreEqual("Sarah", queryResult.Entry.Select(o=>o.Resource).OfType<Patient>().First().Name.First().Given.First());
+            Assert.AreEqual("Abels", queryResult.Entry.Select(o=>o.Resource).OfType<Patient>().First().Name.First().Family);
+            Assert.AreEqual(AdministrativeGender.Female, queryResult.Entry.Select(o=>o.Resource).OfType<Patient>().First().Gender);
+            Assert.AreEqual("FHR-0844", queryResult.Entry.Select(o=>o.Resource).OfType<Patient>().First().Identifier.First().Value);
 
-            // Validate mother RP
-            Assert.AreEqual("FHR-0844", queryResult.Results.OfType<RelatedPerson>().First().Identifier.First().Value);
-            Assert.AreEqual(AdministrativeGender.Female, queryResult.Results.OfType<RelatedPerson>().First().Gender);
-
-            // Query for PDQm 
+            // Query for PDQm - Mother's Maiden Name
             query = new System.Collections.Specialized.NameValueCollection();
             query.Add("mothersMaidenName", "Abels");
             query.Add("_revinclude", "RelatedPerson:patient");
             queryResult = patientHandler.Query(query);
-            Assert.AreEqual(1, queryResult.TotalResults);
-            Assert.AreEqual(2, queryResult.Results.Count); // patient + mother
-            Assert.AreEqual("http://ohie.org/test/test", queryResult.Results.OfType<Patient>().First().Identifier.First().System);
-            Assert.AreEqual(new Date(2021, 04, 25), queryResult.Results.OfType<Patient>().First().BirthDateElement);
-            Assert.AreEqual(AdministrativeGender.Female, queryResult.Results.OfType<Patient>().First().Gender);
-            Assert.AreEqual("FHR-4873", queryResult.Results.OfType<Patient>().First().Identifier.First().Value);
+            Assert.AreEqual(1, queryResult.Total);
+            Assert.AreEqual(2, queryResult.Entry.Count); // patient + mother
+            Assert.AreEqual("http://ohie.org/test/test", queryResult.Entry.Select(o=>o.Resource).OfType<Patient>().First().Identifier.First().System);
+            Assert.AreEqual(new Date(2021, 04, 25), queryResult.Entry.Select(o=>o.Resource).OfType<Patient>().First().BirthDateElement);
+            Assert.AreEqual(AdministrativeGender.Female, queryResult.Entry.Select(o=>o.Resource).OfType<Patient>().First().Gender);
+            Assert.AreEqual("FHR-4837", queryResult.Entry.Select(o=>o.Resource).OfType<Patient>().First().Identifier.First().Value);
+
+            // Query 
         }
 
         /// <summary>
@@ -342,15 +347,17 @@ namespace SanteMPI.Messaging.IHE.Test
             var query = new System.Collections.Specialized.NameValueCollection();
             query.Add("identifier", "http://ohie.org/test/test|FHR-070");
             query.Add("_revinclude", "RelatedPerson:patient");
+            query.Add("_include", "Organization:managingOrganization");
+            query.Add("_include", "Practitioner:generalPractitioner");
             var queryResult = patientHandler.Query(query);
-            Assert.AreEqual(1, queryResult.TotalResults);
-            Assert.AreEqual(2, queryResult.Results.Count); // patient + mother
+            Assert.AreEqual(1, queryResult.Total);
+            Assert.AreEqual(4, queryResult.Entry.Count); // patient + wife + managing org + gp
 
-            Assert.AreEqual("http://ohie.org/test/test", queryResult.Results.OfType<Patient>().First().Identifier.First().System);
-            Assert.AreEqual("FLYNN", queryResult.Results.OfType<Patient>().First().Name.First().Given.First());
-            Assert.AreEqual("FHR-070", queryResult.Results.OfType<Patient>().First().Identifier.First().Value);
-            Assert.AreEqual("ALLISON", queryResult.Results.OfType<RelatedPerson>().First().Name.First().Given.First());
-
+            Assert.AreEqual("http://ohie.org/test/test", queryResult.Entry.Select(o=>o.Resource).OfType<Patient>().First().Identifier.First().System);
+            Assert.AreEqual("Flynn", queryResult.Entry.Select(o=>o.Resource).OfType<Patient>().First().Name.First().Given.First());
+            Assert.AreEqual("FHR-070", queryResult.Entry.Select(o=>o.Resource).OfType<Patient>().First().Identifier.First().Value);
+            Assert.AreEqual("Allison", queryResult.Entry.Select(o=>o.Resource).OfType<RelatedPerson>().First().Name.First().Given.First());
+            
 
         }
     }
