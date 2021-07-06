@@ -2,6 +2,8 @@ FROM santesuite/santedb-icdr:latest
 MAINTAINER "SanteSuite Contributors"
 COPY ./bin/Release/SanteMPI.Messaging.IHE.dll /santedb/SanteMPI.Messaging.IHE.dll
 COPY ./bin/Release/SanteMPI.Persistence.ADO.dll /santedb/SanteMPI.Persistence.ADO.dll
+COPY ./bin/Release/SanteMPI.i18n.dll /santedb/SanteMPI.i18n.dll
+
 COPY ./dist/santempi.sln.pak /santedb/applets/santempi.sln.pak
 RUN mkdir /santedb/matching
 COPY ./matching/DefaultPatientMatching.xml /santedb/match/default.xml

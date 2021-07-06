@@ -45,13 +45,13 @@ namespace SanteMPI.Messaging.IHE.Docker
             }
             else if(fhirConfig.MessageHandlers != null )
             {
-                fhirConfig.MessageHandlers.Add(new TypeReferenceConfiguration(typeof(PatientIdentityCrossReferenceMobileOperation)));
+                fhirConfig.MessageHandlers.Add(new TypeReferenceConfiguration(typeof(PatientMasterIdentityOperation)));
             }
             else
             {
                 fhirConfig.MessageHandlers = new List<TypeReferenceConfiguration>()
                 {
-                    new TypeReferenceConfiguration(typeof(PatientIdentityCrossReferenceMobileOperation))
+                    new TypeReferenceConfiguration(typeof(PatientMasterIdentityOperation))
                 };
             }
         }

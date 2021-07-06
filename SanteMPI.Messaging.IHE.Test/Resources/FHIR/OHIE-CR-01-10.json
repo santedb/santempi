@@ -3,7 +3,7 @@
   "type": "message",
   "entry": [
     {
-      "fullUrl": "MessageHeader/ohie-cr-02-10-fhir",
+      "fullUrl": "MessageHeader/ohie-cr-01-10-fhir",
       "resource": {
         "resourceType": "MessageHeader",
         "id": "1",

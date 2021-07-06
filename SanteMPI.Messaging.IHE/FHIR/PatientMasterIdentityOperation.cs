@@ -105,7 +105,10 @@ namespace SanteMPI.Messaging.IHE.FHIR
             // This is done because the odd way FHIR does RelatedPerson linkages, we want to process the entire bundle and let the mapper handle resolving 
             var sdbBundle = this.m_bundleHandler.MapToModel(bundle) as SanteDB.Core.Model.Collection.Bundle;
 
-            OperationOutcome retVal = new OperationOutcome();
+            OperationOutcome retVal = new OperationOutcome()
+            {
+                Id = Guid.NewGuid().ToString()
+            };
 
             // Patient handler
             // Entry for bundle
