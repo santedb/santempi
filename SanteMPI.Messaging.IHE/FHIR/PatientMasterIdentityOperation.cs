@@ -152,7 +152,9 @@ namespace SanteMPI.Messaging.IHE.FHIR
                                 var sdbTransaction = new SanteDB.Core.Model.Collection.Bundle();
                                 sdbTransaction.Add(focalObject);
                                 sdbTransaction.Item.AddRange(dependentObjects);
+                                sdbTransaction.Item.InsertRange(0, sdbBundle.Item.OfType<Entity>().Where(i => dependentObjects.OfType<ITargetedAssociation>().Any(a => a.TargetEntityKey == i.Key)));
                                 this.m_batchRepository.Insert(sdbTransaction);
+                                
                                 retVal.Issue.Add(new OperationOutcome.IssueComponent()
                                 {
                                     Severity = OperationOutcome.IssueSeverity.Information,
