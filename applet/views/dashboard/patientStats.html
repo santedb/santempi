@@ -1,0 +1,22 @@
+<div xmlns="http://www.w3.org/1999/xhtml" xmlns:sdb="http://santedb.org/applet" class="container-fluid p-0"
+    >
+    <sdb:widget order="30" name="ui.mpi.dashboard.stats" headerClass="bl-light" size="Large"
+        type="Panel" context="org.santedb.mpi.dashboard" >
+        <sdb:icon>fas fa-users</sdb:icon>
+        <sdb:description lang="en">Recent Patients</sdb:description>
+    </sdb:widget>
+
+    <div class="row">
+        <div class="col-4">
+            <report-view id="'org.santedb.bi.core.reports.patient.age'" view="'chart'" legend="true" parameters="{}" />
+        </div>
+        <div class="col-4">
+            <report-view id="'org.santedb.bi.core.reports.patient.gender'" view="'chart'" legend="true"
+                parameters="{}" />
+        </div>
+        <div class="col-4">
+            <report-view id="'org.santedb.bi.core.reports.patient.regDate'" view="'chart'" legend="true"
+                parameters="{}" />
+        </div>
+    </div>
+</div>

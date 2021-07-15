@@ -99,7 +99,7 @@ angular.module('santedb').controller('EntityRelationshipDiagramController', ["$s
                         return retVal;
                     }).flat();
                     var results = await Promise.all(promises);
-                    results.forEach((r)=>graphDefinition += r);
+                    results.filter((r)=>graphDefinition.indexOf(r) == -1).forEach((r)=>graphDefinition += r);
                 }
 
                 // reverse relationships
@@ -110,7 +110,7 @@ angular.module('santedb').controller('EntityRelationshipDiagramController', ["$s
                         return renderRelationship(n, r, 'UNK', true) ;
                     }).flat();
                     var results = await Promise.all(promises);
-                    results.forEach((r)=>graphDefinition += r);
+                    results.filter((r)=>graphDefinition.indexOf(r) == -1).forEach((r)=>graphDefinition += r);
                 }
 
                 mermaid.mermaidAPI.render('entityNetworkDiagram', graphDefinition, (svg)=> $("#renderSvg").html(svg));

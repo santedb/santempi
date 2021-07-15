@@ -59,7 +59,7 @@ angular.module('santedb').controller('recentPatientsController', ["$scope", "$ro
         if(patient.identifier) {
             Object.keys(patient.identifier).forEach(function(id) {
                 if(preferred && id == preferred || !preferred)
-                    retVal += `${patient.identifier[id].value} <span class="badge badge-dark">${ patient.identifier[id].authority ? patient.identifier[id].authority.name : id }</span> ,`;
+                    retVal += `${patient.identifier[id][0].value} <span class="badge badge-dark">${ patient.identifier[id][0].authority ? patient.identifier[id][0].authority.name : id }</span> ,`;
             });
         }
         else retVal += "N/A ";
