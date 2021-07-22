@@ -118,7 +118,7 @@ namespace SanteMPI.Messaging.IHE.FHIR
                 var focalObject = sdbBundle.Item.OfType<SanteDB.Core.Model.Roles.Patient>().FirstOrDefault(o => o.GetTag(FhirConstants.OriginalUrlTag) == itm.FullUrl);
                 if (focalObject == null)
                 {
-                    throw new InvalidOperationException("Shouldn't be here - Cannot find converted object - Is the patient missing a fullUrl?");
+                    throw new InvalidOperationException($"Shouldn't be here - Cannot find converted object for {itm.FullUrl} - Is the patient missing a fullUrl?");
                 }
 
                 // HACK: Attempt to try and determine what the sender is trying to convey? Is it a merge? Is it an update?
@@ -151,6 +151,7 @@ namespace SanteMPI.Messaging.IHE.FHIR
                                     .Union(sdbBundle.Item.OfType<ITargetedAssociation>().Where(r=>r.TargetEntityKey == focalObject.Key || r.SourceEntityKey == focalObject.Key).OfType<IdentifiedData>());
                                 var sdbTransaction = new SanteDB.Core.Model.Collection.Bundle();
                                 sdbTransaction.Add(focalObject);
+                                sdbTransaction.FocalObjects.Add(focalObject.Key.Value);
                                 sdbTransaction.Item.AddRange(dependentObjects);
                                 sdbTransaction.Item.InsertRange(0, sdbBundle.Item.OfType<Entity>().Where(i => dependentObjects.OfType<ITargetedAssociation>().Any(a => a.TargetEntityKey == i.Key)));
                                 this.m_batchRepository.Insert(sdbTransaction);
