@@ -8,17 +8,20 @@ using SanteDB.Core.Security;
 using SanteDB.Core.Security.Services;
 using SanteDB.Core.Services;
 using SanteDB.Core.TestFramework;
+using SanteDB.Messaging.FHIR.Exceptions;
 using SanteDB.Messaging.FHIR.Handlers;
 using SanteDB.Messaging.FHIR.Rest;
 using SanteDB.Messaging.FHIR.Util;
 using SanteMPI.Messaging.IHE.FHIR;
 using System.Linq;
+using System.Net;
 
 namespace SanteMPI.Messaging.IHE.Test
 {
     /// <summary>
     /// Test that functions are operating as expected
     /// </summary>
+    [TestFixture]
     public class TestPMIR : DataTest
     {
 
@@ -35,7 +38,7 @@ namespace SanteMPI.Messaging.IHE.Test
         /// Test context
         /// </summary>
         /// <param name="context"></param>
-        [SetUp]
+        [OneTimeSetUp]
         public void Initialize()
         {
             // Force load of the DLL
@@ -72,8 +75,12 @@ namespace SanteMPI.Messaging.IHE.Test
                 }
             };
 
-            FhirResourceHandlerUtil.Initialize(testConfiguration, this.m_serviceManager);
-            ExtensionUtil.Initialize(testConfiguration);
+            using (AuthenticationContext.EnterSystemContext())
+            {
+                FhirResourceHandlerUtil.Initialize(testConfiguration, this.m_serviceManager);
+                ExtensionUtil.Initialize(testConfiguration);
+            }
+
         }
 
         /// <summary>
@@ -83,12 +90,17 @@ namespace SanteMPI.Messaging.IHE.Test
         public void TestOhieCr01Fhir()
         {
             // Test harness sends a mal-formed message
-            var rqo = TestUtil.GetFhirMessage("OHIE-CR-01-10");
-            Assert.IsInstanceOf<Bundle>(rqo);
-            var response = this.m_serviceManager.CreateInjected<BundleResourceHandler>().Create(rqo, SanteDB.Core.Services.TransactionMode.Commit);
-            TestUtil.AssertFhirOutcome<OperationOutcome>(response, MessageHeader.ResponseType.FatalError, out OperationOutcome oo);
-            Assert.AreEqual(false, oo.Success);
-            Assert.GreaterOrEqual(1, oo.Issue.Count);
+            try
+            {
+                var rqo = TestUtil.GetFhirMessage("OHIE-CR-01-10");
+                Assert.IsInstanceOf<Bundle>(rqo);
+                this.m_serviceManager.CreateInjected<BundleResourceHandler>().Create(rqo, SanteDB.Core.Services.TransactionMode.Commit);
+                Assert.Fail();
+            }
+            catch (FhirException e)
+            {
+                Assert.AreEqual(HttpStatusCode.BadRequest, e.Status);
+            }
         }
 
         /// <summary>

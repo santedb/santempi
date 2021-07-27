@@ -43,7 +43,7 @@ namespace SanteMPI.Messaging.IHE.FHIR
         public IDictionary<String, FHIRAllTypes> Parameters => new Dictionary<String, FHIRAllTypes>()
         {
             {  "sourceIdentifier", FHIRAllTypes.String },
-            { "targetDomain", FHIRAllTypes.String }
+            { "targetSystem", FHIRAllTypes.String }
         };
         /// <summary>
         /// Get whether this operation is a GET operation

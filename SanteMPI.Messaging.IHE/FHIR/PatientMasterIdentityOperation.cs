@@ -112,70 +112,71 @@ namespace SanteMPI.Messaging.IHE.FHIR
 
             // Patient handler
             // Entry for bundle
-            foreach (var itm in bundle.Entry.Where(o => o.Resource is Patient))
+            foreach (var itm in bundle.Entry)
             {
-                // Get the converted object
-                var focalObject = sdbBundle.Item.OfType<SanteDB.Core.Model.Roles.Patient>().FirstOrDefault(o => o.GetTag(FhirConstants.OriginalUrlTag) == itm.FullUrl);
-                if (focalObject == null)
+                if (itm.Resource is Patient patient)
                 {
-                    throw new InvalidOperationException($"Shouldn't be here - Cannot find converted object for {itm.FullUrl} - Is the patient missing a fullUrl?");
-                }
+                    // Get the converted object
+                    var focalObject = sdbBundle.Item.OfType<SanteDB.Core.Model.Roles.Patient>().FirstOrDefault(o => o.GetTag(FhirConstants.OriginalUrlTag) == itm.FullUrl);
+                    if (focalObject == null)
+                    {
+                        throw new InvalidOperationException($"Shouldn't be here - Cannot find converted object for {itm.FullUrl} - Is the patient missing a fullUrl?");
+                    }
 
-                // HACK: Attempt to try and determine what the sender is trying to convey? Is it a merge? Is it an update?
-                // Is it a create? We don't know, so try to determine based on the attributes in the message.
-                switch (itm.Request.Method)
-                {
-                    case HTTPVerb.POST:
-                    case HTTPVerb.PUT: // Might be a merge or might be an update?
-                        {
-                            // PMIR -> Replaced By is a link that exists on the focal object 
-                            var fhirPatientReplacementInstruction = (itm.Resource as Patient).Link.FirstOrDefault(l => l.Type == Patient.LinkType.ReplacedBy);
-                            if (fhirPatientReplacementInstruction != null) // Requesting a replacement
+                    // HACK: Attempt to try and determine what the sender is trying to convey? Is it a merge? Is it an update?
+                    // Is it a create? We don't know, so try to determine based on the attributes in the message.
+                    switch (itm.Request.Method)
+                    {
+                        case HTTPVerb.POST:
+                        case HTTPVerb.PUT: // Might be a merge or might be an update?
                             {
-                                var survivor = DataTypeConverter.ResolveEntity(fhirPatientReplacementInstruction.Other, itm.Resource);
-                                if (survivor == null)
+                                // PMIR -> Replaced By is a link that exists on the focal object 
+                                var fhirPatientReplacementInstruction = patient.Link.FirstOrDefault(l => l.Type == Patient.LinkType.ReplacedBy);
+                                if (!patient.Active.GetValueOrDefault() &&
+                                    fhirPatientReplacementInstruction != null) // Requesting a replacement (old is obsolete and there is a replaced by)
                                 {
-                                    throw new InvalidOperationException(ErrorMessages.ERR_ITI93_MERGE_TARGET_UNKNOWN);
+                                    var survivor = DataTypeConverter.ResolveEntity(fhirPatientReplacementInstruction.Other, itm.Resource);
+                                    if (survivor == null)
+                                    {
+                                        throw new InvalidOperationException(ErrorMessages.ERR_ITI93_MERGE_TARGET_UNKNOWN);
+                                    }
+                                    this.m_mergeService.Merge(survivor.Key.Value, new Guid[] { focalObject.Key.Value });
+                                    retVal.Issue.Add(new OperationOutcome.IssueComponent()
+                                    {
+                                        Severity = OperationOutcome.IssueSeverity.Information,
+                                        Diagnostics = $"Merge {focalObject.Key} -> {survivor.Key}"
+                                    });
                                 }
-                                this.m_mergeService.Merge(survivor.Key.Value, new Guid[] { focalObject.Key.Value });
+                                else
+                                {
+                                    // Get all objects which the object depends on this one and don't include replaces (since that is merge instructions in this profile)
+                                    var sdbTransaction = new SanteDB.Core.Model.Collection.Bundle();
+                                    sdbTransaction.Add(focalObject);
+                                    sdbTransaction.FocalObjects.Add(focalObject.Key.Value);
+                                    sdbTransaction.Item.InsertRange(0, sdbBundle.Item.Where(o => o != focalObject));
+                                    this.m_batchRepository.Insert(sdbTransaction);
+
+                                    retVal.Issue.Add(new OperationOutcome.IssueComponent()
+                                    {
+                                        Severity = OperationOutcome.IssueSeverity.Information,
+                                        Diagnostics = $"Register/Update {focalObject}"
+                                    });
+                                }
+                                break;
+                            }
+                        case HTTPVerb.DELETE:
+                            {
+                                this.m_repository.Obsolete(focalObject.Key.Value);
                                 retVal.Issue.Add(new OperationOutcome.IssueComponent()
                                 {
                                     Severity = OperationOutcome.IssueSeverity.Information,
-                                    Diagnostics = $"Merge {focalObject.Key} -> {survivor.Key}"
+                                    Diagnostics = $"Deleted {focalObject}"
                                 });
+                                break;
                             }
-                            else
-                            {
-                                // Get all objects which the object depends on this one and don't include replaces (since that is merge instructions in this profile)
-                                var dependentObjects = sdbBundle.Item.OfType<Entity>().Where(o => o.Relationships.Any(r => r.SourceEntityKey == focalObject.Key || r.TargetEntityKey == focalObject.Key)).OfType<IdentifiedData>()
-                                    .Union(sdbBundle.Item.OfType<ITargetedAssociation>().Where(r=>r.TargetEntityKey == focalObject.Key || r.SourceEntityKey == focalObject.Key).OfType<IdentifiedData>());
-                                var sdbTransaction = new SanteDB.Core.Model.Collection.Bundle();
-                                sdbTransaction.Add(focalObject);
-                                sdbTransaction.FocalObjects.Add(focalObject.Key.Value);
-                                sdbTransaction.Item.AddRange(dependentObjects);
-                                sdbTransaction.Item.InsertRange(0, sdbBundle.Item.OfType<Entity>().Where(i => dependentObjects.OfType<ITargetedAssociation>().Any(a => a.TargetEntityKey == i.Key)));
-                                this.m_batchRepository.Insert(sdbTransaction);
-                                
-                                retVal.Issue.Add(new OperationOutcome.IssueComponent()
-                                {
-                                    Severity = OperationOutcome.IssueSeverity.Information,
-                                    Diagnostics = $"Register/Update {focalObject}"
-                                });
-                            }
-                            break;
-                        }
-                    case HTTPVerb.DELETE:
-                        {
-                            this.m_repository.Obsolete(focalObject.Key.Value);
-                            retVal.Issue.Add(new OperationOutcome.IssueComponent()
-                            {
-                                Severity = OperationOutcome.IssueSeverity.Information,
-                                Diagnostics = $"Deleted {focalObject}"
-                            });
-                            break;
-                        }
-                    default:
-                        throw new InvalidOperationException();
+                        default:
+                            throw new InvalidOperationException();
+                    }
                 }
             }
 

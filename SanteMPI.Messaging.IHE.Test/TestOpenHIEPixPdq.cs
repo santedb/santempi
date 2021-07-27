@@ -66,66 +66,68 @@ namespace SanteMPI.Messaging.IHE.Test
         {
 
             // Pre-Conditions: Setup receiver so that OID is configured
-            AuthenticationContext.Current = new AuthenticationContext(AuthenticationContext.SystemPrincipal);
-            var aaService = ApplicationServiceContext.Current.GetService<IAssigningAuthorityRepositoryService>();
-            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", DeviceSecretA);
-            var aa = aaService.Get("TEST");
-            if (aa == null)
-                aaService.Insert(new SanteDB.Core.Model.DataTypes.AssigningAuthority("TEST", "TEST", "2.16.840.1.113883.3.72.5.9.1"));
+            using (AuthenticationContext.EnterSystemContext())
+            {
+                var aaService = ApplicationServiceContext.Current.GetService<IAssigningAuthorityRepositoryService>();
+                TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", DeviceSecretA);
+                var aa = aaService.Get("TEST");
+                if (aa == null)
+                    aaService.Insert(new SanteDB.Core.Model.DataTypes.AssigningAuthority("TEST", "TEST", "2.16.840.1.113883.3.72.5.9.1"));
 
-            // Test harness sends ADT^A01 Message where CX.4.1 of PID is missing by message containss 4.2 and 4.3
-            var message = TestUtil.GetMessageEvent("OHIE-CR-02-10", DeviceSecretA);
-            var result = new PixAdtMessageHandler().HandleMessage(message);
+                // Test harness sends ADT^A01 Message where CX.4.1 of PID is missing by message containss 4.2 and 4.3
+                var message = TestUtil.GetMessageEvent("OHIE-CR-02-10", DeviceSecretA);
+                var result = new PixAdtMessageHandler().HandleMessage(message);
 
-            // Response is ACK A01
-            Assert.AreEqual("ACK", (result.GetStructure("MSH") as MSH).MessageType.MessageCode.Value);
-            Assert.AreEqual("A01", (result.GetStructure("MSH") as MSH).MessageType.TriggerEvent.Value);
-            TestUtil.AssertOutcome(result, "AA", "CA");
+                // Response is ACK A01
+                Assert.AreEqual("ACK", (result.GetStructure("MSH") as MSH).MessageType.MessageCode.Value);
+                Assert.AreEqual("A01", (result.GetStructure("MSH") as MSH).MessageType.TriggerEvent.Value);
+                TestUtil.AssertOutcome(result, "AA", "CA");
 
-            // MSH-5 and MSH-6 match
-            Assert.AreEqual("TEST_HARNESS", (result.GetStructure("MSH") as MSH).ReceivingApplication.NamespaceID.Value);
-            Assert.AreEqual("TEST", (result.GetStructure("MSH") as MSH).ReceivingFacility.NamespaceID.Value);
+                // MSH-5 and MSH-6 match
+                Assert.AreEqual("TEST_HARNESS", (result.GetStructure("MSH") as MSH).ReceivingApplication.NamespaceID.Value);
+                Assert.AreEqual("TEST", (result.GetStructure("MSH") as MSH).ReceivingFacility.NamespaceID.Value);
 
-            // Test harness ensures that patient was registered and receiver has populated 4.1, 4.2, and 4.3
-            message = TestUtil.GetMessageEvent("OHIE-CR-02-20", DeviceSecretA);
-            result = new PdqQbpMessageHandler().HandleMessage(message);
+                // Test harness ensures that patient was registered and receiver has populated 4.1, 4.2, and 4.3
+                message = TestUtil.GetMessageEvent("OHIE-CR-02-20", DeviceSecretA);
+                result = new PdqQbpMessageHandler().HandleMessage(message);
 
-            // Response is RSP K23
-            Assert.AreEqual("RSP", (result.GetStructure("MSH") as MSH).MessageType.MessageCode.Value);
-            Assert.AreEqual("K23", (result.GetStructure("MSH") as MSH).MessageType.TriggerEvent.Value);
-            TestUtil.AssertOutcome(result, "AA", "CA");
-           
-            // Exactly one PID segment
-            var resp = result as RSP_K23;
-            Assert.IsNotNull(resp.QUERY_RESPONSE);
-            Assert.IsTrue(resp.QUERY_RESPONSE.PID.GetPatientIdentifierList().Any(a=>a.AssigningAuthority.NamespaceID.Value == "TEST" && a.AssigningAuthority.UniversalID.Value == "2.16.840.1.113883.3.72.5.9.1" && a.AssigningAuthority.UniversalIDType.Value=="ISO" ));
+                // Response is RSP K23
+                Assert.AreEqual("RSP", (result.GetStructure("MSH") as MSH).MessageType.MessageCode.Value);
+                Assert.AreEqual("K23", (result.GetStructure("MSH") as MSH).MessageType.TriggerEvent.Value);
+                TestUtil.AssertOutcome(result, "AA", "CA");
 
-            // Test hanress sneds ADT A01 with OID missing but namespace
-            message = TestUtil.GetMessageEvent("OHIE-CR-02-30", DeviceSecretA);
-            result = new PixAdtMessageHandler().HandleMessage(message);
+                // Exactly one PID segment
+                var resp = result as RSP_K23;
+                Assert.IsNotNull(resp.QUERY_RESPONSE);
+                Assert.IsTrue(resp.QUERY_RESPONSE.PID.GetPatientIdentifierList().Any(a => a.AssigningAuthority.NamespaceID.Value == "TEST" && a.AssigningAuthority.UniversalID.Value == "2.16.840.1.113883.3.72.5.9.1" && a.AssigningAuthority.UniversalIDType.Value == "ISO"));
 
-            // Response is ACK A01
-            Assert.AreEqual("ACK", (result.GetStructure("MSH") as MSH).MessageType.MessageCode.Value);
-            Assert.AreEqual("A01", (result.GetStructure("MSH") as MSH).MessageType.TriggerEvent.Value);
-            TestUtil.AssertOutcome(result, "AA", "CA");
-            
-            // MSH-5 and MSH-6 match
-            Assert.AreEqual("TEST_HARNESS", (result.GetStructure("MSH") as MSH).ReceivingApplication.NamespaceID.Value);
-            Assert.AreEqual("TEST", (result.GetStructure("MSH") as MSH).ReceivingFacility.NamespaceID.Value);
+                // Test hanress sneds ADT A01 with OID missing but namespace
+                message = TestUtil.GetMessageEvent("OHIE-CR-02-30", DeviceSecretA);
+                result = new PixAdtMessageHandler().HandleMessage(message);
 
-            // Test harnerss validates patient was registrered and populated segments properly
-            message = TestUtil.GetMessageEvent("OHIE-CR-02-40", DeviceSecretA);
-            result = new PdqQbpMessageHandler().HandleMessage(message);
+                // Response is ACK A01
+                Assert.AreEqual("ACK", (result.GetStructure("MSH") as MSH).MessageType.MessageCode.Value);
+                Assert.AreEqual("A01", (result.GetStructure("MSH") as MSH).MessageType.TriggerEvent.Value);
+                TestUtil.AssertOutcome(result, "AA", "CA");
 
-            // Response is RSP K23
-            Assert.AreEqual("RSP", (result.GetStructure("MSH") as MSH).MessageType.MessageCode.Value);
-            Assert.AreEqual("K23", (result.GetStructure("MSH") as MSH).MessageType.TriggerEvent.Value);
-            TestUtil.AssertOutcome(result, "AA", "CA");
+                // MSH-5 and MSH-6 match
+                Assert.AreEqual("TEST_HARNESS", (result.GetStructure("MSH") as MSH).ReceivingApplication.NamespaceID.Value);
+                Assert.AreEqual("TEST", (result.GetStructure("MSH") as MSH).ReceivingFacility.NamespaceID.Value);
 
-            // Exactly one PID segment
-            resp = result as RSP_K23;
-            Assert.IsNotNull(resp.QUERY_RESPONSE);
-            Assert.IsTrue(resp.QUERY_RESPONSE.PID.GetPatientIdentifierList().Any(a => a.AssigningAuthority.NamespaceID.Value == "TEST" && a.AssigningAuthority.UniversalID.Value == "2.16.840.1.113883.3.72.5.9.1" && a.AssigningAuthority.UniversalIDType.Value == "ISO"));
+                // Test harnerss validates patient was registrered and populated segments properly
+                message = TestUtil.GetMessageEvent("OHIE-CR-02-40", DeviceSecretA);
+                result = new PdqQbpMessageHandler().HandleMessage(message);
+
+                // Response is RSP K23
+                Assert.AreEqual("RSP", (result.GetStructure("MSH") as MSH).MessageType.MessageCode.Value);
+                Assert.AreEqual("K23", (result.GetStructure("MSH") as MSH).MessageType.TriggerEvent.Value);
+                TestUtil.AssertOutcome(result, "AA", "CA");
+
+                // Exactly one PID segment
+                resp = result as RSP_K23;
+                Assert.IsNotNull(resp.QUERY_RESPONSE);
+                Assert.IsTrue(resp.QUERY_RESPONSE.PID.GetPatientIdentifierList().Any(a => a.AssigningAuthority.NamespaceID.Value == "TEST" && a.AssigningAuthority.UniversalID.Value == "2.16.840.1.113883.3.72.5.9.1" && a.AssigningAuthority.UniversalIDType.Value == "ISO"));
+            }
         }
 
         /// <summary>

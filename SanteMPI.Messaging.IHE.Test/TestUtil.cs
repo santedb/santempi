@@ -97,48 +97,49 @@ namespace SanteMPI.Messaging.IHE.Test
             var securityAppService = ApplicationServiceContext.Current.GetService<IRepositoryService<SecurityApplication>>();
             var metadataService = ApplicationServiceContext.Current.GetService<IAssigningAuthorityRepositoryService>();
 
-            AuthenticationContext.Current = new AuthenticationContext(AuthenticationContext.SystemPrincipal);
-            string pubId = $"{applicationName}|TEST";
-            var device = securityDevService.Find(o => o.Name == pubId).FirstOrDefault();
-            if (device == null)
+            using (AuthenticationContext.EnterSystemContext())
             {
-                device = new SecurityDevice()
+                string pubId = $"{applicationName}|TEST";
+                var device = securityDevService.Find(o => o.Name == pubId).FirstOrDefault();
+                if (device == null)
                 {
-                    DeviceSecret = BitConverter.ToString(deviceSecret).Replace("-", ""),
-                    Name = $"{applicationName}|TEST"
-                };
-                device.AddPolicy(PermissionPolicyIdentifiers.LoginAsService);
-                device = securityDevService.Insert(device);
-            }
+                    device = new SecurityDevice()
+                    {
+                        DeviceSecret = BitConverter.ToString(deviceSecret).Replace("-", ""),
+                        Name = $"{applicationName}|TEST"
+                    };
+                    device.AddPolicy(PermissionPolicyIdentifiers.LoginAsService);
+                    device = securityDevService.Insert(device);
+                }
 
-            // Application
-            var app = securityAppService.Find(o => o.Name == applicationName).FirstOrDefault();
-            if (app == null)
-            {
-                app = new SecurityApplication()
+                // Application
+                var app = securityAppService.Find(o => o.Name == applicationName).FirstOrDefault();
+                if (app == null)
                 {
-                    Name = applicationName,
-                    ApplicationSecret = BitConverter.ToString(deviceSecret).Replace("-", "")
-                };
-                app.AddPolicy(PermissionPolicyIdentifiers.LoginAsService);
-                app.AddPolicy(PermissionPolicyIdentifiers.UnrestrictedClinicalData);
-                app.AddPolicy(PermissionPolicyIdentifiers.ReadMetadata);
-                app = securityAppService.Insert(app);
-            }
+                    app = new SecurityApplication()
+                    {
+                        Name = applicationName,
+                        ApplicationSecret = BitConverter.ToString(deviceSecret).Replace("-", "")
+                    };
+                    app.AddPolicy(PermissionPolicyIdentifiers.LoginAsService);
+                    app.AddPolicy(PermissionPolicyIdentifiers.UnrestrictedClinicalData);
+                    app.AddPolicy(PermissionPolicyIdentifiers.ReadMetadata);
+                    app = securityAppService.Insert(app);
+                }
 
-            // Create AA
-            var aa = metadataService.Get(nsid);
-            if (aa == null)
-            {
-                aa = new SanteDB.Core.Model.DataTypes.AssigningAuthority(nsid, nsid, oid)
+                // Create AA
+                var aa = metadataService.Get(nsid);
+                if (aa == null)
                 {
-                    AssigningApplicationKey = app.Key,
-                    IsUnique = true,
-                    Url = url
-                };
-                metadataService.Insert(aa);
+                    aa = new SanteDB.Core.Model.DataTypes.AssigningAuthority(nsid, nsid, oid)
+                    {
+                        AssigningApplicationKey = app.Key,
+                        IsUnique = true,
+                        Url = url
+                    };
+                    metadataService.Insert(aa);
+                }
             }
-
         }
 
         /// <summary>
@@ -168,7 +169,7 @@ namespace SanteMPI.Messaging.IHE.Test
             var sesPvdService = ApplicationServiceContext.Current.GetService<ISessionProviderService>();
             var sesIdService = ApplicationServiceContext.Current.GetService<ISessionIdentityProviderService>();
             var session = sesPvdService.Establish(appPrincipal, "http://localhost", false, null, null, null);
-            AuthenticationContext.Current = new AuthenticationContext(sesIdService.Authenticate(session));
+            AuthenticationContext.EnterContext(sesIdService.Authenticate(session));
         }
     }
 }
