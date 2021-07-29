@@ -27,6 +27,7 @@
       "fullUrl": "http://test.ohie.org/fhir/Bundle/ohie-cr-07-10-fhir",
       "resource": {
         "resourceType": "Bundle",
+        "id": "ohie-cr-07-10-fhir",
         "type": "history",
         "entry": [
           {

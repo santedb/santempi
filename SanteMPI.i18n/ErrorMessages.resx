@@ -132,4 +132,10 @@
   <data name="ERR_ITI93_UNIQUE" xml:space="preserve">
     <value>ITI93 requires each Patient resource in the bundle to be unique</value>
   </data>
+  <data name="ERR_NO_MERGE_SERVICE" xml:space="preserve">
+    <value>No Merging Service is provided for this host context</value>
+  </data>
+  <data name="ERR_UNABLE_TO_PARSE_BUNDLE" xml:space="preserve">
+    <value>Unable to process the FHIR bundle into an iCDR RIM Bundle</value>
+  </data>
 </root>

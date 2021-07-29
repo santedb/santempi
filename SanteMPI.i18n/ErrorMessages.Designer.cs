@@ -104,5 +104,23 @@ namespace SanteMPI.i18n {
                 return ResourceManager.GetString("ERR_ITI93_UNIQUE", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No Merging Service is provided for this host context.
+        /// </summary>
+        public static string ERR_NO_MERGE_SERVICE {
+            get {
+                return ResourceManager.GetString("ERR_NO_MERGE_SERVICE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to process the FHIR bundle into an iCDR RIM Bundle.
+        /// </summary>
+        public static string ERR_UNABLE_TO_PARSE_BUNDLE {
+            get {
+                return ResourceManager.GetString("ERR_UNABLE_TO_PARSE_BUNDLE", resourceCulture);
+            }
+        }
     }
 }
