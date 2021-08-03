@@ -50,7 +50,8 @@ namespace SanteMPI.Messaging.IHE.FHIR
         {
             if(modelObject is SanteDB.Core.Model.Roles.Patient patient)
             {
-                var mother = patient.LoadCollection(o => o.Relationships).Where(o => o.RelationshipTypeKey == EntityRelationshipTypeKeys.Mother).FirstOrDefault()?.LoadProperty(o=>o.TargetEntity);
+                var mother = patient.LoadCollection(o => o.Relationships).Where(o => o.RelationshipTypeKey == EntityRelationshipTypeKeys.Mother).FirstOrDefault().LoadProperty(o=>o.TargetEntity);
+
                 if(mother != null)
                 {
                     var maidenName = mother.LoadCollection(o => o.Names).FirstOrDefault(o => o.NameUseKey == NameUseKeys.MaidenName);

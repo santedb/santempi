@@ -45,12 +45,14 @@ namespace SanteMPI.Messaging.IHE.FHIR
         /// <summary>
         /// Patient master identity operation
         /// </summary>
-        public PatientMasterIdentityOperation(IServiceManager serviceManager)
+        public PatientMasterIdentityOperation(IServiceManager serviceManager, IRepositoryService<SanteDB.Core.Model.Roles.Patient> patientRepository, IRepositoryService<SanteDB.Core.Model.Collection.Bundle> bundleRepository, IRecordMergingService<SanteDB.Core.Model.Roles.Patient> mergingService = null)
         {
-            this.m_repository = ApplicationServiceContext.Current.GetService<IRepositoryService<SanteDB.Core.Model.Roles.Patient>>();
             this.m_bundleHandler = serviceManager.CreateInjected<BundleResourceHandler>();
-            this.m_batchRepository = ApplicationServiceContext.Current.GetService<IRepositoryService<SanteDB.Core.Model.Collection.Bundle>>();
-            this.m_mergeService = ApplicationServiceContext.Current.GetService<IRecordMergingService<SanteDB.Core.Model.Roles.Patient>>();
+
+            // These services can be initialized after - so we want to wait for them because they're dynaimc
+            this.m_repository = patientRepository;
+            this.m_batchRepository = bundleRepository;
+            this.m_mergeService = mergingService;
         }
 
         /// <summary>
@@ -77,14 +79,14 @@ namespace SanteMPI.Messaging.IHE.FHIR
         public Resource Invoke(MessageHeader requestHeader, params Bundle.EntryComponent[] entries)
         {
             // Validate the message contents
-            if (entries.Length != 1)
+            if (entries == null || entries.Length != 1)
             {
                 throw new ArgumentException(ErrorMessages.ERR_ITI93_PARAMETER);
             }
 
             // Get the parameter bundle
             var bundle = entries.First().Resource as Bundle;
-            if (bundle.Type != Bundle.BundleType.History)
+            if (bundle?.Type != Bundle.BundleType.History)
             {
                 throw this.CreateDetectedIssueException(nameof(ErrorMessages.ERR_ITI93_BUNDLE_TYPE));
             }
@@ -103,8 +105,11 @@ namespace SanteMPI.Messaging.IHE.FHIR
 
             // Create SanteDB bundle of objects to be persisted
             // This is done because the odd way FHIR does RelatedPerson linkages, we want to process the entire bundle and let the mapper handle resolving 
-            var sdbBundle = this.m_bundleHandler.MapToModel(bundle) as SanteDB.Core.Model.Collection.Bundle;
-
+            var sdbBundle = this.m_bundleHandler?.MapToModel(bundle) as SanteDB.Core.Model.Collection.Bundle;
+            if (sdbBundle == null)
+            {
+                throw new InvalidOperationException(ErrorMessages.ERR_UNABLE_TO_PARSE_BUNDLE);
+            }
             OperationOutcome retVal = new OperationOutcome()
             {
                 Id = Guid.NewGuid().ToString()
@@ -112,70 +117,104 @@ namespace SanteMPI.Messaging.IHE.FHIR
 
             // Patient handler
             // Entry for bundle
-            foreach (var itm in bundle.Entry.Where(o => o.Resource is Patient))
+            foreach (var itm in bundle.Entry)
             {
-                // Get the converted object
-                var focalObject = sdbBundle.Item.OfType<SanteDB.Core.Model.Roles.Patient>().FirstOrDefault(o => o.GetTag(FhirConstants.OriginalUrlTag) == itm.FullUrl);
-                if (focalObject == null)
+                if (itm.Resource is Patient patient)
                 {
-                    throw new InvalidOperationException($"Shouldn't be here - Cannot find converted object for {itm.FullUrl} - Is the patient missing a fullUrl?");
-                }
+                    // Get the converted object
+                    var focalObject = sdbBundle.Item.OfType<SanteDB.Core.Model.Roles.Patient>().FirstOrDefault(o => o.GetTag(FhirConstants.OriginalUrlTag) == itm.FullUrl);
+                    if (focalObject == null)
+                    {
+                        throw new InvalidOperationException($"Shouldn't be here - Cannot find converted object for {itm.FullUrl} - Is the patient missing a fullUrl?");
+                    }
 
-                // HACK: Attempt to try and determine what the sender is trying to convey? Is it a merge? Is it an update?
-                // Is it a create? We don't know, so try to determine based on the attributes in the message.
-                switch (itm.Request.Method)
-                {
-                    case HTTPVerb.POST:
-                    case HTTPVerb.PUT: // Might be a merge or might be an update?
-                        {
-                            // PMIR -> Replaced By is a link that exists on the focal object 
-                            var fhirPatientReplacementInstruction = (itm.Resource as Patient).Link.FirstOrDefault(l => l.Type == Patient.LinkType.ReplacedBy);
-                            if (fhirPatientReplacementInstruction != null) // Requesting a replacement
+                    // HACK: Attempt to try and determine what the sender is trying to convey? Is it a merge? Is it an update?
+                    // Is it a create? We don't know, so try to determine based on the attributes in the message.
+                    switch (itm.Request.Method)
+                    {
+                        case HTTPVerb.POST:
+                        case HTTPVerb.PUT: // Might be a merge or might be an update?
                             {
-                                var survivor = DataTypeConverter.ResolveEntity(fhirPatientReplacementInstruction.Other, itm.Resource);
-                                if (survivor == null)
+                                // PMIR -> Replaced By is a link that exists on the focal object 
+                                var fhirPatientReplacementInstruction = patient.Link.FirstOrDefault(l => l.Type == Patient.LinkType.ReplacedBy);
+                                if (!patient.Active.GetValueOrDefault() &&
+                                    fhirPatientReplacementInstruction != null) // Requesting a replacement (old is obsolete and there is a replaced by)
                                 {
-                                    throw new InvalidOperationException(ErrorMessages.ERR_ITI93_MERGE_TARGET_UNKNOWN);
+                                    
+                                    var survivor = DataTypeConverter.ResolveEntity<SanteDB.Core.Model.Roles.Patient>(fhirPatientReplacementInstruction.Other, itm.Resource);
+                                    if (survivor == null)
+                                    {
+                                        throw new InvalidOperationException(ErrorMessages.ERR_ITI93_MERGE_TARGET_UNKNOWN);
+                                    }
+                                    else if (this.m_mergeService == null)
+                                    {
+                                        // Attempt to find it
+                                        this.m_mergeService = ApplicationServiceContext.Current.GetService<IRecordMergingService<SanteDB.Core.Model.Roles.Patient>>();
+                                        if (this.m_mergeService == null)
+                                        {
+                                            throw new InvalidOperationException(ErrorMessages.ERR_NO_MERGE_SERVICE);
+                                        }
+                                    }
+                                    var mergeResult = this.m_mergeService.Merge(survivor.Key.Value, new Guid[] { focalObject.Key.Value });
+
+                                    retVal.Issue.Add(new OperationOutcome.IssueComponent()
+                                    {
+                                        Severity = OperationOutcome.IssueSeverity.Information,
+                                        Diagnostics = $"Merge {String.Join(",", mergeResult.Replaced)} -> {String.Join(",", mergeResult.Survivors)}"
+                                    });
+
+                                    if(mergeResult.Status == RecordMergeStatus.Alternate)
+                                    {
+                                        if (survivor.Key != mergeResult.Survivors.First()) {
+                                            retVal.Issue.Add(new OperationOutcome.IssueComponent()
+                                            {
+                                                Severity = OperationOutcome.IssueSeverity.Information,
+                                                Diagnostics = $"Merge was redirected from survivor Patient/{survivor.Key} to alternate Patient/{mergeResult.Survivors.First()}"
+                                            });
+                                            retVal.AddExtension("http://santedb.org/santempi/merge-survivor", new ResourceReference($"Patient/{mergeResult.Survivors.First()}"));
+                                        }
+                                        if (focalObject.Key != mergeResult.Replaced.First()) {
+                                            retVal.Issue.Add(new OperationOutcome.IssueComponent()
+                                            {
+                                                Severity = OperationOutcome.IssueSeverity.Information,
+                                                Diagnostics = $"Merge was redirected from Patient/{focalObject.Key} to alternate Patient/{mergeResult.Replaced.First()}"
+                                            });
+                                            retVal.AddExtension("http://santedb.org/santempi/merge-replaced", new ResourceReference($"Patient/{mergeResult.Replaced.First()}"));
+
+                                        }
+                                    }
+
                                 }
-                                this.m_mergeService.Merge(survivor.Key.Value, new Guid[] { focalObject.Key.Value });
+                                else
+                                {
+                                    // Get all objects which the object depends on this one and don't include replaces (since that is merge instructions in this profile)
+                                    var sdbTransaction = new SanteDB.Core.Model.Collection.Bundle();
+                                    sdbTransaction.Add(focalObject);
+                                    sdbTransaction.FocalObjects.Add(focalObject.Key.Value);
+                                    sdbTransaction.Item.InsertRange(0, sdbBundle.Item.Where(o => o != focalObject));
+                                    this.m_batchRepository.Insert(sdbTransaction);
+
+                                    retVal.Issue.Add(new OperationOutcome.IssueComponent()
+                                    {
+                                        Severity = OperationOutcome.IssueSeverity.Information,
+                                        Diagnostics = $"Register/Update {focalObject}"
+                                    });
+                                }
+                                break;
+                            }
+                        case HTTPVerb.DELETE:
+                            {
+                                this.m_repository.Obsolete(focalObject.Key.Value);
                                 retVal.Issue.Add(new OperationOutcome.IssueComponent()
                                 {
                                     Severity = OperationOutcome.IssueSeverity.Information,
-                                    Diagnostics = $"Merge {focalObject.Key} -> {survivor.Key}"
+                                    Diagnostics = $"Deleted {focalObject}"
                                 });
+                                break;
                             }
-                            else
-                            {
-                                // Get all objects which the object depends on this one and don't include replaces (since that is merge instructions in this profile)
-                                var dependentObjects = sdbBundle.Item.OfType<Entity>().Where(o => o.Relationships.Any(r => r.SourceEntityKey == focalObject.Key || r.TargetEntityKey == focalObject.Key)).OfType<IdentifiedData>()
-                                    .Union(sdbBundle.Item.OfType<ITargetedAssociation>().Where(r=>r.TargetEntityKey == focalObject.Key || r.SourceEntityKey == focalObject.Key).OfType<IdentifiedData>());
-                                var sdbTransaction = new SanteDB.Core.Model.Collection.Bundle();
-                                sdbTransaction.Add(focalObject);
-                                sdbTransaction.FocalObjects.Add(focalObject.Key.Value);
-                                sdbTransaction.Item.AddRange(dependentObjects);
-                                sdbTransaction.Item.InsertRange(0, sdbBundle.Item.OfType<Entity>().Where(i => dependentObjects.OfType<ITargetedAssociation>().Any(a => a.TargetEntityKey == i.Key)));
-                                this.m_batchRepository.Insert(sdbTransaction);
-                                
-                                retVal.Issue.Add(new OperationOutcome.IssueComponent()
-                                {
-                                    Severity = OperationOutcome.IssueSeverity.Information,
-                                    Diagnostics = $"Register/Update {focalObject}"
-                                });
-                            }
-                            break;
-                        }
-                    case HTTPVerb.DELETE:
-                        {
-                            this.m_repository.Obsolete(focalObject.Key.Value);
-                            retVal.Issue.Add(new OperationOutcome.IssueComponent()
-                            {
-                                Severity = OperationOutcome.IssueSeverity.Information,
-                                Diagnostics = $"Deleted {focalObject}"
-                            });
-                            break;
-                        }
-                    default:
-                        throw new InvalidOperationException();
+                        default:
+                            throw new InvalidOperationException();
+                    }
                 }
             }
 

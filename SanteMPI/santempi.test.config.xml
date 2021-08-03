@@ -516,7 +516,11 @@
   <section xsi:type="ResourceMergeConfigurationSection">
     <resources>
       <!-- Note: You will have to install the Sante MATCH plugin for this to work and enable the FileMatchProvider -->
-      <add type="Patient" matchConfiguration="org.santedb.smpi.matching.default" autoMerge="false" />
+      <add type="Patient">
+		<matching>
+			<config autoLink="true">org.santedb.smpi.matching.default</config>
+		</matching>
+	  </add>
     </resources>
   </section>
 

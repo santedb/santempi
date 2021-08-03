@@ -29,6 +29,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -53,28 +54,28 @@
       <Version>12.0.3</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Caching.Memory">
-      <Version>2.1.41</Version>
+      <Version>2.1.48</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Matcher">
-      <Version>2.1.41</Version>
+      <Version>2.1.48</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Messaging.FHIR">
-      <Version>2.1.41</Version>
+      <Version>2.1.48</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Messaging.HL7">
-      <Version>2.1.41</Version>
+      <Version>2.1.48</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Persistence.MDM">
-      <Version>2.1.41</Version>
+      <Version>2.1.48</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Server.Plugin">
-      <Version>2.1.41</Version>
+      <Version>2.1.48</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Server.Plugin.Data">
-      <Version>2.1.41</Version>
+      <Version>2.1.48</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Server.TestFramework">
-      <Version>2.1.41</Version>
+      <Version>2.1.48</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
@@ -167,6 +168,9 @@
     <EmbeddedResource Include="Resources\FHIR\OHIE-CR-05-20.json" />
     <EmbeddedResource Include="Resources\FHIR\OHIE-CR-05-10.json" />
     <EmbeddedResource Include="Resources\FHIR\OHIE-CR-07-10.json" />
+    <EmbeddedResource Include="Resources\FHIR\OHIE-CR-08-10.json" />
+    <EmbeddedResource Include="Resources\FHIR\OHIE-CR-08-20.json" />
+    <EmbeddedResource Include="Resources\FHIR\OHIE-CR-08-30.json" />
     <None Include="test.runsettings" />
   </ItemGroup>
   <ItemGroup>
