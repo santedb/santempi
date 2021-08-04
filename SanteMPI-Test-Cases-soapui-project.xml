@@ -1990,7 +1990,199 @@ count(/sdb:Bundle/sdb:resource)</path><content>2</content><allowWildcards>false<
 </codes></con:configuration></con:assertion><con:assertion type="JsonPath Count" id="75657e9b-9ab5-42c8-9071-fb17dc561c6b" name="Has 2 Parameters"><con:configuration><path>parameter</path><content>2</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="JsonPath Match" id="cbd6b3eb-c340-4936-a542-e70beb8571c2" name="Has NID"><con:configuration><path>parameter[0].valueIdentifier.value</path><content>NID080</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
   <con:entry key="sourceIdentifier" value="http://ohie.org/test/test|FHR-081"/>
   <con:entry key="targetSystem" value="http://ohie.org/test/nid"/>
-</con:parameters></con:restRequest></con:config></con:testStep><con:properties><con:property><con:name>VictimID</con:name><con:value>6b3cc24d-0816-4333-9f7b-a8a5a7cab67f</con:value></con:property></con:properties></con:testCase><con:testCase id="465f2b60-f860-47ed-8693-efb9c470a2d7" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="Subscription" searchProperties="true"><con:description>This is a non-OHIE test which ensures that subscriptions are</con:description><con:settings/><con:testStep type="restrequest" name="Authenticate" id="008a6785-819a-493c-865f-dfdf448668ed"><con:settings/><con:config service="OAuth2 Access Control Service" methodName="POST" resourcePath="/auth/oauth2_token" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Authenticate" id="cb6a7dff-65f4-46c4-a0de-dd06c7585f29" mediaType="application/x-www-form-urlencoded" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080</con:endpoint><con:request>grant_type=client_credentials&amp;scope=*&amp;client_secret=fiddler&amp;client_id=fiddler</con:request><con:originalUri>http://localhost/auth/oauth2_token</con:originalUri><con:assertion type="Valid HTTP Status Codes" id="b5134ff9-14f5-47fa-99b8-e1be386b4f2b" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:restRequest></con:config></con:testStep><con:testStep type="transfer" name="Transfer Bearer Token" id="67c7f09f-01e1-4c3d-96ca-b213e970c695"><con:settings/><con:config xsi:type="con:PropertyTransfersStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:transfers setNullOnMissingSource="true" transferTextContent="true" failOnError="true" ignoreEmpty="false" transferToAll="false" entitize="false" transferChildNodes="false"><con:name>Token</con:name><con:sourceType>Response</con:sourceType><con:sourceStep>Authenticate</con:sourceStep><con:sourcePath>access_token</con:sourcePath><con:targetType>Token</con:targetType><con:targetStep>#TestSuite#</con:targetStep><con:type>JSONPATH</con:type><con:targetTransferType>JSONPATH</con:targetTransferType><con:upgraded>true</con:upgraded></con:transfers></con:config></con:testStep><con:testStep type="restrequest" name="Setup Identity Domain" id="e1ebb02f-8089-4415-9e8f-bcf3cb75a957"><con:settings/><con:config service="Health Data Service Interface (HDSI)" methodName="POST" resourcePath="/hdsi/Bundle" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Setup Identity Domain" id="1ad1ca24-e989-453d-9d49-0261b49ba5ba" mediaType="application/xml" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config"/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080</con:endpoint><con:request><![CDATA[<Bundle xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://santedb.org/model">
+</con:parameters></con:restRequest></con:config></con:testStep><con:properties><con:property><con:name>VictimID</con:name><con:value>3c45f19a-b345-478a-baab-bd64b4ead418</con:value></con:property></con:properties></con:testCase><con:testCase id="d1ba3eb2-49c0-452c-8324-9cccff351597" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="OHIE-CR-09-FHIR" searchProperties="true"><con:settings/><con:testStep type="restrequest" name="Authenticate" id="291560b6-c89f-4c33-a4d4-b32100737f21"><con:settings/><con:config service="OAuth2 Access Control Service" methodName="POST" resourcePath="/auth/oauth2_token" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Authenticate" id="cb6a7dff-65f4-46c4-a0de-dd06c7585f29" mediaType="application/x-www-form-urlencoded" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080</con:endpoint><con:request>grant_type=client_credentials&amp;scope=*&amp;client_secret=fiddler&amp;client_id=fiddler</con:request><con:originalUri>http://localhost/auth/oauth2_token</con:originalUri><con:assertion type="Valid HTTP Status Codes" id="b5134ff9-14f5-47fa-99b8-e1be386b4f2b" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:restRequest></con:config></con:testStep><con:testStep type="transfer" name="Copy of Transfer Bearer Token" id="4f45f4e9-13eb-4858-a6f7-1a5105b20a2b"><con:settings/><con:config xsi:type="con:PropertyTransfersStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:transfers setNullOnMissingSource="true" transferTextContent="true" failOnError="true" ignoreEmpty="false" transferToAll="false" entitize="false" transferChildNodes="false"><con:name>Token</con:name><con:sourceType>Response</con:sourceType><con:sourceStep>Authenticate</con:sourceStep><con:sourcePath>access_token</con:sourcePath><con:targetType>Token</con:targetType><con:targetStep>#TestSuite#</con:targetStep><con:type>JSONPATH</con:type><con:targetTransferType>JSONPATH</con:targetTransferType><con:upgraded>true</con:upgraded></con:transfers></con:config></con:testStep><con:testStep type="restrequest" name="Create TEST_HARNESS_A" id="d06867f4-d473-4f5f-ab0b-56f4a180ec8b"><con:settings/><con:config service="Administration Management Interface (AMI)" methodName="POST" resourcePath="/ami/SecurityApplication" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Create TEST_HARNESS_A" id="4b79024d-aa71-4dc5-8e21-fa61ecfce55d" mediaType="application/xml" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config"/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080</con:endpoint><con:request><![CDATA[<SecurityApplicationInfo xmlns="http://santedb.org/ami">
+	<entity>
+	      <id xmlns="http://santedb.org/model">DE5BEC1E-8C41-4FF1-8E65-A39AC1DDAE60</id>
+	      <!-- Secret: TEST_HARNESS -->
+	      <applicationSecret xmlns="http://santedb.org/model">TEST_HARNESS</applicationSecret>
+	      <name xmlns="http://santedb.org/model">TEST_HARNESS_FHIR_A</name>
+	</entity>
+	<id>DE5BEC1E-8C41-4FF1-8E65-A39AC1DDAE60</id>
+</SecurityApplicationInfo>]]></con:request><con:originalUri>http://localhost/ami/SecurityApplication</con:originalUri><con:assertion type="Valid HTTP Status Codes" id="2e586cc5-b3b8-414b-94c4-15ca6bd1d3d9" name="Valid HTTP Status Codes"><con:configuration><codes>201</codes></con:configuration></con:assertion><con:assertion type="XPath Match" id="e4f5c28e-f081-476c-8235-21c56dcb26dc" name="Login As Service Assigned"><con:configuration><path>declare namespace ami='http://santedb.org/ami';
+/ami:SecurityApplicationInfo/ami:policy[@oid='1.3.6.1.4.1.33349.3.1.5.9.2.1.0']/@name</path><content>Login as a Service</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="Create TEST_HARNESS_B" id="c9380ec3-598e-45a5-8d44-f68aa65632b2"><con:settings/><con:config service="Administration Management Interface (AMI)" methodName="POST" resourcePath="/ami/SecurityApplication" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Create TEST_HARNESS_B" id="4b79024d-aa71-4dc5-8e21-fa61ecfce55d" mediaType="application/xml" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config"/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080</con:endpoint><con:request><![CDATA[<SecurityApplicationInfo xmlns="http://santedb.org/ami">
+	<entity>
+	      <id xmlns="http://santedb.org/model">58275680-5129-4832-9668-131F76E8DFB6</id>
+	      <!-- Secret: TEST_HARNESS -->
+	      <applicationSecret xmlns="http://santedb.org/model">TEST_HARNESS</applicationSecret>
+	      <name xmlns="http://santedb.org/model">TEST_HARNESS_FHIR_B</name>
+	</entity>
+	<id>58275680-5129-4832-9668-131F76E8DFB6</id>
+</SecurityApplicationInfo>]]></con:request><con:originalUri>http://localhost/ami/SecurityApplication</con:originalUri><con:assertion type="Valid HTTP Status Codes" id="2e586cc5-b3b8-414b-94c4-15ca6bd1d3d9" name="Valid HTTP Status Codes"><con:configuration><codes>201</codes></con:configuration></con:assertion><con:assertion type="XPath Match" id="e4f5c28e-f081-476c-8235-21c56dcb26dc" name="Login As Service Assigned"><con:configuration><path>declare namespace ami='http://santedb.org/ami';
+/ami:SecurityApplicationInfo/ami:policy[@oid='1.3.6.1.4.1.33349.3.1.5.9.2.1.0']/@name</path><content>Login as a Service</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="Setup" id="7784697c-a777-4eeb-9949-a36a5820e684"><con:settings/><con:config service="Health Data Service Interface (HDSI)" methodName="POST" resourcePath="/hdsi/Bundle" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Setup" id="6eda0618-fbe4-4236-b10b-6acadb7b6a24" mediaType="application/xml" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config"/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080</con:endpoint><con:request><![CDATA[<Bundle xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://santedb.org/model">
+  
+  <!-- TEST -->
+  <resource xsi:type="AssigningAuthority">
+	<id>d6fff7ec-e8dc-11eb-8bbb-00155d0932e7</id>
+     <name>OHIE NID TEST Domain</name>
+     <domainName>NID</domainName>
+     <oid>2.16.840.1.113883.3.72.5.9.9</oid>
+     <url>http://ohie.org/test/nid</url>
+     <isUnique>true</isUnique>
+  </resource>
+  
+ </Bundle>]]></con:request><con:originalUri>http://localhost/hdsi/Bundle</con:originalUri><con:assertion type="Valid HTTP Status Codes" id="9dd59640-6bd4-479c-9af2-520b29843a0e" name="Valid HTTP Status Codes"><con:configuration><codes>201</codes></con:configuration></con:assertion><con:assertion type="XPath Match" id="ddcdc02b-ef49-4690-a3d2-f5ac87d8ccc2" name="4 Objects Are Created"><con:configuration><path>declare namespace sdb='http://santedb.org/model';
+count(/sdb:Bundle/sdb:resource)</path><content>1</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="Authenticate TEST_A" id="c671396a-7f9b-4ebc-94bc-86311d9da389"><con:settings/><con:config service="OAuth2 Access Control Service" methodName="POST" resourcePath="/auth/oauth2_token" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Authenticate TEST_A" id="cb6a7dff-65f4-46c4-a0de-dd06c7585f29" mediaType="application/x-www-form-urlencoded" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080</con:endpoint><con:request>grant_type=client_credentials&amp;scope=*&amp;client_secret=TEST_HARNESS&amp;client_id=TEST_HARNESS_FHIR_A</con:request><con:originalUri>http://localhost/auth/oauth2_token</con:originalUri><con:assertion type="Valid HTTP Status Codes" id="5611c124-f4b8-4507-98b5-23fec7e42725" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:restRequest></con:config></con:testStep><con:testStep type="transfer" name="TEST_A Bearer Token" id="573bfdaf-6f56-4b6c-80b7-1575ee1943c1"><con:settings/><con:config xsi:type="con:PropertyTransfersStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:transfers setNullOnMissingSource="true" transferTextContent="true" failOnError="true" ignoreEmpty="false" transferToAll="false" entitize="false" transferChildNodes="false"><con:name>Token</con:name><con:sourceType>Response</con:sourceType><con:sourceStep>Authenticate TEST_A</con:sourceStep><con:sourcePath>access_token</con:sourcePath><con:targetType>Token</con:targetType><con:targetStep>#TestSuite#</con:targetStep><con:type>JSONPATH</con:type><con:targetTransferType>JSONPATH</con:targetTransferType><con:upgraded>true</con:upgraded></con:transfers></con:config></con:testStep><con:testStep type="restrequest" name="Register New Identity" id="42cebf42-0ce1-43d2-89e5-cfe8abd68f0c"><con:settings/><con:config service="HL7 Fast Health Interoperability Resources (FHIR) R4" methodName="POST" resourcePath="/fhir/Bundle" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Register New Identity" id="a27193b7-b458-4d10-9276-e866f6107b0a" mediaType="application/fhir+json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config"/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
+  "resourceType": "Bundle",
+  "type": "message",
+  "entry": [
+    {
+      "fullUrl": "MessageHeader/ohie-cr-06-20-fhir",
+      "resource": {
+        "resourceType": "MessageHeader",
+        "id": "1",
+        "eventUri": "urn:ihe:iti:pmir:2019:patient-feed",
+        "source": {
+          "endpoint": "http://ohie.org/test/test_harness_b"
+        },
+        "focus": [
+          {
+            "reference": "Bundle/ohie-cr-06-10-fhir"
+          }
+        ],
+        "destination": [
+          {
+            "endpoint": "http://ohie.org/test/endpoint/Bundle"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "Bundle/ohie-cr-06-10-fhir",
+      "resource": {
+        "resourceType": "Bundle",
+        "type": "history",
+        "entry": [
+          {
+            "fullUrl": "Patient/ohie-cr-06-10-fhir",
+            "resource": {
+		    "resourceType": "Patient",
+		    "id": "ohie-cr-09-10-fhir",
+		    "active": true,
+		    "identifier": [
+		      {
+		        "use": "official",
+		        "type": {
+		          "coding": [
+		            {
+		              "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+		              "code": "PI"
+		            }
+		          ]
+		        },
+		        "system": "http://ohie.org/test/test_a",
+		        "value": "FHRA-090",
+		        "assigner": {
+		          "display": "Test Harness A Patient Identity"
+		        }
+		      },
+		      {
+		        "use":"usual",
+		        "system": "http://ohie.org/test/nid",
+		        "value":"NID090"
+		      }
+		    ],
+		    "name": [
+		      {
+		        "use": "official",
+		        "family": "JONES",
+		        "given": [
+		          "BLOCKED","MERGE"
+		        ]
+		      }
+		    ],
+		    "gender": "female",
+		    "birthDate": "1989-02-12",
+		  },
+            "request": {
+              "method": "POST",
+              "url": "Patient/ohie-cr-06-10-fhir"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}</con:request><con:originalUri>http://localhost/fhir/Bundle</con:originalUri><con:assertion type="Valid HTTP Status Codes" id="b3ab71b8-091c-40ee-8d1b-a6d50c06325c" name="Valid HTTP Status Codes"><con:configuration><codes>201,200</codes></con:configuration></con:assertion><con:assertion type="JsonPath Match" id="36283ca1-9564-49ab-93b6-40dd718d662b" name="Must be Bundle"><con:configuration><path>resourceType</path><content>Bundle</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="JsonPath Match" id="6c448993-a1ad-4ff9-8a7f-f82863b1be3e" name="Must Have MessageHeader"><con:configuration><path>entry[0].resource.resourceType</path><content>MessageHeader</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="JsonPath Match" id="8470a37e-2ece-4a33-9e35-388622408164" name="Must have code ok"><con:configuration><path>entry[0].resource.response.code</path><content>ok</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="Authenticate TEST_B" id="d8560392-03d6-4ff5-aa76-7fece30c9c2b"><con:settings/><con:config service="OAuth2 Access Control Service" methodName="POST" resourcePath="/auth/oauth2_token" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Authenticate TEST_B" id="cb6a7dff-65f4-46c4-a0de-dd06c7585f29" mediaType="application/x-www-form-urlencoded" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080</con:endpoint><con:request>grant_type=client_credentials&amp;scope=*&amp;client_secret=TEST_HARNESS&amp;client_id=TEST_HARNESS_FHIR_B</con:request><con:originalUri>http://localhost/auth/oauth2_token</con:originalUri><con:assertion type="Valid HTTP Status Codes" id="5611c124-f4b8-4507-98b5-23fec7e42725" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:restRequest></con:config></con:testStep><con:testStep type="transfer" name="TEST_B Bearer Token" id="4e0060b2-43ac-47dc-b5a7-bd17024a4358"><con:settings/><con:config xsi:type="con:PropertyTransfersStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:transfers setNullOnMissingSource="true" transferTextContent="true" failOnError="true" ignoreEmpty="false" transferToAll="false" entitize="false" transferChildNodes="false"><con:name>Token</con:name><con:sourceType>Response</con:sourceType><con:sourceStep>Authenticate TEST_B</con:sourceStep><con:sourcePath>access_token</con:sourcePath><con:targetType>Token</con:targetType><con:targetStep>#TestSuite#</con:targetStep><con:type>JSONPATH</con:type><con:targetTransferType>JSONPATH</con:targetTransferType><con:upgraded>true</con:upgraded></con:transfers></con:config></con:testStep><con:testStep type="restrequest" name="Register New Identity in TEST_B" id="4f4eed61-a8a7-4519-a907-937fee28f976"><con:settings/><con:config service="HL7 Fast Health Interoperability Resources (FHIR) R4" methodName="POST" resourcePath="/fhir/Bundle" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Register New Identity in TEST_B" id="a27193b7-b458-4d10-9276-e866f6107b0a" mediaType="application/fhir+json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config"/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
+  "resourceType": "Bundle",
+  "type": "message",
+  "entry": [
+    {
+      "fullUrl": "MessageHeader/ohie-cr-09-20-fhir",
+      "resource": {
+        "resourceType": "MessageHeader",
+        "id": "1",
+        "eventUri": "urn:ihe:iti:pmir:2019:patient-feed",
+        "source": {
+          "endpoint": "http://ohie.org/test/test_harness_b"
+        },
+        "focus": [
+          {
+            "reference": "Bundle/ohie-cr-09-20-fhir"
+          }
+        ],
+        "destination": [
+          {
+            "endpoint": "http://ohie.org/test/endpoint/Bundle"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "Bundle/ohie-cr-09-20-fhir",
+      "resource": {
+        "resourceType": "Bundle",
+        "type": "history",
+        "entry": [
+          {
+            "fullUrl": "Patient/ohie-cr-09-20-fhir",
+            "resource": {
+		    "resourceType": "Patient",
+		    "id": "ohie-cr-09-20-fhir",
+		    "active": true,
+		    "identifier": [
+		      {
+		        "use": "official",
+		        "type": {
+		          "coding": [
+		            {
+		              "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+		              "code": "PI"
+		            }
+		          ]
+		        },
+		        "system": "http://ohie.org/test/test_b",
+		        "value": "FHRB-090",
+		        "assigner": {
+		          "display": "Test Harness B Patient Identity"
+		        }
+		      },
+		      {
+		        "use":"usual",
+		        "system": "http://ohie.org/test/nid",
+		        "value":"NID091"
+		      }
+		    ],
+		    "name": [
+		      {
+		        "use": "official",
+		        "family": "JONES",
+		        "given": [
+		          "BLOCK","MERGE"
+		        ]
+		      }
+		    ],
+		    "gender": "female"
+		  },
+            "request": {
+              "method": "POST",
+              "url": "Patient/ohie-cr-09-10-fhir"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}</con:request><con:originalUri>http://localhost/fhir/Bundle</con:originalUri><con:assertion type="Valid HTTP Status Codes" id="b3ab71b8-091c-40ee-8d1b-a6d50c06325c" name="Valid HTTP Status Codes"><con:configuration><codes>201,200</codes></con:configuration></con:assertion><con:assertion type="JsonPath Match" id="36283ca1-9564-49ab-93b6-40dd718d662b" name="Must be Bundle"><con:configuration><path>resourceType</path><content>Bundle</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="JsonPath Match" id="6c448993-a1ad-4ff9-8a7f-f82863b1be3e" name="Must Have MessageHeader"><con:configuration><path>entry[0].resource.resourceType</path><content>MessageHeader</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="JsonPath Match" id="8470a37e-2ece-4a33-9e35-388622408164" name="Must have code ok"><con:configuration><path>entry[0].resource.response.code</path><content>ok</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:restRequest></con:config></con:testStep><con:properties/></con:testCase><con:testCase id="465f2b60-f860-47ed-8693-efb9c470a2d7" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="Subscription" searchProperties="true"><con:description>This is a non-OHIE test which ensures that subscriptions are</con:description><con:settings/><con:testStep type="restrequest" name="Authenticate" id="008a6785-819a-493c-865f-dfdf448668ed"><con:settings/><con:config service="OAuth2 Access Control Service" methodName="POST" resourcePath="/auth/oauth2_token" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Authenticate" id="cb6a7dff-65f4-46c4-a0de-dd06c7585f29" mediaType="application/x-www-form-urlencoded" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080</con:endpoint><con:request>grant_type=client_credentials&amp;scope=*&amp;client_secret=fiddler&amp;client_id=fiddler</con:request><con:originalUri>http://localhost/auth/oauth2_token</con:originalUri><con:assertion type="Valid HTTP Status Codes" id="b5134ff9-14f5-47fa-99b8-e1be386b4f2b" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:restRequest></con:config></con:testStep><con:testStep type="transfer" name="Transfer Bearer Token" id="67c7f09f-01e1-4c3d-96ca-b213e970c695"><con:settings/><con:config xsi:type="con:PropertyTransfersStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:transfers setNullOnMissingSource="true" transferTextContent="true" failOnError="true" ignoreEmpty="false" transferToAll="false" entitize="false" transferChildNodes="false"><con:name>Token</con:name><con:sourceType>Response</con:sourceType><con:sourceStep>Authenticate</con:sourceStep><con:sourcePath>access_token</con:sourcePath><con:targetType>Token</con:targetType><con:targetStep>#TestSuite#</con:targetStep><con:type>JSONPATH</con:type><con:targetTransferType>JSONPATH</con:targetTransferType><con:upgraded>true</con:upgraded></con:transfers></con:config></con:testStep><con:testStep type="restrequest" name="Setup Identity Domain" id="e1ebb02f-8089-4415-9e8f-bcf3cb75a957"><con:settings/><con:config service="Health Data Service Interface (HDSI)" methodName="POST" resourcePath="/hdsi/Bundle" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Setup Identity Domain" id="1ad1ca24-e989-453d-9d49-0261b49ba5ba" mediaType="application/xml" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config"/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080</con:endpoint><con:request><![CDATA[<Bundle xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://santedb.org/model">
   <!-- TEST -->
   <resource xsi:type="AssigningAuthority">
       <id>43FC4322-948D-4986-A06C-DA603A77EDDE</id>
@@ -2116,14 +2308,14 @@ count(/sdb:Bundle/sdb:resource)</path><content>2</content><allowWildcards>false<
       "family": "Subscription"
    }],
    "active": true,
-   "id": "482ac186-ab54-4842-9c49-2cdcc64d84cd",
+   "id": "92679d85-0b55-4b9e-bc52-df28ef493579",
    "text":    {
       "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n\t\t\t<table>\n\t\t\t\t<tbody>\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>Name<\/td>\n\t\t\t\t\t\t<td>Peter James \n              <b>Chalmers<\/b> (&quot;Jim&quot;)\n            <\/td>\n\t\t\t\t\t<\/tr>\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>Address<\/td>\n\t\t\t\t\t\t<td>534 Erewhon, Pleasantville, Vic, 3999<\/td>\n\t\t\t\t\t<\/tr>\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>Contacts<\/td>\n\t\t\t\t\t\t<td>Home: unknown. Work: (03) 5555 6473<\/td>\n\t\t\t\t\t<\/tr>\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>Id<\/td>\n\t\t\t\t\t\t<td>MRN: 12345 (Acme Healthcare)<\/td>\n\t\t\t\t\t<\/tr>\n\t\t\t\t<\/tbody>\n\t\t\t<\/table>\n\t\t<\/div>",
       "status": "generated"
    },
    "birthDate": "1980-12-25",
    "resourceType": "Patient"
-}]]></con:request><con:originalUri>http://localhost/fhir/Patient</con:originalUri><con:assertion type="Valid HTTP Status Codes" id="7e359d20-7759-46dd-a02f-d1f213061973" name="Valid HTTP Status Codes"><con:configuration><codes>201,200</codes></con:configuration></con:assertion><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="id" value="482ac186-ab54-4842-9c49-2cdcc64d84cd" xmlns="http://eviware.com/soapui/config"/></con:parameters></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="Subscribe to all Patients (MESSAGE-HOOK)" id="a56d33e5-e911-4491-a49d-32807f79d6cd"><con:settings/><con:config service="HL7 Fast Health Interoperability Resources (FHIR) R4" methodName="POST" resourcePath="/fhir/Subscription" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Subscribe to all Patients (MESSAGE-HOOK)" id="1ffb6f0e-0613-4855-8550-85861761348a" mediaType="application/fhir+json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config"/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
+}]]></con:request><con:originalUri>http://localhost/fhir/Patient</con:originalUri><con:assertion type="Valid HTTP Status Codes" id="7e359d20-7759-46dd-a02f-d1f213061973" name="Valid HTTP Status Codes"><con:configuration><codes>201,200</codes></con:configuration></con:assertion><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="id" value="92679d85-0b55-4b9e-bc52-df28ef493579" xmlns="http://eviware.com/soapui/config"/></con:parameters></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="Subscribe to all Patients (MESSAGE-HOOK)" id="a56d33e5-e911-4491-a49d-32807f79d6cd"><con:settings/><con:config service="HL7 Fast Health Interoperability Resources (FHIR) R4" methodName="POST" resourcePath="/fhir/Subscription" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Subscribe to all Patients (MESSAGE-HOOK)" id="1ffb6f0e-0613-4855-8550-85861761348a" mediaType="application/fhir+json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config"/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
   "resourceType": "Subscription",
   "id": "sub_deceased_test_mh",
   "text": {
@@ -2301,7 +2493,7 @@ count(/sdb:Bundle/sdb:resource)</path><content>2</content><allowWildcards>false<
       }
     }
   ]
-}</con:request><con:originalUri>http://localhost/fhir/Patient</con:originalUri><con:assertion type="Valid HTTP Status Codes" id="0d270807-f8b3-4033-bd57-de0ec3f005d5" name="Valid HTTP Status Codes"><con:configuration><codes>201,200</codes></con:configuration></con:assertion><con:assertion type="JsonPath Match" id="8929b5dd-e799-4125-96d8-2bb25856ee29" name="Must be Patient"><con:configuration/></con:assertion><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:restRequest></con:config></con:testStep><con:properties><con:property><con:name>id</con:name><con:value/></con:property></con:properties></con:testCase><con:properties><con:property><con:name>Token</con:name><con:value>BEB8E1E262F1EB11A4BA00155DD2782DB46FF44834E31D15B9F5D9DDD543CF6B262094DF43F4EB1D1F7747D99B2D6F04</con:value></con:property></con:properties></con:testSuite><con:restMockService id="3ad92989-3d79-4a44-baf8-2f18cf469623" port="8989" path="/" host="localhost" name="FHIR Mock Service" docroot=""><con:settings/><con:properties/><con:onRequestScript>def requestBody = ""
+}</con:request><con:originalUri>http://localhost/fhir/Patient</con:originalUri><con:assertion type="Valid HTTP Status Codes" id="0d270807-f8b3-4033-bd57-de0ec3f005d5" name="Valid HTTP Status Codes"><con:configuration><codes>201,200</codes></con:configuration></con:assertion><con:assertion type="JsonPath Match" id="8929b5dd-e799-4125-96d8-2bb25856ee29" name="Must be Patient"><con:configuration/></con:assertion><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:restRequest></con:config></con:testStep><con:properties><con:property><con:name>id</con:name><con:value/></con:property></con:properties></con:testCase><con:properties><con:property><con:name>Token</con:name><con:value>A09F150771F4EB11B42000155DD2782D745ED715F6E65B1C5EDFB6DD48CD07CB10089B353B2A2DC3E0A6857E0745235F</con:value></con:property></con:properties></con:testSuite><con:restMockService id="3ad92989-3d79-4a44-baf8-2f18cf469623" port="8989" path="/" host="localhost" name="FHIR Mock Service" docroot=""><con:settings/><con:properties/><con:onRequestScript>def requestBody = ""
 
 if (mockRequest != null) {
 
