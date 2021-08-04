@@ -54,6 +54,18 @@ namespace SanteMPI.Messaging.IHE.Docker
                     new TypeReferenceConfiguration(typeof(PatientMasterIdentityOperation))
                 };
             }
+
+            if(fhirConfig.BehaviorModifiers != null)
+            {
+                fhirConfig.BehaviorModifiers.Add(new TypeReferenceConfiguration(typeof(SubscribeToPatientUpdateModifier)));
+            }
+            else
+            {
+                fhirConfig.BehaviorModifiers = new List<TypeReferenceConfiguration>()
+                {
+                    new TypeReferenceConfiguration(typeof(SubscribeToPatientUpdateModifier))
+                };
+            }
         }
     }
 }
