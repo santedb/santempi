@@ -36,12 +36,11 @@ if exist "c:\Program Files (x86)\Inno Setup 6\ISCC.exe" (
 )
 
 set cwd=%cd%
-set nuget="%cwd%\.nuget\nuget.exe"
 echo Will build version %version%
 echo Will use NUGET in %nuget%
 echo Will use MSBUILD in %msbuild%
 
-if exist "%nuget%" (
+if exist "%msbuild%\msbuild.exe" (
 	%msbuild%\msbuild santempi.sln /t:restore
 	%msbuild%\msbuild santempi.sln /t:clean /t:rebuild /p:configuration=Release /m:1
 
@@ -73,7 +72,7 @@ if exist "%nuget%" (
 	docker build --no-cache -t santesuite/santedb-mpi .
 
 ) else (	
-	echo Cannot find NUGET 
+	echo Cannot find MSBUILD
 )
 
 :eof

@@ -11,7 +11,7 @@
   
   <ItemGroup>
     <PackageReference Include="SanteDB.Messaging.FHIR" Version="2.1.48" />
-    <PackageReference Include="SanteDB.Messaging.HL7" Version="2.1.48" />
+    <PackageReference Include="SanteDB.Messaging.HL7" Version="2.1.50" />
   </ItemGroup>
   
   <ItemGroup>
