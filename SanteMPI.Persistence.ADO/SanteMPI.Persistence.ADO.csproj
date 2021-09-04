@@ -56,8 +56,12 @@
     <EmbeddedResource Include="Data\Updates\20200530-PSQL.sql" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="SanteDB.OrmLite" Version="2.1.50" />
+    <PackageReference Include="SanteDB.OrmLite" Version="2.1.60" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="config\santempi.data.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

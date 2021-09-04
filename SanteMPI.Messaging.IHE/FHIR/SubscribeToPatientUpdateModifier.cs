@@ -28,7 +28,8 @@ namespace SanteMPI.Messaging.IHE.FHIR
         {
             if (resourceType == ResourceType.Subscription) // only apply if the request was to subscription
             {
-                if (responseResource is Subscription subscription && subscription.ResourceType == ResourceType.Patient)
+                
+                if (responseResource is Subscription subscription && subscription.Criteria.StartsWith("Patient"))
                 {
                     IheAuditUtil.SendSubscribeToPatientUpdates(SanteDB.Core.Auditing.OutcomeIndicator.Success, interaction, subscription);
                 }
@@ -40,6 +41,6 @@ namespace SanteMPI.Messaging.IHE.FHIR
         /// Can apply this audit modifier?
         /// </summary>
         public bool CanApply(CapabilityStatement.TypeRestfulInteraction interaction, Resource resource) => resource is Subscription subscription &&
-            subscription.ResourceType == ResourceType.Patient;
+            subscription.Criteria.StartsWith("Patient");
     }
 }
