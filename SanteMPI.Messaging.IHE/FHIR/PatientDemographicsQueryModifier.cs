@@ -10,6 +10,7 @@ using SanteDB.Messaging.FHIR.Util;
 using SanteMPI.Messaging.IHE.Audit;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
@@ -18,6 +19,7 @@ namespace SanteMPI.Messaging.IHE.FHIR
     /// <summary>
     /// The mother's maiden name
     /// </summary>
+    [DisplayName("IHE PDQm Patient Query Modifier")]
     public class PatientDemographicsQueryModifier : IFhirRestBehaviorModifier
     {
 

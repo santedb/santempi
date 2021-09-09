@@ -16,6 +16,7 @@ using SanteMPI.i18n;
 using SanteMPI.Messaging.IHE.Audit;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Resources;
 using System.Text;
@@ -26,6 +27,7 @@ namespace SanteMPI.Messaging.IHE.FHIR
     /// <summary>
     /// A FHIR operation handler which creates a new patient from an inbound message
     /// </summary>
+    [DisplayName("IHE PMIR Message Handler")]
     public class PatientMasterIdentityOperation : IFhirMessageOperation
     {
 

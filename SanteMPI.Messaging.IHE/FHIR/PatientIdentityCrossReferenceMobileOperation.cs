@@ -9,6 +9,7 @@ using SanteDB.Messaging.FHIR.Util;
 using SanteMPI.Messaging.IHE.Audit;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
@@ -17,6 +18,7 @@ namespace SanteMPI.Messaging.IHE.FHIR
     /// <summary>
     /// IHE PIXm Operation
     /// </summary>
+    [DisplayName("IHE PIXm Operation Handler")]
     public class PatientIdentityCrossReferenceMobileOperation : IFhirOperationHandler
     {
 

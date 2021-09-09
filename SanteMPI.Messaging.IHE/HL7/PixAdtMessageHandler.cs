@@ -6,6 +6,7 @@ using SanteDB.Messaging.HL7.Messages;
 using SanteDB.Messaging.HL7.TransportProtocol;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,6 +16,7 @@ namespace SanteMPI.Messaging.IHE.HL7
     /// <summary>
     /// ADT message handler specifically designed for PIX
     /// </summary>
+    [DisplayName("SanteMPI IHE PIX ADT Message Handler")]
     public class PixAdtMessageHandler : AdtMessageHandler
     {
 

@@ -3,6 +3,7 @@ using SanteDB.Messaging.FHIR.Extensions;
 using SanteMPI.Messaging.IHE.Audit;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 namespace SanteMPI.Messaging.IHE.FHIR
@@ -11,6 +12,7 @@ namespace SanteMPI.Messaging.IHE.FHIR
     /// Simple modifier which adds appropriate auditing
     /// </summary>
     /// <remarks>This modifier simply ensures that an appropriate audit is sent for the subscription message</remarks>
+    [DisplayName("IHE PMIR Subscription Handler")]
     public class SubscribeToPatientUpdateModifier : IFhirRestBehaviorModifier
     {
         /// <summary>

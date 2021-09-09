@@ -394,7 +394,7 @@
       <url xmlns="http://santedb.org/model">http://hl7.org/fhir/sid/us-ssn</url>
     </ssnAuthority>
     <services>
-      <add address="llp://0.0.0.0:2100" name="LLP" receiveTimeout="20000">
+      <add address="llp://0.0.0.0:2100" name="HL7" receiveTimeout="20000">
         
   <!-- If you want to enable security Encryption
         <sllp checkCrl="false" requireClientCert="false">

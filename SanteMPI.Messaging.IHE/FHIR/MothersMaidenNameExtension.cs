@@ -10,6 +10,7 @@ using SanteDB.Persistence.MDM;
 using SanteDB.Persistence.MDM.Extensions;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
@@ -18,6 +19,7 @@ namespace SanteMPI.Messaging.IHE.FHIR
     /// <summary>
     /// Mother's maiden name extension
     /// </summary>
+    [DisplayName("IHE PDQm Mother's Maiden Name Extension")]
     public class MothersMaidenNameExtension : IFhirExtensionHandler
     {
         private const string URI = "http://hl7.org/fhir/StructureDefinition/patient-mothersMaidenName";

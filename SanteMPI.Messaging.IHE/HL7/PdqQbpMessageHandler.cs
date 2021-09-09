@@ -4,6 +4,7 @@ using SanteDB.Messaging.HL7.Messages;
 using SanteDB.Messaging.HL7.TransportProtocol;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ namespace SanteMPI.Messaging.IHE.HL7
     /// <summary>
     /// Represents a QBP message handler that restricts behavior to IHE PDQ
     /// </summary>
+    [DisplayName("SanteMPI PDQ Message Handler")]
     public class PdqQbpMessageHandler : QbpMessageHandler
     {
 

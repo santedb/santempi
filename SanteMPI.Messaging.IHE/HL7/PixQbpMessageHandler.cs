@@ -10,6 +10,7 @@ using SanteDB.Messaging.HL7.TransportProtocol;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -20,6 +21,7 @@ namespace SanteMPI.Messaging.IHE.HL7
     /// <summary>
     /// Represents a QBP message handler that restricts behavior to IHE PIX Query (ITI-9)
     /// </summary>
+    [DisplayName("SanteMPI IHE PIX ITI-9 QBP Handler")]
     public class PixQbpMessageHandler : QbpMessageHandler
     {
 

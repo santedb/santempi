@@ -56,6 +56,12 @@
     <PackageReference Include="SanteDB.Server.Plugin" Version="2.1.60" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="config\santempi.fhir.ihe.config.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="config\santempi.hl7.ihe.config.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="config\template\SanteMPI Server.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
