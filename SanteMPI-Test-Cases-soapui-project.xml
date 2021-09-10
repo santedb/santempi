@@ -39,7 +39,7 @@
         </con:representation>
         <con:request name="Request 1" id="80946953-8dbf-4b7e-93cc-81c8e5844531" mediaType="application/fhir+json">
           <con:settings>
-            <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment /></con:setting>
+            <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
           </con:settings>
           <con:endpoint>http://localhost:8080</con:endpoint>
           <con:request />
@@ -1976,7 +1976,7 @@
         </con:representation>
         <con:request name="Request 1" id="090f09a8-91ae-4aa3-b504-8419a61af74d" mediaType="application/fhir+json" postQueryString="false">
           <con:settings>
-            <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment /></con:setting>
+            <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
           </con:settings>
           <con:endpoint>http://localhost:8080</con:endpoint>
           <con:request>
@@ -2193,7 +2193,7 @@
         </con:representation>
         <con:request name="Request 1" id="4ddaa6dd-3e64-41e9-a389-bcf8bf251289" mediaType="application/fhir+json" postQueryString="false">
           <con:settings>
-            <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment /></con:setting>
+            <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
           </con:settings>
           <con:endpoint>http://localhost:8080</con:endpoint>
           <con:request>
@@ -2359,7 +2359,7 @@
         </con:representation>
         <con:request name="Request 1" id="ad08d91e-48ad-4cec-89f6-07a90f248417" mediaType="application/fhir+json">
           <con:settings>
-            <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment /></con:setting>
+            <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
           </con:settings>
           <con:endpoint>http://localhost:8080</con:endpoint>
           <con:request />
@@ -3769,7 +3769,7 @@
         </con:representation>
         <con:request name="Request 1" id="7c38ef5e-0e6a-405a-81be-eed6f0aa28de" mediaType="application/json">
           <con:settings>
-            <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment /></con:setting>
+            <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
           </con:settings>
           <con:endpoint>http://localhost:8080</con:endpoint>
           <con:request />
@@ -9117,7 +9117,7 @@
         </con:representation>
         <con:request name="Request 1" id="251a578b-43a4-4418-b5fe-1a4657b814a5" mediaType="application/json">
           <con:settings>
-            <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment /></con:setting>
+            <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
           </con:settings>
           <con:endpoint>http://localhost:8080</con:endpoint>
           <con:request />
@@ -14872,7 +14872,7 @@
         <con:config service="OAuth2 Access Control Service" methodName="POST" resourcePath="/auth/oauth2_token" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="Authenticate" id="cb6a7dff-65f4-46c4-a0de-dd06c7585f29" mediaType="application/x-www-form-urlencoded" postQueryString="false">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment /></con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080</con:endpoint>
@@ -15198,7 +15198,7 @@
         <con:config service="OAuth2 Access Control Service" methodName="POST" resourcePath="/auth/oauth2_token" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="Authenticate" id="cb6a7dff-65f4-46c4-a0de-dd06c7585f29" mediaType="application/x-www-form-urlencoded" postQueryString="false">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment /></con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080</con:endpoint>
@@ -15346,7 +15346,7 @@
         <con:config service="OAuth2 Access Control Service" methodName="POST" resourcePath="/auth/oauth2_token" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="Authenticate as TEST_HARNESS" id="cb6a7dff-65f4-46c4-a0de-dd06c7585f29" mediaType="application/x-www-form-urlencoded" postQueryString="false">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment /></con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080</con:endpoint>
@@ -15828,7 +15828,7 @@
         <con:config service="OAuth2 Access Control Service" methodName="POST" resourcePath="/auth/oauth2_token" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="Authenticate" id="cb6a7dff-65f4-46c4-a0de-dd06c7585f29" mediaType="application/x-www-form-urlencoded" postQueryString="false">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment /></con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080</con:endpoint>
@@ -16194,7 +16194,7 @@
         <con:config service="OAuth2 Access Control Service" methodName="POST" resourcePath="/auth/oauth2_token" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="Authenticate" id="cb6a7dff-65f4-46c4-a0de-dd06c7585f29" mediaType="application/x-www-form-urlencoded" postQueryString="false">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment /></con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080</con:endpoint>
@@ -16390,7 +16390,7 @@
         <con:config service="OAuth2 Access Control Service" methodName="POST" resourcePath="/auth/oauth2_token" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="Authenticate TEST_A" id="cb6a7dff-65f4-46c4-a0de-dd06c7585f29" mediaType="application/x-www-form-urlencoded" postQueryString="false">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment /></con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080</con:endpoint>
@@ -16661,7 +16661,7 @@
         <con:config service="OAuth2 Access Control Service" methodName="POST" resourcePath="/auth/oauth2_token" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="Authenticate TEST_B" id="cb6a7dff-65f4-46c4-a0de-dd06c7585f29" mediaType="application/x-www-form-urlencoded" postQueryString="false">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment /></con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080</con:endpoint>
@@ -17092,7 +17092,7 @@
         <con:config service="OAuth2 Access Control Service" methodName="POST" resourcePath="/auth/oauth2_token" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="Authenticate" id="cb6a7dff-65f4-46c4-a0de-dd06c7585f29" mediaType="application/x-www-form-urlencoded" postQueryString="false">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment /></con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080</con:endpoint>
@@ -17240,7 +17240,7 @@
         <con:config service="OAuth2 Access Control Service" methodName="POST" resourcePath="/auth/oauth2_token" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="Authenticate as TEST_HARNESS" id="cb6a7dff-65f4-46c4-a0de-dd06c7585f29" mediaType="application/x-www-form-urlencoded" postQueryString="false">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment /></con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080</con:endpoint>
@@ -17958,7 +17958,7 @@
         <con:config service="OAuth2 Access Control Service" methodName="POST" resourcePath="/auth/oauth2_token" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="Authenticate" id="cb6a7dff-65f4-46c4-a0de-dd06c7585f29" mediaType="application/x-www-form-urlencoded" postQueryString="false">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment /></con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080</con:endpoint>
@@ -18145,7 +18145,7 @@
         <con:config service="OAuth2 Access Control Service" methodName="POST" resourcePath="/auth/oauth2_token" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="Authenticate TEST_A" id="cb6a7dff-65f4-46c4-a0de-dd06c7585f29" mediaType="application/x-www-form-urlencoded" postQueryString="false">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment /></con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080</con:endpoint>
@@ -18448,7 +18448,7 @@
         <con:config service="OAuth2 Access Control Service" methodName="POST" resourcePath="/auth/oauth2_token" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="Authenticate TEST_B" id="cb6a7dff-65f4-46c4-a0de-dd06c7585f29" mediaType="application/x-www-form-urlencoded" postQueryString="false">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment /></con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080</con:endpoint>
@@ -18756,7 +18756,7 @@
         <con:config service="OAuth2 Access Control Service" methodName="POST" resourcePath="/auth/oauth2_token" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="Authenticate" id="cb6a7dff-65f4-46c4-a0de-dd06c7585f29" mediaType="application/x-www-form-urlencoded" postQueryString="false">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment /></con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080</con:endpoint>
@@ -18857,7 +18857,7 @@
         <con:config service="OAuth2 Access Control Service" methodName="POST" resourcePath="/auth/oauth2_token" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="Authenticate as TEST_HARNESS" id="cb6a7dff-65f4-46c4-a0de-dd06c7585f29" mediaType="application/x-www-form-urlencoded" postQueryString="false">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment /></con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080</con:endpoint>
@@ -19643,7 +19643,7 @@
         <con:config service="OAuth2 Access Control Service" methodName="POST" resourcePath="/auth/oauth2_token" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="Authenticate as TEST_HARNESS" id="cb6a7dff-65f4-46c4-a0de-dd06c7585f29" mediaType="application/x-www-form-urlencoded" postQueryString="false">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment /></con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080</con:endpoint>
@@ -20410,7 +20410,7 @@
         <con:config service="OAuth2 Access Control Service" methodName="POST" resourcePath="/auth/oauth2_token" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="Authenticate" id="cb6a7dff-65f4-46c4-a0de-dd06c7585f29" mediaType="application/x-www-form-urlencoded" postQueryString="false">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment /></con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080</con:endpoint>
@@ -20597,7 +20597,7 @@
         <con:config service="OAuth2 Access Control Service" methodName="POST" resourcePath="/auth/oauth2_token" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="Authenticate TEST_A" id="cb6a7dff-65f4-46c4-a0de-dd06c7585f29" mediaType="application/x-www-form-urlencoded" postQueryString="false">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment /></con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080</con:endpoint>
@@ -20774,7 +20774,7 @@
         <con:config service="OAuth2 Access Control Service" methodName="POST" resourcePath="/auth/oauth2_token" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="Authenticate TEST_B" id="cb6a7dff-65f4-46c4-a0de-dd06c7585f29" mediaType="application/x-www-form-urlencoded" postQueryString="false">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment /></con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080</con:endpoint>
@@ -21091,7 +21091,7 @@
         <con:config service="OAuth2 Access Control Service" methodName="POST" resourcePath="/auth/oauth2_token" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="Authenticate" id="cb6a7dff-65f4-46c4-a0de-dd06c7585f29" mediaType="application/x-www-form-urlencoded" postQueryString="false">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment /></con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080</con:endpoint>
