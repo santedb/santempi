@@ -1,5 +1,6 @@
 ﻿using Hl7.Fhir.Model;
 using RestSrvr;
+using SanteDB.Core.Attributes;
 using SanteDB.Core.Auditing;
 using SanteDB.Core.Security.Audit;
 using System;
@@ -7,6 +8,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using static Hl7.Fhir.Model.CapabilityStatement;
+
+[assembly:PluginTraceSource("SanteMPI")]
 
 namespace SanteMPI.Messaging.IHE.Audit
 {
