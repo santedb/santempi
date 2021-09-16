@@ -7,11 +7,21 @@
   <target resource="Patient" />
 
   <!-- Start: Blocking Configuration -->
+  <meta>
+    <createdBy>SanteSuite Community</createdBy>
+    <creationTime>2021-09-14T13:48:00Z</creationTime>
+    <status>Active</status>
+    <tags>
+      <add key="$mdm.auto-link">false</add>
+    </tags>
+  </meta>
+
+
   <!-- 
       Blocking configuration instructs the matcher to load candidate records from the primary data store
       which have attributes matching the input criteria specified 
   -->
-
+  
   <!-- Retrieve patients with NID within 2 type-o's -->
   <blocking op="or" maxResults="5">
     <filter when="identifier[SSN].value">identifier[NID].value=:(levenshtein|$input.identifier[NID].value)&lt;3</filter>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+ - Portions Copyright 2015-2019 Mohawk College of Applied Arts and Technology
+ - Portions Copyright 2019-2019 SanteSuite Contributors (See NOTICE)
+ - 
+ - 
+ - Licensed under the Apache License, Version 2.0 (the "License"); you 
+ - may not use this file except in compliance with the License. You may 
+ - obtain a copy of the License at 
+ - 
+ - http://www.apache.org/licenses/LICENSE-2.0 
+ - 
+ - Unless required by applicable law or agreed to in writing, software
+ - distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ - WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the 
+ - License for the specific language governing permissions and limitations under 
+ - the License.
+ - 
+ - User: Justin Fyfe
+ - Date: 2019-12-16
+ -->
+<BiReportDefinition xmlns="http://santedb.org/bi" id="org.santempi.bi.reports.matches.type" label="ui.mpi.bi.reports.matches.type">
+  <meta>
+    <authors>
+      <add>Justin Fyfe (Fyfe Software Inc.) &lt;justin@fyfesoftware.ca></add>
+    </authors>
+    <annotation>
+      <div xmlns="http://www.w3.org/1999/xhtml">
+        <p>Report for patient registrations by age</p>
+      </div>
+    </annotation>
+  </meta>
+  <dataSources>
+    <view name="by-type">
+      <query ref="#org.santempi.bi.query.matches.stats" />
+      <aggregations>
+        <add>
+          <providers>
+            <invariant>npgsql</invariant>
+            <invariant>FirebirdSQL</invariant>
+          </providers>
+          <grouping>
+            <column name="class_code">class_code</column>
+            <column name="rel_type">rel_type</column>
+          </grouping>
+          <select>
+            <column name="n" fn="count">ent_rel_id</column>
+          </select>
+        </add>
+      </aggregations>
+    </view>
+  </dataSources>
+  <views>
+    <add id="org.santempi.bi.reports.matches.type.chart" label="ui.bi.common.pie" name="chart">
+      <div xmlns="http://www.w3.org/1999/xhtml" xmlns:bi="http://santedb.org/bi/view">
+        <!-- Shows line chart with each audit event type -->
+        <bi:chart source="by-type" type="pie" legend="true">
+          <bi:title>Match Classifications</bi:title>
+          <bi:labels >(rel_type == "MDM-Master" ? "Match" : rel_type == "MDM-Ignore" ? "Non-Match" : "Probable Match") + " (" + (class_code == "MDM-Verified" ? "Verified" : "Auto") + ")"</bi:labels>
+          <bi:dataset label="# Links" fn="sum">n</bi:dataset>
+        </bi:chart>
+      </div>
+    </add>
+  </views>
+</BiReportDefinition>

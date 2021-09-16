@@ -56,7 +56,7 @@
     <EmbeddedResource Include="Data\Updates\20200530-PSQL.sql" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="SanteDB.OrmLite" Version="2.1.60" />
+    <PackageReference Include="SanteDB.OrmLite" Version="2.1.70" />
   </ItemGroup>
   <ItemGroup>
     <None Include="config\santempi.data.config">

@@ -1,0 +1,42 @@
+<resources>
+    <string name="org.santedb.smpi">SanteMPI</string>
+
+    <!-- MPI Actions -->
+    <string name="ui.mpi.action.search">Search MPI</string>
+    <string name="ui.action.mpiSearch">Search All Patients</string>
+    <!-- Dashboard String -->
+    <string name="ui.mpi.dashboard.index">MPI Dashboard</string>
+    <string name="ui.mpi.dashboard.patients.title">Locally Registered Patients</string>
+    <string name="ui.mpi.dashboard.patients.count">number of patients at this endpoint</string>
+    <string name="ui.mpi.dashboard.recent">Recent Patients (&lt; 24h)</string>
+    <string name="ui.mpi.dashboard.stats">Patient Population</string>
+
+    <!-- Search UI -->
+    <string name="ui.mpi.patient.advSearch.parameters">Advanced MPI Search</string>
+    <string name="ui.mpi.patient.advSearch.parameters.name">Parameter</string>
+    <string name="ui.mpi.patient.advSearch.parameters.operator">Operator</string>
+    <string name="ui.mpi.patient.advSearch.parameters.value">Value</string>
+    <string name="ui.mpi.patient.advSearch.parameters.any">Freetext (Any Field)</string>
+    <string name="ui.mpi.patient.advSearch.parameters.givenName">Given Name</string>
+    <string name="ui.mpi.patient.advSearch.parameters.familyName">Family Name</string>
+    <string name="ui.mpi.patient.advSearch.parameters.identifier">Identifier</string>
+    <string name="ui.mpi.patient.advSearch.parameters.addressSearch">Address (Search)</string>
+    <string name="ui.mpi.patient.advSearch.parameters.gender">Gender</string>
+    <string name="ui.mpi.patient.advSearch.parameters.dateOfBirth">Date of Birth</string>
+    <string name="ui.mpi.patient.advSearch.parameters.facility">Facility Association</string>
+    <string name="ui.mpi.patient.search.term">Search For</string>
+    <string name="ui.mpi.patient.search.results">Search Results</string>
+    <!-- Patient Demographics Tab Options -->
+    <string name="org.santedb.smpi.admin.demographics">Demographics</string>
+    <!-- Operators -->
+    <string name="ui.operator.soundslike">Sounds Like</string>
+    <string name="ui.operator.approx">Approximately</string>
+
+  <string name="ui.action.mpiSearch">Search MPI</string>
+    <!-- Relationship Viewer -->
+    <string name="org.santedb.widget.smpi.mdm.net">Entity Relationships</string>
+
+    <!-- Match Dashboard -->
+    <string name="ui.mpi.matches.dashboard.index">Match Dashboard</string>
+    <string name="ui.mpi.matches.dashboard.stats">Match Statistics</string>
+</resources>

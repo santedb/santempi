@@ -47,13 +47,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="SanteDB.Caching.Memory" Version="2.1.60" />
-    <PackageReference Include="SanteDB.Caching.Redis" Version="2.1.60" />
-    <PackageReference Include="SanteDB.Matcher" Version="2.1.60" />
-    <PackageReference Include="SanteDB.Messaging.Atna" Version="2.1.60" />
-    <PackageReference Include="SanteDB.Rest.BIS" Version="2.1.60" />
-    <PackageReference Include="SanteDB.Server" Version="2.1.60" />
-    <PackageReference Include="SanteDB.Server.Plugin" Version="2.1.60" />
+    <PackageReference Include="SanteDB.Caching.Memory" Version="2.1.70" />
+    <PackageReference Include="SanteDB.Caching.Redis" Version="2.1.70" />
+    <PackageReference Include="SanteDB.Matcher" Version="2.1.70" />
+    <PackageReference Include="SanteDB.Messaging.Atna" Version="2.1.70" />
+    <PackageReference Include="SanteDB.Rest.BIS" Version="2.1.70" />
+    <PackageReference Include="SanteDB.Server" Version="2.1.70" />
+    <PackageReference Include="SanteDB.Server.Plugin" Version="2.1.70" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="config\santempi.fhir.ihe.config.xml">
@@ -65,7 +65,9 @@
     <Content Include="config\template\SanteMPI Server.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="match\DefaultPatientMatching.xml" />
+    <Content Include="match\DefaultPatientMatching.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="santempi.test.config.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
