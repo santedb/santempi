@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+ - Portions Copyright 2015-2019 Mohawk College of Applied Arts and Technology
+ - Portions Copyright 2019-2019 SanteSuite Contributors (See NOTICE)
+ - 
+ - 
+ - Licensed under the Apache License, Version 2.0 (the "License"); you 
+ - may not use this file except in compliance with the License. You may 
+ - obtain a copy of the License at 
+ - 
+ - http://www.apache.org/licenses/LICENSE-2.0 
+ - 
+ - Unless required by applicable law or agreed to in writing, software
+ - distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ - WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the 
+ - License for the specific language governing permissions and limitations under 
+ - the License.
+ - 
+ - User: Justin Fyfe
+ - Date: 2019-12-16
+ -->
+<BiReportDefinition xmlns="http://santedb.org/bi" id="org.santempi.bi.reports.matches.demographics" label="ui.mpi.bi.reports.matches.demographics">
+  <meta>
+    <authors>
+      <add>Justin Fyfe (Fyfe Software Inc.) &lt;justin@fyfesoftware.ca></add>
+    </authors>
+    <annotation>
+      <div xmlns="http://www.w3.org/1999/xhtml">
+        <p>Patient matches with demographics</p>
+      </div>
+    </annotation>
+  </meta>
+  <dataSources>
+      <query ref="#org.santempi.bi.query.matches.demographics" name="demographics"  />
+  </dataSources>
+  <views>
+    <add id="org.santempi.bi.reports.matches.demographics.table" label="ui.mpi.bi.reports.matches.demographics" name="table">
+      <div xmlns="http://www.w3.org/1999/xhtml" xmlns:bi="http://santedb.org/bi/view">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                </tr>
+                <tr>
+                    <th style="text-align:center">
+                      <bi:locale>ui.mpi.matches.patient.a</bi:locale>
+                    </th>
+                    <th style="text-align:center">
+                      <bi:locale>ui.mpi.matches.patient.b</bi:locale>
+                    </th>
+                    <th>
+                      <bi:locale>ui.mpi.matches.confidence</bi:locale>
+                    </th>
+                    <th>
+                      <bi:locale>ui.mpi.matches.action</bi:locale>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <bi:repeat source="demographics">
+                  <tr>
+                    <td>
+                      <strong><bi:value>String.Format("{0} {1}", a_given, a_family)</bi:value></strong>
+                        <bi:repeat expression="BiUtil.CsvSplit(a_id_val)">
+                          <span class="badge badge-secondary">
+                              <bi:value>.</bi:value>
+                          </span>
+                        </bi:repeat>
+                      <br/>
+                      <bi:switch value="a_dob">
+                        <bi:when op="ne" value="null">
+                          <i class="fas fa-birthday-cake"></i> <bi:value format="yyyy-MM-dd">a_dob</bi:value> 
+                        </bi:when>
+                      </bi:switch>
+                      <bi:switch value="a_gender">
+                        <bi:when op="eq" value="Male"><i class="fas fa-male"></i></bi:when>
+                        <bi:when op="eq" value="Female"><i class="fas fa-female"></i></bi:when>
+                        <bi:default><i class="fas fa-question-circle"></i></bi:default>
+                      </bi:switch>
+                      <bi:value>a_gender</bi:value>
+                    </td>
+                    <td>
+                    <strong><bi:value>String.Format("{0} {1}", b_given, b_family)</bi:value></strong>
+                        <bi:repeat expression="BiUtil.CsvSplit(b_id_val)">
+                          <span class="badge badge-secondary">
+                              <bi:value>.</bi:value>
+                          </span>
+                        </bi:repeat>
+                      <br/>
+                      <bi:switch value="b_dob">
+                        <bi:when op="ne" value="null">
+                          <i class="fas fa-birthday-cake"></i> <bi:value format="yyyy-MM-dd">b_dob</bi:value> 
+                        </bi:when>
+                      </bi:switch>
+                      <bi:switch value="b_gender">
+                        <bi:when op="eq" value="Male"><i class="fas fa-male"></i></bi:when>
+                        <bi:when op="eq" value="Female"><i class="fas fa-female"></i></bi:when>
+                        <bi:default><i class="fas fa-question-circle"></i></bi:default>
+                      </bi:switch>
+                      <bi:value>b_gender</bi:value>
+                    </td>
+                    <td><bi:value format="0%">confidence</bi:value></td>
+                    <td>
+                      <div class="btn-group">
+                        <a class="btn btn-primary">
+                          <bi:attribute name="ui-sref">String.Format("santedb-admin.mpi.matches.detail.view({{ candidateId: '{0}' }}", ent_rel_id)</bi:attribute>
+                          <i class="fas fa-eye"></i><i class="fas fa-sw"></i> <bi:locale>ui.action.view</bi:locale>
+                        </a>
+                        <button class="btn btn-danger">
+                          <bi:attribute name="ng-click">String.Format("ignore('{0}')", ent_rel_id)</bi:attribute>
+                          <bi:attribute name="id">String.Format("ignore_{0}", ent_rel_id)</bi:attribute>
+                          <i class="fas fa-times fa-sw"></i><i class="fas fa-sw"></i> <bi:locale>ui.action.ignore</bi:locale>
+                        </button>
+                        <button class="btn btn-success">
+                          <bi:attribute name="ng-click">String.Format("resolve('{0}')", ent_rel_id)</bi:attribute>
+                          <bi:attribute name="id">String.Format("merge_{0}", ent_rel_id)</bi:attribute>
+                          <i class="fas fa-check fa-sw"></i><i class="fas fa-sw"></i> <bi:locale>ui.action.merge</bi:locale>
+                        </button>
+                      </div>
+                    </td>
+
+                  </tr>
+                </bi:repeat>
+            </tbody>
+        </table>
+      </div>
+    </add>
+  </views>
+</BiReportDefinition>

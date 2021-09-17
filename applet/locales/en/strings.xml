@@ -39,4 +39,6 @@
     <!-- Match Dashboard -->
     <string name="ui.mpi.matches.dashboard.index">Match Dashboard</string>
     <string name="ui.mpi.matches.dashboard.stats">Match Statistics</string>
+    <string name="ui.mpi.matches.stats.note">Only most recent 10,000 are reported</string>
+    <string name="ui.mpi.matches.dashboard.duplicates">Detected Duplicates</string>
 </resources>

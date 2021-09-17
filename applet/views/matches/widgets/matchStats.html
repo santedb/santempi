@@ -8,15 +8,20 @@
 
     <div class="row">
         <div class="col-4">
-            <report-view id="'org.santempi.bi.reports.matches.type'" view="'chart'" legend="true" parameters="{}" />
+            <report-view report-id="'org.santempi.bi.reports.matches.type'" view="'chart'" legend="true" parameters="{}" />
         </div>
         <div class="col-4">
-            <report-view id="'org.santempi.bi.reports.matches.date'" view="'chart'" legend="true"
+            <report-view report-id="'org.santempi.bi.reports.matches.date'" view="'chart'" legend="true"
                 parameters="{}" />
         </div>
         <div class="col-4">
-            <report-view id="'org.santempi.bi.reports.matches.holder'" view="'chart'" legend="true"
+            <report-view report-id="'org.santempi.bi.reports.matches.holder'" view="'chart'" legend="true"
                 parameters="{}" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <small>*{{ 'ui.mpi.matches.stats.note' | i18n }}</small>
         </div>
     </div>
 </div>

@@ -37,7 +37,7 @@
     </menuItem>
     <menuItem context="org.santedb.admin" launch="santedb-admin.mpi.patients.advancedSearch" asset="/org.santedb.smpi/views/patients/advSearch.html">
       <icon>fas fa-search-plus</icon>
-      <text lang="en">Power Search</text>
+      <text lang="en">Advanced Search</text>
     </menuItem>
   </menuItem>
 

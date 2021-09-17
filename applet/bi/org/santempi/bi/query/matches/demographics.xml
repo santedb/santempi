@@ -44,7 +44,7 @@
       <![CDATA[
 -- COMMON TABLE EXPRESSION JOINING IDENTITY VALUES WITH IDENTITY DOMAIN
 with cte_id_tbl as (
-	select ent_id, id_val, aut_name 
+	select ent_id, id_val, nsid 
 	from 
 		ent_id_tbl
 		inner join asgn_aut_tbl using (aut_id)
@@ -100,11 +100,11 @@ cte_pat_tbl as (
 		gender.mnemonic as gender,
 		string_agg(distinct nam_given , ' ') as nam_given,
 		string_agg(distinct nam_family, ' ') as nam_family,
-		string_agg(adr_line, ' ') as adr_line ,
-		string_agg(adr_city , ' ') as adr_city,
-		string_agg(adr_state , ' ') as adr_state,
-		string_agg(adr_country , ' ') as adr_country,
-		string_agg(id_val || '[' || aut_name || ']', ' ') as id_val
+		string_agg(distinct adr_line, ' ') as adr_line ,
+		string_agg(distinct adr_city , ' ') as adr_city,
+		string_agg(distinct adr_state , ' ') as adr_state,
+		string_agg(distinct adr_country , ' ') as adr_country,
+		string_agg(distinct id_val || '[' || nsid || ']', ',') as id_val
 	from 
 		ent_vrsn_tbl 
 		inner join psn_tbl using (ent_vrsn_id)
@@ -123,6 +123,7 @@ cte_pat_tbl as (
 -- QUERY FOR SOURCES WHICH ARE RELATED TO A COMMON MASTER WITH A TYPE OF CANDIDATE
 possible as (
 	select 
+			candidate_rel.ent_rel_id,
 	       candidate_rel.src_ent_id as local_a, 
 	       master_rel.src_ent_id as local_b,
 	       candidate_rel.conf as confidence
@@ -135,34 +136,9 @@ possible as (
 	       candidate_rel.rel_typ_cd_id = '56cfb115-8207-4f89-b52e-d20dbad8f8cc' -- filter for candidates
 	       and candidate_rel.obslt_vrsn_seq_id is null 
            and candidate_rel.cls_cd_id = COALESCE(${class}, candidate_rel.cls_cd_id)
-), 
--- CTE FOR TWO SOURCES WHICH SHARE A COMMON MASTER
-multi_master as (
-	select distinct
-		master_a.src_ent_id as local_a,
-		master_b.src_ent_id as local_b,
-		greatest(master_a.conf, master_b.conf) as conf
-	from 
-		ent_rel_tbl master_a
-		inner join ent_rel_tbl master_b  on (master_a.trg_ent_id = master_b.trg_ent_id and master_b.rel_typ_cd_id = '97730a52-7e30-4dcd-94cd-fd532d111578' and master_a.src_ent_id <> master_b.src_ent_id)
-	where 
-		master_a.rel_typ_cd_id = '97730a52-7e30-4dcd-94cd-fd532d111578' 
-		and master_a.obslt_vrsn_seq_id is null
-		and master_b.obslt_vrsn_seq_id is null
-        and (master_a.cls_cd_id = COALESCE(${class}, master_a.cls_cd_id) or master_b.cls_cd_id = COALESCE(${class}, master_b.cls_cd_id))
-), 
--- UNION OF ALL LINKS
-all_links as (
-	select *, 'POSSIBLE' as classification
-	from
-		possible
-	union
-	select *, 'MULTI_MASTER' as classification
-	from
-		multi_master
-) 
+)
 select 
-	classification ,
+	ent_rel_id,
 	confidence ,
 	local_a,
 	a.source_app as a_source_app,
@@ -189,7 +165,7 @@ select
 	b.adr_country as b_adr_country,
 	b.id_val as b_id_val
 from 
-	all_links
+	possible
 	inner join cte_pat_tbl a on (local_a = a.ent_id)
 	inner join cte_pat_tbl b on (local_b = b.ent_id)
         
@@ -202,7 +178,7 @@ from
       <![CDATA[
       -- COMMON TABLE EXPRESSION JOINING IDENTITY VALUES WITH IDENTITY DOMAIN
 with cte_id_tbl as (
-	select ent_id, id_val, aut_name 
+	select ent_id, id_val, nsid 
 	from 
 		ent_id_tbl
 		inner join asgn_aut_tbl using (aut_id)
@@ -254,7 +230,7 @@ with cte_id_tbl as (
 		list(adr_city , ' ') as adr_city,
 		list(adr_state , ' ') as adr_state,
 		list(adr_country , ' ') as adr_country,
-		list(id_val || '[' || aut_name || ']', ' ') as id_val
+		list(id_val || '[' || nsid || ']', ',') as id_val
 	from 
 		ent_vrsn_tbl 
 		inner join psn_tbl using (ent_vrsn_id)
@@ -271,6 +247,7 @@ with cte_id_tbl as (
 		ent_id, dob, dcsd_utc, gender.mnemonic, ent_vrsn_tbl.crt_utc , app_pub_id
 ), possible as (
 	select 
+		candidate_rel.ent_rel_id,
 	       candidate_rel.src_ent_id as local_a, 
 	       master_rel.src_ent_id as local_b,
 	       candidate_rel.conf as confidence
@@ -284,32 +261,9 @@ with cte_id_tbl as (
 	       and candidate_rel.obslt_vrsn_seq_id is null 
            and candidate_rel.cls_cd_id = COALESCE(${class}, candidate_rel.cls_cd_id)
 
-), multi_master as (
-	select distinct
-		master_a.src_ent_id as local_a,
-		master_b.src_ent_id as local_b,
-		maxvalue(master_a.conf, master_b.conf) as confidence
-	from 
-		ent_rel_tbl master_a
-		inner join ent_rel_tbl master_b  on (master_a.trg_ent_id = master_b.trg_ent_id and master_b.rel_typ_cd_id =  char_to_uuid('97730a52-7e30-4dcd-94cd-fd532d111578') and master_a.src_ent_id <> master_b.src_ent_id)
-	where 
-		master_a.rel_typ_cd_id = char_to_uuid('97730a52-7e30-4dcd-94cd-fd532d111578')
-		and master_a.obslt_vrsn_seq_id is null
-		and master_b.obslt_vrsn_seq_id is null
-        and (master_a.cls_cd_id = COALESCE(${class}, master_a.cls_cd_id) or master_b.cls_cd_id = COALESCE(${class}, master_b.cls_cd_id))
-
-	 
-), all_links as (
-	select local_a, local_b, confidence, 'POSSIBLE' as classification
-	from
-		possible
-	union
-	select local_a, local_b, confidence, 'MULTI_MASTER' as classification
-	from
-		multi_master
-) 
+)
 select 
-	classification ,
+	ent_rel_id,
 	confidence ,
 	local_a,
 	a.source_app as a_source_app,
@@ -336,7 +290,7 @@ select
 	b.adr_country as b_adr_country,
 	b.id_val as b_id_val
 from 
-	all_links
+	possible
 	inner join cte_pat_tbl a on (local_a = a.ent_id)
 	inner join cte_pat_tbl b on (local_b = b.ent_id)
       ]]>
