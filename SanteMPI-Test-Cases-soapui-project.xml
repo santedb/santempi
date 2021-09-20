@@ -15301,7 +15301,7 @@
       <id>EFFC4322-948D-4986-A06C-DA603A77EDDE</id>
       <name>OHIE TEST Domain</name>
       <domainName>TEST</domainName>
-      <oid>1.3.6.1.4.1.52820.3.72.5.9.1</oid>
+      <oid>2.16.840.1.113883.3.72.5.9.1</oid>
       <url>http://ohie.org/test/test</url>
       <isUnique>true</isUnique>
       <assigningApplication>F0FC4322-948D-4986-A06C-DA603A77EDDE</assigningApplication>
@@ -15435,7 +15435,7 @@
               "active": true,
               "identifier": [
               {
-              "system": "urn:oid:1.3.6.1.4.1.52820.3.72.5.9.1",
+              "system": "urn:oid:2.16.840.1.113883.3.72.5.9.1",
               "value": "FHR-020"
               }
               ],
@@ -15773,7 +15773,7 @@
             <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
             <con:jmsPropertyConfig/>
             <con:parameters>
-              <con:entry key="identifier" value="urn:oid:1.3.6.1.4.1.52820.3.72.5.9.1|FHR-021"/>
+              <con:entry key="identifier" value="urn:oid:2.16.840.1.113883.3.72.5.9.1|FHR-021"/>
               <con:entry key="_include" value=""/>
               <con:entry key="_revinclude" value=""/>
               <con:entry key="_format" value="application/fhir+json"/>
@@ -16341,7 +16341,7 @@
       <id>DF5BEC1E-8C41-4FF1-8E65-A39AC1DDAE60</id>
       <name>OHIE TEST Domain A</name>
       <domainName>TEST_A</domainName>
-      <oid>1.3.6.1.4.1.52820.3.72.5.9.2</oid>
+      <oid>2.16.840.1.113883.3.72.5.9.2</oid>
       <url>http://ohie.org/test/test_a</url>
       <isUnique>true</isUnique>
       <assigningApplication>DE5BEC1E-8C41-4FF1-8E65-A39AC1DDAE60</assigningApplication>
@@ -16351,7 +16351,7 @@
       <id>E8275680-5129-4832-9668-131F76E8DFB6</id>
       <name>OHIE TEST Domain B</name>
       <domainName>TEST_B</domainName>
-      <oid>1.3.6.1.4.1.52820.3.72.5.9.3</oid>
+      <oid>2.16.840.1.113883.3.72.5.9.3</oid>
       <url>http://ohie.org/test/test_b</url>
       <isUnique>true</isUnique>
       <assigningApplication>58275680-5129-4832-9668-131F76E8DFB6</assigningApplication>
@@ -17201,7 +17201,7 @@
       <id>EFFC4322-948D-4986-A06C-DA603A77EDDE</id>
       <name>OHIE TEST Domain</name>
       <domainName>TEST</domainName>
-      <oid>1.3.6.1.4.1.52820.3.72.5.9.1</oid>
+      <oid>2.16.840.1.113883.3.72.5.9.1</oid>
       <url>http://ohie.org/test/test</url>
       <isUnique>true</isUnique>
       <assigningApplication>F0FC4322-948D-4986-A06C-DA603A77EDDE</assigningApplication>
