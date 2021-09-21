@@ -102,7 +102,7 @@
                     <td>
                       <div class="btn-group">
                         <a class="btn btn-primary">
-                          <bi:attribute name="ui-sref">String.Format("santedb-admin.mpi.matches.detail.view({{ candidateId: '{0}' }}", ent_rel_id)</bi:attribute>
+                          <bi:attribute name="ui-sref">String.Format("santedb-admin.mpi.matches.view({{ candidateId: '{0}' }})", ent_rel_id)</bi:attribute>
                           <i class="fas fa-eye"></i><i class="fas fa-sw"></i> <bi:locale>ui.action.view</bi:locale>
                         </a>
                         <button class="btn btn-danger">

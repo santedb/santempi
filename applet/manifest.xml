@@ -27,7 +27,7 @@
   <menuItem context="org.santedb.admin" launch="santedb-admin.mpi.index" asset="/org.santedb.smpi/views/index.html">
     <icon>fas fa-street-view</icon>
     <text lang="en">MPI</text>
-    <menuItem context="org.santedb.admin" launch="santedb-admin.mpi.matches" asset="/org.santedb.smpi/views/matches.html">
+    <menuItem context="org.santedb.admin" launch="santedb-admin.mpi.matches.index" asset="/org.santedb.smpi/views/matches/index.html">
       <icon>fas fa-clone</icon>
       <text lang="en">Matches</text>
     </menuItem>
