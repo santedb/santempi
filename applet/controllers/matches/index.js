@@ -26,7 +26,7 @@ angular.module('santedb').controller('MpiMatchDashboardController', ["$scope", "
             
         }
         catch(e) {
-            $rootScope.handleError(e);
+            $rootScope.errorHandler(e);
         }
         finally {
             SanteDB.display.buttonWait(`#ignore_${relationshipId}`, false);

@@ -44,7 +44,7 @@
             <column name="rel_type">rel_type</column>
           </grouping>
           <select>
-            <column name="n" fn="count">ent_rel_id</column>
+            <column name="n" fn="count-distinct">ent_rel_id</column>
           </select>
         </add>
       </aggregations>
