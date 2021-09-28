@@ -68,6 +68,27 @@ if exist "%msbuild%\msbuild.exe" (
 		"C:\Program Files (x86)\Windows Kits\8.1\bin\x86\signtool.exe" sign "%%G"
 	)
 
+	%inno% "/o.\bin\dist" ".\install\santempi-install.iss" /d"MyAppVersion=%version%"
+
+	rem ################# TARBALLS 
+	echo Building Linux Tarball
+
+	 mkdir santedb-mpi-%version%
+	cd santedb-mpi-%version%
+	copy "..\bin\Release\SanteMPI*.dll"
+	mkdir applets
+	copy "..\dist\*.pak"
+	xcopy /I /S "..\bin\Release\Config\*.*" ".\config"
+	cd ..
+	"C:\program files\7-zip\7z" a -r -ttar .\bin\dist\santedb-mpi-%version%.tar .\santedb-mpi-%version%
+	"C:\program files\7-zip\7z" a -r -tzip .\bin\dist\santedb-mpi-%version%.zip .\santedb-mpi-%version%
+	"C:\program files\7-zip\7z" a -tbzip2 .\bin\dist\santedb-mpi-%version%.tar.bz2 .\bin\dist\santedb-mpi-%version%.tar
+	"C:\program files\7-zip\7z" a -tgzip .\bin\dist\santedb-mpi-%version%.tar.gz .\bin\dist\santedb-mpi-%version%.tar
+	del /q /s .\installsupp\*.* 
+	del /q /s .\santedb-mpi-%version%\*.*
+	rmdir /q /s .\santedb-mpi-%version%
+	rmdir /q/s .\installsupp
+
 	docker build --no-cache -t santesuite/santedb-mpi:%version% .
 	docker build --no-cache -t santesuite/santedb-mpi .
 
