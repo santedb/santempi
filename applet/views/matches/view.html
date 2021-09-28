@@ -46,6 +46,23 @@
         </div>
     </div>
 
-    <widget-tabs context-name="'org.santedb.mpi.match.view'" scoped-object="matchReport" />
+    <div class="row">
+        <div class="col">
+            <widget-tabs context-name="'org.santedb.mpi.match.view'" scoped-object="matchReport" />
+        </div>
+    </div>
 
+
+    <div class="row">
+        <div class="col">
+            <div class="float-right">
+                <div class="btn-group">
+                    <button ng-disabled="!matchReport.candidate" ng-click="resolve()" class="btn btn-success"><i class="fas fa-check"></i> {{
+                        'ui.action.resolve' | i18n }}</button>
+                    <button ng-disabled="!matchReport.candidate" ng-click="ignore()" class="btn btn-danger"><i class="fas fa-times"></i> {{
+                        'ui.action.ignore' | i18n }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

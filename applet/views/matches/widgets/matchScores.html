@@ -1,5 +1,5 @@
 <div xmlns="http://www.w3.org/1999/xhtml" xmlns:sdb="http://santedb.org/applet" class="container-fluid p-0"
-    oc-lazy-load="{ name: 'MpiMatchViewController', files: ['/org.santedb.smpi/controllers/widgets/matches.js'] }">
+    >
     <sdb:widget order="100" name="ui.mpi.matches.view.score" type="Tab" context="org.santedb.mpi.match.view">
         <sdb:icon>fas fa-star-half-alt</sdb:icon>
         <sdb:description lang="en">Score Detail</sdb:description>
@@ -11,7 +11,7 @@
         </div>
     </div>
 
-    <div ng-controller="MpiMatchViewController">
+    <div>
         <div class="card" ng-repeat="match in scopedObject.results track by $index">
             <div class="card-header">
                 <h5 class="card-title mb-0">
@@ -28,7 +28,7 @@
                         <label class="col-md-2 col-sm-6 control-label">{{ 'ui.mpi.match.class.label' | i18n }}</label>
                         <div class="col-md-4 col-sm-6">{{ 'ui.mpi.match.class.' + match.classification | i18n }}</div>
                         <label class="col-md-2 col-sm-6 control-label">{{ 'ui.mpi.match.method.label' | i18n }}</label>
-                        <div class="col-md-4 col-sm-6">{{ 'ui.mpi.match.method.' + match.classification | i18n }}</div>
+                        <div class="col-md-4 col-sm-6">{{ 'ui.mpi.match.method.' + match.method | i18n }}</div>
                         <label class="col-md-2 col-sm-6 control-label">{{ 'ui.mpi.match.score.label' | i18n }}</label>
                         <div class="col-md-4 col-sm-6">{{ match.score }}</div>
                         <label class="col-md-2 col-sm-6 control-label">{{ 'ui.mpi.match.strength.label' | i18n }}</label>
@@ -51,7 +51,7 @@
                                 <tbody>
                                     <tr ng-repeat="v in match.vectors" ng-class="{ 'alert-danger' : v.score &lt;= 0 , 'alert-warning' : v.score &lt; v.w, 'alert-success' : v.score >= v.w }">
                                         <td>
-                                            <i class="fas" ng-class="{ 'fa-check-circle text-success' : v.evaluated , 'fa-times-circle text-danger' : !v.evaluated }"></i>
+                                            <i class="fas" title="{{ v.evaluated ? 'ui.mpi.match.vector.evaluated.yes' : 'ui.mpi.match.vector.evaluated.no' | i18n}}" ng-class="{ 'fa-check-circle text-success' : v.evaluated , 'fa-times-circle text-danger' : !v.evaluated }"></i>
                                         </td>
                                         <td>
                                             {{ v.name }}

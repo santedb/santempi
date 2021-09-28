@@ -26,10 +26,10 @@ angular.module('santedb').controller('MpiMatchViewController', ["$scope", "$root
             return rel;
         }
         catch(e) {
-
+            // No need for errors here
         }
         finally {
-
+            // no finally clauses needed
         }
     }
 
@@ -88,6 +88,30 @@ angular.module('santedb').controller('MpiMatchViewController', ["$scope", "$root
         }
         finally {
             $scope.$applyAsync();
+        }
+    }
+
+     /**
+     * Submit an "ignore" request for the specified relationship
+     */
+      $scope.ignore = async function(relationshipId) {
+        try {
+
+            SanteDB.display.buttonWait(`#btnIgnore`, true);
+            // Confirm the action
+            if(!confirm(SanteDB.locale.getString("ui.mpi.matches.ignore.confirm")))
+                return;
+
+            // Send the MDM-ignore post
+            var ignoreResult = await SanteDB.resources.patient.removeAssociatedAsync(relationship.holder, "mdm-ignore", relationship.target);
+            toastr.success(SanteDB.locale.getString("ui.mpi.matches.ignore.success"));
+            
+        }
+        catch(e) {
+            $rootScope.errorHandler(e);
+        }
+        finally {
+            SanteDB.display.buttonWait(`#btnIgnore`, false);
         }
     }
 

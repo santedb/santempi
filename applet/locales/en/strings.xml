@@ -61,6 +61,33 @@
     <string name="ui.mpi.match.patient.attribute">Attribute</string>
     <string name="ui.mpi.match.mdm.status">MDM State</string>
 
+    <!-- Match Resolution -->
+    <string name="ui.mpi.match.resolve.title">Resolve Duplicate</string>
+    <string name="ui.mpi.match.resolve.description">If you choose to resolve this match, one of the following strategies will be applied</string>
+    <string name="ui.mpi.match.ignore.title">Ignore Duplicate </string>
+    <string name="ui.mpi.match.ignore.description"><![CDATA[If you ignore this match, the matching engine will perform the following tasks:
+      <ol>
+        <li>The candidate match between Patient A and Patient B will be removed</li>
+        <li>A ignore rule will be established between Patient A and Patient B, the two will never be identified as a candidate again</li>
+      </ol>]]></string>
+    <string name="ui.mpi.match.resolve.masterMaster.title">Resolve: Merge of Masters</string>
+    <string name="ui.mpi.match.resolve.masterMaster.description"><![CDATA[]]></string>
+    <string name="ui.mpi.match.resolve.localMaster.title">Resolve: Link / Assign Master</string>
+    <string name="ui.mpi.match.resolve.localMaster.description"><![CDATA[If you resolve this match the matching engine will perform the following tasks:
+        <ol>
+          <li>The local record for Patient A will be detached from its current master record (Master A)</li>
+          <li>The local record for Patient A will be attached to the master record represented in Patient B (Master B)</li>
+          <li>If no further locals are assigned to Master A then it will be removed</li>
+        </ol>
+        This action can be undone by detaching the record from the newly assigned master]]></string>
+    <string name="ui.mpi.match.resolve.localLocal.title">Resolve: Local Merge</string>
+    <string name="ui.mpi.match.resolve.localLocal.description"><![CDATA[If you resolve this match, the matching engine will perform the following tasks:
+      <ol>
+        <li>The identifiers from Local A will be copied into Local B</li>
+        <li>The record Local A will be marked as obsolete and "replaced by" Local B</li>
+      </ol>
+      <strong><i class="fas fa-info-circle"></i> Note:</strong> This option may be chosen if your user account lacks the ability to write MDM masters
+      ]]></string>
     <!-- Score View -->
     <string name="ui.mpi.match.configuration">Configuration</string>
     <string name="ui.mpi.match.method.0">Other/Unknown</string>
@@ -71,7 +98,7 @@
     <string name="ui.mpi.match.class.1">Probable</string>
     <string name="ui.mpi.match.class.2">Match</string>
     <string name="ui.mpi.match.class.label">Classification</string>
-    <string name="ui.mpi.match.method.label">Algorithm</string>
+    <string name="ui.mpi.match.method.label">Match Method</string>
     <string name="ui.mpi.match.score.label">Score</string>
     <string name="ui.mpi.match.strength.label">Strength</string>
     <string name="ui.mpi.matches.otherMatches">Other Matches</string>
@@ -81,5 +108,7 @@
     <string name="ui.mpi.match.vector.mu">M / U</string>
     <string name="ui.mpi.match.vector.score">Score</string>
     <string name="ui.mpi.match.vector.weight">Weight</string>
+    <string name="ui.mpi.match.vector.evaluated.yes">This attribute was evaluated - the score is an actual evaluation of A and B</string>
+    <string name="ui.mpi.match.vector.evaluated.no">This attribute was not evaluated - the score represents the whenNull configuration option</string>
     <string name="ui.mpi.matches.configurationDisagreement">The score indicates these two records meet the criteria to be considered a MATCH however the configuration of the server has prevented automatic linking. Therefore this record must manually be resolved. Contact your system administrator to change the settings of the server to prevent this</string>
 </resources>
