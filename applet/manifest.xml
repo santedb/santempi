@@ -1,24 +1,24 @@
 <!--
  - Copyright 2015-2018 Mohawk College of Applied Arts and Technology
  -
- - 
- - Licensed under the Apache License, Version 2.0 (the "License"); you 
- - may not use this file except in compliance with the License. You may 
- - obtain a copy of the License at 
- - 
- - http://www.apache.org/licenses/LICENSE-2.0 
- - 
+ -
+ - Licensed under the Apache License, Version 2.0 (the "License"); you
+ - may not use this file except in compliance with the License. You may
+ - obtain a copy of the License at
+ -
+ - http://www.apache.org/licenses/LICENSE-2.0
+ -
  - Unless required by applicable law or agreed to in writing, software
  - distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- - WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the 
- - License for the specific language governing permissions and limitations under 
+ - WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ - License for the specific language governing permissions and limitations under
  - the License.
- - 
+ -
  - User: justin
  - Date: 2018-7-23
  -->
 <AppletManifest xmlns="http://santedb.org/applet">
-  <info id="org.santedb.smpi" version="2.0.80.0">
+  <info id="org.santedb.smpi" version="2.1.50.0">
     <icon>/org.santedb.core/img/icon.png</icon>
     <name lang="en">SanteMPI Master Patient Index</name>
     <author>SanteSuite Community Partners (see: santesuite.org)</author>
@@ -27,58 +27,22 @@
   <menuItem context="org.santedb.admin" launch="santedb-admin.mpi.index" asset="/org.santedb.smpi/views/index.html">
     <icon>fas fa-street-view</icon>
     <text lang="en">MPI</text>
+    <menuItem context="org.santedb.admin" launch="santedb-admin.mpi.matches.index" asset="/org.santedb.smpi/views/matches/index.html">
+      <icon>fas fa-clone</icon>
+      <text lang="en">Matches</text>
+    </menuItem>
      <menuItem context="org.santedb.admin" launch="santedb-admin.mpi.patients.search" asset="/org.santedb.smpi/views/patients/search.html">
       <icon>fas fa-search</icon>
       <text lang="en">Basic Search</text>
     </menuItem>
     <menuItem context="org.santedb.admin" launch="santedb-admin.mpi.patients.advancedSearch" asset="/org.santedb.smpi/views/patients/advSearch.html">
       <icon>fas fa-search-plus</icon>
-      <text lang="en">Power Search</text>
+      <text lang="en">Advanced Search</text>
     </menuItem>
   </menuItem>
 
   <viewModel key="smpi.reverseRelationship">
     <definition>/org.santedb.smpi/models/reverseRelationship.xml</definition>
   </viewModel>
-  <strings lang="en">
-
-    <string key="org.santedb.smpi">SanteMPI</string>
-
-    <!-- MPI Actions -->
-    <string key="ui.mpi.action.search">Search MPI</string>
-    <string key="ui.action.mpiSearch">Search All Patients</string>
-    <!-- Dashboard String -->
-    <string key="ui.mpi.dashboard.index">MPI Dashboard</string>
-    <string key="ui.mpi.dashboard.patients.title">Locally Registered Patients</string>
-    <string key="ui.mpi.dashboard.patients.count">number of patients at this endpoint</string>
-    <string key="ui.mpi.dashboard.patients.recent">Recent Patients (&lt; 24h)</string>
-
-    <!-- Search UI -->
-    <string key="ui.mpi.patient.advSearch.parameters">Advanced MPI Search</string>
-    <string key="ui.mpi.patient.advSearch.parameters.name">Parameter</string>
-    <string key="ui.mpi.patient.advSearch.parameters.operator">Operator</string>
-    <string key="ui.mpi.patient.advSearch.parameters.value">Value</string>
-    <string key="ui.mpi.patient.advSearch.parameters.any">Freetext (Any Field)</string>
-    <string key="ui.mpi.patient.advSearch.parameters.givenName">Given Name</string>
-    <string key="ui.mpi.patient.advSearch.parameters.familyName">Family Name</string>
-    <string key="ui.mpi.patient.advSearch.parameters.identifier">Identifier</string>
-    <string key="ui.mpi.patient.advSearch.parameters.country">Address (Country)</string>
-    <string key="ui.mpi.patient.advSearch.parameters.state">Address (Province/State)</string>
-    <string key="ui.mpi.patient.advSearch.parameters.city">Address (City)</string>
-    <string key="ui.mpi.patient.advSearch.parameters.gender">Gender</string>
-    <string key="ui.mpi.patient.advSearch.parameters.dateOfBirth">Date of Birth</string>
-    <string key="ui.mpi.patient.advSearch.parameters.facility">Facility Association</string>
-    <string key="ui.mpi.patient.search.term">Search For</string>
-    <string key="ui.mpi.patient.search.results">Search Results</string>
-    <!-- Patient Demographics Tab Options -->
-    <string key="org.santedb.smpi.admin.demographics">Demographics</string>
-    <!-- Operators -->
-    <string key="ui.operator.soundslike">Sounds Like</string>
-    <string key="ui.operator.approx">Approximately</string>
-
-  <string key="ui.action.mpiSearch">Search MPI</string>
-    <!-- Relationship Viewer -->
-    <string key="org.santedb.widget.smpi.mdm.net">Entity Relationships</string>
-
-  </strings>
+  <strings lang="en" extern="locales/en/strings.xml" />
 </AppletManifest>

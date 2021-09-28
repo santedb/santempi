@@ -1,0 +1,67 @@
+﻿{
+  "resourceType": "Bundle",
+  "type": "message",
+  "entry": [
+    {
+      "fullUrl": "MessageHeader/ohie-cr-03-10-fhir",
+      "resource": {
+        "resourceType": "MessageHeader",
+        "id": "1",
+        "eventUri": "urn:ihe:iti:pmir:2019:patient-feed",
+        "source": {
+          "endpoint": "http://ohie.org/test/harness"
+        },
+        "focus": [
+          {
+            "reference": "Bundle/ohie-cr-03-10-fhir"
+          }
+        ],
+        "destination": [
+          {
+            "endpoint": "http://ohie.org/test/endpoint/Bundle"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "Bundle/ohie-cr-03-10-fhir",
+      "resource": {
+        "resourceType": "Bundle",
+        "type": "history",
+        "entry": [
+          {
+            "fullUrl": "Patient/ohie-cr-03-10-fhir",
+            "resource": {
+              "resourceType": "Patient",
+              "id": "1",
+              "active": true,
+              "identifier": [
+                {
+                  "use": "usual",
+                  "system": "http://ohie.org/test/test_block",
+                  "value": "XXX4049393",
+                  "assigner": {
+                    "display": "Fake Domain"
+                  }
+                }
+              ],
+              "name": [
+                {
+                  "use": "official",
+                  "family": "NOBODY",
+                  "given": [
+                    "NOTHING"
+                  ]
+                }
+              ]
+            },
+            "request": {
+              "method": "POST",
+              "url": "Patient/ohie-cr-03-10-fhir"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

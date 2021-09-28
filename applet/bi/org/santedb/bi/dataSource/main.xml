@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<BiDataSourceDefinition xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="main" id="org.santedb.bi.dataSource.main" provider="SanteDB.OrmLite.OrmBiDataProvider, SanteDB.OrmLite, Version=2.1.0.0, Culture=neutral, PublicKeyToken=null" connectionString="main" xmlns="http://santedb.org/bi">
+  <meta version="2.1.75.0" status="active">
+    <policies />
+  </meta>
+</BiDataSourceDefinition>

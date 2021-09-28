@@ -1,0 +1,56 @@
+﻿<!--
+ - Copyright 2021-2021 SanteSuite Contributors (See NOTICE.md for full copyright notices)
+ - Copyright (C) 2019 - 2021, Fyfe Software Inc. and the SanteSuite Contributors
+ - Portions Copyright (C) 2015-2018 Mohawk College of Applied Arts and Technology
+ -
+ - Licensed under the Apache License, Version 2.0 (the "License"); you
+ - may not use this file except in compliance with the License. You may
+ - obtain a copy of the License at
+ -
+ - http://www.apache.org/licenses/LICENSE-2.0
+ -
+ - Unless required by applicable law or agreed to in writing, software
+ - distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ - WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ - License for the specific language governing permissions and limitations under
+ - the License.
+ -
+ - User: fyfej
+ - Date: 2021-8-27
+ -->
+<SanteDBConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://santedb.org/configuration">
+  <sections>
+    <add type="SanteDB.Messaging.FHIR.Configuration.FhirServiceConfigurationSection, SanteDB.Messaging.FHIR" />
+    <add type="SanteDB.Messaging.FHIR.Configuration.FhirDispatcherConfigurationSection, SanteDB.Messaging.FHIR" />
+  </sections>
+  <!-- Configures the FHIR service-->
+  <section xsi:type="FhirServiceConfigurationSection" restEndpoint="FHIR" index="fhir.html">
+    <resourceHandlers>
+      <add type="SanteDB.Messaging.FHIR.Handlers.PatientResourceHandler, SanteDB.Messaging.FHIR"/>
+      <add type="SanteDB.Messaging.FHIR.Handlers.SubscriptionResourceHandler, SanteDB.Messaging.FHIR" />
+      <add type="SanteDB.Messaging.FHIR.Handlers.BundleResourceHandler, SanteDB.Messaging.FHIR" />
+      <add type="SanteDB.Messaging.FHIR.Handlers.OrganizationResourceHandler, SanteDB.Messaging.FHIR" />
+      <add type="SanteDB.Messaging.FHIR.Handlers.RelatedPersonResourceHandler, SanteDB.Messaging.FHIR" />
+      <add type="SanteDB.Messaging.FHIR.Handlers.PractitionerResourceHandler, SanteDB.Messaging.FHIR" />
+      <add type="SanteDB.Messaging.FHIR.Handlers.StructureDefinitionHandler, SanteDB.Messaging.FHIR" />
+    </resourceHandlers>
+    <behaviorModifiers>
+      <add type="SanteMPI.Messaging.IHE.FHIR.PatientDemographicsQueryModifier, SanteMPI.Messaging.IHE" />
+      <add type="SanteMPI.Messaging.IHE.FHIR.SubscribeToPatientUpdateModifier, SanteMPI.Messaging.IHE" />
+    </behaviorModifiers>
+    <extensionHandlers>
+      <add type="SanteMPI.Messaging.IHE.FHIR.MothersMaidenNameExtension, SanteMPI.Messaging.IHE" />
+    </extensionHandlers>
+    <operationHandlers>
+      <add type="SanteMPI.Messaging.IHE.FHIR.PatientIdentityCrossReferenceMobileOperation, SanteMPI.Messaging.IHE" />
+      <add type="SanteDB.Messaging.FHIR.Operations.FhirMatchResourceOperation, SanteDB.Messaging.FHIR" />
+      <add type="SanteDB.Messaging.FHIR.Operations.FhirProcessMessageOperation, SanteDB.Messaging.FHIR" />
+      <add type="SanteDB.Messaging.FHIR.Operations.FhirValidateResourceOperation, SanteDB.Messaging.FHIR" />
+    </operationHandlers>
+    <messageHandlers>
+      <add type="SanteMPI.Messaging.IHE.FHIR.PatientMasterIdentityOperation, SanteMPI.Messaging.IHE"/>
+    </messageHandlers>
+    <!-- Sets the base path for reverse proxies -->
+    <base>http://localhost:8080/fhir</base>
+  </section>
+</SanteDBConfiguration>

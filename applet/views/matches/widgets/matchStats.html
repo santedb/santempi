@@ -1,0 +1,27 @@
+<div xmlns="http://www.w3.org/1999/xhtml" xmlns:sdb="http://santedb.org/applet" class="container-fluid p-0"
+    >
+    <sdb:widget order="30" name="ui.mpi.matches.dashboard.stats" headerClass="bl-light" size="Large"
+        type="Panel" context="org.santedb.mpi.matches.dashboard" >
+        <sdb:icon>fas fa-chart-pie</sdb:icon>
+        <sdb:description lang="en">Match Statistics</sdb:description>
+    </sdb:widget>
+
+    <div class="row">
+        <div class="col-4">
+            <report-view report-id="'org.santempi.bi.reports.matches.type'" view="'chart'" legend="true" parameters="{}" />
+        </div>
+        <div class="col-4">
+            <report-view report-id="'org.santempi.bi.reports.matches.date'" view="'chart'" legend="true"
+                parameters="{}" />
+        </div>
+        <div class="col-4">
+            <report-view report-id="'org.santempi.bi.reports.matches.holder'" view="'chart'" legend="true"
+                parameters="{}" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <small>*{{ 'ui.mpi.matches.stats.note' | i18n }}</small>
+        </div>
+    </div>
+</div>

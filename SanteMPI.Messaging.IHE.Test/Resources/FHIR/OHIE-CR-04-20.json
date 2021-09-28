@@ -1,0 +1,77 @@
+﻿{
+  "resourceType": "Bundle",
+  "type": "message",
+  "entry": [
+    {
+      "fullUrl": "MessageHeader/ohie-cr-04-20-fhir",
+      "resource": {
+        "resourceType": "MessageHeader",
+        "id": "1",
+        "eventUri": "urn:ihe:iti:pmir:2019:patient-feed",
+        "source": {
+          "endpoint": "http://ohie.org/test/test_harness_b"
+        },
+        "focus": [
+          {
+            "reference": "Bundle/ohie-cr-04-20-fhir"
+          }
+        ],
+        "destination": [
+          {
+            "endpoint": "http://ohie.org/test/endpoint/Bundle"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "Bundle/ohie-cr-04-20-fhir",
+      "resource": {
+        "resourceType": "Bundle",
+        "type": "history",
+        "entry": [
+          {
+            "fullUrl": "Patient/ohie-cr-04-20-fhir",
+            "resource": {
+              "resourceType": "Patient",
+              "id": "ohie-cr-04-20-fhir",
+              "active": true,
+              "identifier": [
+                {
+                  "use": "official",
+                  "type": {
+                    "coding": [
+                      {
+                        "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                        "code": "MR"
+                      }
+                    ]
+                  },
+                  "system": "http://ohie.org/test/test_a",
+                  "value": "FHRA-4938",
+                  "assigner": {
+                    "display": "Test Harness A Patient Identity"
+                  }
+                }
+              ],
+              "name": [
+                {
+                  "use": "official",
+                  "family": "DOE",
+                  "given": [
+                    "JENNIFER"
+                  ]
+                }
+              ],
+              "gender": "female",
+              "birthDate": "1989-01-25"
+            },
+            "request": {
+              "method": "POST",
+              "url": "Patient/ohie-cr-04-20-fhir"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

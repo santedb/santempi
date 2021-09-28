@@ -1,0 +1,125 @@
+﻿{
+  "resourceType": "Bundle",
+  "type": "message",
+  "entry": [
+    {
+      "fullUrl": "MessageHeader/ohie-cr-05-20-fhir",
+      "resource": {
+        "resourceType": "MessageHeader",
+        "id": "1",
+        "eventUri": "urn:ihe:iti:pmir:2019:patient-feed",
+        "source": {
+          "endpoint": "http://ohie.org/test/test_harness"
+        },
+        "focus": [
+          {
+            "reference": "Bundle/ohie-cr-05-20-fhir"
+          }
+        ],
+        "destination": [
+          {
+            "endpoint": "http://ohie.org/test/endpoint/Bundle"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "Bundle/ohie-cr-05-20-fhir",
+      "resource": {
+        "resourceType": "Bundle",
+        "type": "history",
+        "entry": [
+          {
+            "fullUrl": "Patient/ohie-cr-05-20-fhir-baby",
+            "resource": {
+              "resourceType": "Patient",
+              "id": "ohie-cr-05-20-fhir-baby",
+              "active": true,
+              "identifier": [
+                {
+                  "use": "official",
+                  "system": "http://ohie.org/test/test",
+                  "value": "FHR-4837"
+                }
+              ],
+              "gender": "female",
+              "birthDate": "2021-04-25"
+            },
+            "request": {
+              "method": "POST",
+              "url": "Patient/ohie-cr-05-20-fhir-baby"
+            }
+          },
+          {
+            "fullUrl": "RelatedPerson/ohie-cr-05-20-fhir-mother-rp",
+            "resource": {
+              "resourceType": "RelatedPerson",
+              "id": "ohie-cr-05-10-fhir-mother-rp",
+              "identifier": [
+                {
+                  "use": "official",
+                  "system": "http://ohie.org/test/test",
+                  "value": "FHR-0844"
+                }
+              ],
+              "patient": {
+                "reference": "Patient/ohie-cr-05-20-fhir-baby"
+              },
+              "relationship": [
+                {
+                  "coding": [
+                    {
+                      "system": "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+                      "code": "MTH"
+                    }
+                  ]
+                }
+              ]
+            },
+            "request": {
+              "method": "POST",
+              "url": "RelatedPerson/ohie-cr-05-20-fhir-mother-rp"
+            }
+          },
+          {
+            "fullUrl": "Patient/ohie-cr-05-20-fhir-mother",
+            "resource": {
+              "resourceType": "Patient",
+              "id": "ohie-cr-05-10-fhir-mother",
+              "identifier": [
+                {
+                  "use": "official",
+                  "system": "http://ohie.org/test/test",
+                  "value": "FHR-0844"
+                }
+              ],
+              "name": [
+                {
+                  "use": "maiden",
+                  "family": "Abels",
+                  "given": [
+                    "Sarah"
+                  ]
+                }
+              ],
+              "gender": "female",
+              "birthDate": "1984-05-25",
+              "link": [
+                {
+                  "other": {
+                    "reference":"RelatedPerson/ohie-cr-05-20-fhir-mother-rp"
+                  },
+                  "type": "seealso"
+                }
+              ]
+            },
+            "request": {
+              "method": "POST",
+              "url": "Patient/ohie-cr-05-20-fhir-mother"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

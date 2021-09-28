@@ -1,0 +1,144 @@
+<div xmlns="http://www.w3.org/1999/xhtml" xmlns:sdb="http://santedb.org/applet" class="container-fluid p-0">
+    <sdb:widget order="0" name="ui.mpi.matches.view.summary" type="Tab" context="org.santedb.mpi.match.view">
+        <sdb:icon>fas fa-table</sdb:icon>
+        <sdb:description lang="en">Summary View</sdb:description>
+    </sdb:widget>
+
+    <div class="row" ng-if="!scopedObject">
+        <div class="col">
+            <p class="m-auto"><i class="fas fa-circle-notch fa-spin"></i> {{ 'ui.wait' | i18n }}</p>
+        </div>
+    </div>
+
+
+    <table class="table table-striped" ng-if="scopedObject">
+        <thead>
+            <tr>
+                <th>{{ 'ui.mpi.match.patient.attribute' | i18n }}</th>
+                <th>{{ 'ui.mpi.matches.patient.a' | i18n }} <a ui-sref="santedb-admin.mpi.patients.view({ id: scopedObject.recordA.id })" target="_blank" class="btn-sm btn-link">{{ 'ui.action.view' | i18n }} <i class="fas fa-external-link-alt"></i> </a></th>
+                <th>{{ 'ui.mpi.matches.patient.b' | i18n }} <a ui-sref="santedb-admin.mpi.patients.view({ id: scopedObject.recordB.id })" target="_blank" class="btn-sm btn-link">{{ 'ui.action.view' | i18n }} <i class="fas fa-external-link-alt"></i> </a></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th>{{ 'ui.mpi.match.mdm.status' | i18n }}</th>
+                <td ng-switch="scopedObject.recordA.tag['$mdm.type']">
+                    <span class="m-0 badge badge-primary" ng-switch-when="M">
+                        <i class="fas fa-coins"></i>
+                        {{ 'ui.mpi.match.recordState.master' | i18n }}
+                    </span>
+                    <span class="m-0 badge badge-success" ng-switch-when="T">
+                        <i class="fas fa-gavel"></i>
+                        {{ 'ui.mpi.match.recordState.rot' | i18n }}
+                    </span>
+                    <span class="m-0 badge badge-info" ng-switch-default="">
+                        <i class="fas fa-database"></i>
+                        {{ 'ui.mpi.match.recordState.local' | i18n }}
+                    </span>
+                </td>
+                <td ng-switch="scopedObject.recordB.tag['$mdm.type']">
+                    <span class="m-0 badge badge-primary" ng-switch-when="M">
+                        <i class="fas fa-coins"></i>
+                        {{ 'ui.mpi.match.recordState.master' | i18n }}
+                    </span>
+                    <span class="m-0 badge badge-success" ng-switch-when="T">
+                        <i class="fas fa-gavel"></i>
+                        {{ 'ui.mpi.match.recordState.rot' | i18n }}
+                    </span>
+                    <span class="m-0 badge badge-info" ng-switch-default="">
+                        <i class="fas fa-database"></i>
+                        {{ 'ui.mpi.match.recordState.local' | i18n }}
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <th>{{ 'ui.model.entity.id' | i18n }}</th>
+                <td>{{ scopedObject.recordA.id }}</td>
+                <td>{{ scopedObject.recordB.id }}</td>
+            </tr>
+            <tr>
+                <th>{{ 'ui.model.version.createdBy' | i18n }}</th>
+                <td><provenance provenance-id="scopedObject.recordA.createdBy"  provenance-time="scopedObject.recordA.creationTime"></provenance></td>
+                <td><provenance provenance-id="scopedObject.recordB.createdBy"  provenance-time="scopedObject.recordB.creationTime"></provenance></td>
+            </tr>
+            
+            <tr>
+                <th>{{ 'ui.model.entity.identifier' | i18n }}</th>
+                <td>
+                    <ul class="list-unstyled">
+                        <li ng-repeat="(domain,id) in scopedObject.recordA.identifier">
+                            {{ id[0].value }} <span class="badge badge-secondary"><i class="fas fa-id-card"></i>
+                                {{ id[0].authority.name }}</span>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="list-unstyled">
+                        <li ng-repeat="(domain,id) in scopedObject.recordB.identifier">
+                            {{ id[0].value }} <span class="badge badge-secondary"><i class="fas fa-id-card"></i>
+                                {{
+                                id[0].authority.name }}</span>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <th>{{ 'ui.model.entity.name' | i18n }}</th>
+                <td>{{ scopedObject.recordA.name | name }}</td>
+                <td>{{ scopedObject.recordB.name | name }}</td>
+            </tr>
+            <tr>
+                <th>{{ 'ui.model.entity.address' | i18n }}</th>
+                <td>{{ scopedObject.recordA.address | address }}</td>
+                <td>{{ scopedObject.recordB.address | address }}</td>
+            </tr>
+            <tr>
+                <th>{{ 'ui.model.patient.genderConcept' | i18n }}</th>
+                <td>{{ scopedObject.recordA.genderConceptModel | concept }}</td>
+                <td>{{ scopedObject.recordB.genderConceptModel | concept }}</td>
+            </tr>
+            <tr>
+                <th>{{ 'ui.model.entity.dateOfBirth' | i18n }}</th>
+                <td>{{ scopedObject.recordA.dateOfBirth | extDate: scopedObject.recordA.dateOfBirthPrecision   }}</td>
+                <td>{{ scopedObject.recordB.dateOfBirth | extDate: scopedObject.recordB.dateOfBirthPrecision   }}</td>
+            </tr>
+            <tr>
+                <th>{{ 'ui.model.entity.telecom' | i18n }}</th>
+                <td>
+                    <ul class="list-unstyled">
+                        <li ng-repeat="(domain,tel) in scopedObject.recordA.telecom">
+                            {{ tel[0].value }} <span class="badge badge-info">
+                                {{ tel[0].useModel | concept }}</span>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="list-unstyled">
+                        <li ng-repeat="(domain,tel) in scopedObject.recordB.telecom">
+                            {{ tel[0].value }} <span class="badge badge-info">
+                                {{ tel[0].useModel | concept }}</span>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <th>{{ 'ui.mpi.matches.otherMatches' | i18n }}</th>
+                <td>
+                    <ul class="list-unstyled">
+                        <li ng-if="dup.id != scopedObject.candidate.id &amp;&amp; dup.refModel" ng-repeat="dup in scopedObject.recordA.relationship['MDM-Duplicate']">
+                            <a ui-sref=".({ candidateId : dup.id })">{{ dup.refModel.name | name }} / {{ dup.refModel.identifier | identifier }} / {{ dup.refModel.genderConceptModel | concept }} ({{ dup.strength * 100 | number: 0 }}%)</a>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="list-unstyled">
+                        <li  ng-if="dup.id != scopedObject.candidate.id &amp;&amp; dup.refModel" ng-repeat="dup in scopedObject.recordB.relationship['MDM-Duplicate']">
+                            <a ui-sref=".({ candidateId : dup.id })">{{ dup.refModel.name | name }} / {{ dup.refModel.identifier | identifier }} / {{ dup.refModel.genderConceptModel | concept }}  ({{ dup.strength * 100 | number: 0 }}%)</a>
+                            
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
