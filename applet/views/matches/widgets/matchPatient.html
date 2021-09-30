@@ -61,7 +61,7 @@
                 <td><provenance provenance-id="scopedObject.recordA.createdBy"  provenance-time="scopedObject.recordA.creationTime"></provenance></td>
                 <td><provenance provenance-id="scopedObject.recordB.createdBy"  provenance-time="scopedObject.recordB.creationTime"></provenance></td>
             </tr>
-
+            
             <tr>
                 <th>{{ 'ui.model.entity.identifier' | i18n }}</th>
                 <td>
@@ -96,6 +96,11 @@
                 <th>{{ 'ui.model.patient.genderConcept' | i18n }}</th>
                 <td>{{ scopedObject.recordA.genderConceptModel | concept }}</td>
                 <td>{{ scopedObject.recordB.genderConceptModel | concept }}</td>
+            </tr>
+            <tr>
+                <th>{{ 'ui.model.entity.dateOfBirth' | i18n }}</th>
+                <td>{{ scopedObject.recordA.dateOfBirth | extDate: scopedObject.recordA.dateOfBirthPrecision   }}</td>
+                <td>{{ scopedObject.recordB.dateOfBirth | extDate: scopedObject.recordB.dateOfBirthPrecision   }}</td>
             </tr>
             <tr>
                 <th>{{ 'ui.model.entity.telecom' | i18n }}</th>

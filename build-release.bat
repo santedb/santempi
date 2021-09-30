@@ -70,6 +70,38 @@ if exist "%msbuild%\msbuild.exe" (
 		popd
 	)
 
+	
+	%inno% "/o.\bin\dist" ".\install\santempi-install.iss" /d"MyAppVersion=%version%"
+
+	rem ################# TARBALLS 
+	echo Building Linux Tarball
+
+	 mkdir santedb-mpi-%version%
+	cd santedb-mpi-%version%
+	copy "..\bin\Release\SanteMPI*.dll"
+	mkdir applets
+	copy "..\dist\*.pak"
+	xcopy /I /S "..\bin\Release\Config\*.*" ".\config"
+	cd ..
+	"C:\program files\7-zip\7z" a -r -ttar .\bin\dist\santedb-mpi-%version%.tar .\santedb-mpi-%version%
+	"C:\program files\7-zip\7z" a -r -tzip .\bin\dist\santedb-mpi-%version%.zip .\santedb-mpi-%version%
+	"C:\program files\7-zip\7z" a -tbzip2 .\bin\dist\santedb-mpi-%version%.tar.bz2 .\bin\dist\santedb-mpi-%version%.tar
+	"C:\program files\7-zip\7z" a -tgzip .\bin\dist\santedb-mpi-%version%.tar.gz .\bin\dist\santedb-mpi-%version%.tar
+	del /q /s .\installsupp\*.* 
+	del /q /s .\santedb-mpi-%version%\*.*
+	rmdir /q /s .\santedb-mpi-%version%
+	rmdir /q/s .\installsupp
+
+	REM Re-Sign for Docker using internal certificates (since docker mono is odd)
+	FOR /R "%cwd%\bin\Release" %%G IN (SanteMPI*.exe) DO (
+		echo Signing %%G
+		%signtool% sign /sha1 f3bea1ee156254656669f00c03eeafe8befc4441 /d "SanteMPI"  "%%G"
+	)
+	FOR /R "%cwd%\bin\Release" %%G IN (SanteMPI*.dll) DO (
+		echo Signing %%G
+		%signtool% sign /sha1 f3bea1ee156254656669f00c03eeafe8befc4441 /d "SanteMPI" "%%G"
+	)
+
 	docker build --no-cache -t santesuite/santedb-mpi:%version% .
 	docker build --no-cache -t santesuite/santedb-mpi .
 

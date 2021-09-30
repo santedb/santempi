@@ -5,7 +5,6 @@
 #define MyAppPublisher "SanteDB Community"
 #define MyAppURL "http://santesuite.org"
 #define iCDRBase "..\..\santedb-server\"
-#define MyAppVersion "2.1.70"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
