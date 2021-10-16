@@ -1,0 +1,28 @@
+<table class="table overflow-auto" xmlns="http://www.w3.org/1999/xhtml">
+    <thead>
+        <tr>
+            <th>E</th>
+            <th>{{ 'ui.mpi.match.vector.attribute' | i18n }}</th>
+            <th>{{ 'ui.mpi.match.vector.value.a' | i18n }}</th>
+            <th>{{ 'ui.mpi.match.vector.value.b'  | i18n }}</th>
+            <th>{{ 'ui.mpi.match.vector.mu'  | i18n }}</th>
+            <th>{{ 'ui.mpi.match.vector.score' | i18n }}</th>
+            <th>{{ 'ui.mpi.match.vector.weight'  | i18n }}</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="v in match.vectors" ng-class="{ 'alert-danger' : v.score &lt;= 0 , 'alert-warning' : v.score &lt; v.w, 'alert-success' : v.score >= v.w }">
+            <td>
+                <i class="fas" title="{{ v.evaluated ? 'ui.mpi.match.vector.evaluated.yes' : 'ui.mpi.match.vector.evaluated.no' | i18n}}" ng-class="{ 'fa-check-circle text-success' : v.evaluated , 'fa-times-circle text-danger' : !v.evaluated }"></i>
+            </td>
+            <td>
+                {{ v.name }}
+            </td>
+            <td>{{ v.a }}</td>
+            <td>{{ v.b }}</td>
+            <td>{{ v.m | number: 3 }} / {{ v.u | number: 3 }}</td>
+            <td>{{ v.score | number: 3 }}</td>
+            <td>{{ v.w | number: 3}}</td>
+        </tr>
+    </tbody>
+</table>

@@ -24,7 +24,7 @@
   
   <!-- Retrieve patients with NID within 2 type-o's -->
   <blocking op="or" maxResults="5">
-    <filter when="identifier[SSN].value">identifier[NID].value=:(levenshtein|$input.identifier[NID].value)&lt;3</filter>
+    <filter when="identifier[SSN].value">identifier[SSN].value=:(levenshtein|$input.identifier[SSN].value)&lt;3</filter>
   </blocking>
 
   <!-- Retrieve patients who:
@@ -56,11 +56,7 @@
     <attribute property="dateOfBirth" u="0.0027" m="0.75" whenNull="zero" >
       <!-- Assert the a.dateOfBirth == b.dateOfBirth in order for this attribute to be scored successful otherwise score as non-match -->
       <assert op="eq" />
-      <partialWeight name="date_diff">
-        <args>
-          <string>d</string>
-        </args>
-      </partialWeight>
+      
     </attribute>
 
     <!-- Gender exactly matches - note u is 0.5 to indicate a 50/50 probability 
@@ -78,7 +74,7 @@
     -->
     <attribute property="address" u="0.077" m="0.723" whenNull="zero">
       <!-- We apply a transform since the scope of this assertion is currently an object -->
-      <assert op="lte" value="1">
+      <assert op="gte" value="0.8">
         <transform name="addresspart_extract">
           <args>
             <string>City</string>
@@ -99,7 +95,7 @@
     <!-- Any name matches with a given name that sounds like and family name is within 1 edit -->
     <attribute property="name" m="0.4" u="0.2" whenNull="zero">
       <assert op="and">
-        <assert op="lte" value="1">
+        <assert op="gte" value="0.8">
           <transform name="namepart_extract">
             <args>
               <string>Family</string>
@@ -107,7 +103,7 @@
           </transform>
           <transform name="jaro_winkler"/>
         </assert>
-        <assert op="lte" value="1">
+        <assert op="gte" value="0.8">
           <transform name="namepart_extract">
             <args>
               <string>Given</string>
@@ -120,7 +116,7 @@
 
     <!-- SSN matches -->
     <attribute property="identifier[SSN].value" u="0.05" m="0.95"  whenNull="zero">
-      <assert op="lte" value="1">
+      <assert op="gte" value="0.8">
         <transform name="jaro_winkler"/>
       </assert>
       <partialWeight name="similarity" />
@@ -128,7 +124,7 @@
 
     <!-- Telecom address -->
     <attribute property="telecom.value" u="0.1" m="0.85"  whenNull="zero">
-      <assert op="lte" value="1">
+      <assert op="gte" value="0.8">
         <transform name="jaro_winkler"/>
       </assert>
       <partialWeight name="similarity" />

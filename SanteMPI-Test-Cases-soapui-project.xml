@@ -4,8 +4,8 @@
   <con:interface xsi:type="con:RestService" id="ee723db0-c309-4917-9013-d25dea528f0e" wadlVersion="http://wadl.dev.java.net/2009/02" name="HL7 Fast Health Interoperability Resources (FHIR) R4" type="rest" basePath="/fhir" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <con:description>SanteSB Server implementation of the HL7 FHIR R4 Contract</con:description>
     <con:settings/>
-    <con:definitionCache type="TEXT" rootPart=""/>
-    <con:endpoints>
+    
+    <con:definitionCache type="TEXT" rootPart=""/><con:endpoints>
       <con:endpoint>http://localhost:8080/</con:endpoint>
     </con:endpoints>
     <con:resource name="/" path="/" id="08a66efb-0ec4-47d8-bccd-dbf8193aaf35">
@@ -474,12 +474,394 @@
           <con:params/>
           <con:element>data</con:element>
         </con:representation>
-        <con:request name="Request 1" id="76269c91-9d6c-4d93-899b-06c4252f0377" mediaType="application/fhir+json">
+        <con:representation type="FAULT"><con:mediaType>application/fhir+json; charset=utf-8</con:mediaType><con:status>500 422</con:status><con:params/><con:element xmlns:bun="http://localhost/fhir/Bundle">bun:Fault</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/fhir+json; charset=utf-8</con:mediaType><con:status>201</con:status><con:params/><con:element xmlns:bun="http://localhost/fhir/Bundle">bun:Response</con:element></con:representation><con:representation type="FAULT"><con:mediaType>application/fhir+json</con:mediaType><con:status>403 400</con:status><con:params/><con:element xmlns:bun="http://localhost/fhir/Bundle">bun:Fault</con:element></con:representation><con:request name="Request 1" id="76269c91-9d6c-4d93-899b-06c4252f0377" mediaType="application/fhir+json">
           <con:settings/>
           <con:endpoint>http://localhost:8080</con:endpoint>
           <con:parameters/>
         </con:request>
-      </con:method>
+      <con:request name="OHIE PMIR" id="b0c9f23d-fe5c-4c44-9a69-2c0c791b4880" mediaType="application/fhir+json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
+    "resourceType": "Bundle",
+    "type": "message",
+    "entry": [
+        {
+            "fullUrl": "http://demo.ohie.org/fhir/MessageHeader/santedb1",
+            "resource": {
+                "resourceType": "MessageHeader",
+                "id": "1",
+                "eventUri": "urn:ihe:iti:pmir:2019:patient-feed",
+                "source": {
+                    "endpoint": "http://ohie.org/test/test_harness"
+                },
+                "focus": [
+                    {
+                        "reference": "Bundle/santedb1"
+                    }
+                ],
+                "destination": [
+                    {
+                        "endpoint": "http://ohie.org/test/endpoint/Bundle"
+                    }
+                ]
+            }
+        },
+        {
+            "fullUrl": "http://demo.ohie.org/fhir/Bundle/santedb1",
+            "resource": {
+                "resourceType": "Bundle",
+                "id": "santedb1",
+                "type": "history",
+                "entry": [
+                    {
+                        "fullUrl": "http://demo.ohie.org/fhir/Organization/org1",
+                        "resource": {
+                            "resourceType": "Organization",
+                            "id": "org1",
+                            "identifier": [
+                                {
+                                    "use": "usual",
+                                    "system": "http://ohie.org/test/orgs",
+                                    "value": "FHR-921"
+                                }
+                            ],
+                            "name": "ACME Insurance Providers Corp.",
+                            "address": [
+                                {
+                                    "use": "work",
+                                    "type": "physical",
+                                    "text": "321 James St. North Hamilton, Ontario, Canada, L8K5X2",
+                                    "line": [
+                                        "321 James St. North"
+                                    ],
+                                    "city": "Hamilton",
+                                    "state": "ON",
+                                    "postalCode": "L8K5X2",
+                                    "country": "CA"
+                                }
+                            ]
+                        },
+                        "request": {
+                            "method": "POST",
+                            "url": "Organization/org1"
+                        }
+                    },
+                    {
+                        "fullUrl": "http://demo.ohie.org/fhir/Organization/org2",
+                        "resource": {
+                            "resourceType": "Organization",
+                            "id": "org2",
+                            "identifier": [
+                                {
+                                    "use": "usual",
+                                    "system": "http://ohie.org/test/orgs",
+                                    "value": "FHR-993"
+                                }
+                            ],
+                            "name": "University Medical Centre"
+                        },
+                        "request": {
+                            "method": "POST",
+                            "url": "Organization/org2"
+                        }
+                    },
+                    {
+                        "fullUrl": "http://demo.ohie.org/fhir/Practitioner/practitioner1",
+                        "resource": {
+                            "resourceType": "Practitioner",
+                            "id": "practitioner1",
+                            "identifier": [
+                                {
+                                    "use": "usual",
+                                    "system": "http://ohie.org/test/practs",
+                                    "value": "FHR-994"
+                                }
+                            ],
+                            "name": [
+                                {
+                                    "use": "usual",
+                                    "family": "Profile",
+                                    "prefix": [
+                                        "Dr"
+                                    ]
+                                }
+                            ],
+                            "telecom": [
+                                {
+                                    "system": "phone",
+                                    "value": "+19054854858",
+                                    "use": "mobile"
+                                }
+                            ],
+                            "address": [
+                                {
+                                    "use": "work",
+                                    "type": "both",
+                                    "text": "Unit 493, 5 West 9th Ave. Grimsby, Ontario, Canada",
+                                    "line": [
+                                        "5 West 9th Ave.",
+                                        "Unit 493"
+                                    ],
+                                    "city": "Grimsby",
+                                    "state": "ON",
+                                    "postalCode": "L4N3N4",
+                                    "country": "CA"
+                                }
+                            ]
+                        },
+                        "request": {
+                            "method": "POST",
+                            "url": "Practitioner/practitioner1"
+                        }
+                    },
+                    {
+                        "fullUrl": "http://demo.ohie.org/fhir/Patient/patient1",
+                        "resource": {
+                            "resourceType": "Patient",
+                            "id": "patient1",
+                            "active": true,
+                            "identifier": [
+                                {
+                                    "use": "official",
+                                    "system": "http://ohie.org/test/test",
+                                    "value": "FHR-584"
+                                }
+                            ],
+                            "name": [
+                                {
+                                    "use": "official",
+                                    "family": "Drake",
+                                    "given": [
+                                        "Donny",
+                                        "Demo"
+                                    ],
+                                    "prefix": [
+                                        "Dr"
+                                    ]
+                                },
+                                {
+                                    "use": "usual",
+                                    "family": "Drake",
+                                    "prefix": [
+                                        "Dr"
+                                    ]
+                                }
+                            ],
+                            "address": [
+                                {
+                                    "use": "home",
+                                    "type": "both",
+                                    "text": "123 Somestreet St. Beamsville",
+                                    "line": [
+                                        "123 Somestreet St"
+                                    ],
+                                    "city": "Beamsville",
+                                    "state": "ON",
+                                    "postalCode": "L0R2A0",
+                                    "country": "CA"
+                                }
+                            ],
+                            "telecom": [
+                                {
+                                    "system": "phone",
+                                    "value": "+9055443435",
+                                    "use": "work"
+                                },
+                                {
+                                    "system": "phone",
+                                    "value": "+90548374837",
+                                    "use": "mobile"
+                                },
+                                {
+                                    "system": "email",
+                                    "value": "donnie@ohie.org",
+                                    "use": "home"
+                                }
+                            ],
+                            "gender": "male",
+                            "birthDate": "1993-03-02",
+                            "maritalStatus": {
+                                "coding": [
+                                    {
+                                        "system": "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
+                                        "code": "M",
+                                        "display": "Married"
+                                    }
+                                ]
+                            },
+                            "multipleBirthBoolean": false,
+                            "contact": [
+                                {
+                                    "relationship": [
+                                        {
+                                            "coding": [
+                                                {
+                                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0131",
+                                                    "code": "C"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "coding": [
+                                                {
+                                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0131",
+                                                    "code": "N"
+                                                }
+                                            ]
+                                        }
+                                    ],
+                                    "name": {
+                                        "use": "usual",
+                                        "family": "Drake",
+                                        "given": [
+                                            "Allison"
+                                        ]
+                                    },
+                                    "address": {
+                                        "use": "home",
+                                        "type": "both",
+                                        "text": "123 Somestreet St. Beamsville",
+                                        "line": [
+                                            "123 Somestreet St"
+                                        ],
+                                        "city": "Beamsville",
+                                        "state": "ON",
+                                        "country": "CA"
+                                    },
+                                    "telecom": [
+                                        {
+                                            "system": "phone",
+                                            "value": "+90544839843",
+                                            "use": "mobile"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "relationship": [
+                                        {
+                                            "coding": [
+                                                {
+                                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0131",
+                                                    "code": "I"
+                                                }
+                                            ]
+                                        }
+                                    ],
+                                    "organization": {
+                                        "reference": "http://demo.ohie.org/fhir/Organization/org1",
+                                        "display": "ACME Insurance Corp."
+                                    }
+                                }
+                            ],
+                            "communication": [
+                                {
+                                    "language": {
+                                        "coding": [
+                                            {
+                                                "system": "urn:ietf:bcp:47",
+                                                "code": "en",
+                                                "display": "English"
+                                            }
+                                        ]
+                                    },
+                                    "preferred": true
+                                },
+                                {
+                                    "language": {
+                                        "coding": [
+                                            {
+                                                "system": "urn:ietf:bcp:47",
+                                                "code": "fr",
+                                                "display": "French"
+                                            }
+                                        ]
+                                    },
+                                    "preferred": false
+                                }
+                            ],
+                            "generalPractitioner": {
+                                "reference": "http://demo.ohie.org/fhir/Practitioner/practitioner1",
+                                "display": "Dr. Andrew Fudd"
+                            },
+                            "managingOrganization": {
+                                "reference": "http://demo.ohie.org/fhir/Organization/org2",
+                                "display": "University Medical Centre"
+                            }
+                        },
+                        "request": {
+                            "method": "POST",
+                            "url": "Patient/patient1"
+                        }
+                    },
+                    {
+                        "fullUrl": "http://demo.ohie.org/fhir/RelatedPerson/rel1",
+                        "resource": {
+                            "resourceType": "RelatedPerson",
+                            "id": "rel1",
+                            "identifier": [
+                                {
+                                    "use": "usual",
+                                    "system": "http://ohie.org/test/test",
+                                    "value": "FHR-493"
+                                },
+                                {
+                                    "use": "usual",
+                                    "system": "http://ohie.org/test/nid",
+                                    "value": "NID434"
+                                }
+                            ],
+                            "patient": {
+                                "reference": "http://demo.ohie.org/fhir/Patient/patient1"
+                            },
+                            "relationship": [
+                                {
+                                    "coding": [
+                                        {
+                                            "system": "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+                                            "code": "WIFE"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "name": {
+                                "use": "usual",
+                                "family": "Drake",
+                                "given": [
+                                    "Allison"
+                                ]
+                            },
+                            "address": [
+                                {
+                                    "use": "home",
+                                    "type": "both",
+                                    "text": "123 Somestreet St. Beamsville",
+                                    "line": [
+                                        "123 Somestreet St"
+                                    ],
+                                    "city": "Beamsville",
+                                    "state": "ON",
+                                    "postalCode": "L0R2A0",
+                                    "country": "CA"
+                                }
+                            ],
+                            "telecom": [
+                                {
+                                    "system": "phone",
+                                    "value": "+9058483744",
+                                    "use": "mobile"
+                                }
+                            ],
+                            "birthDate": "1985-05-10",
+                            "gender": "female"
+                        },
+                        "request": {
+                            "method": "POST",
+                            "url": "RelatedPerson/rel1"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}</con:request><con:originalUri>http://localhost/fhir/Bundle</con:originalUri><con:credentials><con:selectedAuthProfile>TEST_HARNESS</con:selectedAuthProfile><con:authType>OAuth 2.0</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method>
     </con:resource>
     <con:resource name="/Bundle/$validate" path="/Bundle/$validate" id="b9fbc267-c365-4000-90a2-2bc57bfcfa5c">
       <con:settings/>
@@ -1583,7 +1965,7 @@
         </con:representation>
         <con:representation type="FAULT">
           <con:mediaType>application/fhir+json</con:mediaType>
-          <con:status>500 400</con:status>
+          <con:status>500 400 403</con:status>
           <con:params/>
           <con:element xmlns:pat="http://localhost/fhir/Patient">pat:Fault</con:element>
         </con:representation>
@@ -1673,7 +2055,7 @@
         </con:representation>
         <con:request name="Request 1" id="030ac8aa-1a61-4185-8771-7a79d3216c26" mediaType="application/fhir+json">
           <con:settings>
-            <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="accept" value="application/fhir+json" xmlns="http://eviware.com/soapui/config" /></con:setting>
+            <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="accept" value="application/fhir+json" xmlns="http://eviware.com/soapui/config"/></con:setting>
           </con:settings>
           <con:endpoint>http://localhost:8080</con:endpoint>
           <con:request/>
@@ -1685,10 +2067,10 @@
           <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
           <con:jmsPropertyConfig/>
           <con:parameters>
-            <con:entry key="_include" value=""/>
-            <con:entry key="_revinclude" value=""/>
-            <con:entry key="family" value="apAbels"/>
-          </con:parameters>
+  <con:entry key="_include" value=""/>
+  <con:entry key="identifier" value="http://ohie.org/test/test|RJ-438"/>
+  <con:entry key="_revinclude" value=""/>
+</con:parameters>
           <con:parameterOrder>
             <con:entry>active</con:entry>
             <con:entry>telecom</con:entry>
@@ -1944,7 +2326,7 @@
           <con:params/>
           <con:element>data</con:element>
         </con:representation>
-        <con:request name="Request 1" id="090f09a8-91ae-4aa3-b504-8419a61af74d" mediaType="application/fhir+json" postQueryString="false">
+        <con:representation type="FAULT"><con:mediaType>application/fhir+json; charset=utf-8</con:mediaType><con:status>500</con:status><con:params/><con:element xmlns:pat="http://localhost/fhir/Patient">pat:Fault</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Request 1" id="090f09a8-91ae-4aa3-b504-8419a61af74d" mediaType="application/fhir+json" postQueryString="false">
           <con:settings>
             <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
           </con:settings>
@@ -2161,7 +2543,7 @@
           <con:params/>
           <con:element>data</con:element>
         </con:representation>
-        <con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Request 1" id="4ddaa6dd-3e64-41e9-a389-bcf8bf251289" mediaType="application/fhir+json" postQueryString="false">
+        <con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Request 1" id="4ddaa6dd-3e64-41e9-a389-bcf8bf251289" mediaType="application/fhir+json" postQueryString="false">
           <con:settings>
             <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
           </con:settings>
@@ -2174,29 +2556,18 @@
             "name": "resource",
             "resource": {
             "resourceType": "Patient",
-            "id": "rec-00000338-bbb-1",
-            "identifier": [
-            {
-            "use": "official",
-            "system": "http://ohie.org/test/nid",
-            "value": "2004041476795o1"
-            },
-            {
-            "use": "usual",
-            "system": "http://ohie.org/test/bbb-1",
-            "value": "rec-00000338-bbb-1"
-            }
-            ],
+            "id": "example",
             "name": [
             {
             "use": "official",
+            "family":"Drake",
             "given": [
-            "Oscar"
+            "Donny"
             ]
             }
             ],
             "gender": "male",
-            "birthDate": "2001-11-14"
+            "birthDate": "1993-03-02"
             }
             },
             {
@@ -3077,10 +3448,31 @@
           <con:params/>
           <con:element>html</con:element>
         </con:representation>
-        <con:request name="Request 1" id="7a83e172-3f22-4658-8d79-cbda607280ca" mediaType="application/fhir+json">
-          <con:settings/>
+        <con:representation type="FAULT"><con:mediaType>application/fhir+json</con:mediaType><con:status>403</con:status><con:params/><con:element xmlns:sub="http://localhost/fhir/Subscription">sub:Fault</con:element></con:representation><con:request name="OHIE DEMO" id="7a83e172-3f22-4658-8d79-cbda607280ca" mediaType="application/fhir+json" postQueryString="false">
+          <con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings>
           <con:endpoint>http://localhost:8080</con:endpoint>
-          <con:parameters/>
+          <con:request>{
+    "resourceType": "Subscription",
+    "id": "ohie_demo",
+    "status": "active",
+    "contact": [
+        {
+            "system": "phone",
+            "value": "180086626362"
+        }
+    ],
+    "end": "2025-01-01T00:00:00Z",
+    "reason": "Monitor Creation of Male Patients",
+    "criteria": "Patient?gender=male",
+    "channel": {
+        "type": "message",
+        "endpoint": "http://localhost:8989/fhir/Patient",
+        "payload": "application/fhir+json",
+        "header": [
+            "Authorization: Bearer secret-token-abc-123"
+        ]
+    }
+}</con:request><con:originalUri>http://localhost/fhir/Subscription</con:originalUri><con:credentials><con:selectedAuthProfile>SanteDB OAUTH</con:selectedAuthProfile><con:authType>OAuth 2.0</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/>
         </con:request>
       </con:method>
     </con:resource>
@@ -11235,7 +11627,7 @@
         </con:representation>
         <con:representation type="RESPONSE">
           <con:mediaType>application/xml</con:mediaType>
-          <con:status>200</con:status>
+          <con:status>200 201</con:status>
           <con:params/>
         </con:representation>
         <con:representation type="RESPONSE">
@@ -19007,7 +19399,7 @@
         <con:config service="HL7 Fast Health Interoperability Resources (FHIR) R4" methodName="POST" resourcePath="/fhir/Bundle" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="Register Flynn Full Profile" id="87ed10b9-5373-4cf2-bfc5-42b93585b601" mediaType="application/fhir+json" postQueryString="false">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config" /></con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config"/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080/</con:endpoint>
@@ -21500,7 +21892,7 @@
       <con:properties>
         <con:property>
           <con:name>VictimID</con:name>
-          <con:value>6a55aed2-6828-4f10-b9cd-da6ac98b1392</con:value>
+          <con:value>f7dc5de4-cbed-4e7f-9c49-f79a89cd32fe</con:value>
         </con:property>
       </con:properties>
     </con:testCase>
@@ -22363,7 +22755,7 @@
         <con:config service="HL7 Fast Health Interoperability Resources (FHIR) R4" methodName="POST" resourcePath="/fhir/Patient" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="Create Female Patient" id="73786049-783d-4e8f-b8b1-e1cf7df789ac" mediaType="application/fhir+json" postQueryString="false">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config" /></con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config"/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080/</con:endpoint>
@@ -22582,7 +22974,7 @@
       "family": "Subscription"
    }],
    "active": true,
-   "id": "fde6d56b-f891-4611-ba1a-894d42fa80bb",
+   "id": "c87eb8a2-0829-472a-85a2-831cb13f7d63",
    "text":    {
       "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n\t\t\t<table>\n\t\t\t\t<tbody>\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>Name<\/td>\n\t\t\t\t\t\t<td>Peter James \n              <b>Chalmers<\/b> (&quot;Jim&quot;)\n            <\/td>\n\t\t\t\t\t<\/tr>\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>Address<\/td>\n\t\t\t\t\t\t<td>534 Erewhon, Pleasantville, Vic, 3999<\/td>\n\t\t\t\t\t<\/tr>\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>Contacts<\/td>\n\t\t\t\t\t\t<td>Home: unknown. Work: (03) 5555 6473<\/td>\n\t\t\t\t\t<\/tr>\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>Id<\/td>\n\t\t\t\t\t\t<td>MRN: 12345 (Acme Healthcare)<\/td>\n\t\t\t\t\t<\/tr>\n\t\t\t\t<\/tbody>\n\t\t\t<\/table>\n\t\t<\/div>",
       "status": "generated"
@@ -22602,7 +22994,7 @@
             </con:credentials>
             <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
             <con:jmsPropertyConfig/>
-            <con:parameters><entry key="id" value="fde6d56b-f891-4611-ba1a-894d42fa80bb" xmlns="http://eviware.com/soapui/config"/></con:parameters>
+            <con:parameters><entry key="id" value="c87eb8a2-0829-472a-85a2-831cb13f7d63" xmlns="http://eviware.com/soapui/config"/></con:parameters>
           </con:restRequest>
         </con:config>
       </con:testStep>
@@ -22892,7 +23284,7 @@
     <con:properties>
       <con:property>
         <con:name>Token</con:name>
-        <con:value>D66353F7131AEC11BEDF0242AC1A0002D5B71990090FC27609566C95C4F80B96A1C8D99F931DD8775309646545B0B98A</con:value>
+        <con:value>0A6250DBB02DEC11B63A0242AC120002CA026C63ECB37ECB6029C6925E3E1090EE9FA94C2735D5BFF1E968CCD4087E84</con:value>
       </con:property>
     </con:properties>
   </con:testSuite>
@@ -23266,7 +23658,7 @@
       </con:response>
     </con:restMockAction>
   </con:restMockService>
-  <con:properties/>
+  <con:properties><con:property><con:name>accessToken</con:name><con:value>accessToken</con:value></con:property></con:properties>
   <con:wssContainer/>
   <con:oAuth2ProfileContainer>
     <con:oAuth2Profile>
@@ -23274,16 +23666,16 @@
       <con:clientID>fiddler</con:clientID>
       <con:clientSecret>fiddler</con:clientSecret>
       <con:accessTokenURI>http://localhost:8080/auth/oauth2_token</con:accessTokenURI>
-      <con:accessToken>1AFD27FB100DEC11891DD35814ADBCEFE1D6B3CC1943C93D9145486355E607D583CEFB80FE1C7EC6B51E4E441E938142</con:accessToken>
+      <con:accessToken>205641150B26EC1181FE0242AC15000262CFA06FE41CE9E66D77C05E4A5FCD24BCDFE69B8DDA97F9D9A25370799298CD</con:accessToken>
       <con:accessTokenPosition>HEADER</con:accessTokenPosition>
       <con:oAuth2Flow>CLIENT_CREDENTIALS_GRANT</con:oAuth2Flow>
       <con:refreshAccessTokenMethod>AUTOMATIC</con:refreshAccessTokenMethod>
-      <con:refreshToken>F59F376CB0F70847AAD572F42E6732F53F0742F33F1E283B1FDE48F0E77D11BF0C651B7BD5CF627435F9C9C98C7AD4A6</con:refreshToken>
+      <con:refreshToken>6B192EA5C2323E4CAD0663B730D0E27E28207AF0AF287E356122248771E544B9A6BDFB02FC36279CDD285C8B20459257</con:refreshToken>
       <con:scope>*</con:scope>
       <con:accessTokenStatus>UNKNOWN</con:accessTokenStatus>
       <con:accessTokenStartingStatus>RETRIEVED_FROM_SERVER</con:accessTokenStartingStatus>
-      <con:accessTokenExpirationTime>3599952</con:accessTokenExpirationTime>
-      <con:accessTokenIssuedTime>1630712712</con:accessTokenIssuedTime>
+      <con:accessTokenExpirationTime>1799956</con:accessTokenExpirationTime>
+      <con:accessTokenIssuedTime>1633458958</con:accessTokenIssuedTime>
       <con:manualAccessTokenExpirationTime/>
       <con:manualAccessTokenExpirationTimeUnit>SECONDS</con:manualAccessTokenExpirationTimeUnit>
     </con:oAuth2Profile>
@@ -23292,32 +23684,32 @@
       <con:clientID>TEST_HARNESS</con:clientID>
       <con:clientSecret>TEST_HARNESS</con:clientSecret>
       <con:accessTokenURI>http://localhost:8080/auth/oauth2_token</con:accessTokenURI>
-      <con:accessToken>CC5A04D5000CEC11A2CD9F9D87691FA2583074AA754399B955234189D4CACB47CEA14B310D1FFFCFCB3A8610CFE62263</con:accessToken>
+      <con:accessToken>C8646D840426EC11A0900242AC15000299F2C0EABDEA6898EC8A27C15460039F12B55F2747E7C40B065D1AAE8910A20D</con:accessToken>
       <con:accessTokenPosition>HEADER</con:accessTokenPosition>
       <con:oAuth2Flow>CLIENT_CREDENTIALS_GRANT</con:oAuth2Flow>
       <con:refreshAccessTokenMethod>AUTOMATIC</con:refreshAccessTokenMethod>
-      <con:refreshToken>36702E88BF07EF4F94A25A796350297D635CFCAEE54FCC6D83CCF1437432907532D79C506C11ADF3DC56F46C221D1611</con:refreshToken>
+      <con:refreshToken>4E5DABF926694342A00ED65E8CCEF3F720369C3581E69028B9902E757A58C28826CF8F72802F115D864497FF2AB8709E</con:refreshToken>
       <con:scope>*</con:scope>
       <con:accessTokenStatus>UNKNOWN</con:accessTokenStatus>
       <con:accessTokenStartingStatus>RETRIEVED_FROM_SERVER</con:accessTokenStartingStatus>
-      <con:accessTokenExpirationTime>3599972</con:accessTokenExpirationTime>
-      <con:accessTokenIssuedTime>1630595825</con:accessTokenIssuedTime>
+      <con:accessTokenExpirationTime>1799976</con:accessTokenExpirationTime>
+      <con:accessTokenIssuedTime>1633456138</con:accessTokenIssuedTime>
     </con:oAuth2Profile>
     <con:oAuth2Profile>
       <con:name>TEST_HARNESS_A</con:name>
       <con:clientID>TEST_HARNESS_A</con:clientID>
       <con:clientSecret>TEST_HARNESS</con:clientSecret>
       <con:accessTokenURI>http://localhost:8080/auth/oauth2_token</con:accessTokenURI>
-      <con:accessToken>B0BC4456F9E3EB11BE490242AC120002E8C26426B8D5B20BDB17D663FCE73CFA35257C68ECDB661564EFF8543E6C1671</con:accessToken>
+      <con:accessToken>3055FAE75225EC11B3690242AC14000278450A3755682D302C0B8B568BC1AC0D6BE568A99D1E34FF669E40DE365F5EB1</con:accessToken>
       <con:accessTokenPosition>HEADER</con:accessTokenPosition>
       <con:oAuth2Flow>CLIENT_CREDENTIALS_GRANT</con:oAuth2Flow>
       <con:refreshAccessTokenMethod>AUTOMATIC</con:refreshAccessTokenMethod>
-      <con:refreshToken>C6A3A86A5A7E954AA899C1078130043BD28036C89ACF413BBAF0C6A79EC12CA3896D7D662E0DB96E1B21108905FAC30B</con:refreshToken>
+      <con:refreshToken>BAFDCA6CF274254DBC5D213104BDDF6862BC289EABB9D67E1FDADB6E083725170DD55D3173F6DC32E0FF53E94E148F92</con:refreshToken>
       <con:scope>*</con:scope>
       <con:accessTokenStatus>UNKNOWN</con:accessTokenStatus>
       <con:accessTokenStartingStatus>RETRIEVED_FROM_SERVER</con:accessTokenStartingStatus>
-      <con:accessTokenExpirationTime>3599991</con:accessTokenExpirationTime>
-      <con:accessTokenIssuedTime>1626194560</con:accessTokenIssuedTime>
+      <con:accessTokenExpirationTime>3599963</con:accessTokenExpirationTime>
+      <con:accessTokenIssuedTime>1633379854</con:accessTokenIssuedTime>
     </con:oAuth2Profile>
     <con:oAuth2Profile>
       <con:name>TEST_HARNESS_B</con:name>

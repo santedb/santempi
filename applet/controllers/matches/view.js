@@ -1,4 +1,5 @@
-angular.module('santedb').controller('MpiMatchViewController', ["$scope", "$rootScope", "$state", "$templateCache", "$stateParams", function ($scope, $rootScope, $state, $templateCache, $stateParams) {
+/// <reference path="../../.ref/js/santedb.js"/>
+angular.module('santedb').controller('MpiMatchViewController', ["$scope", "$rootScope", "$state", "$templateCache", "$stateParams", "$timeout", function ($scope, $rootScope, $state, $templateCache, $stateParams, $timeout) {
 
 
     // Load related entity
@@ -8,7 +9,7 @@ angular.module('santedb').controller('MpiMatchViewController', ["$scope", "$root
             // REL > OTHER
             if(!reverse) {
                 if(!rel.targetModel || rel.targetModel.$type != 'Patient') {
-                    rel.refModel = await SanteDB.resources.patient.getAsync(rel.target);
+                    rel.refModel = await SanteDB.resources.ensureTypeAsync(rel.targetModel || await SanteDB.resources.patient.getAsync(rel.target), 'Patient');
                 } 
                 else {
                     rel.refModel = rel.targetModel;
@@ -17,10 +18,10 @@ angular.module('santedb').controller('MpiMatchViewController', ["$scope", "$root
             // REL < OTHER
             else {
                 if(!rel.holderModel || rel.holderModel.$type != 'Patient') {                
-                    rel.refModel = await SanteDB.resources.patient.getAsync(rel.holder);
+                    rel.refModel = await SanteDB.resources.ensureTypeAsync(rel.holderModel || await SanteDB.resources.patient.getAsync(rel.holder), 'Patient');
                 }
                 else {
-                    rel.refModel = rel.holderModel;
+                    rel.refModel = rel.holderModel; 
                 }
             }
             return rel;
@@ -56,10 +57,10 @@ angular.module('santedb').controller('MpiMatchViewController', ["$scope", "$root
     async function initializeView() {
         try {
             var recordA = null, recordB = null, candidate = null;
-            if($stateParams.candidateId) {
-                candidate = await SanteDB.resources.entityRelationship.getAsync($stateParams.candidateId, "reverseRelationship");
-                recordA = await SanteDB.resources.patient.getAsync(candidate.holder, "mdm");
-                recordB = await SanteDB.resources.patient.getAsync(candidate.target, "mdm");
+            if($stateParams.id) {
+                candidate = await SanteDB.resources.entityRelationship.getAsync($stateParams.id, "smpi.reverseRelationship");
+                recordA = await SanteDB.resources.ensureTypeAsync(candidate.holderModel || await SanteDB.resources.patient.getAsync(candidate.holder, "mdm"), "Patient");
+                recordB = await SanteDB.resources.ensureTypeAsync(candidate.targetModel || await SanteDB.resources.patient.getAsync(candidate.target, "mdm"), "Patient");
             }
             else if($stateParams.sourceId && $stateParams.targetId) {
                 candidate = {};
@@ -74,38 +75,36 @@ angular.module('santedb').controller('MpiMatchViewController', ["$scope", "$root
             recordB.relationship['MDM-Duplicate'] = await loadOtherCandidiates(recordB, candidate.id);
 
             // Get the match report for the specified objects A<>B
-            $scope.matchReport = await SanteDB.resources.patient.getAssociatedAsync(recordA.id, "mdm-candidate", recordB.id, { _upstream: true});
-            $scope.matchReport.recordA = recordA;
-            $scope.matchReport.recordB = recordB;
-            $scope.matchReport.candidate = candidate;
+            var matchReport = await SanteDB.resources.patient.getAssociatedAsync(recordA.id, "mdm-candidate", recordB.id, null, true);
+            matchReport.recordA = recordA;
+            matchReport.recordB = recordB;
+            matchReport.candidate = candidate;
 
             // Set the best match
-            $scope.matchReport.results = $scope.matchReport.results.sort((a,b) => b.strength - a.strength);
-            $scope.matchReport._isConfigurationIssue = candidate.relationshipType == '56cfb115-8207-4f89-b52e-d20dbad8f8cc' && $scope.matchReport.results[0].classification == 2;
+            matchReport.results = matchReport.results.sort((a,b) => b.strength - a.strength);
+            matchReport._isConfigurationIssue = candidate.relationshipType == '56cfb115-8207-4f89-b52e-d20dbad8f8cc' && matchReport.results[0].classification == 2;
+
+            // Apply 
+            $timeout(_=> 
+            {
+                $scope.matchReport = matchReport;
+            });
         }
         catch(e) {
             $rootScope.errorHandler(e);
-        }
-        finally {
-            $scope.$applyAsync();
         }
     }
 
      /**
      * Submit an "ignore" request for the specified relationship
      */
-      $scope.ignore = async function(relationshipId) {
+      $scope.ignore = async function() {
         try {
 
             SanteDB.display.buttonWait(`#btnIgnore`, true);
-            // Confirm the action
-            if(!confirm(SanteDB.locale.getString("ui.mpi.matches.ignore.confirm")))
-                return;
-
-            // Send the MDM-ignore post
-            var ignoreResult = await SanteDB.resources.patient.removeAssociatedAsync(relationship.holder, "mdm-ignore", relationship.target);
-            toastr.success(SanteDB.locale.getString("ui.mpi.matches.ignore.success"));
-            
+            await ignoreCandidateAsync($scope.matchReport.recordA.id, $scope.matchReport.recordB.id);
+            // Go back 
+            $state.transitionTo('santedb-admin.mpi.matches.index');
         }
         catch(e) {
             $rootScope.errorHandler(e);
@@ -115,5 +114,23 @@ angular.module('santedb').controller('MpiMatchViewController', ["$scope", "$root
         }
     }
 
+    /**
+     * Submit a RESOLVE 
+     */
+    $scope.resolve = async function() {
+        try {
+
+            SanteDB.display.buttonWait(`#btnResolve`, true);
+            await attachCandidateAsync($scope.matchReport.recordA.id, $scope.matchReport.recordB.id);
+            // Go back 
+            $state.transitionTo('santedb-admin.mpi.matches.index');
+        }
+        catch(e) {
+            $rootScope.errorHandler(e);
+        }
+        finally {
+            SanteDB.display.buttonWait(`#btnResolve`, false);
+        }
+    }
     initializeView();
 }]);

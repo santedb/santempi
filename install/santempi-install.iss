@@ -296,6 +296,9 @@ Filename: "{app}\ConfigTool.exe";  Description: "Configure SanteDB Server"; Flag
 Filename: "c:\windows\system32\netsh.exe"; Parameters: "advfirewall firewall add rule name=""SanteDB REST Ports"" dir=in protocol=TCP localport=8080 action=allow"; StatusMsg: "Configuring Firewall"; Flags: runhidden; 
 Filename: "c:\windows\system32\netsh.exe"; Parameters: "advfirewall firewall add rule name=""SanteDB HL7 Ports"" dir=in protocol=TCP localport=2100 action=allow"; StatusMsg: "Configuring Firewall"; Flags: runhidden; 
 
+[UninstallDelete]
+Type: filesandordirs; Name: "{app}\data\*.completed"
+Type: files; Name: "{app}\santedb.config.xml"
 
 [UninstallRun]
 Filename: "{app}\SanteDB.exe"; Parameters: "--uninstall"; StatusMsg: "Un-registering SanteDB"; Flags:runhidden runascurrentuser;
