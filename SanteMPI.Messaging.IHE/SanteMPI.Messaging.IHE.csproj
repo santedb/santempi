@@ -8,13 +8,13 @@
   <PropertyGroup Condition="'$(VersionNumber)' == ''">
     <VersionNumber>2.1.0-debug</VersionNumber>
   </PropertyGroup>
-  
+
   <ItemGroup>
-    <PackageReference Include="SanteDB.Messaging.FHIR" Version="2.1.85" />
-    <PackageReference Include="SanteDB.Messaging.HL7" Version="2.1.85" />
-    <PackageReference Include="SanteDB.Persistence.MDM" Version="2.1.85" />
+    <PackageReference Include="SanteDB.Messaging.FHIR" Version="2.1.89" />
+    <PackageReference Include="SanteDB.Messaging.HL7" Version="2.1.89" />
+    <PackageReference Include="SanteDB.Persistence.MDM" Version="2.1.89" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <ProjectReference Include="..\SanteMPI.i18n\SanteMPI.i18n.csproj" />
   </ItemGroup>
