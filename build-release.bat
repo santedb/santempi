@@ -35,6 +35,7 @@ if exist "c:\Program Files (x86)\Inno Setup 6\ISCC.exe" (
 	)
 )
 
+set signtool="C:\Program Files (x86)\Windows Kits\10\bin\10.0.17763.0\x64\signtool.exe"
 set cwd=%cd%
 echo Will build version %version%
 echo Will use NUGET in %nuget%
@@ -43,6 +44,25 @@ echo Will use MSBUILD in %msbuild%
 if exist "%msbuild%\msbuild.exe" (
 	%msbuild%\msbuild santempi.sln /t:restore
 	%msbuild%\msbuild santempi.sln /t:clean /t:rebuild /p:configuration=Release /m:1
+
+	PUSHD applet
+		IF EXIST "manifest.xml" (
+			"c:\Program Files\SanteSuite\SanteDB\SDK\pakman" --compile --optimize --source=.\ --version=%1 --output=..\bin\org.santedb.smpi.pak --sign --certHash=f3bea1ee156254656669f00c03eeafe8befc4441 --embedcert --install --publish --publish-server=https://packages.santesuite.net
+		)
+		POPD
+
+	"c:\Program Files\SanteSuite\SanteDB\SDK\pakman" --compile --optimize --source=..\santedb-server\santedb-hl7\SanteDB.Messaging.HL7\applet --version=%1 --output=.\bin\org.santedb.hl7.pak --sign --certHash=f3bea1ee156254656669f00c03eeafe8befc4441 --embedcert --install --publish --publish-server=https://packages.santesuite.net
+
+	"c:\Program Files\SanteSuite\SanteDB\SDK\pakman" --compose --version=%1 --source=santempi.sln.xml -o dist\santempi.sln.pak  --embedCert --sign --certHash=f3bea1ee156254656669f00c03eeafe8befc4441 
+
+	FOR /R "%cwd%\bin\Release" %%G IN (SanteMPI*.exe) DO (
+		echo Signing %%G
+		%signtool% sign /sha1 a11164321e30c84bd825ab20225421434622c52a /d "SanteMPI"  "%%G"
+	)
+	FOR /R "%cwd%\bin\Release" %%G IN (SanteMPI*.dll) DO (
+		echo Signing %%G
+		%signtool% sign /sha1 a11164321e30c84bd825ab20225421434622c52a /d "SanteMPI" "%%G"
+	)
 
 	FOR /R "%cwd%" %%G IN (*.nuspec) DO (
 		echo Packing %%~pG
@@ -59,15 +79,7 @@ if exist "%msbuild%\msbuild.exe" (
 		popd
 	)
 
-	FOR /R "%cwd%\bin\Release" %%G IN (SanteDB*.exe) DO (
-		echo Signing %%G
-		"C:\Program Files (x86)\Windows Kits\8.1\bin\x86\signtool.exe" sign "%%G"
-	)
-	FOR /R "%cwd%\bin\Release" %%G IN (SanteDB*.dll) DO (
-		echo Signing %%G
-		"C:\Program Files (x86)\Windows Kits\8.1\bin\x86\signtool.exe" sign "%%G"
-	)
-
+	
 	%inno% "/o.\bin\dist" ".\install\santempi-install.iss" /d"MyAppVersion=%version%"
 
 	rem ################# TARBALLS 
@@ -88,6 +100,16 @@ if exist "%msbuild%\msbuild.exe" (
 	del /q /s .\santedb-mpi-%version%\*.*
 	rmdir /q /s .\santedb-mpi-%version%
 	rmdir /q/s .\installsupp
+
+	REM Re-Sign for Docker using internal certificates (since docker mono is odd)
+	FOR /R "%cwd%\bin\Release" %%G IN (SanteMPI*.exe) DO (
+		echo Signing %%G
+		%signtool% sign /sha1 f3bea1ee156254656669f00c03eeafe8befc4441 /d "SanteMPI"  "%%G"
+	)
+	FOR /R "%cwd%\bin\Release" %%G IN (SanteMPI*.dll) DO (
+		echo Signing %%G
+		%signtool% sign /sha1 f3bea1ee156254656669f00c03eeafe8befc4441 /d "SanteMPI" "%%G"
+	)
 
 	docker build --no-cache -t santesuite/santedb-mpi:%version% .
 	docker build --no-cache -t santesuite/santedb-mpi .
