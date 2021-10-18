@@ -45,6 +45,15 @@ if exist "%msbuild%\msbuild.exe" (
 	%msbuild%\msbuild santempi.sln /t:restore
 	%msbuild%\msbuild santempi.sln /t:clean /t:rebuild /p:configuration=Release /m:1
 
+	PUSHD applet
+		IF EXIST "manifest.xml" (
+			"c:\Program Files\SanteSuite\SanteDB\SDK\pakman" --compile --optimize --source=.\ --version=%1 --output=..\bin\org.santedb.smpi.pak --sign --certHash=f3bea1ee156254656669f00c03eeafe8befc4441 --embedcert --install --publish --publish-server=https://packages.santesuite.net
+		)
+		POPD
+
+	"c:\Program Files\SanteSuite\SanteDB\SDK\pakman" --compile --optimize --source=..\santedb-server\santedb-hl7\SanteDB.Messaging.HL7\applet --version=%1 --output=.\bin\org.santedb.hl7.pak --sign --certHash=f3bea1ee156254656669f00c03eeafe8befc4441 --embedcert --install --publish --publish-server=https://packages.santesuite.net
+
+	"c:\Program Files\SanteSuite\SanteDB\SDK\pakman" --compose --version=%1 --source=santempi.sln.xml -o dist\santempi.sln.pak  --embedCert --sign --certHash=f3bea1ee156254656669f00c03eeafe8befc4441 
 
 	FOR /R "%cwd%\bin\Release" %%G IN (SanteMPI*.exe) DO (
 		echo Signing %%G

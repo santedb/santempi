@@ -54,28 +54,28 @@
       <Version>13.0.1</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Caching.Memory">
-      <Version>2.1.85</Version>
+      <Version>2.1.91</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Matcher">
-      <Version>2.1.85</Version>
+      <Version>2.1.91</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Messaging.FHIR">
-      <Version>2.1.85</Version>
+      <Version>2.1.91</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Messaging.HL7">
-      <Version>2.1.85</Version>
+      <Version>2.1.91</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Persistence.MDM">
-      <Version>2.1.85</Version>
+      <Version>2.1.91</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Server.Plugin">
-      <Version>2.1.85</Version>
+      <Version>2.1.91</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Server.Plugin.Data">
-      <Version>2.1.85</Version>
+      <Version>2.1.91</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Server.TestFramework">
-      <Version>2.1.85</Version>
+      <Version>2.1.91</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
