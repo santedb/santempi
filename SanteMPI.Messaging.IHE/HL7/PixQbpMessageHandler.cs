@@ -2,11 +2,14 @@
 using NHapi.Model.V25.Message;
 using NHapi.Model.V25.Segment;
 using SanteDB.Core;
+using SanteDB.Core.Auditing;
+using SanteDB.Core.Model;
 using SanteDB.Core.Model.Roles;
 using SanteDB.Core.Services;
 using SanteDB.Messaging.HL7.Messages;
 using SanteDB.Messaging.HL7.ParameterMap;
 using SanteDB.Messaging.HL7.TransportProtocol;
+using SanteMPI.Messaging.IHE.Audit;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -24,9 +27,8 @@ namespace SanteMPI.Messaging.IHE.HL7
     [DisplayName("SanteMPI IHE PIX ITI-9 QBP Handler")]
     public class PixQbpMessageHandler : QbpMessageHandler
     {
-
         /// <summary>
-        /// Creates the negative ack 
+        /// Creates the negative ack
         /// </summary>
         /// <remarks>This overridden method allows for capturing of errors</remarks>
         protected override IMessage CreateNACK(Type nackType, IMessage request, Exception error, Hl7MessageReceivedEventArgs receiveData)
@@ -45,6 +47,14 @@ namespace SanteMPI.Messaging.IHE.HL7
                 ex = ex.InnerException;
             }
             return retVal;
+        }
+
+        /// <summary>
+        /// Send audit query
+        /// </summary>
+        protected override void SendAuditQuery(OutcomeIndicator success, IMessage message, IEnumerable<IdentifiedData> results)
+        {
+            IheAuditUtil.SendAuditPatientIdentityXref(success, message, results.OfType<Patient>().ToArray());
         }
 
         /// <summary>
@@ -67,7 +77,6 @@ namespace SanteMPI.Messaging.IHE.HL7
                 retVal.ERR.GetErrorLocation(0).ComponentNumber.Value = "1";
                 retVal.ERR.HL7ErrorCode.Identifier.Value = "204";
                 retVal.ERR.HL7ErrorCode.Text.Value = "Unknown Key Identifier";
-     
             }
 
             return retVal;

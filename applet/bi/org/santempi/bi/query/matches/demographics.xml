@@ -111,7 +111,7 @@ cte_pat_tbl as (
 		inner join pat_tbl using (ent_vrsn_id)
 		inner join sec_prov_tbl on (ent_vrsn_tbl.crt_prov_id = sec_prov_tbl.prov_id)
 		inner join sec_app_tbl using (app_id)
-		inner join cd_vrsn_tbl gender on (psn_tbl.gndr_cd_id = gender.cd_id and gender.obslt_utc is null)
+		left join cd_vrsn_tbl gender on (psn_tbl.gndr_cd_id = gender.cd_id and gender.obslt_utc is null)
 		left join cte_name_tbl using (ent_id)
 		left join cte_addr_tbl using (ent_id)
 		left join cte_id_tbl using (ent_id)
