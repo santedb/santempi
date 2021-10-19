@@ -6,6 +6,20 @@
     </sdb:widget>
 
 
-    ** PLACEHOLDER - QUERY AGAINST /hdsi/Patient/mdm-candidate SHOULD BE PERFORMED HERE **
-    <report-view id="patientMatchStatsReport" report-id="'org.santempi.bi.reports.matches.demographics'" view="'table'" parameters="{ 'class' : '4311e243-fcdf-43d0-9905-41fd231b1b51' }" />
+    <div ng-controller="MpiMatchDashboardController" class="row">
+
+        <div class="col">
+            <entity-table id="duplicatesTable" type="Patient" sub-resource="mdm-candidate" search-field="holder.name.component.value"
+                external="true" can-filter="false"  no-query-id="true"
+                default-query="{ 'relationshipType.mnemonic' : 'MDM-Duplicate', '_viewModel' : 'smpi.reverseRelationship' }" i18n-prefix="'ui.model.patient.duplicate.'"
+                render="{ 'holderModel': renderHolder, 'targetModel': renderTarget, 'strength': renderStrength }"
+                properties="[ 'holderModel@Patient', 'targetModel@Patient', 'strength' ]"
+                item-actions="[ { name: 'view', demand: '1.3.6.1.4.1.33349.3.1.5.9.2.6.2', sref: 'santedb-admin.mpi.matches.view', className: 'btn-primary', icon: 'fas fa-arrow-right' },  { name: 'ignore', demand: '1.3.6.1.4.1.33349.3.1.5.9.2.6.3', action: 'ignore', className: 'btn-danger', icon: 'fas fa-times' },  { name: 'merge', demand: '1.3.6.1.4.1.33349.3.1.5.9.2.6.3', action: 'resolve', className: 'btn-success', icon: 'fas fa-check' }  ]"
+                actions="[ { name: 'download', demand: '1.3.6.1.4.1.33349.3.1.5.9.2.6.2', href: '/bis/Report/xls.xml/org.santempi.bi.reports.matches.demographics?_download=true', className: 'btn-info', icon: 'fas fa-save' } ]"
+            >
+            </entity-table>
+        </div>
+
+    </div>
+
 </div>

@@ -10,52 +10,8 @@ angular.module('santedb').controller('MasterDataManagementController', ['$scope'
     $scope.renderEntityInfo = function(entityRelationship) {
         
         var entity = entityRelationship.holderModel;
-
-        var retVal = "";
-        if(entity.name) {
-            var key = Object.keys(entity.name)[0];
-            retVal += `<strong>${SanteDB.display.renderEntityName(entity.name[key])}</strong>`;
-        }
-
-        retVal += "<span class='badge badge-secondary'>";
-
-        var preferredDomain = $rootScope.system.config.application.setting['aa.preferred'];
-        if(entity.identifier) {
-            if(preferredDomain && entity.identifier[preferredDomain])
-                retVal += `<i class="fas fa-id-card"></i> ${SanteDB.display.renderIdentifier(entity.identifier, preferredDomain)}`;
-            else {
-                var key = Object.keys(entity.identifier)[0];
-                retVal += `<i class="far fa-id-card"></i> ${SanteDB.display.renderIdentifier(entity.identifier, key)}`;
-            }
-        }
+        return renderPatientAsString(entity);
         
-        retVal += "</span>";
-
-        if(entity.dateOfBirth)
-            retVal += `<br/><i class='fas fa-birthday-cake'></i> ${SanteDB.display.renderDate(entity.dateOfBirth, entity.dateOfBirthPrecision)} `;
-
-        // Deceased?
-        if(entity.deceasedDate)
-            retVal += `<span class='badge badge-dark'>${SanteDB.locale.getString("ui.model.patient.deceasedIndicator")}</span>`;
-
-        // Gender
-        switch(entity.genderConceptModel.mnemonic) {
-            case 'Male':
-                retVal += `<i class='fas fa-male' title="${SanteDB.display.renderConcept(entity.genderConceptModel)}"></i> ${SanteDB.display.renderConcept(entity.genderConceptModel)}`;
-                break;
-            case 'Female':
-                retVal += `<i class='fas fa-female' title="${SanteDB.display.renderConcept(entity.genderConceptModel)}"></i> ${SanteDB.display.renderConcept(entity.genderConceptModel)}`;
-                break;
-            default:
-                retVal += `<i class='fas fa-restroom' title="${SanteDB.display.renderConcept(entity.genderConceptModel)}"></i> ${SanteDB.display.renderConcept(entity.genderConceptModel)}`;
-                break;
-        }
-        
-        if($scope.scopedObject.relationship["MDM-RecordOfTruth"] &&
-            $scope.scopedObject.relationship["MDM-RecordOfTruth"][0].target == entity.id) {
-                retVal += `<span class='badge badge-success'><i class='fas fa-gavel'></i> ${SanteDB.locale.getString("ui.mdm.type.T")} </span>`
-            }
-        return retVal;
     }
   
     // Render entity information
@@ -80,6 +36,44 @@ angular.module('santedb').controller('MasterDataManagementController', ['$scope'
         }
         catch(e) {
             $rootScope.errorHandler(e);
+        }
+    }
+
+    /**
+     * Submit an "ignore" request for the specified relationship
+     */
+     $scope.ignore = async function(candidateId, m) {
+        try {
+
+            SanteDB.display.buttonWait(`#Patientignore${m}`, true);
+            var candidate = await SanteDB.resources.entityRelationship.getAsync(candidateId, "min", null, true);
+            await ignoreCandidateAsync(candidate.holder, candidate.target);
+            $("div[type=EntityRelationship] table").DataTable().ajax.reload()
+        }
+        catch(e) {
+            $rootScope.errorHandler(e);
+        }
+        finally {
+            SanteDB.display.buttonWait(`#Patientignore${m}`, false);
+        }
+    }
+
+    /**
+     * Submit a RESOLVE 
+     */
+    $scope.resolve = async function(candidateId, m) {
+        try {
+
+            SanteDB.display.buttonWait(`#Patientmerge${m}`, true);
+            var candidate = await SanteDB.resources.entityRelationship.getAsync(candidateId, "min", null, true);
+            await attachCandidateAsync(candidate.holder, candidate.target);
+            $("div[type=EntityRelationship] table").DataTable().ajax.reload()
+        }
+        catch(e) {
+            $rootScope.errorHandler(e);
+        }
+        finally {
+            SanteDB.display.buttonWait(`#Patientmerge${m}`, false);
         }
     }
 }]);

@@ -89,7 +89,8 @@ if exist "%msbuild%\msbuild.exe" (
 	cd santedb-mpi-%version%
 	copy "..\bin\Release\SanteMPI*.dll"
 	mkdir applets
-	copy "..\dist\*.pak"
+	copy "..\dist\*.pak" applets\
+	
 	xcopy /I /S "..\bin\Release\Config\*.*" ".\config"
 	cd ..
 	"C:\program files\7-zip\7z" a -r -ttar .\bin\dist\santedb-mpi-%version%.tar .\santedb-mpi-%version%
