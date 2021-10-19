@@ -5,7 +5,7 @@ services:
     image: postgres
     container_name: sdb-postgres
     ports:
-      - "5433:5432"
+      - "5432:5432"
     environment:
       POSTGRES_USER: santedb
       POSTGRES_PASSWORD: SanteDB123
