@@ -111,7 +111,7 @@ cte_pat_tbl as (
 		inner join pat_tbl using (ent_vrsn_id)
 		inner join sec_prov_tbl on (ent_vrsn_tbl.crt_prov_id = sec_prov_tbl.prov_id)
 		inner join sec_app_tbl using (app_id)
-		inner join cd_vrsn_tbl gender on (psn_tbl.gndr_cd_id = gender.cd_id and gender.obslt_utc is null)
+		left join cd_vrsn_tbl gender on (psn_tbl.gndr_cd_id = gender.cd_id and gender.obslt_utc is null)
 		left join cte_name_tbl using (ent_id)
 		left join cte_addr_tbl using (ent_id)
 		left join cte_id_tbl using (ent_id)
@@ -122,11 +122,11 @@ cte_pat_tbl as (
 ), 
 -- QUERY FOR SOURCES WHICH ARE RELATED TO A COMMON MASTER WITH A TYPE OF CANDIDATE
 possible as (
-	select 
+	select distinct
 			candidate_rel.ent_rel_id,
-	       candidate_rel.src_ent_id as local_a, 
-	       master_rel.src_ent_id as local_b,
-	       candidate_rel.conf as confidence
+	       FIRST(candidate_rel.src_ent_id) as local_a, 
+	       FIRST(master_rel.src_ent_id) as local_b,
+	       MAX(candidate_rel.conf) as confidence
 	from 
 	    -- SOURCE TO MASTER CANDIDATE
 	       ent_rel_tbl as candidate_rel
@@ -136,8 +136,12 @@ possible as (
 	       candidate_rel.rel_typ_cd_id = '56cfb115-8207-4f89-b52e-d20dbad8f8cc' -- filter for candidates
 	       and candidate_rel.obslt_vrsn_seq_id is null 
            and candidate_rel.cls_cd_id = COALESCE(${class}, candidate_rel.cls_cd_id)
+           
+    group by candidate_rel.ent_rel_id
+           
+           
 )
-select 
+select distinct
 	ent_rel_id,
 	confidence ,
 	local_a,
@@ -217,7 +221,7 @@ with cte_id_tbl as (
 	group by 
 		ent_id
 ), cte_pat_tbl as (
-	select 
+	select
 		ent_id,
 		sec_app_tbl.app_pub_id as source_app,
 		ent_vrsn_tbl.crt_utc as crt_utc,
@@ -246,8 +250,8 @@ with cte_id_tbl as (
 	group by
 		ent_id, dob, dcsd_utc, gender.mnemonic, ent_vrsn_tbl.crt_utc , app_pub_id
 ), possible as (
-	select 
-		candidate_rel.ent_rel_id,
+	select distinct
+			candidate_rel.ent_rel_id,
 	       candidate_rel.src_ent_id as local_a, 
 	       master_rel.src_ent_id as local_b,
 	       candidate_rel.conf as confidence

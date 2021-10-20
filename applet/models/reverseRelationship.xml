@@ -1,8 +1,18 @@
 
 <ViewModel xmlns="http://santedb.org/model/view">
-  <include>base</include>
+  <include>mdm</include>
   <type type="EntityRelationship" all="true">
-    <property name="targetModel" behavior="never"/>
-    <property name="relationshipTypeModel" behavior="always" all="true" ref="Concept" />
+    <property name="source" all="true"/>
+    <property name="target" all="true" behavior="always"/>
+    <property name="targetModel" all="true" ref="Patient" behavior="always"/>
+    <property name="holder" all="true"/>
+    <property name="targetModel" all="false" behavior="never"/>
+    <property name="relationshipType" all="true" behavior="always"/>
+    <property name="holderModel" behavior="always" all="true" ref="Patient"/>
+    <property name="relationshipTypeModel" behavior="always" all="true" ref="Concept"/>
+    
+    <property name="key" all="true"/>
+    <property name="quantity" all="true"/>
+    <property name="strength" all="true"/>
   </type>
-  </ViewModel>
+</ViewModel>

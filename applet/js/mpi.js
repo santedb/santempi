@@ -1,5 +1,69 @@
+/// <reference path="../.ref/js/santedb.js"/>
 
+/**
+ * @method
+ * @param {Patient} patient The patient to be rendered as a string
+ * @param {String} preferredDomain The preferred identity domain for identity rendering
+ */
+function renderPatientAsString(patient, preferredDomain) {
+    var retVal = '';
 
+    retVal += "<span class='mr-1'>";
+    if(patient.name) {
+        retVal += SanteDB.display.renderEntityName(patient.name);
+    }
+
+    retVal += "</span><span class='mr-1 badge badge-secondary'>";
+
+    if(patient.identifier) {
+        if(preferredDomain && patient.identifier[preferredDomain])
+            retVal += `<i class="fas fa-id-card"></i> ${SanteDB.display.renderIdentifier(patient.identifier, preferredDomain)}`;
+        else {
+            var key = Object.keys(patient.identifier)[0];
+            retVal += `<i class="far fa-id-card"></i> ${SanteDB.display.renderIdentifier(patient.identifier, key)}`;
+        }
+    }
+    
+    retVal += "</span><span class='mr-1'>";
+
+    if(patient.dateOfBirth)
+        retVal += `<br/><i class='fas fa-birthday-cake'></i> ${SanteDB.display.renderDate(patient.dateOfBirth, patient.dateOfBirthPrecision)} `;
+    // Deceased?
+    if(patient.deceasedDate)
+        retVal += `<span class='badge badge-dark'>${SanteDB.locale.getString("ui.model.patient.deceasedIndicator")}</span>`;
+
+    retVal += "</span><span class='mr-1'>";
+    
+    // Gender
+    if(patient.genderConceptModel) {
+        switch(patient.genderConceptModel.mnemonic) {
+            case 'Male':
+                retVal += `<i class='fas fa-male' title="${SanteDB.display.renderConcept(patient.genderConceptModel)}"></i> ${SanteDB.display.renderConcept(patient.genderConceptModel)}`;
+                break;
+            case 'Female':
+                retVal += `<i class='fas fa-female' title="${SanteDB.display.renderConcept(patient.genderConceptModel)}"></i> ${SanteDB.display.renderConcept(patient.genderConceptModel)}`;
+                break;
+            default:
+                retVal += `<i class='fas fa-restroom' title="${SanteDB.display.renderConcept(patient.genderConceptModel)}"></i> ${SanteDB.display.renderConcept(patient.genderConceptModel)}`;
+                break;
+        }
+    }
+    retVal += "</span>";
+
+   
+    if(patient.tag &&
+        patient.tag["$mdm.type"] &&
+        patient.tag["$mdm.type"][0] == "T") {
+            retVal += `<span class='badge badge-success'><i class='fas fa-gavel'></i> ${SanteDB.locale.getString("ui.mdm.type.T")} </span>`
+        }
+    return retVal;
+}
+
+/**
+ * @method
+ * @summary Registers the asset viewers
+ * @param {*} $state The context on which to register the reports
+ */
 function registerAssetsViewers($state) {
 
     // Set the view handlers
@@ -9,5 +73,55 @@ function registerAssetsViewers($state) {
             $state.transitionTo("santedb-admin.system.bug");
             return true;
         });
+    }
+}
+
+/**
+ * @method
+ * @summary Ignore a candidate link
+ * @param {string} recordA The holder record to add ignore relationship to
+ * @param {string} recordB The target record to add ignore relationship to
+ */
+async function ignoreCandidateAsync(recordA, recordB) {
+    // Confirm the action
+    if(!confirm(SanteDB.locale.getString("ui.mpi.matches.ignore.confirm")))
+        return;
+
+    // Send the MDM-ignore post
+    try {
+        // We DELETE the candidate (ignore it)
+        var ignoreResult = await SanteDB.resources.patient.removeAssociatedAsync(recordA, "mdm-candidate", recordB, true);
+        toastr.success(SanteDB.locale.getString("ui.mpi.matches.ignore.success"));
+    }
+    catch(e) {
+        toastr.error(SanteDB.locale.getString("ui.mpi.matches.ignore.error"));
+        throw e;
+    }
+}
+
+/**
+ * @method
+ * @summary Confirm/attach a candidate
+ * @param {string} recordA The record to which the candidate is to be attached
+ * @param {string} recordB The record which the candidate is being attached
+ */
+async function attachCandidateAsync(recordA, recordB) {
+
+    // Confirm the action
+    if(!confirm(SanteDB.locale.getString("ui.mpi.matches.attach.confirm")))
+        return;
+    
+    // Send the MDM attach
+    try {
+        // We POST a new link
+        var attachResult = await SanteDB.resources.patient.addAssociatedAsync(recordA, "mdm-link", {
+            "$type" : "Reference",
+            "id" : recordB
+        }, true);
+        toastr.success(SanteDB.locale.getString("ui.mpi.matches.attach.success"));
+    }
+    catch(e) {
+        toastr.error(SanteDB.locale.getString("ui.mpi.matches.attach.error"));
+        throw e;
     }
 }

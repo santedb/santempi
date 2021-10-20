@@ -1,0 +1,19 @@
+<div xmlns="http://www.w3.org/1999/xhtml" xmlns:sdb="http://santedb.org/applet" class="container-fluid" ng-controller="MasterDataManagementController">
+    <sdb:widget order="100" name="org.santedb.widget.mdm.locals" headerClass="alert-info" size="Medium"
+        type="Panel" context="org.santedb.mdm">
+        <sdb:icon>fas fa-link</sdb:icon>
+        <sdb:description lang="en">MDM Locals Widget</sdb:description>
+    </sdb:widget>
+
+
+    <entity-table 
+        stateless="true"
+        id="LocalRecordTable"
+        type="EntityRelationship"
+        search-field="name.component.value" 
+        default-query="{ 'relationshipType.mnemonic' : 'MDM-Master', target : scopedObject.id,  _viewModel: 'smpi.reverseRelationship', _noexec: scopedObject.id == undefined }"
+        render="{ recordInfo: 'renderEntityInfo', createdBy: 'renderCreatedBy' }"
+        i18n-prefix="'ui.santedb.widget.mdm.duplicates.'"
+        item-actions="[ { name: 'view', sref: '.', demand: '1.3.6.1.4.1.33349.3.1.5.9.2.6.3', className: 'btn-info', icon: 'fa fa-ellipsis-v' }, { name: 'unlink', action: 'detach', demand: '1.3.6.1.4.1.33349.3.1.5.9.2.6.1', className: 'btn-danger', icon: 'fa fa-code-branch', when: 'cell.row > 0' } ]"
+        properties="[ 'recordInfo', 'createdBy' ]"/>
+</div>

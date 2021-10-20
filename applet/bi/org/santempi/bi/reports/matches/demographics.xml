@@ -41,83 +41,73 @@
                 <tr>
                 </tr>
                 <tr>
-                    <th style="text-align:center">
+                    <th colspan="6" style="text-align:center">
                       <bi:locale>ui.mpi.matches.patient.a</bi:locale>
                     </th>
-                    <th style="text-align:center">
+                    <th colspan="6" style="text-align:center">
                       <bi:locale>ui.mpi.matches.patient.b</bi:locale>
                     </th>
-                    <th>
+                    <th rowspan="2">
                       <bi:locale>ui.mpi.matches.confidence</bi:locale>
                     </th>
-                    <th>
-                      <bi:locale>ui.mpi.matches.action</bi:locale>
-                    </th>
+                </tr>
+                <tr>
+                  <th><bi:locale>ui.model.entity.id</bi:locale></th>
+                  <th><bi:locale>ui.model.entity.name</bi:locale></th>
+                  <th><bi:locale>ui.model.entity.address</bi:locale></th>
+                  <th><bi:locale>ui.model.entity.identifier</bi:locale></th>
+                  <th><bi:locale>ui.model.patient.genderConcept</bi:locale></th>
+                  <th><bi:locale>ui.model.patient.dateOfBirth</bi:locale></th>
+                  <th><bi:locale>ui.model.entity.id</bi:locale></th>
+                  <th><bi:locale>ui.model.entity.name</bi:locale></th>
+                  <th><bi:locale>ui.model.entity.address</bi:locale></th>
+                  <th><bi:locale>ui.model.entity.identifier</bi:locale></th>
+                  <th><bi:locale>ui.model.patient.genderConcept</bi:locale></th>
+                  <th><bi:locale>ui.model.patient.dateOfBirth</bi:locale></th>
                 </tr>
             </thead>
             <tbody>
                 <bi:repeat source="demographics">
                   <tr>
-                    <td>
-                      <strong><bi:value>String.Format("{0} {1}", a_given, a_family)</bi:value></strong>
-                        <bi:repeat expression="BiUtil.CsvSplit(a_id_val)">
+                    <td><bi:value>local_a</bi:value></td>
+                    <td><bi:value>String.Format("{0} {1}", a_given, a_family)</bi:value></td>
+                    <td><bi:value>String.Format("{0} {1} {2} {3}", a_adr_line, a_adr_city, a_adr_state, a_adr_country)</bi:value></td>
+                    <td><bi:repeat expression="BiUtil.CsvSplit(a_id_val)">
                           <span class="badge badge-secondary">
-                              <bi:value>.</bi:value>
+                              <bi:value>.</bi:value>,
                           </span>
-                        </bi:repeat>
-                      <br/>
-                      <bi:switch value="a_dob">
+                        </bi:repeat></td>
+                    <td> <bi:switch value="a_gender">
+                        <bi:when op="eq" value="Male"><i class="fas fa-male"></i></bi:when>
+                        <bi:when op="eq" value="Female"><i class="fas fa-female"></i></bi:when>
+                        <bi:default><i class="fas fa-question-circle"></i></bi:default>
+                      </bi:switch>
+                      <bi:value>a_gender</bi:value></td>
+                    <td> <bi:switch value="a_dob">
                         <bi:when op="ne" value="null">
                           <i class="fas fa-birthday-cake"></i> <bi:value format="yyyy-MM-dd">a_dob</bi:value> 
                         </bi:when>
-                      </bi:switch>
-                      <bi:switch value="a_gender">
+                      </bi:switch></td>
+                   <td><bi:value>local_b</bi:value></td>
+                    <td><bi:value>String.Format("{0} {1}", b_given, b_family)</bi:value></td>
+                    <td><bi:value>String.Format("{0} {1} {2} {3}", b_adr_line, b_adr_city, b_adr_state, b_adr_country)</bi:value></td>
+                    <td><bi:repeat expression="BiUtil.CsvSplit(b_id_val)">
+                          <span class="badge badge-secondary">
+                              <bi:value>.</bi:value>,
+                          </span>
+                        </bi:repeat></td>
+                    <td> <bi:switch value="b_gender">
                         <bi:when op="eq" value="Male"><i class="fas fa-male"></i></bi:when>
                         <bi:when op="eq" value="Female"><i class="fas fa-female"></i></bi:when>
                         <bi:default><i class="fas fa-question-circle"></i></bi:default>
                       </bi:switch>
-                      <bi:value>a_gender</bi:value>
-                    </td>
-                    <td>
-                    <strong><bi:value>String.Format("{0} {1}", b_given, b_family)</bi:value></strong>
-                        <bi:repeat expression="BiUtil.CsvSplit(b_id_val)">
-                          <span class="badge badge-secondary">
-                              <bi:value>.</bi:value>
-                          </span>
-                        </bi:repeat>
-                      <br/>
-                      <bi:switch value="b_dob">
+                      <bi:value>b_gender</bi:value></td>
+                    <td> <bi:switch value="a_dob">
                         <bi:when op="ne" value="null">
                           <i class="fas fa-birthday-cake"></i> <bi:value format="yyyy-MM-dd">b_dob</bi:value> 
                         </bi:when>
-                      </bi:switch>
-                      <bi:switch value="b_gender">
-                        <bi:when op="eq" value="Male"><i class="fas fa-male"></i></bi:when>
-                        <bi:when op="eq" value="Female"><i class="fas fa-female"></i></bi:when>
-                        <bi:default><i class="fas fa-question-circle"></i></bi:default>
-                      </bi:switch>
-                      <bi:value>b_gender</bi:value>
-                    </td>
-                    <td><bi:value format="0%">confidence</bi:value></td>
-                    <td>
-                      <div class="btn-group">
-                        <a class="btn btn-primary">
-                          <bi:attribute name="ui-sref">String.Format("santedb-admin.mpi.matches.view({{ candidateId: '{0}' }})", ent_rel_id)</bi:attribute>
-                          <i class="fas fa-eye"></i><i class="fas fa-sw"></i> <bi:locale>ui.action.view</bi:locale>
-                        </a>
-                        <button class="btn btn-danger">
-                          <bi:attribute name="ng-click">String.Format("ignore('{0}')", ent_rel_id)</bi:attribute>
-                          <bi:attribute name="id">String.Format("ignore_{0}", ent_rel_id)</bi:attribute>
-                          <i class="fas fa-times fa-sw"></i><i class="fas fa-sw"></i> <bi:locale>ui.action.ignore</bi:locale>
-                        </button>
-                        <button class="btn btn-success">
-                          <bi:attribute name="ng-click">String.Format("resolve('{0}')", ent_rel_id)</bi:attribute>
-                          <bi:attribute name="id">String.Format("merge_{0}", ent_rel_id)</bi:attribute>
-                          <i class="fas fa-check fa-sw"></i><i class="fas fa-sw"></i> <bi:locale>ui.action.merge</bi:locale>
-                        </button>
-                      </div>
-                    </td>
-
+                      </bi:switch></td>
+                    <td><bi:value format="#0%">confidence</bi:value></td>
                   </tr>
                 </bi:repeat>
             </tbody>

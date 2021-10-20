@@ -44,30 +44,29 @@ namespace SanteMPI.Messaging.IHE.FHIR
         public Uri ProfileUri => new Uri(URI);
 
         /// <summary>
-        /// Applies to 
+        /// Applies to
         /// </summary>
         public ResourceType? AppliesTo => ResourceType.Patient;
 
         /// <summary>
         /// Construct the extension value
         /// </summary>
-        public Extension Construct(IIdentifiedEntity modelObject)
+        public IEnumerable<Extension> Construct(IIdentifiedEntity modelObject)
         {
-            if(modelObject is SanteDB.Core.Model.Roles.Patient patient)
+            if (modelObject is SanteDB.Core.Model.Roles.Patient patient)
             {
-                var mother = patient.LoadCollection(o => o.Relationships).Where(o => o.RelationshipTypeKey == EntityRelationshipTypeKeys.Mother).FirstOrDefault().LoadProperty(o=>o.TargetEntity);
+                var mother = patient.LoadCollection(o => o.Relationships).Where(o => o.RelationshipTypeKey == EntityRelationshipTypeKeys.Mother).FirstOrDefault().LoadProperty(o => o.TargetEntity);
                 mother = mother.GetMaster();
 
                 if (mother != null)
                 {
                     var maidenName = mother.LoadCollection(o => o.Names).FirstOrDefault(o => o.NameUseKey == NameUseKeys.MaidenName);
-                    if(maidenName != null)
+                    if (maidenName != null)
                     {
-                        return new Extension(this.Uri.ToString(), new FhirString(maidenName.ToDisplay()));
+                        yield return new Extension(this.Uri.ToString(), new FhirString(maidenName.ToDisplay()));
                     }
                 }
             }
-            return null;
         }
 
         /// <summary>

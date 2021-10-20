@@ -44,7 +44,7 @@
             <column name="rel_type">rel_type</column>
           </grouping>
           <select>
-            <column name="n" fn="count">ent_rel_id</column>
+            <column name="n" fn="count-distinct">ent_rel_id</column>
           </select>
         </add>
       </aggregations>
@@ -56,7 +56,7 @@
         <!-- Shows line chart with each audit event type -->
         <bi:chart source="by-type" type="pie" legend="true">
           <bi:title>Match Classifications</bi:title>
-          <bi:labels >(rel_type == "MDM-Master" ? "Match" : rel_type == "MDM-Ignore" ? "Non-Match" : "Probable Match") + " (" + (class_code == "MDM-Verified" ? "Verified" : "Auto") + ")"</bi:labels>
+          <bi:labels >(rel_type == "MDM-Master" ? "Match" : rel_type == "MDM-IgnoreCandidateLocalRecord" ? "Non-Match" : "Probable Match") + " (" + (class_code == "MDM-Verified" ? "Verified" : "Auto") + ")"</bi:labels>
           <bi:dataset label="# Links" fn="sum">n</bi:dataset>
         </bi:chart>
       </div>

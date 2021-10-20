@@ -1,9 +1,14 @@
 ﻿using NHapi.Base.Model;
 using NHapi.Model.V25.Segment;
+using SanteDB.Core.Auditing;
+using SanteDB.Core.Model;
 using SanteDB.Core.Model.Collection;
+using SanteDB.Core.Model.Roles;
+using SanteDB.Core.Services;
 using SanteDB.Messaging.HL7.Exceptions;
 using SanteDB.Messaging.HL7.Messages;
 using SanteDB.Messaging.HL7.TransportProtocol;
+using SanteMPI.Messaging.IHE.Audit;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -19,9 +24,32 @@ namespace SanteMPI.Messaging.IHE.HL7
     [DisplayName("SanteMPI IHE PIX ADT Message Handler")]
     public class PixAdtMessageHandler : AdtMessageHandler
     {
+        /// <summary>
+        /// Send an audit for admit
+        /// </summary>
+        protected override void SendAuditAdmit(OutcomeIndicator success, IMessage message, IEnumerable<IdentifiedData> enumerable)
+        {
+            IheAuditUtil.SendAuditPatientIdentityFeed(success, ActionType.Create, message, enumerable.OfType<Patient>().First());
+        }
 
         /// <summary>
-        /// Creates the negative ack 
+        /// Send an update audit
+        /// </summary>
+        protected override void SendAuditUpdate(OutcomeIndicator outcome, IMessage message, IEnumerable<IdentifiedData> results)
+        {
+            IheAuditUtil.SendAuditPatientIdentityFeed(outcome, ActionType.Update, message, results.OfType<Patient>().First());
+        }
+
+        /// <summary>
+        /// Send an audit notification for merge
+        /// </summary>
+        protected override void SendAuditMerge(OutcomeIndicator outcome, IMessage message, RecordMergeResult recordMergeResult)
+        {
+            IheAuditUtil.SendAuditPatientIdentityFeedMerge(outcome, message, recordMergeResult);
+        }
+
+        /// <summary>
+        /// Creates the negative ack
         /// </summary>
         /// <remarks>This overridden method allows for capturing of errors</remarks>
         protected override IMessage CreateNACK(Type nackType, IMessage request, Exception error, Hl7MessageReceivedEventArgs receiveData)

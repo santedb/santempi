@@ -49,7 +49,7 @@ namespace SanteMPI.Messaging.IHE.Test
             TestApplicationContext.Initialize(TestContext.CurrentContext.TestDirectory);
             this.m_serviceManager = ApplicationServiceContext.Current.GetService<IServiceManager>();
             this.m_applicationIdentityProviderService = ApplicationServiceContext.Current.GetService<IApplicationIdentityProviderService>();
-            
+
             
             var testConfiguration = new SanteDB.Messaging.FHIR.Configuration.FhirServiceConfigurationSection()
             {

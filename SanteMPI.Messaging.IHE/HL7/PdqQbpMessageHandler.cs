@@ -1,7 +1,11 @@
 ﻿using NHapi.Base.Model;
 using NHapi.Model.V25.Message;
+using SanteDB.Core.Auditing;
+using SanteDB.Core.Model;
+using SanteDB.Core.Model.Roles;
 using SanteDB.Messaging.HL7.Messages;
 using SanteDB.Messaging.HL7.TransportProtocol;
+using SanteMPI.Messaging.IHE.Audit;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,7 +21,6 @@ namespace SanteMPI.Messaging.IHE.HL7
     [DisplayName("SanteMPI PDQ Message Handler")]
     public class PdqQbpMessageHandler : QbpMessageHandler
     {
-
         /// <summary>
         /// Create NACK per the IHE spec
         /// </summary>
@@ -29,5 +32,12 @@ namespace SanteMPI.Messaging.IHE.HL7
             return retVal;
         }
 
+        /// <summary>
+        /// Send audit query
+        /// </summary>
+        protected override void SendAuditQuery(OutcomeIndicator success, IMessage message, IEnumerable<IdentifiedData> results)
+        {
+            IheAuditUtil.SendAuditPatientDemographicsQuery(success, message, results.OfType<Patient>().ToArray());
+        }
     }
 }
