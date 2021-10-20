@@ -10,7 +10,7 @@
 
         <div class="col">
             <entity-table id="duplicatesTable" type="Patient" sub-resource="mdm-candidate" search-field="holder.name.component.value"
-                external="true" can-filter="false"  no-query-id="true"
+                external="true" can-filter="false"  stateless="true"
                 default-query="{ 'relationshipType.mnemonic' : 'MDM-Duplicate', '_viewModel' : 'smpi.reverseRelationship' }" i18n-prefix="'ui.model.patient.duplicate.'"
                 render="{ 'holderModel': renderHolder, 'targetModel': renderTarget, 'strength': renderStrength }"
                 properties="[ 'holderModel@Patient', 'targetModel@Patient', 'strength' ]"
