@@ -1,0 +1,7 @@
+<div xmlns="http://www.w3.org/1999/xhtml" xmlns:sdb="http://santedb.org/applet">
+    <sdb:widget name="ui.mpi.widgets.dashboard.activity" headerClass="alert-info"  type="Panel" size="Small" maxStack="1" order="100" context="org.santedb.admin.dashboard">
+        <sdb:icon>fas fa-shield-alt</sdb:icon>
+        <sdb:description>Recent Activity</sdb:description>
+     </sdb:widget>
+    <report-view report-id="'org.santedb.bi.core.reports.audit.dateEvent'" parameters="scopedObject.yesterday" view="'by_hour'" ></report-view>
+</div>

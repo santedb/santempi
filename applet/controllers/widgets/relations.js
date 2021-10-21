@@ -38,7 +38,9 @@ angular.module('santedb').controller('EntityRelationshipDiagramController', ["$s
     // Render a relationship
     async function renderRelationship(entity, entityRelationship, fallbackRelationship, reverse) {
         try {
-            if(entityRelationship.source && entityRelationship.source != entity.id && entityRelationship.target == entity.id)
+            if(!entityRelationship)
+                return;
+            if(entityRelationship && entityRelationship.source && entityRelationship.source != entity.id && entityRelationship.target == entity.id)
                 reverse = true;
             var entity = entityRelationship.targetModel;
 
@@ -113,7 +115,7 @@ angular.module('santedb').controller('EntityRelationshipDiagramController', ["$s
                     results.filter((r)=>graphDefinition.indexOf(r) == -1).forEach((r)=>graphDefinition += r);
                 }
 
-                mermaid.mermaidAPI.render('entityNetworkDiagram', graphDefinition, (svg)=> $("#renderSvg").html(svg));
+                mermaid.mermaidAPI.render(`entityNetworkDiagram${n.sequence}`, graphDefinition, (svg)=> $(`#renderSvg${n.sequence}`).html(svg));
                 relationshipDrawn = true;
             }
             catch (e) {

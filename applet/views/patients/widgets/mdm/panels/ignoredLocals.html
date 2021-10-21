@@ -1,0 +1,20 @@
+<div xmlns="http://www.w3.org/1999/xhtml" xmlns:sdb="http://santedb.org/applet"
+    ng-controller="MasterDataManagementController">
+    <sdb:widget order="210" name="org.santedb.widget.mdm.ignored" headerClass="alert-warning" size="Medium" type="Panel"
+        context="org.santedb.mdm">
+        <sdb:icon>fas fa-ban</sdb:icon>
+        <sdb:description lang="en">MDM Ignored Locals</sdb:description>
+    </sdb:widget>
+
+
+    <entity-table stateless="true" id="IgnoreEntityTable" type="Patient" sub-resource="mdm-ignore" sub-resource-holder="scopedObject.id" 
+        search-field="name.component.value"
+        external="true" can-filter="false"
+        default-query="{  _viewModel: 'smpi.reverseRelationship', _noexec: scopedObject.id == undefined }"
+        render="{ recordInfo: 'renderEntityInfo', createdBy: 'renderCreatedBy' }"
+        i18n-prefix="'ui.santedb.widget.mdm.duplicates.'"
+        item-actions="[ { name: 'detail', hint: 'detail', action: 'matchDetail', demand: '1.3.6.1.4.1.33349.3.1.5.9.2.6.3', className: 'btn-info', icon: 'fa fa-ellipsis-v' },  { name: 'unignore', hint: 'unignore', action: 'unIgnore', demand: '1.3.6.1.4.1.33349.3.1.5.9.2.6.1', className: 'btn-warning', icon: 'fa fa-dot-circle' } ]"
+        properties="[ 'recordInfo', 'createdBy' ]" />
+
+
+</div>

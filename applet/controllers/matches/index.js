@@ -3,12 +3,12 @@ angular.module('santedb').controller('MpiMatchDashboardController', ["$scope", "
 
     // Render holder patient
     $scope.renderHolder = function(rowData) {
-        return renderPatientAsString(rowData.holderModel); // in mpi.js
+        return renderPatientAsString(rowData.holderModel, $rootScope.system.config.application.setting['aa.preferred']); // in mpi.js
     }
 
     // Render target patient
     $scope.renderTarget = function(rowData) {
-        return renderPatientAsString(rowData.targetModel); // in mpi.js
+        return renderPatientAsString(rowData.targetModel, $rootScope.system.config.application.setting['aa.preferred']); // in mpi.js
     }
 
     // Render strength column
@@ -41,7 +41,7 @@ angular.module('santedb').controller('MpiMatchDashboardController', ["$scope", "
     $scope.resolve = async function(candidateId, m) {
         try {
 
-            SanteDB.display.buttonWait(`#Patientmerge${m}`, true);
+            SanteDB.display.buttonWait(`#Patientesolve${m}`, true);
             var candidate = await SanteDB.resources.entityRelationship.getAsync(candidateId, "min", null, true);
             await attachCandidateAsync(candidate.holder, candidate.target);
             $("#duplicatesTable table").DataTable().ajax.reload();
@@ -50,7 +50,7 @@ angular.module('santedb').controller('MpiMatchDashboardController', ["$scope", "
             $rootScope.errorHandler(e);
         }
         finally {
-            SanteDB.display.buttonWait(`#Patientmerge${m}`, false);
+            SanteDB.display.buttonWait(`#Patientesolve${m}`, false);
         }
     }
 

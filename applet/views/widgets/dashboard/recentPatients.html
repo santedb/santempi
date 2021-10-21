@@ -1,0 +1,20 @@
+<div xmlns="http://www.w3.org/1999/xhtml" xmlns:sdb="http://santedb.org/applet" class="container-fluid"
+oc-lazy-load="{ name: 'MpiCommonWidgetController', files: ['/org.santedb.smpi/controllers/widgets/mpiCommonWidgets.js'] }">
+    <sdb:widget name="ui.mpi.widgets.dashboard.recent" headerClass="alert-success"  type="Panel" size="Medium" order="10" context="org.santedb.admin.dashboard">
+        <sdb:icon>fas fa-users</sdb:icon>
+        <sdb:description>Myanmar National MPI - Recent Patients</sdb:description>
+    </sdb:widget>
+
+    <div class="row" ng-controller="MpiCommonWidgetController"> 
+        <div class="col">
+            <entity-table width="100%" id="recentPatientTable" type="Patient" search-field="name.component.value"
+                default-query="{ 'modifiedOn' : ':(age)&lt;24h', 'statusConcept.mnemonic' : ['ACTIVE','NEW'] }" i18n-prefix="'ui.model.patient.'"
+                render="{ 'demographics': 'renderDemographics' }"
+                properties="[ 'demographics' ]"
+                item-actions="[ { name: 'view', demand: '1.3.6.1.4.1.33349.3.1.5.9.2.2.3', sref: 'santedb-admin.mpi.patients.view', className: 'btn-primary', icon: 'fas fa-arrow-right' } ]"
+                actions="[ { name: 'mpiSearch', demand: '1.3.6.1.4.1.33349.3.1.5.9.2.2.3', sref: 'santedb-admin.mpi.patients.search', className: 'btn-primary', icon: 'fa fa-search-plus' }]">
+            </entity-table>
+        </div>
+    </div>
+    
+</div>

@@ -61,23 +61,6 @@ function renderPatientAsString(patient, preferredDomain) {
 
 /**
  * @method
- * @summary Registers the asset viewers
- * @param {*} $state The context on which to register the reports
- */
-function registerAssetsViewers($state) {
-
-    // Set the view handlers
-    if(!SanteDB.application.getResourceViewer("Patient")) {
-        SanteDB.application.addResourceViewer("Patient", function (parms) { $state.transitionTo("santedb-admin.mpi.patients.view", parms); return true; });
-        SanteDB.application.addResourceViewer("DiagnosticReport", function (parms) {
-            $state.transitionTo("santedb-admin.system.bug");
-            return true;
-        });
-    }
-}
-
-/**
- * @method
  * @summary Ignore a candidate link
  * @param {string} recordA The holder record to add ignore relationship to
  * @param {string} recordB The target record to add ignore relationship to
@@ -95,6 +78,30 @@ async function ignoreCandidateAsync(recordA, recordB) {
     }
     catch(e) {
         toastr.error(SanteDB.locale.getString("ui.mpi.matches.ignore.error"));
+        throw e;
+    }
+}
+
+
+/**
+ * @method
+ * @summary Remove an ignore a candidate link
+ * @param {string} recordA The holder from which the ignore relationship is to be removed
+ * @param {string} recordB The target which the ignore should be removed
+ */
+ async function unIgnoreCandidateAsync(recordA, recordB) {
+    // Confirm the action
+    if(!confirm(SanteDB.locale.getString("ui.mpi.matches.unignore.confirm")))
+        return;
+
+    // Send the MDM-ignore post
+    try {
+        // We DELETE the candidate (ignore it)
+        var ignoreResult = await SanteDB.resources.patient.removeAssociatedAsync(recordA, "mdm-ignore", recordB, true);
+        toastr.success(SanteDB.locale.getString("ui.mpi.matches.unignore.success"));
+    }
+    catch(e) {
+        toastr.error(SanteDB.locale.getString("ui.mpi.matches.unignore.error"));
         throw e;
     }
 }
@@ -124,4 +131,38 @@ async function attachCandidateAsync(recordA, recordB) {
         toastr.error(SanteDB.locale.getString("ui.mpi.matches.attach.error"));
         throw e;
     }
+}
+
+/**
+ * @method
+ * @summary Detach a local 
+ * @param {string} recordA The master from which the candidate is to be detached
+ * @param {string} recordB The record which is to be detached
+ */
+ async function detachLocalAsync(recordA, recordB) {
+
+    // Confirm the action
+    if(!confirm(SanteDB.locale.getString("ui.mpi.matches.detach.confirm")))
+        return;
+    
+    // Send the MDM attach
+    try {
+        // We POST a new link
+        var attachResult = await SanteDB.resources.patient.removeAssociatedAsync(recordA, "mdm-link", recordB, true);
+        toastr.success(SanteDB.locale.getString("ui.mpi.matches.detach.success"));
+    }
+    catch(e) {
+        toastr.error(SanteDB.locale.getString("ui.mpi.matches.detach.error"));
+        throw e;
+    }
+}
+
+
+// Set the view handlers
+if(!SanteDB.application.getResourceViewer("Patient")) {
+    SanteDB.application.addResourceViewer("Patient", function(state, parms) { state.transitionTo("santedb-admin.mpi.patients.view", parms); return true; });
+    SanteDB.application.addResourceViewer("DiagnosticReport", function (state, parms) {
+        state.transitionTo("santedb-admin.system.bug");
+        return true;
+    });
 }

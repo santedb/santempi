@@ -1,40 +1,41 @@
 /// <reference path="../../.ref/js/santedb.js"/>
-angular.module('santedb').controller('MasterDataManagementController', ['$scope', '$rootScope',  '$timeout', function ($scope, $rootScope, $timeout) {
-    
+angular.module('santedb').controller('MasterDataManagementController', ['$scope', '$rootScope', '$timeout', function ($scope, $rootScope, $timeout) {
+
     // Strength
-    $scope.renderStrength = function(entityRelationship) {
-        return `${Math.round(entityRelationship.strength * 100)}%`;
+    $scope.renderStrength = function (entity) {
+        return entity.tag["$match.score"] ? entity.tag["$match.score"][0] : "?";
     }
 
     // Render entity information
-    $scope.renderEntityInfo = function(entityRelationship) {
-        
-        var entity = entityRelationship.holderModel;
-        return renderPatientAsString(entity);
-        
+    $scope.renderEntityInfo = function (entity) {
+
+        return renderPatientAsString(entity, $rootScope.system.config.application.setting['aa.preferred']);
+
     }
-  
+
     // Render entity information
-    $scope.renderCreatedBy = function(entityRelationship) {
-        var entity = entityRelationship.holderModel;
+    $scope.renderCreatedBy = function (entity) {
         return `<provenance provenance-id="'${entity.createdBy}'"  provenance-time="'${entity.creationTime}'"></provenance>`;
     }
 
     // Show match detail
-    $scope.matchDetail = async function(id) { 
+    $scope.matchDetail = async function (id) {
         try {
-            $("#candidateDetailModal").modal('show');
-            delete($scope.candidateObject);
-            var candidate = await SanteDB.resources.entityRelationship.getAsync(id, "smpi.reverseRelationship");
-            candidate.holderModel = candidate.holderModel || await SanteDB.resources.patient.getAsync(candidate.holder, "mdm");
-            var matchReport = await SanteDB.resources.patient.getAssociatedAsync($scope.scopedObject.id, "mdm-candidate", candidate.holder, { _upstream: true});
-            candidate.results = matchReport.results;
-            $timeout(_ =>  {
-                $scope.candidateObject = candidate;
+            $timeout(() => {
+                delete($scope.scopedObject.candidateObject);
+                $("#candidateDetailModal").modal('show');
+            });
+            delete ($scope.candidateObject);
+            var matchReport = await SanteDB.resources.patient.getAssociatedAsync($scope.scopedObject.id, "mdm-candidate", id, { _upstream: true });
+
+            $timeout(_ => {
+                $scope.scopedObject.candidateObject = {
+                    results: matchReport.results
+                };
             });
 
         }
-        catch(e) {
+        catch (e) {
             $rootScope.errorHandler(e);
         }
     }
@@ -42,15 +43,32 @@ angular.module('santedb').controller('MasterDataManagementController', ['$scope'
     /**
      * Submit an "ignore" request for the specified relationship
      */
-     $scope.ignore = async function(candidateId, m) {
+    $scope.ignore = async function (id, m) {
         try {
 
             SanteDB.display.buttonWait(`#Patientignore${m}`, true);
-            var candidate = await SanteDB.resources.entityRelationship.getAsync(candidateId, "min", null, true);
-            await ignoreCandidateAsync(candidate.holder, candidate.target);
-            $("div[type=EntityRelationship] table").DataTable().ajax.reload()
+            await ignoreCandidateAsync(id, $scope.scopedObject.id);
+            $("div[type=Patient] table").DataTable().ajax.reload()
         }
-        catch(e) {
+        catch (e) {
+            $rootScope.errorHandler(e);
+        }
+        finally {
+            SanteDB.display.buttonWait(`#Patientignore${m}`, false);
+        }
+    }
+
+    /**
+     * Submit an "un-ignore" request for the specified relationship
+     */
+     $scope.ignore = async function (id, m) {
+        try {
+
+            SanteDB.display.buttonWait(`#Patientignore${m}`, true);
+            await ignoreCandidateAsync(id, $scope.scopedObject.id);
+            $("div[type=Patient] table").DataTable().ajax.reload()
+        }
+        catch (e) {
             $rootScope.errorHandler(e);
         }
         finally {
@@ -61,19 +79,78 @@ angular.module('santedb').controller('MasterDataManagementController', ['$scope'
     /**
      * Submit a RESOLVE 
      */
-    $scope.resolve = async function(candidateId, m) {
+    $scope.resolve = async function (id, m) {
         try {
 
-            SanteDB.display.buttonWait(`#Patientmerge${m}`, true);
-            var candidate = await SanteDB.resources.entityRelationship.getAsync(candidateId, "min", null, true);
-            await attachCandidateAsync(candidate.holder, candidate.target);
-            $("div[type=EntityRelationship] table").DataTable().ajax.reload()
+            SanteDB.display.buttonWait(`#Patientresolve${m}`, true);
+            await attachCandidateAsync($scope.scopedObject.id, id);
+            $("div[type=Patient] table").DataTable().ajax.reload()
         }
-        catch(e) {
+        catch (e) {
             $rootScope.errorHandler(e);
         }
         finally {
-            SanteDB.display.buttonWait(`#Patientmerge${m}`, false);
+            SanteDB.display.buttonWait(`#Patientesolve${m}`, false);
+        }
+    }
+
+    /**
+     * Detatch the record
+     */
+    $scope.detach = async function (id, m) {
+        try {
+
+            SanteDB.display.buttonWait(`#Patientunlink${m}`, true);
+            await detachLocalAsync($scope.scopedObject.id, id);
+            $("div[type=Patient] table").DataTable().ajax.reload()
+        }
+        catch (e) {
+            $rootScope.errorHandler(e);
+        }
+        finally {
+            SanteDB.display.buttonWait(`#Patientunlink${m}`, false);
+        }
+    }
+
+    /**
+     * Re-match a record
+     */
+    $scope.rematch = async function () {
+        try {
+            SanteDB.display.buttonWait('#Patientrematch', true);
+
+            if (!confirm(SanteDB.locale.getString("ui.mpi.matches.rematch.confirm"))) {
+                return;
+            }
+
+            var result = await SanteDB.resources.patient.invokeOperationAsync($scope.scopedObject.id, "mdm-rematch", { clear: true }, true);
+
+            $("div[type=Patient] table").DataTable().ajax.reload()
+
+        }
+        catch (e) {
+            $rootScope.errorHandler(e);
+        }
+        finally {
+            SanteDB.display.buttonWait('#Patientrematch', false);
+        }
+    }
+
+    /**
+     * Submit an "un-ignore" request for the specified relationship
+     */
+     $scope.unIgnore = async function (id, m) {
+        try {
+
+            SanteDB.display.buttonWait(`#Patientunignore${m}`, true);
+            await unIgnoreCandidateAsync(id, $scope.scopedObject.id);
+            $("div[type=Patient] table").DataTable().ajax.reload()
+        }
+        catch (e) {
+            $rootScope.errorHandler(e);
+        }
+        finally {
+            SanteDB.display.buttonWait(`#Patientunignore${m}`, false);
         }
     }
 }]);

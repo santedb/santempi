@@ -21,7 +21,6 @@
  */
 angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$rootScope", "$state", "$templateCache", "$stateParams", function ($scope, $rootScope, $state, $templateCache, $stateParams) {
 
-    registerAssetsViewers($state);
     // Get datatype of the parameter
     function setMetadata(parameter) {
         switch (parameter.parm) {

@@ -21,7 +21,6 @@
  */
 angular.module('santedb').controller('MpiPatientViewController', ["$scope", "$rootScope", "$state", "$templateCache", "$stateParams", function ($scope, $rootScope, $state, $templateCache, $stateParams) {
 
-    registerAssetsViewers($state);
 
     // Loads the specified patient
     async function loadPatient(id) {
