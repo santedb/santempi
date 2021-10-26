@@ -111,7 +111,7 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
                 retVal += '<i class="fas fa-question-circle"></i> ';
         }
 
-        if (patient.genderConceptModel.mnemonic) {
+        if (patient.genderConceptModel && patient.genderConceptModel.mnemonic) {
             retVal += SanteDB.display.renderConcept(patient.genderConceptModel);
         }
         return retVal;
