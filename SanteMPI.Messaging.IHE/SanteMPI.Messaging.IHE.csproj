@@ -10,9 +10,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SanteDB.Messaging.FHIR" Version="2.1.91" />
-    <PackageReference Include="SanteDB.Messaging.HL7" Version="2.1.91" />
-    <PackageReference Include="SanteDB.Persistence.MDM" Version="2.1.91" />
+    <PackageReference Include="SanteDB.Messaging.FHIR" Version="2.1.100" />
+    <PackageReference Include="SanteDB.Messaging.HL7" Version="2.1.100" />
+    <PackageReference Include="SanteDB.Persistence.MDM" Version="2.1.100" />
   </ItemGroup>
 
   <ItemGroup>

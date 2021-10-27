@@ -26,7 +26,7 @@
 
   <menuItem context="org.santedb.admin" launch="santedb-admin.mpi.index" asset="/org.santedb.smpi/views/index.html">
     <icon>fas fa-street-view</icon>
-    <text lang="en">MPI</text>
+    <text lang="en">SanteMPI</text>
     <menuItem context="org.santedb.admin" launch="santedb-admin.mpi.matches.index" asset="/org.santedb.smpi/views/matches/index.html">
       <icon>fas fa-clone</icon>
       <text lang="en">Matches</text>
@@ -39,6 +39,10 @@
       <icon>fas fa-search-plus</icon>
       <text lang="en">Advanced Search</text>
     </menuItem>
+    <menuItem context="org.santedb.admin" launch="santedb-admin.mpi.config.index" asset="/org.santedb.smpi/views/config/index.html">
+        <icon>fas fa-users-cog</icon>
+        <text lang="en">Match Settings</text>
+      </menuItem>
   </menuItem>
 
   <viewModel key="smpi.reverseRelationship">

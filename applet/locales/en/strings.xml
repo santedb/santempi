@@ -26,6 +26,9 @@
     <string name="ui.mpi.patient.advSearch.parameters.facility">Facility Association</string>
     <string name="ui.mpi.patient.search.term">Search For</string>
     <string name="ui.mpi.patient.search.results">Search Results</string>
+    <string name="ui.action.rematch">Re-Match</string>
+    <string name="ui.action.unignore">Un-Ignore</string>
+
     <!-- Patient Demographics Tab Options -->
     <string name="org.santedb.smpi.admin.demographics">Demographics</string>
     <!-- Operators -->
@@ -54,6 +57,8 @@
 
     <!-- Summary View -->
     <string name="ui.mpi.matches.detail">Match Detail</string>
+    <string name="ui.mpi.matches.view.detail">A/B Compare</string>
+
     <string name="ui.mpi.matches.view.summary">Matched Entities</string>
     <string name="ui.mpi.matches.view.diff">A/B Comparison</string>
     <string name="ui.mpi.matches.view.score">Scoring</string>
@@ -120,8 +125,21 @@
 
     <!-- Actions for Merging -->
     <string name="ui.mpi.matches.ignore.confirm">Are you sure you want to ignore this candidate? It will never be considered as a merge candidate again</string>
-    <string name="ui.mpi.matches.match.confirm">Are you sure you want to confirm this match candidate? It will be assigned to the same MASTER record</string>
+    <string name="ui.mpi.matches.ignore.success">Ignore instruction committed successfully</string>
+    <string name="ui.mpi.matches.ignore.error">There was an error issuing the ignore request. Check the server logs.</string>
+
+    <string name="ui.mpi.matches.unignore.confirm">Are you sure you want to un-ignore this candidiate? If you do this the candidiate will be considered for matching.</string>
+    <string name="ui.mpi.matches.unignore.success">Un-ignore completed successfully</string>
+    <string name="ui.mpi.matches.unignore.error">There was an error performing the un-ignore. Check the server ogs.</string>
+
+    <string name="ui.mpi.matches.attach.confirm">Are you sure you want to confirm this match candidate? It will be assigned to the same MASTER record</string>
+    <string name="ui.mpi.matches.attach.success">Candidate was attached to target master successfully.</string>
+    <string name="ui.mpi.matches.attach.error">There was an error issuing the attach request. Check the server logs.</string>
     <string name="ui.mpi.matches.alreadyResolved">This detected match has already been resolved</string>
+    <string name="ui.mpi.matches.detach.confirm">Are you sure you want to unlink/detach this local record from this master?</string>
+    <string name="ui.mpi.matches.detach.success">Detach of local record successful</string>
+    <string name="ui.mpi.matches.detach.error">There was an error issuing the unlink request. Check the server logs</string>
+    <string name="ui.mpi.matches.rematch.confirm">The server will clear all candidiates for this record and will initiate a re-match. Continue?</string>
     <!-- Score View -->
     <string name="ui.mpi.match.configuration">Configuration</string>
     <string name="ui.mpi.match.method.0">Other/Unknown</string>
@@ -145,4 +163,21 @@
     <string name="ui.mpi.match.vector.evaluated.yes">This attribute was evaluated - the score is an actual evaluation of A and B</string>
     <string name="ui.mpi.match.vector.evaluated.no">This attribute was not evaluated - the score represents the whenNull configuration option</string>
     <string name="ui.mpi.matches.configurationDisagreement">The score indicates these two records meet the criteria to be considered a MATCH however the configuration of the server has prevented automatic linking. Therefore this record must manually be resolved. Contact your system administrator to change the settings of the server to prevent this</string>
+    <string name="ui.model.patient.duplicate.holderModel@Patient">Patient A</string>
+    <string name="ui.model.patient.duplicate.targetModel@Patient">Patient B</string>
+    <string name="ui.model.patient.duplicate.strength">Confidence</string>
+    <string name="ui.mdm.candidate.master">MASTER Record</string>
+    <string name="ui.mdm.candidate.local">Candidate Record</string>
+    <string name="ui.mpi.match.detail.title">Candidate Match Report</string>
+
+    <!-- Dashboard -->
+    <string name="ui.mpi.widgets.dashboard.search">Quick Search</string>
+    <string name="ui.mpi.widgets.dashboard.search.term">Search (ID)</string>
+    <string name="ui.mpi.widgets.dashboard.recent">Recent Patients</string>
+    <string name="ui.mpi.widgets.dashboard.patStats">Patient Population</string>
+    <string name="ui.mpi.widgets.dashboard.activity">Recent Activity</string>
+    <string name="ui.mpi.widgets.patient.card">VRP QR Code</string>
+    <string name="ui.mpi.vrp.help">What is a SanteDB VRP Code?</string>
+    <string name="ui.mpi.vrp.title">SanteDB Visual Resource Pointer</string>
+    <string name="org.santedb.widget.mdm.ignored">Ignored Candidates</string>
 </resources>

@@ -1,0 +1,21 @@
+<div xmlns="http://www.w3.org/1999/xhtml" xmlns:sdb="http://santedb.org/applet"
+    ng-controller="MasterDataManagementController">
+    <sdb:widget order="200" name="org.santedb.widget.mdm.candidate" headerClass="alert-info" size="Medium" type="Panel"
+        context="org.santedb.mdm">
+        <sdb:icon>fas fa-clone</sdb:icon>
+        <sdb:description lang="en">MDM Candidate Locals</sdb:description>
+    </sdb:widget>
+
+
+    <entity-table stateless="true" id="CandidateEntityTable" type="Patient" sub-resource="mdm-candidate" sub-resource-holder="scopedObject.id" 
+        search-field="name.component.value"
+        external="true" can-filter="false"
+        default-query="{  _viewModel: 'smpi.reverseRelationship', _noexec: scopedObject.id == undefined }"
+        render="{ recordInfo: 'renderEntityInfo', strength: 'renderStrength', createdBy: 'renderCreatedBy' }"
+        i18n-prefix="'ui.santedb.widget.mdm.duplicates.'"
+        actions="[ { name: 'rematch', action: 'rematch', demand: '1.3.6.1.4.1.33349.3.1.5.9.2.6.3', className: 'btn-dark', icon: 'fas fa-search-plus' } ]"
+        item-actions="[ { name: 'detail', hint: 'detail', action: 'matchDetail', demand: '1.3.6.1.4.1.33349.3.1.5.9.2.6.3', className: 'btn-info', icon: 'fa fa-ellipsis-v' }, { name: 'resolve', hint: 'link', action: 'resolve', demand: '1.3.6.1.4.1.33349.3.1.5.9.2.6.1', className: 'btn-success', icon: 'fa fa-check' }, { name: 'ignore', hint: 'ignore', action: 'ignore', demand: '1.3.6.1.4.1.33349.3.1.5.9.2.6.1', className: 'btn-danger', icon: 'fa fa-times' } ]"
+        properties="[ 'recordInfo', 'strength', 'createdBy' ]" />
+
+
+</div>

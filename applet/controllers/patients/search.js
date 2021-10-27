@@ -21,7 +21,6 @@
  */
 angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$rootScope", "$state", "$templateCache", "$stateParams", function ($scope, $rootScope, $state, $templateCache, $stateParams) {
 
-    registerAssetsViewers($state);
     // Get datatype of the parameter
     function setMetadata(parameter) {
         switch (parameter.parm) {
@@ -113,7 +112,7 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
                 retVal += '<i class="fas fa-question-circle"></i> ';
         }
 
-        if (patient.genderConceptModel.mnemonic) {
+        if (patient.genderConceptModel && patient.genderConceptModel.mnemonic) {
             retVal += SanteDB.display.renderConcept(patient.genderConceptModel);
         }
         return retVal;
@@ -251,11 +250,11 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
 
             SanteDB.display.buttonWait("#btnScan", true);
 
-            var result = await searchByBarcode();
+            var result = await SanteDB.application.searchByBarcodeAsync();
             if (!result)
                 return;
             else if (result.$type == "Bundle") {
-                $scope.search.val = result.$search;
+                $scope.search = [ { parm: 'identifier.value', val: result.$search, op: 'eq', data : { type: 'string' } }];
                 $scope.searchMpi();
             }
             else {

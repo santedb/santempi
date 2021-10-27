@@ -37,7 +37,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-footer p-2 alert-warning" ng-if="matchReport._isConfigurationIssue">
+                <div class="card-footer p-2 alert-warning" ng-if="!matchReport.candidate.obsoleteVersionSequence &amp;&amp; matchReport._isConfigurationIssue">
                     <i class="fas fa-exclamation-triangle"></i>
                     {{ 'ui.mpi.matches.configurationDisagreement' | i18n }}
 
@@ -61,9 +61,9 @@
         <div class="col">
             <div class="float-right">
                 <div class="btn-group">
-                    <button id="btnResolve" ng-disabled="!matchReport.candidate" ng-click="resolve()" class="btn btn-success"><i class="fas fa-check"></i> {{
+                    <button id="btnResolve" ng-disabled="!matchReport.candidate || matchReport.candidate.obsoleteVersionSequence" ng-click="resolve(matchReport.candidate)" class="btn btn-success"><i class="fas fa-check"></i> {{
                         'ui.action.resolve' | i18n }}</button>
-                    <button id="btnIgnore" ng-disabled="!matchReport.candidate" ng-click="ignore()" class="btn btn-danger"><i class="fas fa-times"></i> {{
+                    <button id="btnIgnore" ng-disabled="!matchReport.candidate || matchReport.candidate.obsoleteVersionSequence" ng-click="ignore(matchReport.candidate)" class="btn btn-danger"><i class="fas fa-times"></i> {{
                         'ui.action.ignore' | i18n }}</button>
                 </div>
             </div>
