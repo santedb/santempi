@@ -47,13 +47,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="SanteDB.Caching.Memory" Version="2.1.91" />
-    <PackageReference Include="SanteDB.Caching.Redis" Version="2.1.91" />
-    <PackageReference Include="SanteDB.Matcher" Version="2.1.91" />
-    <PackageReference Include="SanteDB.Messaging.Atna" Version="2.1.91" />
-    <PackageReference Include="SanteDB.Rest.BIS" Version="2.1.91" />
-    <PackageReference Include="SanteDB.Server" Version="2.1.91" />
-    <PackageReference Include="SanteDB.Server.Plugin" Version="2.1.91" />
+    <PackageReference Include="SanteDB.Caching.Memory" Version="2.1.100" />
+    <PackageReference Include="SanteDB.Caching.Redis" Version="2.1.100" />
+    <PackageReference Include="SanteDB.Matcher" Version="2.1.100" />
+    <PackageReference Include="SanteDB.Messaging.Atna" Version="2.1.100" />
+    <PackageReference Include="SanteDB.Rest.BIS" Version="2.1.100" />
+    <PackageReference Include="SanteDB.Server" Version="2.1.100" />
+    <PackageReference Include="SanteDB.Server.Plugin" Version="2.1.100" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="config\santempi.fhir.ihe.config.xml">
