@@ -141,7 +141,7 @@ Source: {#iCDRBase}\bin\Release\SanteDB.exe.config; DestDir: {app}; DestName: sd
 Source: {#iCDRBase}\bin\release\SanteDB.Server.AdminConsole.Api.dll; DestDir: {app}; Components: tools
 
 Source: {#iCDRBase}\bin\release\SanteDB.Messaging.AMI.Client.dll; DestDir: {app}; Components: tools
-Source: {#iCDRBase}\bin\release\SanteDB.Tools.DataSandbox.dll; DestDir: {app}; Components: tools
+Source: {#iCDRBase}\bin\release\SanteDB.Tools.Debug.dll; DestDir: {app}; Components: tools
 
 ;Documentation For OpenAPI
 Source: {#iCDRBase}\bin\Release\RestSrvr.xml; DestDir: {app}; Components: interop\openapi
