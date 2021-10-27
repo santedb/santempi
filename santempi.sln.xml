@@ -4,7 +4,7 @@
     <name lang="en">SanteDB Master Patient Index Functions</name>
     <author>SanteSuite Contributors</author>
     <dependency id="org.santedb.hl7"/>
-    <dependency id="org.santedb.sg" />
+    <!--<dependency id="org.santedb.sg" />-->
     <dependency id="org.santedb.smpi" />
     <dependency id="org.santedb.admin" />
     <dependency id="org.santedb.core" />
