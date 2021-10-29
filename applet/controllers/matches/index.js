@@ -1,3 +1,4 @@
+/// <reference path="../../.ref/js/santedb.js"/>
 angular.module('santedb').controller('MpiMatchDashboardController', ["$scope", "$rootScope", "$state", "$templateCache", "$stateParams", function ($scope, $rootScope, $state, $templateCache, $stateParams) {
 
 
@@ -40,7 +41,6 @@ angular.module('santedb').controller('MpiMatchDashboardController', ["$scope", "
      */
     $scope.resolve = async function(candidateId, m) {
         try {
-
             SanteDB.display.buttonWait(`#Patientesolve${m}`, true);
             var candidate = await SanteDB.resources.entityRelationship.getAsync(candidateId, "min", null, true);
             await attachCandidateAsync(candidate.holder, candidate.target);

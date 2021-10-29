@@ -17,6 +17,8 @@
         default-query="{  _viewModel: 'smpi.reverseRelationship', _noexec: scopedObject.id == undefined }"
         render="{ recordInfo: 'renderEntityInfo', createdBy: 'renderCreatedBy' }"
         i18n-prefix="'ui.santedb.widget.mdm.duplicates.'"
-        item-actions="[ { name: 'view', sref: '.', demand: '1.3.6.1.4.1.33349.3.1.5.9.2.6.3', className: 'btn-info', icon: 'fa fa-ellipsis-v' }, { name: 'unlink', action: 'detach', demand: '1.3.6.1.4.1.33349.3.1.5.9.2.6.1', className: 'btn-danger', icon: 'fa fa-code-branch', when: 'cell.row > 0' } ]"
+        actions="[ { name: 'assign', hint: 'assign', label: 'assign', action: 'assign', demand: '1.3.6.1.4.1.33349.3.1.5.9.2.6.3', className: 'btn-primary', icon: 'fas fa-user-plus' } ]"
+
+        item-actions="[ { name: 'view', sref: '.', demand: '1.3.6.1.4.1.33349.3.1.5.9.2.6.3', className: 'btn-info', icon: 'fa fa-ellipsis-v' }, { name: 'unlink', hint: 'unlink', action: 'detach', demand: '1.3.6.1.4.1.33349.3.1.5.9.2.6.1', className: 'btn-danger', icon: 'fa fa-code-branch', when: 'cell.row > 0' } ]"
         properties="[ 'recordInfo', 'createdBy' ]"/>
 </div>
