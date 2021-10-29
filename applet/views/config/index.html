@@ -14,7 +14,7 @@
         <i class="fas fa-exclamation-triangle"></i> {{ 'ui.mpi.match.config.onlineOnly' | i18n }}
     </div>
     <div class="alert alert-warning" ng-if="currentMatching">
-        <i class="fas fa-exclamation-triangle"></i> {{ 'ui.mpi.match.config.backgroundRunning' | i18n }} ({{ 'ui.state' | i18n}}: {{currentMatching.progress * 100 | number: 0 }}% {{ 'ui.mpi.match.config.backgroundState' | i18n }})
+        <i class="fas fa-exclamation-triangle"></i> {{ 'ui.mpi.match.config.backgroundRunning' | i18n }} ({{ 'ui.state' | i18n}}: {{ currentMatching.status }} - {{currentMatching.progress * 100 | number: 0 }}% )
     </div>
     <div ng-if="$root.system.config.sync.mode != 'Sync'">
     <entity-table id="MpiMatchConfigurationTable"

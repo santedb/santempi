@@ -56,7 +56,7 @@ cte_addr_tbl as (
 	select 
 		ent_id, 
 		mnemonic as addr_type, 
-		string_agg(case when typ_cd_id = '4F342D28-8850-4DAF-8BCA-0B44A255F7ED' then val end , ' ') as adr_line,
+		string_agg(case when typ_cd_id = '4F342D28-8850-4DAF-8BCA-0B44A255F7ED' or typ_cd_id = 'F69DCFA8-DF18-403B-9217-C59680BAD99E' then val end , ' ') as adr_line,
 		string_agg(case when typ_cd_id = '05B85461-578B-4988-BCA6-E3E94BE9DB76' then val end , ' ') as adr_city,
 		string_agg(case when typ_cd_id = '48B2FFB3-07DB-47BA-AD73-FC8FB8502471' then val end , ' ') as adr_country,
 		string_agg(case when typ_cd_id = '8CF4B0B0-84E5-4122-85FE-6AFA8240C218' then val end , ' ') as adr_state		
@@ -67,7 +67,7 @@ cte_addr_tbl as (
 		inner join cd_vrsn_tbl on (cd_id = ent_addr_tbl.use_cd_id and obslt_utc is null)
 	where 
 		obslt_vrsn_seq_id is null
-		and typ_cd_id in ('8CF4B0B0-84E5-4122-85FE-6AFA8240C218','48B2FFB3-07DB-47BA-AD73-FC8FB8502471','05B85461-578B-4988-BCA6-E3E94BE9DB76','4F342D28-8850-4DAF-8BCA-0B44A255F7ED')
+		and typ_cd_id in ('8CF4B0B0-84E5-4122-85FE-6AFA8240C218','F69DCFA8-DF18-403B-9217-C59680BAD99E','48B2FFB3-07DB-47BA-AD73-FC8FB8502471','05B85461-578B-4988-BCA6-E3E94BE9DB76','4F342D28-8850-4DAF-8BCA-0B44A255F7ED')
 	group by 
 		ent_id, mnemonic 
 ), 
@@ -226,7 +226,7 @@ with cte_id_tbl as (
 	select 
 		ent_id, 
 		mnemonic as addr_type, 
-		list(case when typ_cd_id =  char_to_uuid('4F342D28-8850-4DAF-8BCA-0B44A255F7ED') then val end , ' ') as adr_line,
+		list(case when typ_cd_id =  char_to_uuid('4F342D28-8850-4DAF-8BCA-0B44A255F7ED') or typ_cd_id = char_to_uuid('F69DCFA8-DF18-403B-9217-C59680BAD99E') then val end , ' ') as adr_line,
 		list(case when typ_cd_id =  char_to_uuid('05B85461-578B-4988-BCA6-E3E94BE9DB76') then val end , ' ') as adr_city,
 		list(case when typ_cd_id =  char_to_uuid('48B2FFB3-07DB-47BA-AD73-FC8FB8502471') then val end , ' ') as adr_country,
 		list(case when typ_cd_id =  char_to_uuid('8CF4B0B0-84E5-4122-85FE-6AFA8240C218') then val end , ' ') as adr_state		
@@ -237,7 +237,7 @@ with cte_id_tbl as (
 		inner join cd_vrsn_tbl on (cd_id = ent_addr_tbl.use_cd_id and obslt_utc is null)
 	where 
 		obslt_vrsn_seq_id is null
-		and typ_cd_id in ('8CF4B0B0-84E5-4122-85FE-6AFA8240C218','48B2FFB3-07DB-47BA-AD73-FC8FB8502471','05B85461-578B-4988-BCA6-E3E94BE9DB76','4F342D28-8850-4DAF-8BCA-0B44A255F7ED')
+		and typ_cd_id in (char_to_uuid('8CF4B0B0-84E5-4122-85FE-6AFA8240C218'),char_to_uuid('48B2FFB3-07DB-47BA-AD73-FC8FB8502471'),char_to_uuid('F69DCFA8-DF18-403B-9217-C59680BAD99E'),char_to_uuid('05B85461-578B-4988-BCA6-E3E94BE9DB76'),char_to_uuid('4F342D28-8850-4DAF-8BCA-0B44A255F7ED'))
 	group by 
 		ent_id, mnemonic 
 ), cte_name_tbl as (

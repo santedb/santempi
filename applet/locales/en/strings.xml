@@ -47,6 +47,11 @@
     <string name="ui.mpi.matches.patient.a">Person A</string>
     <string name="ui.mpi.matches.patient.b">Person B</string>
     <string name="ui.mpi.matches.confidence">Match Strength</string>
+    <string name="ui.model.patient.duplicate.resolve">Resolves this candidate by linking the A and B records together</string>
+    <string name="ui.model.patient.duplicate.view">View details about this candidate match pair</string>
+    <string name="ui.model.patient.duplicate.ignore">Ignore this match pair - the two candidates will never be considered in future matching activities</string>
+    <string name="ui.model.patient.duplicate.downloadCandidates">Candidiate Report</string>
+    <string name="ui.model.patient.duplicate.downloadAll">Linkage Report</string>
     <string name="ui.mpi.matches.action">Action</string>
     
     <!-- Match View -->
@@ -102,9 +107,13 @@
       <string name="ui.santedb.widget.mdm.duplicates.link">Link this candidate local to the master record</string>
       <string name="ui.santedb.widget.mdm.duplicates.ignore">Ignore this candidate local and NEVER flag the candidate again</string>
       <string name="ui.santedb.widget.mdm.duplicates.detail">Show a detailed match report for the match pair</string>
+      <string name="ui.santedb.widget.mdm.duplicates.unlink">Un-link this local from this master - creating a new master for the unlinked local and ignoring future matches</string>
+      <string name="ui.santedb.widget.mdm.duplicates.unignore">Un-ignore this record - it will be considered a duplicate in future matching activities</string>
+
       <string name="ui.santedb.widget.mdm.duplicates.strength">Strength</string>
       <string name="ui.santedb.widget.mdm.duplicates.recordInfo">Local Record</string>
       <string name="ui.santedb.widget.mdm.duplicates.createdBy">Source</string>
+      <string name="ui.santedb.widget.mdm.duplicates.assign">Attach</string>
       <string name="ui.mdm.type.L">LOCAL RECORD</string>
       <string name="ui.mdm.type.M">MASTER RECORD</string>
       <string name="ui.mdm.type.T">RECORD OF TRUTH</string>
