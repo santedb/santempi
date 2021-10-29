@@ -180,4 +180,12 @@
     <string name="ui.mpi.vrp.help">What is a SanteDB VRP Code?</string>
     <string name="ui.mpi.vrp.title">SanteDB Visual Resource Pointer</string>
     <string name="org.santedb.widget.mdm.ignored">Ignored Candidates</string>
+
+    <!-- Match Configuration -->
+    <string name="ui.mpi.match.config.id">Configuration ID</string>
+    <string name="ui.mpi.match.config.state">Status</string>
+    <string name="ui.mpi.match.config.modifiedOn">Last Updated</string>
+    <string name="ui.mpi.match.config.backgroundRunning">Enabling or Disabling match configurations while a background match task is running is not advised, and can result in unpredictable results</string>
+    <string name="ui.mpi.match.config.backgroundState">rematching complete</string>
+    <string name="ui.mpi.match.config.html">HTML</string>
 </resources>
