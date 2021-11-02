@@ -29,4 +29,50 @@ angular.module('santedb').controller('MpiConfigurationDashboardController', ["$s
     }
 
     initializeView();
+
+    // Update the configuration
+    async function updateConfiguration(id, state) {
+        try {
+            await SanteDB.resources.matchConfiguration.invokeOperationAsync(id, "state", {  state: state  });
+            $("div[type=MatchConfiguration] table").DataTable().ajax.reload()
+        }
+        catch (e) {
+            $rootScope.errorHandler(e);
+        }
+    }
+
+    // Enable the specified configuration
+    $scope.enable = async function(id, m) {
+        if(confirm(SanteDB.locale.getString("ui.mpi.match.config.enable.confirm"))) {
+            try {
+                SanteDB.display.buttonWait(`#MatchConfigurationenable${m}`, true);
+                await updateConfiguration(id, true);
+                toastr.success(SanteDB.locale.getString("ui.mpi.match.conig.enable.success"));
+            }
+            catch(e) {
+                toastr.error(SanteDB.locale.getString("ui.mpi.match.conig.enable.error"));
+            }
+            finally {
+                SanteDB.display.buttonWait(`#MatchConfigurationenable${m}`, false);
+            }
+        }
+    }
+
+    // Disable the specified configuration
+    $scope.disable = async function(id, m) {
+        if(confirm(SanteDB.locale.getString("ui.mpi.match.config.disable.confirm")))
+        {
+            try {
+                SanteDB.display.buttonWait(`#MatchConfigurationdisable${m}`, true);
+                await updateConfiguration(id, false);
+                toastr.success(SanteDB.locale.getString("ui.mpi.match.conig.enable.success"));
+            }
+            catch(e) {
+                toastr.error(SanteDB.locale.getString("ui.mpi.match.conig.enable.error"));
+            }
+            finally {
+                SanteDB.display.buttonWait(`#MatchConfigurationdisable${m}`, false);
+            }
+        }
+    }
 }])
