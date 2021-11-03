@@ -1,0 +1,16 @@
+<div xmlns="http://www.w3.org/1999/xhtml" xmlns:sdb="http://santedb.org/applet"
+    oc-lazy-load="{ name: 'MatchConfigurationDiagramController', files: ['/org.santedb.smpi/controllers/widgets/configDiagram.js'] }">
+    <sdb:widget order="100" name="ui.mpi.matches.config.general.diagram" type="Panel" size="Large"
+        headerClass="alert-info" context="org.santedb.mpi.matches.config.general">
+        <sdb:icon>fas fa-project-diagram</sdb:icon>
+        <sdb:description lang="en">Diagram</sdb:description>
+    </sdb:widget>
+
+    <div ng-controller="MatchConfigurationDiagramController" class="row" ng-init="renderMatchConfiguration(scopedObject, 'matchConfiguration')">
+        <div id="matchConfigurationDiv" ></div>
+        <div id="matchConfigurationSvg"  class="col" >
+            <i class="fas fa-spin fa-circle-notch"></i> {{ 'ui.wait' | i18n }}
+        </div>
+    </div>
+
+</div>
