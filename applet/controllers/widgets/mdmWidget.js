@@ -18,6 +18,23 @@ angular.module('santedb').controller('MasterDataManagementController', ['$scope'
         return `<provenance provenance-id="'${entity.createdBy}'"  provenance-time="'${entity.creationTime}'"></provenance>`;
     }
 
+    // Render classification concept
+    $scope.renderClassificationConcept = function(entity) {
+        if(entity.tag && entity.tag["$mdm.relationship.class"]) {
+            switch(entity.tag["$mdm.relationship.class"][0]) {
+                case "Auto":
+                    return "<i class='fas fa-magic'></i> Auto";
+                case "System":
+                    return "<i class='fas fa-cogs'></i> System";
+                case "Verified":
+                    return "<i class='fas fa-check-circle'></i> Verified";
+            }
+        }
+        else {
+            return "<i class='fas fa-question-circle'></i>";
+        }
+    }
+
     // Show match detail
     $scope.matchDetail = async function (id) {
         try {

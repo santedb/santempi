@@ -109,7 +109,7 @@
       <string name="ui.santedb.widget.mdm.duplicates.detail">Show a detailed match report for the match pair</string>
       <string name="ui.santedb.widget.mdm.duplicates.unlink">Un-link this local from this master - creating a new master for the unlinked local and ignoring future matches</string>
       <string name="ui.santedb.widget.mdm.duplicates.unignore">Un-ignore this record - it will be considered a duplicate in future matching activities</string>
-
+      <string name="ui.santedb.widget.mdm.duplicates.classificationConcept">Class</string>
       <string name="ui.santedb.widget.mdm.duplicates.strength">Strength</string>
       <string name="ui.santedb.widget.mdm.duplicates.recordInfo">Local Record</string>
       <string name="ui.santedb.widget.mdm.duplicates.createdBy">Source</string>
@@ -150,7 +150,7 @@
     <string name="ui.mpi.matches.detach.error">There was an error issuing the unlink request. Check the server logs</string>
     <string name="ui.mpi.matches.rematch.confirm">The server will clear all candidiates for this record and will initiate a re-match. Continue?</string>
     <!-- Score View -->
-    <string name="ui.mpi.match.configuration">Configuration</string>
+    <string name="ui.mpi.matches.configuration">Configuration</string>
     <string name="ui.mpi.match.method.0">Other/Unknown</string>
     <string name="ui.mpi.match.method.1">Identifier</string>
     <string name="ui.mpi.match.method.2">Simple</string>
@@ -191,10 +191,27 @@
     <string name="org.santedb.widget.mdm.ignored">Ignored Candidates</string>
 
     <!-- Match Configuration -->
-    <string name="ui.mpi.match.config.id">Configuration ID</string>
-    <string name="ui.mpi.match.config.state">Status</string>
-    <string name="ui.mpi.match.config.modifiedOn">Last Updated</string>
-    <string name="ui.mpi.match.config.backgroundRunning">Enabling or Disabling match configurations while a background match task is running is not advised, and can result in unpredictable results</string>
-    <string name="ui.mpi.match.config.backgroundState">rematching complete</string>
-    <string name="ui.mpi.match.config.html">HTML</string>
+    <string name="ui.mpi.matches.config.id">Configuration ID</string>
+    <string name="ui.mpi.matches.config.state">Status</string>
+    <string name="ui.mpi.matches.config.modifiedOn">Last Updated</string>
+    <string name="ui.mpi.matches.config.backgroundRunning">Enabling or Disabling match configurations while a background match task is running is not advised, and can result in unpredictable results</string>
+    <string name="ui.mpi.matches.config.backgroundState">rematching complete</string>
+    <string name="ui.mpi.matches.config.html">HTML</string>
+    <string name="ui.mpi.matches.config.enable.confirm">Are you sure you want to enable match configuration {id}? It will be used to score future registration and re-matches</string>
+    <string name="ui.mpi.matches.config.enable.success">Match configuration {id} is now enabled</string>
+    <string name="ui.mpi.matches.config.enable.error">Match configuration {id} could not be enabled  ({e})</string>
+    <string name="ui.mpi.matches.config.enable.confirm">Are you sure you want to enable match configuration {id}? It will be used to score future registration and re-matches</string>
+    <string name="ui.mpi.matches.config.disable.confirm">Are you sure you want to disable match configuration {id}? It will no longer be used to score matches</string>
+    <string name="ui.mpi.matches.config.disable.success">Match configuration {id} is now disabled</string>
+    <string name="ui.mpi.matches.config.disable.error">Match configuration {id} could not be disabled ({e})</string>
+    <string name="ui.mpi.matches.config.delete.confirm">Are you sure you want permanently delete match configuration {id}? After deletion it can not be retrieved.</string>
+    <string name="ui.mpi.matches.config.delete.success">Match configuration {id} was deleted</string>
+    <string name="ui.mpi.matches.config.delete.error">Match configuration {id} could not be deleted ({e})</string>
+    <string name="ui.mpi.matches.config.general">General</string>
+    <string name="ui.mpi.matches.config.blocking">Blocking Stage</string>
+    <string name="ui.mpi.matches.config.scoring">Scoring Stage</string>
+    <string name="ui.mpi.matches.config.classification">Classification Stage</string>
+    <string name="ui.mpi.matches.config.test">Testing</string>
+    <string name="ui.mpi.matches.config.general.diagram">Explain</string>
+    <string name="ui.mpi.matches.config.general.properties">Properties</string>
 </resources>
