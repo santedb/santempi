@@ -208,10 +208,22 @@
     <string name="ui.mpi.matches.config.delete.success">Match configuration {id} was deleted</string>
     <string name="ui.mpi.matches.config.delete.error">Match configuration {id} could not be deleted ({e})</string>
     <string name="ui.mpi.matches.config.general">General</string>
-    <string name="ui.mpi.matches.config.blocking">Blocking Stage</string>
-    <string name="ui.mpi.matches.config.scoring">Scoring Stage</string>
-    <string name="ui.mpi.matches.config.classification">Classification Stage</string>
+    <string name="ui.mpi.matches.config.blocking">Blocking</string>
+    <string name="ui.mpi.matches.config.scoring">Scoring</string>
+    <string name="ui.mpi.matches.config.classification">Classification</string>
     <string name="ui.mpi.matches.config.test">Testing</string>
     <string name="ui.mpi.matches.config.general.diagram">Explain</string>
     <string name="ui.mpi.matches.config.general.properties">Properties</string>
+    <string name="ui.mpi.matches.config.save.success">Match configuration {id} was updated successfully</string>
+    <string name="ui.mpi.matches.config.save.error">Could not save match configuration {id}</string>
+    <string name="ui.mpi.matches.config.save.overwrite">A match configuration with id {id} already exists (created by {author}). Do you want to overwrite the current configuration with this empty configuration? (This cannot be undone)</string>
+    <string name="ui.mpi.matches.config.blocking.diagram">Explain</string>
+    <string name="ui.mpi.matches.config.scoring.properties">Scored Attributes</string>
+    <string name="ui.mpi.matches.config.classification.properties">Classification Ranges</string>
+    <string name="ui.mpi.matches.config.classification.noAttributes">This match configuration does not have any scoring attributes! You cannot set the classification score ranges until the match configuration has at least one scoring attribute </string>
+    <string name="ui.mpi.matches.config.scoring.diagram">Explain</string>
+    <string name="ui.mpi.matches.config.blocking.properties">Blocking Filters</string>
+    <string name="ui.mpi.matches.config.block.filter.whenHeader">When</string>
+    <string name="ui.mpi.matches.config.block.filter.filterHeader">Filter</string>
+    <string name="ui.mpi.matches.config.block.filter.info"><![CDATA[When the incoming record ($input) has property <strong>WHEN</strong> then the <strong>FILTER</strong> is applied. See <a href="https://help.santesuite.org/santedb/extending-santedb/service-apis/health-data-service-interface-hdsi/hdsi-query-syntax" target="_blank">HDSI Query Syntax</a> on the SanteSuite WIKI]]></string>
 </resources>

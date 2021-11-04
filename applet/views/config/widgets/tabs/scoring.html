@@ -3,6 +3,7 @@
         context="org.santedb.mpi.matches.config">
         <sdb:icon>fas fa-star-half-alt</sdb:icon>
         <sdb:description lang="en">Scoring</sdb:description>
+        <sdb:guard>scopedObject.uuid &amp;&amp; scopedObject.blocking.length > 0</sdb:guard>
     </sdb:widget>
 
     <widget-panels context-name="'org.santedb.mpi.matches.config.scoring'" scoped-object="scopedObject" />
