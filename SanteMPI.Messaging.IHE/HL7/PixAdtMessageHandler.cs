@@ -25,6 +25,13 @@ namespace SanteMPI.Messaging.IHE.HL7
     public class PixAdtMessageHandler : AdtMessageHandler
     {
         /// <summary>
+        /// Localization service
+        /// </summary>
+        public PixAdtMessageHandler(ILocalizationService localizationService) : base(localizationService)
+        {
+        }
+
+        /// <summary>
         /// Send an audit for admit
         /// </summary>
         protected override void SendAuditAdmit(OutcomeIndicator success, IMessage message, IEnumerable<IdentifiedData> enumerable)

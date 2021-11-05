@@ -28,20 +28,27 @@ namespace SanteMPI.Messaging.IHE.HL7
     public class PixQbpMessageHandler : QbpMessageHandler
     {
         /// <summary>
+        /// DI injected handler
+        /// </summary>
+        public PixQbpMessageHandler(ILocalizationService localizationService) : base(localizationService)
+        {
+        }
+
+        /// <summary>
         /// Creates the negative ack
         /// </summary>
         /// <remarks>This overridden method allows for capturing of errors</remarks>
         protected override IMessage CreateNACK(Type nackType, IMessage request, Exception error, Hl7MessageReceivedEventArgs receiveData)
         {
-            var retVal = base.CreateNACK(nackType, request, error, receiveData);
+            var retVal = base.CreateNACK(typeof(RSP_K23), request, error, receiveData) as RSP_K23;
 
             var ex = error;
             while (ex != null)
             {
                 if (ex is KeyNotFoundException)
                 {
-                    (retVal.GetStructure("MSA") as MSA).AcknowledgmentCode.Value = "AE";
-                    (retVal.GetStructure("QAK") as QAK).QueryResponseStatus.Value = "AE";
+                    retVal.MSA.AcknowledgmentCode.Value = "AE";
+                    retVal.QAK.QueryResponseStatus.Value = "AE";
                     break;
                 }
                 ex = ex.InnerException;
