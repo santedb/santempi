@@ -36,7 +36,7 @@ namespace SanteMPI.Messaging.IHE.HL7
         /// </summary>
         protected override void SendAuditAdmit(OutcomeIndicator success, IMessage message, IEnumerable<IdentifiedData> enumerable)
         {
-            IheAuditUtil.SendAuditPatientIdentityFeed(success, ActionType.Create, message, enumerable.OfType<Patient>().First());
+            IheAuditUtil.SendAuditPatientIdentityFeed(success, ActionType.Create, message, enumerable?.OfType<Patient>().First());
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace SanteMPI.Messaging.IHE.HL7
         /// </summary>
         protected override void SendAuditUpdate(OutcomeIndicator outcome, IMessage message, IEnumerable<IdentifiedData> results)
         {
-            IheAuditUtil.SendAuditPatientIdentityFeed(outcome, ActionType.Update, message, results.OfType<Patient>().First());
+            IheAuditUtil.SendAuditPatientIdentityFeed(outcome, ActionType.Update, message, results?.OfType<Patient>().First());
         }
 
         /// <summary>
