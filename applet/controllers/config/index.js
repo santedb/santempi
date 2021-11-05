@@ -84,6 +84,7 @@ angular.module('santedb').controller('MpiConfigurationDashboardController', ["$s
                 SanteDB.display.buttonWait(`#MatchConfigurationdelete${m}`, true);
                 await SanteDB.resources.matchConfiguration.deleteAsync(id);
                 toastr.success(SanteDB.locale.getString("ui.mpi.matches.config.delete.success", { id: id }));
+                $("div[type=MatchConfiguration] table").DataTable().ajax.reload()
             }
             catch(e) {
                 toastr.error(SanteDB.locale.getString("ui.mpi.matches.config.delete.error", { id: id, e: e.message }));

@@ -1,0 +1,67 @@
+<div xmlns="http://www.w3.org/1999/xhtml" xmlns:sdb="http://santedb.org/applet">
+    <sdb:widget order="0" name="ui.mpi.matches.config.blocking.properties" type="Panel" size="Large"
+        altViews="Edit" context="org.santedb.mpi.matches.config.blocking">
+        <sdb:icon>fas fa-database</sdb:icon>
+        <sdb:description lang="en">Properties</sdb:description>
+    </sdb:widget>
+
+
+    <div ng-if="panel.view != 'Edit'" class="container-fluid">
+        
+        <div class="accordion" id="blockAccordion">
+            <div class="card shadow" ng-repeat="block in scopedObject.blocking track by $index">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <button type="button" class="collapse-indicator btn btn-link p-0" data-toggle="collapse"
+                            data-target="#block{{$index}}">
+                            <i class="fas fa-filter"></i> <span class="ml-2">Block{{$index}}</span>
+                            <i class="fas fa-fw fa-chevron-right"></i>
+                        </button>
+                    </h5>
+                </div>
+                <div class="collapse" id="block{{$index}}" data-parent="#blockAccordion">
+                    <div class="card-body container">
+                        
+                        <div class="row">
+                            <label class="control-label col-md-2 col-sm-12">{{ 'ui.model.matchConfiguration.blocking.maxResults' | i18n }} <hint-popover hint-title="ui.model.matchConfiguration.blocking.maxResults" /></label>
+                            <div class="col-md-10 col-sm-12">
+                                {{  'ui.model.matchConfiguration.blocking.maxResults.description' | i18n: { recs: block.maxResults } }} 
+                            </div>
+                        </div>
+
+                        <div class="row" ng-if="$index &gt; 0">
+                            <label class="control-label col-md-2 col-sm-12">{{ 'ui.model.matchConfiguration.blocking.op' | i18n }}<hint-popover hint-title="ui.model.matchConfiguration.blocking.op" /></label>
+                            <div class="col-md-10 col-sm-12">
+                                <span class="badge badge-info">{{ 'ui.model.matchConfiguration.blocking.op.' + block.op | i18n }}</span> 
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <label class="control-label col-md-2 col-sm-12">{{ 'ui.model.matchConfiguration.blocking.filters' | i18n }} <hint-popover hint-title="ui.model.matchConfiguration.blocking.filters" /></label>
+                            <div class="col-md-10 col-sm-12">
+                                <table class="table table-border">
+                                    <thead>
+                                        <tr>
+                                            <th>{{ 'ui.mpi.matches.config.block.filter.whenHeader' | i18n }}</th>
+                                            <th>{{ 'ui.mpi.matches.config.block.filter.filterHeader' | i18n }}</th>
+                                        </tr>
+                                        <tr ng-repeat="filter in block.filter">
+                                            <th><code>{{ filter.when.join(" or ") }}</code></th>
+                                            <th><code>{{ filter.expression }}</code></th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle"></i> {{ 'ui.mpi.matches.config.block.filter.info' | i18n }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>

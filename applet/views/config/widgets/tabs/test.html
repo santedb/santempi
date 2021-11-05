@@ -3,6 +3,7 @@
         context="org.santedb.mpi.matches.config">
         <sdb:icon>fas fa-play</sdb:icon>
         <sdb:description lang="en">Testing</sdb:description>
+        <sdb:guard>scopedObject.uuid &amp;&amp; scopedObject.matchThreshold > 0</sdb:guard>
     </sdb:widget>
 
     <widget-panels context-name="'org.santedb.mpi.matches.config.test'" scoped-object="scopedObject" />
