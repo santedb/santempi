@@ -52,7 +52,7 @@ namespace SanteMPI.Messaging.IHE.HL7
         /// </summary>
         protected override void SendAuditQuery(OutcomeIndicator success, IMessage message, IEnumerable<IdentifiedData> results)
         {
-            IheAuditUtil.SendAuditPatientDemographicsQuery(success, message, results.OfType<Patient>().ToArray());
+            IheAuditUtil.SendAuditPatientDemographicsQuery(success, message, results?.OfType<Patient>().ToArray());
         }
     }
 }
