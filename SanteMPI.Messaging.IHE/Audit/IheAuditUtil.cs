@@ -93,14 +93,17 @@ namespace SanteMPI.Messaging.IHE.Audit
             var retVal = CreateITIAuditEvent(EventIdentifierType.PatientRecord, ActionType.Execute, outcome, ITI93);
             AuditUtil.AddLocalDeviceActor(retVal);
             AuditUtil.AddUserActor(retVal);
-            retVal.AuditableObjects = patients.Select(o => new AuditableObject()
+            if (outcome == OutcomeIndicator.Success)
             {
-                Type = AuditableObjectType.Person,
-                Role = AuditableObjectRole.Patient,
-                LifecycleType = AuditableObjectLifecycle.Disclosure,
-                IDTypeCode = AuditableObjectIdType.PatientNumber,
-                ObjectId = o.Id
-            }).ToList();
+                retVal.AuditableObjects = patients.Select(o => new AuditableObject()
+                {
+                    Type = AuditableObjectType.Person,
+                    Role = AuditableObjectRole.Patient,
+                    LifecycleType = AuditableObjectLifecycle.Disclosure,
+                    IDTypeCode = AuditableObjectIdType.PatientNumber,
+                    ObjectId = o.Id
+                }).ToList();
+            }
             retVal.AuditableObjects.Add(new AuditableObject()
             {
                 Type = AuditableObjectType.SystemObject,
@@ -121,14 +124,17 @@ namespace SanteMPI.Messaging.IHE.Audit
             var retVal = CreateITIAuditEvent(EventIdentifierType.Query, ActionType.Execute, outcome, ITI9);
             AuditUtil.AddLocalDeviceActor(retVal);
             AuditUtil.AddUserActor(retVal);
-            retVal.AuditableObjects = results.Select(o => new AuditableObject()
+            if (outcome == OutcomeIndicator.Success)
             {
-                Type = AuditableObjectType.Person,
-                Role = AuditableObjectRole.Patient,
-                LifecycleType = AuditableObjectLifecycle.Disclosure,
-                IDTypeCode = AuditableObjectIdType.PatientNumber,
-                ObjectId = String.Join("~", $"{o.Key}^^^{m_configuration.LocalAuthority.DomainName}&{m_configuration.LocalAuthority.Oid}&ISO")
-            }).ToList();
+                retVal.AuditableObjects = results.Select(o => new AuditableObject()
+                {
+                    Type = AuditableObjectType.Person,
+                    Role = AuditableObjectRole.Patient,
+                    LifecycleType = AuditableObjectLifecycle.Disclosure,
+                    IDTypeCode = AuditableObjectIdType.PatientNumber,
+                    ObjectId = String.Join("~", $"{o.Key}^^^{m_configuration.LocalAuthority.DomainName}&{m_configuration.LocalAuthority.Oid}&ISO")
+                }).ToList();
+            }
             retVal.AuditableObjects.Add(new AuditableObject()
             {
                 Type = AuditableObjectType.SystemObject,
@@ -153,14 +159,17 @@ namespace SanteMPI.Messaging.IHE.Audit
             var retVal = CreateITIAuditEvent(EventIdentifierType.Query, ActionType.Execute, outcome, ITI83);
             AuditUtil.AddLocalDeviceActor(retVal);
             AuditUtil.AddUserActor(retVal);
-            retVal.AuditableObjects = results.Select(o => new AuditableObject()
+            if (outcome == OutcomeIndicator.Success)
             {
-                Type = AuditableObjectType.Person,
-                Role = AuditableObjectRole.Patient,
-                LifecycleType = AuditableObjectLifecycle.Disclosure,
-                IDTypeCode = AuditableObjectIdType.PatientNumber,
-                ObjectId = o.Id
-            }).ToList();
+                retVal.AuditableObjects = results.Select(o => new AuditableObject()
+                {
+                    Type = AuditableObjectType.Person,
+                    Role = AuditableObjectRole.Patient,
+                    LifecycleType = AuditableObjectLifecycle.Disclosure,
+                    IDTypeCode = AuditableObjectIdType.PatientNumber,
+                    ObjectId = o.Id
+                }).ToList();
+            }
             retVal.AuditableObjects.Add(new AuditableObject()
             {
                 Type = AuditableObjectType.SystemObject,
@@ -184,19 +193,21 @@ namespace SanteMPI.Messaging.IHE.Audit
             var retVal = CreateITIAuditEvent(EventIdentifierType.PatientRecord, action, outcome, ITI8);
             AuditUtil.AddLocalDeviceActor(retVal);
             AuditUtil.AddUserActor(retVal);
-            retVal.AuditableObjects.Add(new AuditableObject()
+            if (outcome == OutcomeIndicator.Success)
             {
-                Type = AuditableObjectType.Person,
-                Role = AuditableObjectRole.Patient,
-                LifecycleType = action == ActionType.Create ? AuditableObjectLifecycle.Creation : AuditableObjectLifecycle.Amendment,
-                IDTypeCode = AuditableObjectIdType.PatientNumber,
-                ObjectId = $"{patient.Key}^^^{m_configuration.LocalAuthority?.DomainName}&{m_configuration.LocalAuthority.Oid}&ISO",
-                ObjectData = new List<ObjectDataExtension>()
+                retVal.AuditableObjects.Add(new AuditableObject()
+                {
+                    Type = AuditableObjectType.Person,
+                    Role = AuditableObjectRole.Patient,
+                    LifecycleType = action == ActionType.Create ? AuditableObjectLifecycle.Creation : AuditableObjectLifecycle.Amendment,
+                    IDTypeCode = AuditableObjectIdType.PatientNumber,
+                    ObjectId = $"{patient.Key}^^^{m_configuration.LocalAuthority?.DomainName}&{m_configuration.LocalAuthority.Oid}&ISO",
+                    ObjectData = new List<ObjectDataExtension>()
                 {
                     new ObjectDataExtension("MSH-10", Encoding.UTF8.GetBytes((request.GetStructure("MSH") as ISegment).GetField(10).ToString()))
                 }
-            });
-
+                });
+            }
             AuditUtil.SendAudit(retVal);
         }
 
@@ -208,18 +219,22 @@ namespace SanteMPI.Messaging.IHE.Audit
             var retVal = CreateITIAuditEvent(EventIdentifierType.PatientRecord, ActionType.Update, outcome, ITI8);
             AuditUtil.AddLocalDeviceActor(retVal);
             AuditUtil.AddUserActor(retVal);
-            retVal.AuditableObjects.Add(new AuditableObject()
+
+            if (outcome == OutcomeIndicator.Success)
             {
-                Type = AuditableObjectType.Person,
-                Role = AuditableObjectRole.Patient,
-                LifecycleType = AuditableObjectLifecycle.Amendment,
-                IDTypeCode = AuditableObjectIdType.PatientNumber,
-                ObjectId = $"{recordMergeResult.Survivors.First()}^^^{m_configuration.LocalAuthority?.DomainName}&{m_configuration.LocalAuthority.Oid}&ISO",
-                ObjectData = new List<ObjectDataExtension>()
+                retVal.AuditableObjects.Add(new AuditableObject()
+                {
+                    Type = AuditableObjectType.Person,
+                    Role = AuditableObjectRole.Patient,
+                    LifecycleType = AuditableObjectLifecycle.Amendment,
+                    IDTypeCode = AuditableObjectIdType.PatientNumber,
+                    ObjectId = $"{recordMergeResult.Survivors.First()}^^^{m_configuration.LocalAuthority?.DomainName}&{m_configuration.LocalAuthority.Oid}&ISO",
+                    ObjectData = new List<ObjectDataExtension>()
                 {
                     new ObjectDataExtension("MSH-10", Encoding.UTF8.GetBytes((request.GetStructure("MSH") as ISegment).GetField(10).ToString()))
                 }
-            });
+                });
+            }
             AuditUtil.SendAudit(retVal);
 
             foreach (var r in recordMergeResult.Replaced)
@@ -227,18 +242,21 @@ namespace SanteMPI.Messaging.IHE.Audit
                 retVal = CreateITIAuditEvent(EventIdentifierType.PatientRecord, ActionType.Delete, outcome, ITI8);
                 AuditUtil.AddLocalDeviceActor(retVal);
                 AuditUtil.AddUserActor(retVal);
-                retVal.AuditableObjects.Add(new AuditableObject()
+                if (outcome == OutcomeIndicator.Success)
                 {
-                    Type = AuditableObjectType.Person,
-                    Role = AuditableObjectRole.Patient,
-                    LifecycleType = AuditableObjectLifecycle.LogicalDeletion,
-                    IDTypeCode = AuditableObjectIdType.PatientNumber,
-                    ObjectId = $"{r}^^^{m_configuration.LocalAuthority?.DomainName}&{m_configuration.LocalAuthority.Oid}&ISO",
-                    ObjectData = new List<ObjectDataExtension>()
+                    retVal.AuditableObjects.Add(new AuditableObject()
+                    {
+                        Type = AuditableObjectType.Person,
+                        Role = AuditableObjectRole.Patient,
+                        LifecycleType = AuditableObjectLifecycle.LogicalDeletion,
+                        IDTypeCode = AuditableObjectIdType.PatientNumber,
+                        ObjectId = $"{r}^^^{m_configuration.LocalAuthority?.DomainName}&{m_configuration.LocalAuthority.Oid}&ISO",
+                        ObjectData = new List<ObjectDataExtension>()
                 {
                     new ObjectDataExtension("MSH-10", Encoding.UTF8.GetBytes((request.GetStructure("MSH") as ISegment).GetField(10).ToString()))
                 }
-                });
+                    });
+                }
                 AuditUtil.SendAudit(retVal);
             }
         }
@@ -251,14 +269,18 @@ namespace SanteMPI.Messaging.IHE.Audit
             var retVal = CreateITIAuditEvent(EventIdentifierType.Query, ActionType.Execute, outcome, ITI21);
             AuditUtil.AddLocalDeviceActor(retVal);
             AuditUtil.AddUserActor(retVal);
-            retVal.AuditableObjects = results.Select(o => new AuditableObject()
+
+            if (outcome == OutcomeIndicator.Success)
             {
-                Type = AuditableObjectType.Person,
-                Role = AuditableObjectRole.Patient,
-                LifecycleType = AuditableObjectLifecycle.Disclosure,
-                IDTypeCode = AuditableObjectIdType.PatientNumber,
-                ObjectId = String.Join("~", $"{o.Key}^^^{m_configuration.LocalAuthority.DomainName}&{m_configuration.LocalAuthority.Oid}&ISO")
-            }).ToList();
+                retVal.AuditableObjects = results.Select(o => new AuditableObject()
+                {
+                    Type = AuditableObjectType.Person,
+                    Role = AuditableObjectRole.Patient,
+                    LifecycleType = AuditableObjectLifecycle.Disclosure,
+                    IDTypeCode = AuditableObjectIdType.PatientNumber,
+                    ObjectId = String.Join("~", $"{o.Key}^^^{m_configuration.LocalAuthority.DomainName}&{m_configuration.LocalAuthority.Oid}&ISO")
+                }).ToList();
+            }
             retVal.AuditableObjects.Add(new AuditableObject()
             {
                 Type = AuditableObjectType.SystemObject,
@@ -283,14 +305,17 @@ namespace SanteMPI.Messaging.IHE.Audit
             var retVal = CreateITIAuditEvent(EventIdentifierType.Query, ActionType.Execute, outcome, ITI78);
             AuditUtil.AddLocalDeviceActor(retVal);
             AuditUtil.AddUserActor(retVal);
-            retVal.AuditableObjects = results.Select(o => new AuditableObject()
+            if (outcome == OutcomeIndicator.Success)
             {
-                Type = AuditableObjectType.Person,
-                Role = AuditableObjectRole.Patient,
-                LifecycleType = AuditableObjectLifecycle.Disclosure,
-                IDTypeCode = AuditableObjectIdType.PatientNumber,
-                ObjectId = o.Id
-            }).ToList();
+                retVal.AuditableObjects = results.Select(o => new AuditableObject()
+                {
+                    Type = AuditableObjectType.Person,
+                    Role = AuditableObjectRole.Patient,
+                    LifecycleType = AuditableObjectLifecycle.Disclosure,
+                    IDTypeCode = AuditableObjectIdType.PatientNumber,
+                    ObjectId = o.Id
+                }).ToList();
+            }
             retVal.AuditableObjects.Add(new AuditableObject()
             {
                 Type = AuditableObjectType.SystemObject,
