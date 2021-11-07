@@ -51,10 +51,8 @@ function renderPatientAsString(patient, preferredDomain) {
     retVal += "</span>";
 
    
-    if(patient.tag &&
-        patient.tag["$mdm.type"] &&
-        patient.tag["$mdm.type"][0] == "T") {
-            retVal += `<span class='badge badge-success'><i class='fas fa-gavel'></i> ${SanteDB.locale.getString("ui.mdm.type.T")} </span>`
+    if(patient.determinerConcept == "6b1d6764-12be-42dc-a5dc-52fc275c4935") {
+            retVal += `<span class='badge badge-success' title='${SanteDB.locale.getString("ui.mdm.rot")}'><i class='fas fa-gavel'></i> </span>`
         }
     return retVal;
 }
