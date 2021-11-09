@@ -56,7 +56,7 @@
             <div role="tabpanel" class="tab-pane fade" id="{{rel.relationshipTypeModel.mnemonic}}{{$index}}relative"
                 ng-repeat="rel in relationships track by $index" ng-class="{'active show': $index == 0}">
                 <div class="container mt-2">
-                    <!-- #include virtual="~/views/patients/widgets/partials/nextOfKinView.html" -->
+                    <!-- #include virtual="~/views/mpi/patients/widgets/partials/nextOfKinView.html" -->
                 </div>
             </div>
         </div>
@@ -74,7 +74,7 @@
                                 {{ 'ui.model.patient.relationship.activate' | i18n }} {{ rel.relationshipTypeModel | concept }}
                             </label>
                         </div>
-                        <!-- #include virtual="~/views/patients/widgets/partials/nextOfKinEdit.html" -->
+                        <!-- #include virtual="~/views/mpi/patients/widgets/partials/nextOfKinEdit.html" -->
                     </div>
                 </div>
                 <div role="tabpanel" class="tab-pane fade" id="otherRelative">
@@ -87,7 +87,7 @@
                                     class="form-control" ng-change="rel._active = true" />
                             </div>
                         </div>
-                        <!-- #include virtual="~/views/patients/widgets/partials/nextOfKinEdit.html" -->
+                        <!-- #include virtual="~/views/mpi/patients/widgets/partials/nextOfKinEdit.html" -->
                     </div>
                 </div>
             </div>

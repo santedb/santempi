@@ -54,13 +54,6 @@ angular.module('santedb').controller('MpiPatientNextOfKinController', ["$scope",
                 relationships.push(angular.copy($scope.newRelationship));
             var submissionBundle = new Bundle({ resource: [patient] });
 
-            if (patient.tag && patient.tag["$generated"]) {
-                patient.tag["$mdm.type"] = "T"; // Set a ROT tag
-                patient.determinerConcept = '6b1d6764-12be-42dc-a5dc-52fc275c4935'; // set update as a ROT
-            }
-            else 
-                patient.determinerConcept = DeterminerKeys.Specific;
-
             // Process relationships
             relationships.forEach(function (rel) {
 
@@ -98,7 +91,7 @@ angular.module('santedb').controller('MpiPatientNextOfKinController', ["$scope",
                 }
             });
 
-            await Promise.all(submissionBundle.resource.map(o => correctEntityInformation(o))); // Correct entity information
+            await Promise.all(submissionBundle.resource.map(o => prepareEntityForSubmission(o))); // Correct entity information
 
             await SanteDB.resources.bundle.insertAsync(submissionBundle);
 
