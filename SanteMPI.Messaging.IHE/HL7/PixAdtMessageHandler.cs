@@ -27,7 +27,7 @@ namespace SanteMPI.Messaging.IHE.HL7
         /// <summary>
         /// Localization service
         /// </summary>
-        public PixAdtMessageHandler(ILocalizationService localizationService) : base(localizationService)
+        public PixAdtMessageHandler(ILocalizationService localizationService, IRecordMergingService<Patient> mergeService, IRepositoryService<Bundle> bundleService) : base(localizationService, mergeService, bundleService)
         {
         }
 
