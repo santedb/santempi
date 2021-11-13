@@ -349,7 +349,7 @@ async function renderScoringSubgraph(configuration, actuals, detailOutput, instr
         else {
             retVal += `CLASS-->|"[< ${configuration.nonmatchThreshold}]"| NON["<i class='fas fa-times'></i> Non Match"]\n`;
             retVal += `CLASS-->|"[< ${configuration.matchThreshold}]"| PROB["<i class='fas fa-question'></i> Probable Match"]\n`;
-            retVal += `CLASS-->|"[]> ${configuration.matchThreshold}]"| MATCH["<i class='fas fa-check'></i> Match"]\n`;
+            retVal += `CLASS-->|"[> ${configuration.matchThreshold}]"| MATCH["<i class='fas fa-check'></i> Match"]\n`;
         }
         retVal += 'style NON fill:#f99,stroke:#900\n';
         retVal += 'style PROB fill:#ff9,stroke:#990\n';
