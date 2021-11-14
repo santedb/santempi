@@ -14,26 +14,26 @@
                 <ul class="list-group">
                     <li class="list-group-item list-group-item-danger"><i class="fas fa-times-circle"></i> {{
                         'ui.mpi.match.class.0' | i18n }}
-                        <span class="badge mr-2 badge-primary"
+                        <span class=" mr-2 alert-primary"
                             > {{ scopedObject.minScore | number: 4 }} - {{
-                            scopedObject.nonmatchThreshold | number: 4 }}</span><span class="badge mr-2 badge-info"> 0% - {{ (scopedObject.nonmatchThreshold +
+                            scopedObject.nonmatchThreshold | number: 4 }}</span><span class=" mr-2 alert-info"> 0% - {{ (scopedObject.nonmatchThreshold +
                             -scopedObject.minScore) / (scopedObject.maxScore + -scopedObject.minScore) * 100 |
                             number: 2
                             }}%</span>
                     </li>
                     
                     <li class="list-group-item list-group-item-warning"><i class="fas fa-question-circle"></i> {{
-                        'ui.mpi.match.class.1' | i18n }} <span class="badge badge-primary mr-2"
+                        'ui.mpi.match.class.1' | i18n }} <span class=" alert-primary mr-2"
                             > {{ scopedObject.nonmatchThreshold | number: 4 }} - {{
-                            scopedObject.matchThreshold | number: 4 }}</span><span class="badge badge-info mr-2"> {{ (scopedObject.nonmatchThreshold +
+                            scopedObject.matchThreshold | number: 4 }}</span><span class=" alert-info mr-2"> {{ (scopedObject.nonmatchThreshold +
                             -scopedObject.minScore)
                             / (scopedObject.maxScore + -scopedObject.minScore) * 100 | number: 2 }} - {{
                             (scopedObject.matchThreshold + -scopedObject.minScore) / (scopedObject.maxScore +
                             -scopedObject.minScore) * 100 | number: 2 }}%</span></li>
                    
                     <li class="list-group-item list-group-item-success"><i class="fas fa-check-circle"></i> {{
-                        'ui.mpi.match.class.2' | i18n }} <span class="badge mr-2 badge-primary" > {{ scopedObject.matchThreshold | number: 4 }} - {{
-                            scopedObject.maxScore | number: 4 }}</span><span class="badge badge-info mr-2"> {{ (scopedObject.matchThreshold +
+                        'ui.mpi.match.class.2' | i18n }} <span class=" mr-2 alert-primary" > {{ scopedObject.matchThreshold | number: 4 }} - {{
+                            scopedObject.maxScore | number: 4 }}</span><span class=" alert-info mr-2"> {{ (scopedObject.matchThreshold +
                             -scopedObject.minScore) /
                             (scopedObject.maxScore + -scopedObject.minScore) * 100 | number: 2 }}% - 100%</span>
                     </li>
@@ -55,9 +55,9 @@
                     <ul class="list-group">
                         <li class="list-group-item list-group-item-danger"><i class="fas fa-times-circle"></i> {{
                             'ui.mpi.match.class.0' | i18n }}
-                            <span class="badge mr-2 badge-primary"
+                            <span class=" mr-2 alert-primary"
                                 > {{ scopedObject.minScore | number: 4 }} - {{
-                                scopedObject.nonmatchThreshold | number: 4 }}</span><span class="badge mr-2 badge-info"> 0% - {{ (scopedObject.nonmatchThreshold +
+                                scopedObject.nonmatchThreshold | number: 4 }}</span><span class=" mr-2 alert-info"> 0% - {{ (scopedObject.nonmatchThreshold +
                                 -scopedObject.minScore) / (scopedObject.maxScore + -scopedObject.minScore) * 100 |
                                 number: 2
                                 }}%</span>
@@ -69,9 +69,9 @@
 
                         </li>
                         <li class="list-group-item list-group-item-warning"><i class="fas fa-question-circle"></i> {{
-                            'ui.mpi.match.class.1' | i18n }} <span class="badge badge-primary mr-2"
+                            'ui.mpi.match.class.1' | i18n }} <span class=" alert-primary mr-2"
                                 > {{ scopedObject.nonmatchThreshold | number: 4 }} - {{
-                                scopedObject.matchThreshold | number: 4 }}</span><span class="badge badge-info mr-2"> {{ (scopedObject.nonmatchThreshold +
+                                scopedObject.matchThreshold | number: 4 }}</span><span class=" alert-info mr-2"> {{ (scopedObject.nonmatchThreshold +
                                 -scopedObject.minScore)
                                 / (scopedObject.maxScore + -scopedObject.minScore) * 100 | number: 2 }} - {{
                                 (scopedObject.matchThreshold + -scopedObject.minScore) / (scopedObject.maxScore +
@@ -82,8 +82,8 @@
                                 ng-model="scopedObject.matchThreshold" />
                         </li>
                         <li class="list-group-item list-group-item-success"><i class="fas fa-check-circle"></i> {{
-                            'ui.mpi.match.class.2' | i18n }} <span class="badge mr-2 badge-primary" > {{ scopedObject.matchThreshold | number: 4 }} - {{
-                                scopedObject.maxScore | number: 4 }}</span><span class="badge badge-info mr-2"> {{ (scopedObject.matchThreshold +
+                            'ui.mpi.match.class.2' | i18n }} <span class=" mr-2 alert-primary" > {{ scopedObject.matchThreshold | number: 4 }} - {{
+                                scopedObject.maxScore | number: 4 }}</span><span class=" alert-info mr-2"> {{ (scopedObject.matchThreshold +
                                 -scopedObject.minScore) /
                                 (scopedObject.maxScore + -scopedObject.minScore) * 100 | number: 2 }}% - 100%</span>
                         </li>
