@@ -1,13 +1,13 @@
 <div xmlns="http://www.w3.org/1999/xhtml" xmlns:sdb="http://santedb.org/applet">
-    <sdb:widget order="0" name="ui.mpi.matches.config.blocking.properties" type="Panel" size="Large"
-        altViews="Edit" context="org.santedb.mpi.matches.config.blocking">
+    <sdb:widget order="0" name="ui.mpi.matches.config.blocking.properties" type="Panel" size="Large" altViews="Edit"
+        context="org.santedb.mpi.matches.config.blocking">
         <sdb:icon>fas fa-database</sdb:icon>
         <sdb:description lang="en">Properties</sdb:description>
     </sdb:widget>
 
 
     <div ng-if="panel.view != 'Edit'" class="container-fluid">
-        
+
         <div class="accordion" id="blockAccordion">
             <div class="card shadow" ng-repeat="block in scopedObject.blocking track by $index">
                 <div class="card-header">
@@ -21,23 +21,34 @@
                 </div>
                 <div class="collapse" id="block{{$index}}" data-parent="#blockAccordion">
                     <div class="card-body container">
-                        
+
                         <div class="row">
-                            <label class="control-label col-md-2 col-sm-12">{{ 'ui.model.matchConfiguration.blocking.maxResults' | i18n }} <hint-popover hint-title="ui.model.matchConfiguration.blocking.maxResults" /></label>
+                            <label class="control-label col-md-2 col-sm-12">{{
+                                'ui.model.matchConfiguration.blocking.maxResults' | i18n }}
+                                <hint-popover hint-title="ui.model.matchConfiguration.blocking.maxResults" />
+                            </label>
                             <div class="col-md-10 col-sm-12">
-                                {{  'ui.model.matchConfiguration.blocking.maxResults.description' | i18n: { recs: block.maxResults } }} 
+                                {{ 'ui.model.matchConfiguration.blocking.maxResults.description' | i18n: { recs:
+                                block.maxResults } }}
                             </div>
                         </div>
 
                         <div class="row" ng-if="$index &gt; 0">
-                            <label class="control-label col-md-2 col-sm-12">{{ 'ui.model.matchConfiguration.blocking.op' | i18n }}<hint-popover hint-title="ui.model.matchConfiguration.blocking.op" /></label>
+                            <label class="control-label col-md-2 col-sm-12">{{ 'ui.model.matchConfiguration.blocking.op'
+                                | i18n }}
+                                <hint-popover hint-title="ui.model.matchConfiguration.blocking.op" />
+                            </label>
                             <div class="col-md-10 col-sm-12">
-                                <span class="badge badge-info">{{ 'ui.model.matchConfiguration.blocking.op.' + block.op | i18n }}</span> 
+                                <span class="badge badge-info">{{ 'ui.model.matchConfiguration.blocking.op.' + block.op
+                                    | i18n }}</span>
                             </div>
                         </div>
 
                         <div class="row">
-                            <label class="control-label col-md-2 col-sm-12">{{ 'ui.model.matchConfiguration.blocking.filters' | i18n }} <hint-popover hint-title="ui.model.matchConfiguration.blocking.filters" /></label>
+                            <label class="control-label col-md-2 col-sm-12">{{
+                                'ui.model.matchConfiguration.blocking.filters' | i18n }}
+                                <hint-popover hint-title="ui.model.matchConfiguration.blocking.filters" />
+                            </label>
                             <div class="col-md-10 col-sm-12">
                                 <table class="table table-border">
                                     <thead>
@@ -52,7 +63,7 @@
                                     </thead>
                                 </table>
                                 <div class="alert alert-info">
-                                    <i class="fas fa-info-circle"></i> {{ 'ui.mpi.matches.config.block.filter.info' | i18n }}
+                                    <i class="fas fa-info-circle"></i> <span ng-bind-html="'ui.mpi.matches.config.block.filter.info' | i18n"></span>
                                 </div>
                             </div>
                         </div>
@@ -62,6 +73,166 @@
             </div>
         </div>
 
+    </div>
+    <div class="container-fluid" ng-controller="MpiConfigurationEditController" >
+        <form novalidate="novalidate" name="panel.editForm" method="dialog" ng-submit="save(panel.editForm)" ng-if="panel.view == 'Edit'">
+            <div class="alert alert-info" ng-if="scopedObject.blocking.length == 0">
+                <i class="fas fa-info-circle"></i> {{ 'ui.mpi.matches.config.block.none' | i18n }}
+            </div>
+            <div class="card shadow" ng-repeat="block in scopedObject.blocking track by $index">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <button type="button" class="collapse-indicator btn btn-link p-0" data-toggle="collapse"
+                            data-target="#blockEdit{{$index}}">
+                            <i class="fas fa-filter"></i> <span class="ml-2">Block{{$index}}</span>
+                            <i class="fas fa-fw fa-chevron-right"></i>
+                        </button>
+                    </h5>
+                </div>
+                <div class="collapse in show" id="blockEdit{{$index}}">
+                    <div class="card-body container-fluid">
+
+                        <div class="row m-1">
+                            <label class="control-label col-md-2 col-sm-12">{{
+                                'ui.model.matchConfiguration.blocking.maxResults' | i18n }}
+                                <hint-popover hint-title="ui.model.matchConfiguration.blocking.maxResults" />
+                            </label>
+                            <div class="col-md-10 col-sm-12">
+                                <div class="input-group">
+                                    <input type="range" min="5" max="25" step="5" class="form-control"
+                                        name="block{{$index}}maxResults" required="required"
+                                        ng-model="block.maxResults" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            {{ 'ui.model.matchConfiguration.blocking.maxResults.description' | i18n: {
+                                            recs:
+                                            block.maxResults } }}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="alert alert-danger"
+                                    ng-show="panel.editForm['block' + $index + 'maxResults'].$error['required']">
+                                    <i class="fas fa-exclamation-triangle"></i> {{ 'ui.error.required' | i18n }}
+                                </div>
+                                <div class="alert alert-danger"
+                                    ng-show="panel.editForm['block' + $index + 'maxResults'].$error['max'] || panel.editForm['block' + $index + 'maxResults'].$error['min']">
+                                    <i class="fas fa-exclamation-triangle"></i> {{ 'ui.error.range' | i18n: { min: 0 ,
+                                    max: 25 } }}
+                                </div>
+                               
+                            </div>
+                        </div>
+
+                        <div class="row m-1" ng-if="$index &gt; 0">
+                            <label class="control-label col-md-2 col-sm-12">{{ 'ui.model.matchConfiguration.blocking.op'
+                                | i18n }}
+                                <hint-popover hint-title="ui.model.matchConfiguration.blocking.op" />
+                            </label>
+                            <div class="col-md-10 col-sm-12">
+                                <select ng-model="block.op" name="block{{$index}}op" class="form-control" ng-required="$index &gt; 0">
+                                    <option value="AndAlso">{{ 'ui.model.matchConfiguration.blocking.op.AndAlso' | i18n }}</option>
+                                    <option value="OrElse">{{ 'ui.model.matchConfiguration.blocking.op.OrElse' | i18n }}</option>
+                                </select>
+                                <div class="alert alert-danger"
+                                ng-show="panel.editForm['block' + $index + 'op'].$error['required']">
+                                <i class="fas fa-exclamation-triangle"></i> {{ 'ui.error.required' | i18n }}
+                            </div>
+                            </div>
+                        </div>
+
+                        <div class="row  m-1">
+                            <label class="control-label col-md-2 col-sm-12">{{
+                                'ui.model.matchConfiguration.blocking.filters' | i18n }}
+                                <hint-popover hint-title="ui.model.matchConfiguration.blocking.filters" />
+                            </label>
+                            <div class="col-md-10 col-sm-12">
+                                <div class="container-fluid">
+                                    <div class="row" ng-repeat="flt in block.filter track by $index">
+                                        
+                                        <div class="col">
+                                            <div class="card card-info m-1">
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        <label class="col-sm-12 col-md-2 control-label">{{
+                                                            'ui.mpi.matches.config.block.filter.whenHeader' | i18n }}
+                                                            <hint-popover
+                                                                hint-title="ui.mpi.matches.config.block.filter.whenHeader" />
+                                                        </label>
+                                                        <div class="col-sm-12 col-md-10">
+                                                            <hdsi-expression class="form-control"
+                                                                focal-type="scopedObject.target[0].resource"
+                                                                name="expr{{$index}}when"
+                                                                simple-input="true"
+                                                                ng-model="flt.when[0]" />
+                                                                <div class="alert alert-danger"
+                                                                ng-show="panel.editForm['expr' + $index + 'when'].$error['hdsiProperty'] ">
+                                                                <i class="fas fa-exclamation-triangle"></i> {{ 'ui.error.hdsi.propertyMissing' | i18n }}
+                                                            </div>
+                                                        </div>
+                                                        <label class="col-sm-12 col-md-2 control-label">{{
+                                                            'ui.mpi.matches.config.block.filter.filterHeader' | i18n }}
+                                                            <hint-popover
+                                                                hint-title="ui.mpi.matches.config.block.filter.filterHeader" />
+                                                        </label>
+                                                        <div class="col-sm-12 col-md-10">
+                                                            <div class="input-group">
+                                                                <div class="input-group-prepend" ng-if="$index &gt; 0">
+                                                                    <span class="input-group-text">and</span>
+                                                                </div>
+                                                                <hdsi-expression required="true" class="form-control" name="expr{{$index}}lhs"
+                                                                    ng-class="{ 'border-danger' : panel.editForm['expr' + $index + 'lhs'].$error['required'] || panel.editForm['expr' + $index + 'lhs'].$error['hdsiNeedsRhs'] || }"
+                                                                    focal-type="scopedObject.target[0].resource"
+                                                                    include-rhs="1"
+                                                                    simple-input="true"
+                                                                    def-variables="{ '$input' : scopedObject.target[0].resource }"
+                                                                    ng-model="flt.expression" />
+                                                                <div class="input-group-append"
+                                                                    ng-if="block.filter.length &gt; 1">
+                                                                    <button type="button" class="btn btn-danger"
+                                                                        ng-click="block.filter.splice($index, 1)"><i
+                                                                            class="fas fa-minus-circle"></i>
+                                                                        {{ 'ui.action.remove' | i18n }}</button>
+                                                                </div>
+                                                            </div>
+                                                            <div class="alert alert-danger"
+                                                                    ng-show="panel.editForm['expr' + $index + 'lhs'].$error['required'] ">
+                                                                    <i class="fas fa-exclamation-triangle"></i> {{ 'ui.error.required' | i18n }}
+                                                                </div>
+                                                                <div class="alert alert-danger"
+                                                                ng-show="panel.editForm['expr' + $index + 'lhs'].$error['hdsiNeedsRhs'] ">
+                                                                <i class="fas fa-exclamation-triangle"></i> {{ 'ui.error.hdsi.rhsMissing' | i18n }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="btn-group float-right">
+                                                <button type="button" ng-click="addFilter(block)"
+                                                ng-disabled="!panel.editForm.$valid"
+                                                    class="btn btn-success">
+                                                    <i class="fas fa-filter"></i> {{ 'ui.action.add' | i18n }}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="btn-group float-right">
+                <button type="button" ng-click="addBlock()" class="btn btn-success" ng-disabled="!panel.editForm.$valid"> 
+                    <i class="fas fa-plus"></i> {{ 'ui.action.add' | i18n }}
+                </button>
+            </div>
+        </form>
     </div>
 
 </div>

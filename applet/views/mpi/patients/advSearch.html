@@ -21,118 +21,108 @@
                             <i class="fas fa-search-plus"></i>
                             {{ 'ui.mpi.patient.advSearch.parameters' | i18n }}
                             <i class="fa fa-chevron-right"></i>
-                        </button></h2>
+                        </button>
+                    </h2>
                 </div>
                 <div class="collapse show" id="searchParameters" data-parent="#searchAccordion">
-                    <form class="form" ng-submit="searchMpi(searchForm)" name="searchForm">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>{{ 'ui.mpi.patient.advSearch.parameters.name' | i18n }}</th>
-                                    <th>{{ 'ui.mpi.patient.advSearch.parameters.operator' | i18n }}</th>
-                                    <th>{{ 'ui.mpi.patient.advSearch.parameters.value' | i18n }}</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr ng-repeat="s in search track by $index">
-                                    <td>
-                                        <select class="form-control" ng-model="s.parm" required="required"
-                                            ng-change="s.val = ''">
-                                            <option value="_any">
-                                                {{ 'ui.mpi.patient.advSearch.parameters.any' | i18n }}</option>
-                                            <option value="name.component[Given].value">
-                                                {{ 'ui.mpi.patient.advSearch.parameters.givenName' | i18n }}</option>
-                                            <option value="name.component[Family].value">
-                                                {{ 'ui.mpi.patient.advSearch.parameters.familyName' | i18n }}</option>
-                                            <option value="identifier.value">
-                                                {{ 'ui.mpi.patient.advSearch.parameters.identifier' | i18n }}</option>
-                                            <option value="address.component.value">
-                                                {{ 'ui.mpi.patient.advSearch.parameters.addressSearch' | i18n }}</option>
-                                            <option value="genderConcept">
-                                                {{ 'ui.mpi.patient.advSearch.parameters.gender' | i18n }}</option>
-                                            <option value="dateOfBirth">
-                                                {{ 'ui.mpi.patient.advSearch.parameters.dateOfBirth' | i18n }}</option>
-                                                <option value="relationship[ServiceDeliveryLocation].target">
-                                                    {{ 'ui.mpi.patient.advSearch.parameters.facility' | i18n }}
-                                                </option>
+                    <form class="form" ng-submit="searchMpi(searchForm, true)" name="searchForm">
+
+                        <div class="row" ng-repeat="s in search.custom track by $index">
+                            <div class="col">
+                                <div class="input-group">
+                                    <div class="input-group-prepend" ng-if="$index &gt; 0">
+                                        <span class="input-group-text">and</span>
+                                    </div>
+                                    <hdsi-expression required="true" class="form-control" focal-type="'Patient'" ng-model="s.filter" />
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary dropdown-toggle" type="button"
+                                            data-toggle="dropdown" aria-expanded="false">{{ s.op || 'equal' }}</button>
+                                        <div class="dropdown-menu">
+                                            <button type="button" ng-click="s.op = 'equal'"
+                                                class="dropdown-item">equal</button>
+                                            <button type="button" ng-click="s.op = 'not-equal'"
+                                                class="dropdown-item">not-equal</button>
+                                            <button type="button" ng-click="s.op = 'less-than'" class="dropdown-item"
+                                                ng-if="s.filter.type == 'DateTime' || s.filter.type == 'DateTimeOffset' || s.filter.type == 'Int32' || s.filter.type == 'Decimal'">
+                                                less-than</button>
+                                            <button type="button" ng-click="s.op = 'less-than-equal'"
+                                                class="dropdown-item"
+                                                ng-if="s.filter.type == 'DateTime' || s.filter.type == 'DateTimeOffset' || s.filter.type == 'Int32' || s.filter.type == 'Decimal'">
+                                                less-than-equal</button>
+                                            <button type="button" ng-click="s.op = 'greater-than'" class="dropdown-item"
+                                                ng-if="s.filter.type == 'DateTime' || s.filter.type == 'DateTimeOffset' || s.filter.type == 'Int32' || s.filter.type == 'Decimal'">
+                                                greater-than</button>
+                                            <button type="button" ng-click="s.op = 'greater-than-equal'"
+                                                class="dropdown-item"
+                                                ng-if="s.filter.type == 'DateTime' || s.filter.type == 'DateTimeOffset' || s.filter.type == 'Int32' || s.filter.type == 'Decimal'">
+                                                greater-than-equal</button>
+                                            <button type="button" ng-click="s.op = 'approx'" class="dropdown-item"
+                                                ng-if="s.filter.type == 'String'">approx</button>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-control">
+                                        <select required="true" class="form-control" style="border:none" ng-model="s.value" ng-if="s.filter.values">
+                                            <option ng-repeat="v in s.filter.values" value="{{v}}">{{v}}</option>
                                         </select>
-                                    </td>
-                                    <td>
-                                        <select class="form-control" ng-model="s.op" required="required">
-                                            <option value="eq">{{ 'ui.operator.eq' | i18n }}</option>
-                                            <option value="ne" ng-if="!s.data._fts">{{ 'ui.operator.ne' | i18n }}</option>
-                                            <option value="similar" ng-if="s.data.type == 'string' &amp;&amp; !s.data._fts">
-                                                {{ 'ui.operator.similar' | i18n }}</option>
-                                            <option value="soundslike" ng-if="s.data.type == 'string' &amp;&amp; !s.data._fts">
-                                                {{ 'ui.operator.soundslike' | i18n }}</option>
-                                                <option value="approx" ng-if="s.data.type == 'string' &amp;&amp; !s.data._fts">
-                                                    {{ 'ui.operator.approx' | i18n }}</option>
-                                        </select>
-                                    </td>
-                                    <td colspan="{{ $index == 0 ? 2 : 1}}">
-                                        <div ng-switch="s.data.type">
-                                            <input class="form-control" ng-model="s.val" required="required" type="text"
-                                                ng-switch-when="string" />
-                                            <input class="form-control" ng-model="s.val" max="{{ s.data.max }}"
-                                                required="required" type="date" ng-switch-when="date" />
-                                            <select class="form-control" ng-model="s.val" ng-switch-when="list"
-                                                required="required">
-                                                <option ng-repeat="o in s.data.list" value="{{o.id}}">{{ o | concept }}
-                                                </option>
-                                            </select>
-                                            <div ng-switch-when="entity">
-                                                <entity-search class="form-control" ng-model="s.val" required="required"
-                                                    type="s.data.entity" filter="s.data.filter"
-                                                    search-field="s.data.search" />
+                                        <div ng-switch="s.filter.type" ng-if="!s.filter.values">
+                                            <input required="true" autocomplete="__away" type="text" style="border:none" class="form-control"
+                                                ng-switch-when="Guid" ng-model="s.value" />
+                                            <input required="true" autocomplete="__away" style="border:none" type="text" class="form-control"
+                                                ng-switch-when="String" ng-model="s.value" />
+                                            <input required="true" autocomplete="__away" style="border:none" type="date" class="form-control"
+                                                ng-switch-when="DateTime" ng-model="s.value" />
+                                            <input required="true" autocomplete="__away" style="border:none" type="datetime" class="form-control"
+                                                ng-switch-when="DateTimeOffset" ng-model="s.value" />
+                                            <input required="true" autocomplete="__away" style="border:none" type="number" class="form-control"
+                                                ng-switch-when="Decimal" ng-model="s.value" />
+                                            <input required="true" autocomplete="__away" style="border:none" type="number" class="form-control"
+                                                ng-switch-when="Int32" ng-model="s.value" />
+                                            <input required="true" type="checkbox" class="form-control" ng-switch-when="Boolean"
+                                                ng-model="s.value" />
+                                            <div ng-switch-default="ng-switch-default">
+
+                                                <entity-search required="true"  style="border:none" type="s.filter.type" ng-if="s.filter.type"
+                                                    ng-model="s.value" class="form-control" />
+                                                <input required="true"  type="text" style="border:none" class="form-control" ng-model="s.value"
+                                                    ng-if="!s.filter.type" />
                                             </div>
                                         </div>
-                                    </td>
-                                    <td ng-if="$index &gt; 0">
+                                    </div>
+                                    <div class="input-group-append" ng-if="search.custom.length &gt; 1">
                                         <button type="button" class="btn btn-danger"
-                                            ng-click="search.splice($index, 1)"><i class="fas fa-minus-circle"></i>
+                                            ng-click="search.custom.splice($index, 1)"><i class="fas fa-minus-circle"></i>
                                             {{ 'ui.action.remove' | i18n }}</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td colspan="4">
-                                        <div class="float-right btn-group">
-                                            <button type="button" class="btn btn-success"
-                                                ng-click="search.push({ 'parm' : 'name.component.value', 'op': 'eq'})"><i
-                                                    class="fas fa-plus-circle"></i>
-                                                {{ 'ui.action.add' | i18n }}</button>
-                                            <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i>
-                                                {{ 'ui.action.search' | i18n }}</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tfoot>
-                        </table>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="float-right btn-group">
+                                    <button type="button" class="btn btn-success" ng-disabled="!searchForm.$valid"
+                                        ng-click="search.custom.push({ 'filter' : '' })"><i
+                                            class="fas fa-plus-circle"></i>
+                                        {{ 'ui.action.add' | i18n }}</button>
+                                    <button type="submit" class="btn btn-primary" ng-disabled="!searchForm.$valid"><i class="fas fa-search"></i>
+                                        {{ 'ui.action.search' | i18n }}</button> 
+                                </div>
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-    <div class="row" ng-if="filter">
-        <div class="col">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="m-0"><i class="fas fa-table"></i> {{ 'ui.mpi.patient.search.results' | i18n }}</h5>
-                </div>
-            </div>
-                <entity-table 
-                    type="Patient"
-                    id="MpiPatientSearchResultsTable"
-                    can-filter="false"
-                    no-buttons="true"
-                    default-query="filter"
-                    i18n-prefix="'ui.model.patient.'"
-                    render="{ 'address': renderAddress, 'name': renderName, 'dateOfBirth': renderDob, 'genderConcept': renderGender, 'identifier': renderIdentifier }"
-                    properties="[ 'name', 'dateOfBirth', 'genderConcept', 'identifier','address','creationTime' ]"
-                    sort="{ 'name' : 'name.component.value', 'dateOfBirth' : 'dateOfBirth', 'genderConcept' : 'genderConcept', 'identifier' : 'identifier.value' , 'timestamp' : 'creationTime' }"
-                    item-actions="[ { name: 'view', demand: '1.3.6.1.4.1.33349.3.1.5.9.2.2.3', sref: 'santedb-admin.mpi.patients.view', className: 'btn-primary', icon: 'fas fa-arrow-right' } ]"></entity-table>
+    <div class="row">
+        <div class="col" ng-if="filter">
+            <h2>{{ 'ui.mpi.patient.search.results' | i18n }}</h2>
+            <entity-table type="Patient" id="MpiPatientSearchResultsTable" can-filter="false" default-query="filter"
+                i18n-prefix="'ui.model.patient.'" render="{ 'demographics': renderDemographics }"
+                properties="[ 'demographics' ]"
+                item-actions="[ { name: 'view', demand: '1.3.6.1.4.1.33349.3.1.5.9.2.2.3', sref: 'santedb-admin.mpi.patients.view', className: 'btn-primary', icon: 'fas fa-arrow-right' } ]">
+            </entity-table>
         </div>
     </div>
 
