@@ -277,7 +277,6 @@ Source: {#iCDRBase}\bin\Release\SanteDB.Rest.HDSI.dll; DestDir: {app}; Component
 
 ; Common .NET Standard
 Source: {#iCDRBase}\bin\Release\Microsoft.Bcl.AsyncInterfaces.dll; DestDir: {app}; 
-Source: {#iCDRBase}\bin\Release\Microsoft.Diagnostics.Runtime.dll; DestDir: {app}; 
 Source: {#iCDRBase}\bin\Release\Microsoft.Win32.Primitives.dll; DestDir: {app}; 
 Source: {#iCDRBase}\bin\Release\netstandard.dll; DestDir: {app}; Components: core server
 Source: {#iCDRBase}\bin\Release\System.*.dll; DestDir: {app}; 
