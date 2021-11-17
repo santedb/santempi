@@ -121,6 +121,36 @@ angular.module('santedb').controller('MpiConfigurationDetailController', ["$scop
     }
 }]).controller('MpiConfigurationEditController', ["$scope", "$rootScope", "$state", "$timeout", function ($scope, $rootScope, $state, $timeout) {
 
+    // Add a blocking instruction
+    $scope.addBlock = function() {
+        if(!$scope.scopedObject.blocking)
+        {
+            $scope.scopedObject.blocking = [];
+        }
+
+        $scope.scopedObject.blocking.push({
+            maxResults : 10,
+            op: 'AndAlso',
+            filter: [
+                {
+                    expression: "",
+                    when: []
+                }
+            ]
+            
+            
+        });
+        refreshDiagrams($scope.scopedObject);
+
+    }
+
+    // Add a filter expression
+    $scope.addFilter = function(block) {
+        block.filter.push({   expression: "", when: [] });
+        refreshDiagrams($scope.scopedObject);
+
+    }
+
     // Add a tag
     $scope.addTag = function (tag) {
         $scope.scopedObject.meta = $scope.scopedObject.meta || {};

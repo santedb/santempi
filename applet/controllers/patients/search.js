@@ -21,127 +21,62 @@
  */
 angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$rootScope", "$state", "$templateCache", "$stateParams", function ($scope, $rootScope, $state, $templateCache, $stateParams) {
 
-    // Get datatype of the parameter
-    function setMetadata(parameter) {
-        switch (parameter.parm) {
-            case "name.component[Family].value":
-            case "name.component[Given].value":
-            case "address.component[State].value":
-            case "address.component[Country].value":
-            case "address.component[City].value":
-            case "identifier.value":
-                parameter.data = { type: "string" };
-                break;
-            case "_any":
-                parameter.data = { type: "string", _fts: true }
-                break;
-            case "relationship[ServiceDeliveryLocation].target":
-                parameter.data = { type: "entity", entity: "Place", filter: { classConcept: `${EntityClassKeys.ServiceDeliveryLocation}` }, search: 'name.component.value' };
-                break;
-            case "address":
-                parameter.data = { type: "entity", entity: "Place", filter: { classConcept: `!${EntityClassKeys.ServiceDeliveryLocation}` }, search: 'name.component.value' };
-                break;
-            case "genderConcept":
-                parameter.data = { type: "list" };
-                SanteDB.resources.concept.findAsync({ conceptSet: "e9eecd3c-7b80-47f9-9cb6-55c8d3110fb0" }).then((r) => {
-                    parameter.data.list = r.resource;
-                    $scope.$apply();
-                }).catch((e) => {
-                    console.error(e);
-                })
-                break;
-            case "dateOfBirth":
-            case "dateOfDeath":
-                parameter.data = { type: "date", max: moment().format("YYY-MM-DD") }
-                break;
 
+
+    var defaultSearch = {
+        advanced: {
+            name: [ new EntityName() ],
+            address: [ new EntityAddress() ],
+            dateOfBirth: {
+                from : null,
+                to: null
+            },
+            genderConcept: null
+        },
+        val: $stateParams.q,
+        custom: [ {} ]
+    }
+
+
+    // Convert value to a search clause
+    function makeSearchClause(value) {
+        if(value == "") {
+            return null;
         }
-    }
-
-    // Render address
-    $scope.renderAddress = function (patient) {
-
-        var retVal = "";
-        if (patient.address)
-            Object.keys(patient.address).forEach(function (n) {
-                retVal += `${SanteDB.display.renderEntityAddress(patient.address[n])} <span class="badge badge-info">${n}</span> ,`;
-            });
-        else
-            retVal = "N/A ";
-        return retVal.substr(0, retVal.length - 1);
-    }
-
-    // Render the names
-    $scope.renderName = function (patient) {
-
-        var retVal = "";
-        if (patient.name)
-            Object.keys(patient.name).forEach(function (n) {
-                retVal += `${SanteDB.display.renderEntityName(patient.name[n])}  ,`;
-            });
-        else
-            retVal = "N/A ";
-
-        retVal = retVal.substr(0, retVal.length - 1);
-        if (patient.tag && patient.tag["$upstream"] == "true") {
-            retVal += `<span class='badge badge-info'><i class='fas fa-cloud'></i> ${SanteDB.locale.getString("ui.search.onlineResult")} </span>`;
+        else if(value[0] == '~') // sound
+        {
+            return `:(approx|'${value.substring(1)}')`;
         }
-
-        return retVal.substr(0, retVal.length - 1);
-    }
-
-    // Render DOB
-    $scope.renderDob = function (patient) {
-        if (patient.dateOfBirth)
-            return SanteDB.display.renderDate(patient.dateOfBirth, patient.dateOfBirthPrecision);
-        else
-            return "N/A";
-    }
-
-    // Render the patient's gender
-    $scope.renderGender = function (patient) {
-        var retVal = "";
-        switch (patient.genderConcept) {
-            case "f4e3a6bb-612e-46b2-9f77-ff844d971198":
-                retVal += '<i class="fas fa-male"></i> ';
-                break;
-            case "094941e9-a3db-48b5-862c-bc289bd7f86c":
-                retVal += '<i class="fas fa-female"></i> ';
-                break;
-            default:
-                retVal += '<i class="fas fa-question-circle"></i> ';
+        else if(value.indexOf("*") > -1) // fuzzy
+        {
+            return `~${value}`;
         }
-
-        if (patient.genderConceptModel && patient.genderConceptModel.mnemonic) {
-            retVal += SanteDB.display.renderConcept(patient.genderConceptModel);
+        else 
+        {
+            return value;
         }
-        return retVal;
+    }   
+
+    // Validate the advanced search 
+    // At least 3 fuzzy fields must be filled OR an identifier
+    $scope.validateAdvancedSearch = function() {
+        if(!$scope.search._advanced) return false;
+
+        var fields = 0, advanced = $scope.search.advanced;
+        var address= (advanced.address.$other[0].component || {});
+        var name = (advanced.name.$other[0].component || {});
+        if(name.Given || name.Family) fields++;
+        if(advanced.identifier) fields += 3; // identifier= pass
+        if(address.City || address.State || address.StreetAddressLine || address.County) fields++;
+        if(advanced.genderConcept) fields++;
+        if(advanced.dateofBirth && (advanced.dateOfBirth.from || advanced.dateOfBirth.to)) fields++;
+
+        return fields >= 1;
     }
 
-    // Render identifiers
-    $scope.renderIdentifier = function (patient) {
-
-        var preferred = $rootScope.system.config.application.setting['aa.preferred'];
-
-        var retVal = "";
-        if (patient.identifier) {
-            Object.keys(patient.identifier).forEach(function (id) {
-                if (preferred && id == preferred || !preferred) {
-                    if (Array.isArray(patient.identifier[id]))
-                        retVal += `${patient.identifier[id].map(function (d) { return d.value }).join(' or ')} <span class="badge badge-dark">${patient.identifier[id].authority ? patient.identifier[id].authority.name : id}</span> ,`;
-                    else
-                        retVal += `${patient.identifier[id].value} <span class="badge badge-dark">${patient.identifier[id].authority ? patient.identifier[id].authority.name : id}</span> ,`;
-                }
-            });
-        }
-
-        else retVal += "N/A ";
-        return retVal.substring(0, retVal.length - 1);
-    }
-
+    $scope.renderDemographics = renderPatientAsString;
     // Search MPI
-    $scope.searchMpi = async function (formData) {
-
+    $scope.searchMpi = async function (formData, custom) {
         if (formData != null && formData.$invalid)
             return;
 
@@ -157,59 +92,101 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
                 SanteDB.authentication.setElevator(elevator);
             }
 
-            // Build query and bind query to the search table
             var queryObject = {
                 "_e": Math.random(),
                 "_orderBy": "creationTime:desc",
                 "_upstream": $scope.search._upstream
             };
 
-            $scope.search.forEach(function (f) {
-                var sval = f.val;
-                switch (f.op) {
-                    case "ne":
-                        sval = "!" + sval;
-                        break;
-                    case "similar":
-                        sval = "~" + sval;
-                        break;
-                    case "le":
-                        sval = "<" + sval;
-                        break;
-                    case "ge":
-                        sval = ">" + sval;
-                        break;
-                    case "lte":
-                        sval = "<=" + sval;
-                        break;
-                    case "gte":
-                        sval = ">=" + sval;
-                        break;
-                    case "soundslike":
-                        sval = `:(soundslike|"${sval}")`;
-                        break;
-                    case "approx":
-                        sval = `:(approx|"${sval}")`;
-                        break;
+            if(custom) { // Custom HDSI search
+                $scope.search.custom.forEach((o) => {
+
+                    var operator = "";
+                    switch(o.op) {
+                        case "not-equal":
+                            operator = "!";
+                            break;
+                        case "less-than":
+                            operator = "<";
+                            break;
+                        case "less-than-equal":
+                            operator = "<=";
+                            break;
+                        case "greater-than":
+                            operator = ">";
+                            break;
+                        case "greater-than-equal":
+                            operator = ">=";
+                            break;
+                        case "approx":
+                            operator = "~";
+                            break;
+                        case "equal":
+                        default:
+                            operator = "";
+                    }
+
+                    var value = o.value;
+                    if(value instanceof Date) {
+                        value = value.toISOString(); 
+                    }
+                    var filterValue = `${operator}${value}`;
+                    if(queryObject[o.filter.expression])
+                    {
+                        queryObject[o.filter.expression].push(filterValue);
+                    }
+                    else {
+                        queryObject[o.filter.expression] = [ filterValue ];
+                    }
+                });
+            }
+            else if ($scope.search._advanced) {
+
+                var advanced = $scope.search.advanced;
+               
+                // Query 
+                if(advanced.name.$other[0].component){
+                    if(advanced.name.$other[0].component.Given)
+                        queryObject["name.component[Given].value"] = makeSearchClause(advanced.name.$other[0].component.Given);
+                    if(advanced.name.$other[0].component.Family)
+                        queryObject["name.component[Family].value"] =  makeSearchClause(advanced.name.$other[0].component.Family);
                 }
+                if(advanced.address.$other[0].component)
+                {
+                    if(advanced.address.$other[0].component.City)
+                        queryObject["address.component[City].value"] = makeSearchClause(advanced.address.$other[0].component.City);
+                    if(advanced.address.$other[0].component.County)
+                        queryObject["address.component[County].value"] = makeSearchClause(advanced.address.$other[0].component.County);
+                    if(advanced.address.$other[0].component.State)
+                        queryObject["address.component[State].value"] = makeSearchClause(advanced.address.$other[0].component.State);
+                    if(advanced.address.$other[0].component.Country)
+                        queryObject["address.component[Country].value"] = makeSearchClause(advanced.address.$other[0].component.Country);
+                    if(advanced.address.$other[0].component.StreetAddressLine)
+                        queryObject["address.component[StreetAddressLine].value"] = makeSearchClause(advanced.address.$other[0].component.StreetAddressLine);
+                }
+                if(advanced.identifier)
+                    queryObject["identifier.value"] = makeSearchClause(advanced.identifier);
+                if(advanced.dateOfBirth.from)
+                    queryObject["dateOfBirth"] = `>=${moment(advanced.dateOfBirth.from).format('YYYY-MM-DD')}`;
+                if(advanced.dateOfBirth.to)
+                    queryObject["dateOfBirth"] = `<=${moment(advanced.dateOfBirth.to).format('YYYY-MM-DD')}`;
+                if(advanced.genderConcept)
+                    queryObject["genderConcept"] = advanced.genderConcept;
 
-                if (f.data.type == "date")
-                    sval = moment(sval).format("YYYY-MM-DD");
-                queryObject[f.parm] = sval;
-            });
-
+            }
+            else {
+                // Build query and bind query to the search table
+                queryObject["_any"] = $scope.search.val;
+            }
             $scope.$parent.lastSearch = {
                 search: $scope.search
             };
             $scope.$parent.lastSearch.filter = $scope.filter = queryObject;
 
+
             try {
                 $scope.$apply();
-            }
-            catch(e) {}
-        }
-        catch(e) {
-            $rootScope.errorHandler(e);
+            } catch (e) { }
         }
         finally {
             SanteDB.display.buttonWait("#btnSearchSubmit", false);
@@ -217,32 +194,28 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
         }
     }
 
-    // Search if needed
-    if ($scope.$parent.lastSearch) {
-        $scope.filter = $scope.$parent.lastSearch.filter;
-        $scope.search = $scope.$parent.lastSearch.search;
-    }
-    else {
-        // Current search 
-        $scope.search = [
-            {
-                parm: $rootScope.system.config.sync ? "_any" : "identifier.value",
-                op: $rootScope.system.config.sync ? "eq" : "similar",
-                val: $stateParams.q,
-                data: { type: 'string' }
-            }
-        ];
-
-        if ($stateParams.q)
-            $scope.searchMpi();
+    // Research search
+    $scope.resetSearch = function() {
+        $scope.search = angular.copy(defaultSearch);
     }
 
-    // Watch the search length
-    $scope.$watch((s) => s.search.map((o) => o.parm).reduce((e, i) => e + i), function (n, o) {
-        if (n) for (var i in $scope.search) {
-            setMetadata($scope.search[i]);
+
+    // Scan identifier but don't search
+    $scope.scanIdentifier = async function() {
+        
+        SanteDB.display.buttonWait("#btnScanSecondary", true);
+        try {
+            $scope.search.advanced.identifier = await SanteDB.application.scanIdentifierAsync();
+            try { $scope.$apply(); }
+            catch(e) {}
         }
-    });
+        catch(e) {
+            $rootScope.errorHandler(e);
+        }
+        finally {
+            SanteDB.display.buttonWait("#btnScanSecondary", false);
+        }
+    }
 
     // Scan 
     $scope.scanSearch = async function () {
@@ -254,7 +227,7 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
             if (!result)
                 return;
             else if (result.$type == "Bundle") {
-                $scope.search = [ { parm: 'identifier.value', val: result.$search, op: 'eq', data : { type: 'string' } }];
+                $scope.search.val = result.$search; 
                 $scope.searchMpi();
             }
             else {
@@ -283,4 +256,34 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
             SanteDB.display.buttonWait("#btnScan", false);
         }
     }
+
+    // Search if needed
+    if ($scope.$parent.lastSearch) {
+        $scope.filter = $scope.$parent.lastSearch.filter;
+        defaultSearch = $scope.search = $scope.$parent.lastSearch.search;
+
+        if($scope.search._advanced)
+            $('#searchCarousel').carousel(1);
+    }
+    else {
+        // Current search 
+        $scope.search = defaultSearch;
+
+        $scope.resetSearch();
+        $scope.search._advanced = false;
+
+        if ($stateParams.q)
+            $scope.searchMpi();
+    }
+
+
+    $('#searchCarousel').on('slide.bs.carousel', function () {
+        $scope.search._advanced = !$scope.search._advanced;
+        //delete($scope.search.advanced);
+
+        try {
+            $scope.$apply();
+        } catch (e) { }
+    });
+
 }]);

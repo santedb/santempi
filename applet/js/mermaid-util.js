@@ -323,7 +323,7 @@ async function renderScoringSubgraph(configuration, actuals, detailOutput, instr
      */
     async function renderClassificationSubgraph(configuration, actuals) {
         var targetResource = configuration.target[0].resource.toCamelCase();
-        var retVal = `subgraph Classification["<i class='fas fa-brain'></i> Classification"]\ndirection LR\n`;
+        var retVal = `subgraph Classification["<i class='fas fa-shapes'></i> Classification"]\ndirection LR\n`;
 
         // for (var s in configuration.scoring) {
         //     var score = configuration.scoring[s];
@@ -338,7 +338,7 @@ async function renderScoringSubgraph(configuration, actuals, detailOutput, instr
         //     retVal += `CLASS{"<i class='fas fa-brain'></i> Classify"}\n`//[["<i class='fas fa-calculator'></i> sum()"]]\n`;
         // }
 
-        retVal += "Scoring==>CLASS{{\"<i class='fas fa-brain'></i> Classify\"}}\n";
+        retVal += "Scoring==>CLASS{{\"<i class='fas fa-shapes'></i> Classify\"}}\n";
         // retVal += 'SUMCLS-->CLASS{Classify}\n';
         if (actuals) {
             retVal += `CLASS-->|? records| NON["<i class='fas fa-times'></i> Non Match"]\n`;
@@ -415,7 +415,7 @@ async function renderScoringSubgraph(configuration, actuals, detailOutput, instr
             renderScoringSubgraph(n, false, true, i).then(
                 function (g) {
                     graphData += g;
-                    graphData += 'Blocking[["<i class=\'fas fa-database\'></i> Blocking"]]-->Scoring\nScoring-->Classification[["<i class=\'fas fa-brain\'></i> Classification"]]\n';
+                    graphData += 'Blocking[["<i class=\'fas fa-database\'></i> Blocking"]]-->Scoring\nScoring-->Classification[["<i class=\'fas fa-shapes\'></i> Classification"]]\n';
                     graphData += 'style Scoring fill:#eff,stroke:#0ff\n';
                     graphData += 'style Blocking fill:#efe,stroke:#0f0\n';
                     graphData += 'style Classification fill:#fef,stroke:#f0f\n';

@@ -25,6 +25,7 @@
     <string name="ui.mpi.patient.advSearch.parameters.dateOfBirth">Date of Birth</string>
     <string name="ui.mpi.patient.advSearch.parameters.facility">Facility Association</string>
     <string name="ui.mpi.patient.search.term">Search For</string>
+    <string name="ui.mpi.patient.search.term.hint"><![CDATA[General search - depending on the coifguration of the server, this field may search on one or more of: <ul><li>Address</li><li>Identifier</li><li>Name(s)</li><li>Telecom Address</li></ul>]]></string>
     <string name="ui.mpi.patient.search.results">Search Results</string>
     <string name="ui.action.rematch">Re-Match</string>
     <string name="ui.action.unignore">Un-Ignore</string>
@@ -36,6 +37,12 @@
     <string name="ui.operator.approx">Approximately</string>
 
   <string name="ui.action.mpiSearch">Search MPI</string>
+  <string name="ui.mpi.patient.search.id">Identifier</string>
+    <string name="ui.mpi.patient.search.id.hint"><![CDATA[Filter the result sets using a business identifier for the patient. Business identifiers include: <ul><li>Driver's license numbers</li><li>Passport numbers</li><li>Medical Records Numbers</li><li>Etc.</li></ul>]]></string>
+  <string name="ui.mpi.patient.search.gender">Gender</string>
+    <string name="ui.mpi.patient.search.gender.hint"><![CDATA[Restrict the result set using the administrative gender/sex of the patient (administrative genders are those used for administrative purposes)]]></string>
+  <string name="ui.mpi.patient.search.dob">Date of Birth</string>
+    <string name="ui.mpi.patient.search.dob.hint"><![CDATA[Restricts the result set using a range of date of birth. For example: <ul><li>Ranges - <code>1990-01-01</code> to <code>1992-03-02</code></li><li>Lower bounds (anyone born since) - <code>1990-01-01</code> to <code>not selected</code></li><li>Upper bounds (anyone born before) - <code>not selected</code> to <code>1992-03-02</code></li></ul>]]></string>
     <!-- Relationship Viewer -->
     <string name="org.santedb.widget.smpi.mdm.net">Entity Relationships</string>
 
@@ -191,7 +198,10 @@
     <string name="ui.mpi.matches.config.classification.noAttributes">This match configuration does not have any scoring attributes! You cannot set the classification score ranges until the match configuration has at least one scoring attribute </string>
     <string name="ui.mpi.matches.config.scoring.diagram">Explain</string>
     <string name="ui.mpi.matches.config.blocking.properties">Blocking Filters</string>
-    <string name="ui.mpi.matches.config.block.filter.whenHeader">When</string>
-    <string name="ui.mpi.matches.config.block.filter.filterHeader">Filter</string>
+    <string name="ui.mpi.matches.config.block.none">This match configuration does not contain any block statements or filters. Use the ADD button to create a block statement.</string>
+    <string name="ui.mpi.matches.config.block.filter.whenHeader">When Expression</string>
+    <string name="ui.mpi.matches.config.block.filter.whenHeader.hint"><![CDATA[Indicates that the specified filter should only be evaluated when the <code>$input</code> record contains a value at the specified property location]]></string>
+    <string name="ui.mpi.matches.config.block.filter.filterHeader.hint"><![CDATA[The HDSI guard expression to apply to the database. <strong>Note:</strong> This expression is translated to SQL statements - the functions used in your expression must be compatible with the expressions supported on the database technology being used.]]></string>
+    <string name="ui.mpi.matches.config.block.filter.filterHeader">Filter Expression</string>
     <string name="ui.mpi.matches.config.block.filter.info"><![CDATA[When the incoming record ($input) has property <strong>WHEN</strong> then the <strong>FILTER</strong> is applied. See <a href="https://help.santesuite.org/santedb/extending-santedb/service-apis/health-data-service-interface-hdsi/hdsi-query-syntax" target="_blank">HDSI Query Syntax</a> on the SanteSuite WIKI]]></string>
 </resources>
