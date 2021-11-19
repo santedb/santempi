@@ -67,14 +67,26 @@ angular.module('santedb').controller('EntityRelationshipDiagramController', ["$s
                     else if(entity.identifier)
                         retVal += `\nrel${entity.id.substr(0,8)}[<span class='mr-2'>${entity.$type} ${SanteDB.display.renderIdentifier(entity.identifier)}</span>]`;
                 }
-                if(reverse)
-                    retVal += `\nrel${entity.id.substr(0,8)}-- <span class='mr-2'>${SanteDB.display.renderConcept(entityRelationship.relationshipTypeModel || fallbackRelationship)}</span> -->root`;
-                else if(!entity.$ref)
-                    retVal += `\nroot-- <span class='mr-2'>${SanteDB.display.renderConcept(entityRelationship.relationshipTypeModel || fallbackRelationship)}</span> -->rel${entity.id.substr(0,8)}`;
+
+                var dashType = `-- <span class='mr-2'>${SanteDB.display.renderConcept(entityRelationship.relationshipTypeModel || fallbackRelationship)}</span> -->`;
+                 if(entityRelationship.$type == 'EntityRelationshipMaster')
+                 {
+                     //retVal += `\nrel${entityRelationship.originalHolder.substr(0,8)} ${dashType} rel${entityRelationship.originalTarget.substr(0,8)}`;
+                     dashType = `-. <span class='mr-2'>${SanteDB.display.renderConcept(entityRelationship.relationshipTypeModel || fallbackRelationship)}</span> .->`;
+                 }
+                 //else {
+                    if(reverse)
+                        retVal += `\nrel${entity.id.substr(0,8)} ${dashType} root`;
+                    else if(!entity.$ref)
+                        retVal += `\nroot ${dashType} rel${entity.id.substr(0,8)}`;
+                //  }
             }
             
             if(reverse)
                 retVal += `\nstyle rel${entity.id.substr(0,8)} fill:#ccf,stroke:#cc0,stroke-width:1px,stroke-dasharray: 5, 5`;
+            else if(entityRelationship.$type == 'EntityRelationshipMaster') {
+               retVal += `\nstyle rel${entity.id.substr(0,8)} fill:#fcf,stroke:#c0c,stroke-width:1px,stroke-dasharray: 5, 5`;
+            }
             return retVal;
         }
         catch(e) {
