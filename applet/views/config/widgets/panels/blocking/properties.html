@@ -33,6 +33,16 @@
                             </div>
                         </div>
 
+                        <div class="row">
+                            <label class="control-label col-md-2 col-sm-12">{{
+                                'ui.model.matchConfiguration.blocking.description' | i18n }}
+                                <hint-popover hint-title="ui.model.matchConfiguration.blocking.description" />
+                            </label>
+                            <div class="col-md-10 col-sm-12">
+                                {{ block.description }}
+                            </div>
+                        </div>
+
                         <div class="row" ng-if="$index &gt; 0">
                             <label class="control-label col-md-2 col-sm-12">{{ 'ui.model.matchConfiguration.blocking.op'
                                 | i18n }}
@@ -74,6 +84,7 @@
         </div>
 
     </div>
+    
     <div class="container-fluid" ng-controller="MpiConfigurationEditController" >
         <form novalidate="novalidate" name="panel.editForm" method="dialog" ng-submit="save(panel.editForm)" ng-if="panel.view == 'Edit'">
             <div class="alert alert-info" ng-if="scopedObject.blocking.length == 0">
@@ -123,6 +134,19 @@
                             </div>
                         </div>
 
+                        <div class="row m-1">
+                            <label class="control-label col-md-2 col-sm-12">{{
+                                'ui.model.matchConfiguration.blocking.description' | i18n }}
+                                <hint-popover hint-title="ui.model.matchConfiguration.blocking.description" />
+                            </label>
+                            <div class="col-md-10 col-sm-12">
+                                <textarea class="form-control" ng-model="block.description" maxlength="1024"></textarea>
+                                <span class="float-right">
+                                    {{ 2048 - block.description.length }} {{ 'ui.common.charsRemain' | i18n }}
+                                </span>
+                                </div>
+                        </div>
+
                         <div class="row m-1" ng-if="$index &gt; 0">
                             <label class="control-label col-md-2 col-sm-12">{{ 'ui.model.matchConfiguration.blocking.op'
                                 | i18n }}
@@ -147,8 +171,7 @@
                             </label>
                             <div class="col-md-10 col-sm-12">
                                 <div class="container-fluid">
-                                    <div class="row" ng-repeat="flt in block.filter track by $index">
-                                        
+                                    <div class="row" ng-repeat="flt in block.filter track by flt._id">
                                         <div class="col">
                                             <div class="card card-info m-1">
                                                 <div class="card-body">
@@ -161,11 +184,11 @@
                                                         <div class="col-sm-12 col-md-10">
                                                             <hdsi-expression class="form-control"
                                                                 focal-type="scopedObject.target[0].resource"
-                                                                name="expr{{$index}}when"
+                                                                name="expr{{flt._id}}when"
                                                                 simple-input="true"
                                                                 ng-model="flt.when[0]" />
                                                                 <div class="alert alert-danger"
-                                                                ng-show="panel.editForm['expr' + $index + 'when'].$error['hdsiProperty'] ">
+                                                                ng-show="panel.editForm['expr' + flt._id + 'when'].$error['hdsiProperty'] ">
                                                                 <i class="fas fa-exclamation-triangle"></i> {{ 'ui.error.hdsi.propertyMissing' | i18n }}
                                                             </div>
                                                         </div>
@@ -179,8 +202,8 @@
                                                                 <div class="input-group-prepend" ng-if="$index &gt; 0">
                                                                     <span class="input-group-text">and</span>
                                                                 </div>
-                                                                <hdsi-expression required="true" class="form-control" name="expr{{$index}}lhs"
-                                                                    ng-class="{ 'border-danger' : panel.editForm['expr' + $index + 'lhs'].$error['required'] || panel.editForm['expr' + $index + 'lhs'].$error['hdsiNeedsRhs'] || }"
+                                                                <hdsi-expression required="true" class="form-control" name="expr{{flt._id}}lhs"
+                                                                    ng-class="{ 'border-danger' : panel.editForm['expr' + flt._id + 'lhs'].$error['required'] || panel.editForm['expr' + flt._id + 'lhs'].$error['hdsiNeedsRhs'] || }"
                                                                     focal-type="scopedObject.target[0].resource"
                                                                     include-rhs="1"
                                                                     simple-input="true"
@@ -190,16 +213,16 @@
                                                                     ng-if="block.filter.length &gt; 1">
                                                                     <button type="button" class="btn btn-danger"
                                                                         ng-click="block.filter.splice($index, 1)"><i
-                                                                            class="fas fa-minus-circle"></i>
+                                                                            class="fas fa-minus"></i>
                                                                         {{ 'ui.action.remove' | i18n }}</button>
                                                                 </div>
                                                             </div>
                                                             <div class="alert alert-danger"
-                                                                    ng-show="panel.editForm['expr' + $index + 'lhs'].$error['required'] ">
+                                                                    ng-show="panel.editForm['expr' + flt._id + 'lhs'].$error['required'] ">
                                                                     <i class="fas fa-exclamation-triangle"></i> {{ 'ui.error.required' | i18n }}
                                                                 </div>
                                                                 <div class="alert alert-danger"
-                                                                ng-show="panel.editForm['expr' + $index + 'lhs'].$error['hdsiNeedsRhs'] ">
+                                                                ng-show="panel.editForm['expr' + flt._id + 'lhs'].$error['hdsiNeedsRhs'] ">
                                                                 <i class="fas fa-exclamation-triangle"></i> {{ 'ui.error.hdsi.rhsMissing' | i18n }}
                                                             </div>
                                                         </div>
@@ -211,25 +234,28 @@
                                     <div class="row">
                                         <div class="col">
                                             <div class="btn-group float-right">
+                                                <button type="button" ng-disabled="scopedObject.blocking.length == 1 " ng-click="scopedObject.blocking.splice($index, 1)"
+                                                
+                                                    class="btn btn-danger">
+                                                    <i class="fas fa-minus-circle"></i> {{ 'ui.mpi.matches.config.removeBlock' | i18n }}
+                                                </button>
                                                 <button type="button" ng-click="addFilter(block)"
                                                 ng-disabled="!panel.editForm.$valid"
                                                     class="btn btn-success">
-                                                    <i class="fas fa-filter"></i> {{ 'ui.action.add' | i18n }}
+                                                    <i class="fas fa-plus"></i> {{ 'ui.mpi.matches.config.addFilter' | i18n }}
                                                 </button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
                 </div>
-
             </div>
             <div class="btn-group float-right">
                 <button type="button" ng-click="addBlock()" class="btn btn-success" ng-disabled="!panel.editForm.$valid"> 
-                    <i class="fas fa-plus"></i> {{ 'ui.action.add' | i18n }}
+                    <i class="fas fa-plus-cricle"></i> {{ 'ui.mpi.matches.config.addBlock' | i18n }}
                 </button>
             </div>
         </form>

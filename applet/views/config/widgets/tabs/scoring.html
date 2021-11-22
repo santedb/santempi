@@ -6,6 +6,7 @@
         <sdb:guard>scopedObject.uuid &amp;&amp; scopedObject.blocking.length > 0</sdb:guard>
     </sdb:widget>
 
-    <widget-panels context-name="'org.santedb.mpi.matches.config.scoring'" scoped-object="scopedObject" />
+    <widget-panels context-name="'org.santedb.mpi.matches.config.scoring'" scoped-object="scopedObject" 
+        view="scopedObject.scoring.length == 0 ? 'Edit' : null"/>
 
 </div>

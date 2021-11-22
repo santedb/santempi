@@ -5,89 +5,588 @@
         <sdb:description lang="en">Properties</sdb:description>
     </sdb:widget>
 
-    <div class="container-fluid" ng-if="panel.view != 'Edit'">
-        <div class="accordion" id="scoreAccordion">
-            <div class="card shadow" ng-repeat="score in scopedObject.scoring track by $index">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">
-                        <button type="button" class="collapse-indicator btn btn-link p-0" data-toggle="collapse"
-                            data-target="#score{{$index}}">
-                            <i class="fas fa-star-half-alt"></i>
-                            <span class="ml-2" ng-switch="score.id">
-                                <span ng-switch-when="undefined">Attribute{{$index}}</span>
-                                <span ng-switch-default="ng-switch-default">{{ score.id }}</span>
-                            </span> ({{ score.property.join("|")}})
-                            <i class="fas fa-chevron-right fa-fw"></i>
-                        </button>
-                    </h5>
-                </div>
-                <div class="collapse" id="score{{$index}}" data-parent="#scoreAccordion">
-                    <div class="card-body container-fluid">
-                        <div class="row">
-                            <div class="col">
-                                <!-- HACK: m-auto should be here but m-auto does nothing -->
-                                <center>
-                                    <div class="scoreDiagramDiv" id="scoringConfigurationDiv{{$index}}"></div>
-                                    <div class="scoreDiagramSvg" id="scoringConfigurationSvg{{$index}}"><i
-                                            class="fas fa-spin fa-circle-notch"></i> {{ 'ui.wait' | i18n }}</div>
-                                </center>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col">
-                                <div class="container">
-                                    <div class="row" >
-                                        <label ng-if="score.id" class="control-label col-sm-12 col-md-3">{{ 'ui.model.matchConfiguration.scoring.id' | i18n }} <hint-popover hint-title='ui.model.matchConfiguration.scoring.id' /></label>
-                                        <div  ng-if="score.id" class="col-sm-12 col-md-9">{{ score.id }} </div>
-                                        <label class="control-label col-sm-12 col-md-3">{{ 'ui.model.matchConfiguration.scoring.property' | i18n }} <hint-popover hint-title='ui.model.matchConfiguration.scoring.property' /></label>
-                                        <div class="col-sm-12 col-md-9">
-                                            <ul class="list-group">
-                                                <li ng-repeat="p in score.property" class="list-group-item">{{p}}</li>
-                                            </ul>
-                                        </div>
-                                        <label class="control-label col-sm-12 col-md-3">{{ 'ui.model.matchConfiguration.scoring.whenNull' | i18n }} <hint-popover hint-title='ui.model.matchConfiguration.scoring.whenNull' /></label>
-                                        <div  class="col-sm-12 col-md-9"> {{ score.whenNull }} - <span class="text-info"><i class="fas fa-info-circle"></i> {{ 'ui.model.matchConfiguration.scoring.whenNull.' + score.whenNull | i18n }}</span> </div>
-                                        <label ng-if="score.when.length" class="control-label col-sm-12 col-md-3">{{ 'ui.model.matchConfiguration.scoring.when' | i18n }} <hint-popover hint-title='ui.model.matchConfiguration.scoring.when' /></label>
-                                        <div ng-if="score.when.length"  class="col-sm-12 col-md-9"> 
-                                            <ul class="list-group">
-                                                <li ng-repeat="w in score.when" class="list-group-item"><a data-target="#score{{w.ref}}" data-toggle="collapse"><i class="fas fa-star-half-alt"></i> {{ w.ref }}</a> {{ w.op }} {{ w.value }}</li>
-                                            </ul>
-                                        </div>
-                                        <div class="col-12">
-                                            <hr/>
-                                        </div>
-                                        <label class="control-label col-sm-6 col-md-3">{{ 'ui.model.matchConfiguration.scoring.M' | i18n }}
-                                            <hint-popover hint-title='ui.model.matchConfiguration.scoring.M' />
-                                        </label>
-                                        <div class="col-sm-6 col-md-3">{{ score.m | number: 4 }} </div>
-                                        <label class="control-label col-sm-6 col-md-3">{{ 'ui.model.matchConfiguration.scoring.U' | i18n }}
-                                            <hint-popover hint-title='ui.model.matchConfiguration.scoring.U' />
-                                        </label>
-                                        <div class="col-sm-6 col-md-3">{{ score.u | number: 4 }} </div>
-                                        <label class="control-label col-sm-6 col-md-3">{{ 'ui.model.matchConfiguration.scoring.matchWeight' | i18n }}
-                                            <hint-popover hint-title='ui.model.matchConfiguration.scoring.matchWeight' />
-
-                                        </label>
-                                        <div class="col-sm-6 col-md-3">{{ score.matchWeight | number: 4 }}</div>
-                                        <label class="control-label col-sm-6 col-md-3">{{ 'ui.model.matchConfiguration.scoring.nonMatchWeight' | i18n }}
-                                            <hint-popover hint-title='ui.model.matchConfiguration.scoring.nonMatchWeight' />
-
-                                        </label>
-                                        <div class="col-sm-6 col-md-3">{{ score.nonMatchWeight | number: 4 }}</div>
-                                        <div class="col-12">
-                                            <hr/>
-                                        </div>
-                                        
-                                </div>
-                                </div>
-                            </div>
-                        </div>
-                       
-                    </div>
-                </div>
-
+    <div class="container-fluid" ng-if="panel.view != 'Edit'" id="scoreAccordion">
+        <div class="card shadow" ng-repeat="score in scopedObject.scoring track by $index">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <button type="button" class="collapse-indicator btn btn-link p-0" data-toggle="collapse"
+                        data-target="#score{{$index}}">
+                        <i class="fas fa-star-half-alt"></i>
+                        <span class="ml-2" ng-switch="score.id">
+                            <span ng-switch-when="undefined">Attribute{{$index}}</span>
+                            <span ng-switch-default="ng-switch-default">{{ score.id }}</span>
+                        </span> ({{ score.property.join("|")}})
+                        <i class="fas fa-chevron-right fa-fw"></i>
+                    </button>
+                </h5>
             </div>
+            <div class="collapse" id="score{{$index}}" data-parent="#scoreAccordion"
+                ng-class="{'show in' : $index == 0 }">
+                <div class="card-body container-fluid">
+                    <div class="row">
+                        <div class="col">
+                            <!-- HACK: m-auto should be here but m-auto does nothing -->
+                            <center>
+                                <div class="scoreDiagramDiv" id="scoringConfigurationDiv{{$index}}"></div>
+                                <div class="scoreDiagramSvg" id="scoringConfigurationSvg{{$index}}"><i
+                                        class="fas fa-spin fa-circle-notch"></i> {{ 'ui.wait' | i18n }}</div>
+                            </center>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="container">
+                                <div class="row">
+                                    <label ng-if="score.id" class="control-label col-sm-12 col-md-3">{{
+                                        'ui.model.matchConfiguration.scoring.id' | i18n }}
+                                        <hint-popover hint-title='ui.model.matchConfiguration.scoring.id' />
+                                    </label>
+                                    <div ng-if="score.id" class="col-sm-12 col-md-9">{{ score.id }} </div>
+                                    <label class="control-label col-sm-12 col-md-3">{{
+                                        'ui.model.matchConfiguration.scoring.property' | i18n }}
+                                        <hint-popover hint-title='ui.model.matchConfiguration.scoring.property' />
+                                    </label>
+                                    <div class="col-sm-12 col-md-9">
+                                        <ul class="list-group">
+                                            <li ng-repeat="p in score.property" class="list-group-item">{{p}}</li>
+                                        </ul>
+                                    </div>
+                                    <label class="control-label col-sm-12 col-md-3">{{
+                                        'ui.model.matchConfiguration.scoring.whenNull' | i18n }}
+                                        <hint-popover hint-title='ui.model.matchConfiguration.scoring.whenNull' />
+                                    </label>
+                                    <div class="col-sm-12 col-md-9"> {{ score.whenNull }} - <span class="text-info"><i
+                                                class="fas fa-info-circle"></i> {{
+                                            'ui.model.matchConfiguration.scoring.whenNull.' + score.whenNull | i18n
+                                            }}</span> </div>
+                                    <label ng-if="score.when.length" class="control-label col-sm-12 col-md-3">{{
+                                        'ui.model.matchConfiguration.scoring.when' | i18n }}
+                                        <hint-popover hint-title='ui.model.matchConfiguration.scoring.when' />
+                                    </label>
+                                    <div ng-if="score.when.length" class="col-sm-12 col-md-9">
+                                        <ul class="list-group">
+                                            <li ng-repeat="w in score.when" class="list-group-item"><a
+                                                    data-target="#score{{w.ref}}" data-toggle="collapse"><i
+                                                        class="fas fa-star-half-alt"></i> {{ w.ref }}</a> {{ w.op }} {{
+                                                w.value }}</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-12">
+                                        <hr />
+                                    </div>
+                                    <label class="control-label col-sm-12 col-md-3">
+                                        {{ 'ui.model.matchConfiguration.scoring.assert' | i18n }}
+                                        <hint-popover hint-title='ui.model.matchConfiguration.scoring.assert' />
+                                    </label>
+                                    <div class="col-sm-12 col-md-9">
+                                        <ul class="list-group">
+
+                                            <li class="list-group-item list-group-item-info"
+                                                ng-repeat="tx in score.assert.transform">
+                                                <i class="fas fa-fw fa-code mr-2"></i> {{ tx.name }}({{
+                                                tx.args.toString() }})
+                                            </li>
+                                            <li class="list-group-item list-group-item-primary">
+                                                <i class="fas fa-fw mr-2 fa-question"></i> <span class="mr-2"
+                                                    ng-if="score.assert.value">result</span><span class="mr-2"
+                                                    ng-if="!score.assert.value">A</span> {{ score.assert.op }} <span
+                                                    class="ml-2" ng-if="score.assert.value">{{ score.assert.value
+                                                    }}</span><span class="ml-2" ng-if="!score.assert.value">B</span>
+                                            </li>
+                                            <li class="list-group-item list-group-item-light"
+                                                ng-repeat="sa in score.assert.assert">
+                                                <ul class="list-group">
+                                                    <li class="list-group-item list-group-item-info"
+                                                        ng-repeat="tx in sa.transform">
+                                                        <i class="fas fa-fw fa-code mr-2"></i> {{ tx.name }}({{
+                                                        tx.args.toString() }})
+                                                    </li>
+                                                    <li class="list-group-item list-group-item-primary">
+                                                        <i class="fas fa-fw mr-2 fa-question"></i> <span class="mr-2"
+                                                            ng-if="sa.value">result</span><span class="mr-2"
+                                                            ng-if="!sa.value">A</span> {{ sa.op }} <span class="ml-2"
+                                                            ng-if="sa.value">{{ sa.value }}</span><span class="ml-2"
+                                                            ng-if="!sa.value">B</span>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-12">
+                                        <hr />
+                                    </div>
+                                    <label class="control-label col-sm-6 col-md-3">{{
+                                        'ui.model.matchConfiguration.scoring.M' | i18n }}
+                                        <hint-popover hint-title='ui.model.matchConfiguration.scoring.M' />
+                                    </label>
+                                    <div class="col-sm-6 col-md-3">{{ score.m | number: 4 }} </div>
+                                    <label class="control-label col-sm-6 col-md-3">{{
+                                        'ui.model.matchConfiguration.scoring.U' | i18n }}
+                                        <hint-popover hint-title='ui.model.matchConfiguration.scoring.U' />
+                                    </label>
+                                    <div class="col-sm-6 col-md-3">{{ score.u | number: 4 }} </div>
+                                    <label class="control-label col-sm-6 col-md-3">{{
+                                        'ui.model.matchConfiguration.scoring.matchWeight' | i18n }}
+                                        <hint-popover hint-title='ui.model.matchConfiguration.scoring.matchWeight' />
+
+                                    </label>
+                                    <div class="col-sm-6 col-md-3">{{ score.matchWeight | number: 4 }}</div>
+                                    <label class="control-label col-sm-6 col-md-3">{{
+                                        'ui.model.matchConfiguration.scoring.nonMatchWeight' | i18n }}
+                                        <hint-popover hint-title='ui.model.matchConfiguration.scoring.nonMatchWeight' />
+
+                                    </label>
+                                    <div class="col-sm-6 col-md-3">{{ score.nonMatchWeight | number: 4 }}</div>
+                                    <div class="col-12">
+                                        <hr />
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
         </div>
     </div>
 
+
+    <div class="container-fluid" ng-controller="MpiConfigurationEditController">
+        <form novalidate="novalidate" name="panel.editForm" method="dialog" ng-submit="save(panel.editForm)"
+            ng-if="panel.view == 'Edit'">
+            <div class="alert alert-info" ng-if="scopedObject.scoring.length == 0">
+                <i class="fas fa-info-circle"></i> {{ 'ui.mpi.matches.config.scoring.none' | i18n }}
+            </div>
+            <div class="accordion" id="scoreEditAccordion">
+
+                <div class="card shadow" ng-repeat="score in scopedObject.scoring track by $index">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <button type="button" class="collapse-indicator btn btn-link p-0" data-toggle="collapse"
+                                data-target="#scoreEdit{{$index}}">
+                                <i class="fas fa-star-half-alt"></i>
+                                <span class="ml-2" ng-switch="score.id">
+                                    <span ng-switch-when="undefined">Attribute{{$index}}</span>
+                                    <span ng-switch-default="ng-switch-default">{{ score.id }}</span>
+                                </span> ({{ score.property.join("|")}})
+                                <i class="fas fa-chevron-right fa-fw"></i>
+                            </button>
+                        </h5>
+                    </div>
+                    <div class="collapse" data-parent="#scoreEditAccordion" id="scoreEdit{{$index}}"
+                        ng-class="{ 'in show' : $index == 0 }">
+                        <div class="card-body container-fluid">
+
+                            <div class="row">
+                                <div class="col">
+                                    <!-- HACK: m-auto should be here but m-auto does nothing -->
+                                    <center>
+                                        <div class="scoreDiagramDiv" id="scoringConfigurationDiv{{$index}}"></div>
+                                        <div class="scoreDiagramSvg" id="scoringConfigurationSvg{{$index}}"><i
+                                                class="fas fa-spin fa-circle-notch"></i> {{ 'ui.wait' | i18n }}</div>
+                                    </center>
+                                </div>
+                            </div>
+
+                            <div class="row m-1">
+                                <label class="control-label col-md-2 col-sm-12">
+                                    {{ 'ui.model.matchConfiguration.scoring.id' | i18n }}
+                                    <hint-popover hint-title="ui.model.matchConfiguration.scoring.id" />
+                                </label>
+                                <div class="col-md-10 col-sm-12">
+                                    <input type="text" class="form-control" name="score{{score._id}}Id"
+                                        pattern="^[\w\._\d]+$" maxlength="32" ng-model="score.id" />
+                                    <div class="alert alert-danger"
+                                        ng-show="panel.editForm['score' + score._id + 'Id'].$error['pattern']">
+                                        <i class="fas fa-exclamation-triangle"></i> {{ 'ui.error.pattern' | i18n}}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row m-1">
+                                <label class="control-label col-md-2 col-sm-12">{{
+                                    'ui.model.matchConfiguration.scoring.description' | i18n }}
+                                    <hint-popover hint-title="ui.model.matchConfiguration.scoring.description" />
+                                </label>
+                                <div class="col-md-10 col-sm-12">
+                                    <textarea class="form-control" ng-model="score.description"
+                                        maxlength="2048"></textarea>
+                                    <span class="float-right">
+                                        {{ 1024 - score.description.length }} {{ 'ui.common.charsRemain' | i18n }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="row m-1">
+                                <div class="col-12">
+                                    <hr />
+                                </div>
+
+                            </div>
+                            <div class="row m-1">
+                                <label class="control-label col-md-2 col-sm-12">
+                                    {{ 'ui.model.matchConfiguration.scoring.property' | i18n }}
+                                    <hint-popover hint-title="ui.model.matchConfiguration.scoring.property" />
+                                </label>
+                                <div class="col-md-10 col-sm-12">
+                                    <div class="container-fluid">
+                                        <div class="row" ng-repeat="att in score.property track by $index">
+                                            <div class="col">
+                                                <div class="input-group">
+                                                    <hdsi-expression ng-change="recalcScore(score)"
+                                                        ng-model="score.property[$index]"
+                                                        focal-type="scopedObject.target[0].resource"
+                                                        simple-input="true" />
+                                                    <div class="input-group-append"
+                                                        ng-if="score.property.length &gt; 1">
+                                                        <button type="button" class="btn btn-danger"
+                                                            ng-click="score.property.splice($index, 1)"><i
+                                                                class="fas fa-minus"></i>
+                                                            {{ 'ui.action.remove' | i18n }}</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col">
+                                                <div class="btn-group float-right">
+                                                    <button type="button" class="btn btn-success"
+                                                        ng-click="score.property.push(''); recalcScore(score)">
+                                                        <i class="fas fa-plus"></i> {{ 'ui.action.add' | i18n }}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row m-1">
+                                <label class="control-label col-md-2 col-sm-12">
+                                    {{ 'ui.model.matchConfiguration.scoring.whenNull' | i18n }}
+                                    <hint-popover hint-title="ui.model.matchConfiguration.scoring.whenNull" />
+                                </label>
+                                <div class="col-md-4 col-sm-12">
+                                    <select ng-change="recalcScore(score)" class="form-control"
+                                        ng-model="score.whenNull">
+                                        <option value="None">None</option>
+                                        <option value="Zero">Zero()</option>
+                                        <option value="Disqualify">Disqualify()</option>
+                                        <option value="Match">Match()</option>
+                                        <option value="NonMatch">NonMatch()</option>
+                                        <option value="Ignore">Ignore()</option>
+                                    </select>
+                                </div>
+                                <label class="control-label col-md-2 col-sm-12">
+                                    {{ 'ui.model.matchConfiguration.scoring.when' | i18n }}
+                                    <hint-popover hint-title="ui.model.matchConfiguration.scoring.when" />
+                                </label>
+                                <div class="col-md-4 col-sm-12">
+                                    <select ng-change="recalcScore(score)" class="form-control"
+                                        ng-model="score.when[0].ref">
+                                        <option ng-repeat="att in scopedObject.scoring"
+                                            ng-if="att.id &amp;&amp; att.id != score.id" value="{{att.id}}">{{ att.id }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row m-1">
+                                <div class="col-12">
+                                    <hr />
+                                </div>
+
+                            </div>
+
+                            <div class="row  m-1">
+                                <label class="control-label col-md-2 col-sm-12">{{
+                                    'ui.model.matchConfiguration.scoring.assert' | i18n }}
+                                    <hint-popover hint-title="ui.model.matchConfiguration.scoring.assert" />
+                                </label>
+                                <div class="col-md-10 col-sm-12">
+                                    <ul class="list-group">
+
+                                        <li class="list-group-item list-group-item-info text-center"
+                                            ng-repeat="tx in score.assert.transform"
+                                            ng-init="score.assert._singleResult = updateTransform(score, score.assert.transform, tx)">
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">
+                                                        <i class="fas fa-code"></i>
+                                                    </span>
+                                                    <select ng-model="tx.name" class="form-control" required="required"
+                                                        ng-change="score.assert._singleResult = updateTransform(score, score.assert.transform, tx)">
+                                                        <option ng-repeat="ta in transformAlgorithms track by $index"
+                                                            value="{{ta.name}}"> {{tx._meta[$index-1]}} [{{ta.type}}] {{
+                                                            ta.display }} - <small class="text-subtle">{{ ta.description
+                                                                }}</small></option>
+                                                    </select>
+                                                    <div ng-repeat="a in tx.args track by $index"
+                                                        class="input-group-append">
+                                                        <span class="input-group-text">{{ tx._meta[$index].name }}:
+                                                            <hint-popover hint-title="{{ tx._meta[$index].name }}"
+                                                                hint-text="{{ tx._meta[$index].description }}" />
+                                                        </span>
+                                                        <input ng-change="recalcScore(score)" class="form-control"
+                                                            type="text" ng-model="tx.args[$index]"
+                                                            ng-required="tx._meta[$index].isRequired" />
+                                                    </div>
+                                                    <div class="input-group-append">
+                                                        <button class="btn btn-danger"
+                                                            ng-click="score.assert.transform.splice($index, 1); recalcScore(score)"><i
+                                                                class="fas fa-minus"></i> {{ 'ui.action.remove' | i18n
+                                                            }}</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item list-group-item-info" ng-if="score.assert.assert.length == 0">
+                                            <button type="button" class="btn btn-info text-center w-100"
+                                                ng-click="score.assert.transform.push({ name: '', args: [] }); recalcScore(score)"><i
+                                                    class="fas fa-plus"></i> {{ 'ui.mpi.matches.config.addTransform' |
+                                                i18n }}</button>
+                                        </li>
+                                        <li class="list-group-item list-group-item-primary text-dark text-center">
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">
+                                                        <i class="fas fa-question"></i>
+                                                    </span>
+                                                </div>
+                                                <select ng-model="score.assert.op" class="form-control"
+                                                    ng-change="recalcScore(score)">
+                                                    <option value="AndAlso" ng-if="score.assert.assert.length">A AndAlso
+                                                        B</option>
+                                                    <option value="OrElse" ng-if="score.assert.assert.length">A OrElse B
+                                                    </option>
+                                                    <option value="Equal" ng-if="!score.assert.assert.length">{{
+                                                        score.assert._singleResult ? 'result Equal' : 'A Equal B' }}
+                                                    </option>
+                                                    <option value="NotEqual" ng-if="!score.assert.assert.length">{{
+                                                        score.assert._singleResult ? 'result NotEqual' : 'A NotEqual B'
+                                                        }}</option>
+                                                    <option value="GreaterThan"
+                                                        ng-if="!score.assert.assert.length &amp;&amp; score.assert._singleResult">
+                                                        result GreaterThan</option>
+                                                    <option value="GreaterThanOrEqual"
+                                                        ng-if="!score.assert.assert.length &amp;&amp; score.assert._singleResult">
+                                                        result GreaterThanOrEqual </option>
+                                                    <option value="LessThan"
+                                                        ng-if="!score.assert.assert.length &amp;&amp; score.assert._singleResult">
+                                                        result LessThan</option>
+                                                    <option value="LessThanOrEqual"
+                                                        ng-if="!score.assert.assert.length &amp;&amp; score.assert._singleResult">
+                                                        result LessThanOrEqual </option>
+                                                </select>
+                                                <div class="input-group-append" ng-if="score.assert._singleResult &amp;&amp; !score.assert.assert.length">
+                                                    <span class="input-group-text">value:</span>
+                                                    <input class="form-control" required="required"
+                                                        ng-model="score.assert.value" type="text"
+                                                        ng-change="recalcScore(score)" />
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item list-group-item-light text-center"
+                                            ng-repeat="sa in score.assert.assert">
+                                            <ul class="list-group border border-primary p-1">
+                                                <li class="list-group-item list-group-item-info  text-center"
+                                                    ng-repeat="tx in sa.transform"
+                                                    ng-init="sa._singleResult = updateTransform(score, sa.transform, tx)">
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text">
+                                                                <i class="fas fa-code"></i>
+                                                            </span>
+                                                            <select ng-model="tx.name" class="form-control"
+                                                                required="required"
+                                                                ng-change="sa._singleResult = updateTransform(score, sa.transform, tx)">
+                                                                <option
+                                                                    ng-repeat="ta in transformAlgorithms track by $index"
+                                                                    value="{{ta.name}}"> {{tx._meta[$index-1]}}
+                                                                    [{{ta.type}}] {{ ta.display }} - <small
+                                                                        class="text-subtle">{{ ta.description }}</small>
+                                                                </option>
+                                                            </select>
+                                                            <div ng-repeat="a in tx.args track by $index"
+                                                                class="input-group-append">
+                                                                <span class="input-group-text">{{ tx._meta[$index].name
+                                                                    }}:
+                                                                    <hint-popover
+                                                                        hint-title="{{ tx._meta[$index].name }}"
+                                                                        hint-text="{{ tx._meta[$index].description }}" />
+                                                                </span>
+                                                                <input ng-change="recalcScore(score)"
+                                                                    class="form-control" type="text"
+                                                                    ng-model="tx.args[$index]"
+                                                                    ng-required="tx._meta[$index].isRequired" />
+                                                            </div>
+                                                            <div class="input-group-append">
+                                                                <button class="btn btn-danger"
+                                                                    ng-click="sa.transform.splice($index, 1)"><i
+                                                                        class="fas fa-minus"></i> {{ 'ui.action.remove'
+                                                                    | i18n }}</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li class="list-group-item list-group-item-info">
+                                                    <button type="button" class="btn btn-info text-center w-100"
+                                                        ng-click="sa.transform.push({ name: '', args: [] }); recalcScore(score)"><i
+                                                            class="fas fa-plus"></i> {{
+                                                        'ui.mpi.matches.config.addTransform' | i18n }}</button>
+                                                </li>
+                                                <li
+                                                    class="list-group-item list-group-item-primary text-dark  text-center">
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text">
+                                                                <i class="fas fa-question"></i>
+                                                            </span>
+                                                        </div>
+                                                        <select ng-model="sa.op" class="form-control"
+                                                            ng-change="recalcScore(score)">
+                                                            <option value="Equal">{{ sa._singleResult ? 'result Equal' :
+                                                                'A Equal B' }}</option>
+                                                            <option value="NotEqual">{{ sa._singleResult ? 'result
+                                                                NotEqual' : 'A NotEqual B' }}</option>
+                                                            <option value="GreaterThan" ng-if="sa._singleResult || score.assert._singleResult">result
+                                                                GreaterThan</option>
+                                                            <option value="GreaterThanOrEqual" ng-if="sa._singleResult || score.assert._singleResult">
+                                                                result GreaterThanOrEqual </option>
+                                                            <option value="LessThan" ng-if="sa._singleResult || score.assert._singleResult">result
+                                                                LessThan</option>
+                                                            <option value="LessThanOrEqual" ng-if="sa._singleResult || score.assert._singleResult">
+                                                                result LessThanOrEqual </option>
+                                                        </select>
+                                                        <div class="input-group-append" ng-if="sa._singleResult || score.assert._singleResult">
+                                                            <span class="input-group-text">value:</span>
+                                                            <input class="form-control" required="required"
+                                                                ng-model="sa.value" ng-change="recalcScore(score)"
+                                                                type="text" />
+                                                        </div>
+                                                    </div>
+
+                                                </li>
+                                                <li class="list-group-item list-group-item-primary">
+                                                    <button type="button" class="btn btn-danger text-center w-100"
+                                                        ng-click="score.assert.assert.splice($index, 1); recalcScore(score)"><i
+                                                            class="fas fa-minus"></i> {{
+                                                        'ui.mpi.matches.config.removeAssertion' | i18n }}</button>
+
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li class="list-group-item list-group-item-light text-center" ng-if="score.assert.transform.length == 0">
+                                            <button type="button" class="btn btn-secondary text-center w-100"
+                                                ng-click="score.assert.assert.push({ op: 'Equal', transform: [], assert:  [] }); recalcScore(score)"><i
+                                                    class="fas fa-plus"></i> {{ 'ui.mpi.matches.config.addAssertion' |
+                                                i18n }}</button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="row m-1">
+                                <div class="col-12">
+                                    <hr />
+                                </div>
+
+                            </div>
+                            <div class="row m-1">
+                                <label class="control-label col-md-2 col-sm-12">
+                                    {{ 'ui.model.matchConfiguration.scoring.M' | i18n }}
+                                    <hint-popover hint-title="ui.model.matchConfiguration.scoring.M" />
+                                </label>
+                                <div class="col-md-4 col-sm-12">
+                                    <div class="input-group">
+                                        <input ng-change="recalcScore(score)" type="range" min="0.000" max="1.000"
+                                            step="0.001" ng-model="score.m" class="form-control" />
+                                        <input ng-change="recalcScore(score)" type="number" min="0.000" max="1.000"
+                                            ng-model="score.m" class="form-control" />
+                                    </div>
+                                </div>
+                                <label class="control-label col-md-2 col-sm-12">
+                                    {{ 'ui.model.matchConfiguration.scoring.U' | i18n }}
+                                    <hint-popover hint-title="ui.model.matchConfiguration.scoring.U" />
+                                </label>
+                                <div class="col-md-4 col-sm-12">
+                                    <div class="input-group">
+                                        <input ng-change="recalcScore(score)" type="range" min="0.000" max="1.000"
+                                            step="0.001" ng-model="score.u" class="form-control" />
+                                        <input ng-change="recalcScore(score)" type="number" min="0.00" max="1.00"
+                                            ng-model="score.u" class="form-control" />
+                                    </div>
+                                </div>
+
+                                <label class="control-label col-md-2 col-sm-12">
+                                    {{ 'ui.model.matchConfiguration.scoring.matchWeight' | i18n }}
+                                    <hint-popover hint-title="ui.model.matchConfiguration.scoring.matchWeight" />
+                                </label>
+                                <div class="col-md-4 col-sm-12">
+                                    <div class="input-group">
+                                        <i class="fas fa-calculator"></i><span class="ml-2">{{ score.matchWeight | number: 4
+                                            }}</span>
+                                    </div>
+                                </div>
+                                <label class="control-label col-md-2 col-sm-12">
+                                    {{ 'ui.model.matchConfiguration.scoring.nonMatchWeight' | i18n }}
+                                    <hint-popover hint-title="ui.model.matchConfiguration.scoring.nonMatchWeight" />
+                                </label>
+                                <div class="col-md-4 col-sm-12">
+                                    <i class="fas fa-calculator"></i><span class="ml-2">{{ score.nonMatchWeight | number: 4
+                                        }}</span>
+                                </div>
+                                <div class="col offset-md-2" ng-show="score.u &gt; score.m">
+                                    <div class="alert alert-warning">
+                                        <i class="fas fa-info-circle"></i> {{ 'ui.mpi.matches.config.oddballScore' |
+                                        i18n }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row m-1">
+                                <label class="control-label col-sm-12 col-md-2">
+                                    {{ 'ui.model.matchConfiguration.scoring.partialWeight' | i18n }}
+                                    <hint-popover hint-title="ui.model.matchConfiguration.scoring.partialWeight" />
+                                </label>
+                                <div class="col-sm-12 col-md-10">
+
+                                    <select ng-model="score.partialWeight.name" class="form-control" 
+                                                        ng-change="recalcScore(score)">
+                                                        <option ng-repeat="ta in transformAlgorithms track by $index"
+                                                            value="{{ta.name}}" ng-if="ta.arguments.length == 0 &amp;&amp; ta.type == 'Binary'"> {{tx._meta[$index-1]}} [{{ta.type}}] {{
+                                                            ta.display }} - <small class="text-subtle">{{ ta.description }}</small></option>
+                                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer p-2">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="btn-group float-right">
+                                        <button type="button" ng-click="scopedObject.scoring.splice($index, 1)"
+                                            class="btn btn-danger" ng-disabled="scopedObject.scoring.length == 1">
+                                            <i class="fas fa-minus-circle"></i> {{ 'ui.mpi.matches.config.removeScore' |
+                                            i18n }}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="btn-group float-right">
+                    <button type="button" ng-click="addScore()" class="btn btn-success"
+                        ng-disabled="!panel.editForm.$valid">
+                        <i class="fas fa-plus-circle"></i> {{ 'ui.mpi.matches.config.addScore' | i18n }}
+                    </button>
+                </div>
+            </div>
+
+        </form>
+    </div>
 </div>
