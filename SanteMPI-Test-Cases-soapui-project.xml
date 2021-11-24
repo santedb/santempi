@@ -2053,7 +2053,7 @@
           <con:params/>
           <con:element>data</con:element>
         </con:representation>
-        <con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html; charset=us-ascii</con:mediaType><con:status>503</con:status><con:params/><con:element>html</con:element></con:representation><con:request name="Request 1" id="030ac8aa-1a61-4185-8771-7a79d3216c26" mediaType="application/fhir+json">
+        <con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html; charset=us-ascii</con:mediaType><con:status>503</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Request 1" id="030ac8aa-1a61-4185-8771-7a79d3216c26" mediaType="application/fhir+json">
           <con:settings>
             <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="accept" value="application/fhir+json" xmlns="http://eviware.com/soapui/config"/></con:setting>
           </con:settings>
@@ -2443,7 +2443,7 @@
           <con:params/>
           <con:element>data</con:element>
         </con:representation>
-        <con:representation type="FAULT"><con:mediaType>text/html; charset=us-ascii</con:mediaType><con:status>503</con:status><con:params/><con:element>html</con:element></con:representation><con:request name="Request 1" id="f2aa8b59-ca23-4c6b-9375-349424658244" mediaType="application/fhir+json">
+        <con:representation type="FAULT"><con:mediaType>text/html; charset=us-ascii</con:mediaType><con:status>503</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Request 1" id="f2aa8b59-ca23-4c6b-9375-349424658244" mediaType="application/fhir+json">
           <con:settings/>
           <con:endpoint>http://localhost:8080</con:endpoint>
           <con:parameters/>
@@ -15891,7 +15891,7 @@
         <con:config service="HL7 Fast Health Interoperability Resources (FHIR) R4" methodName="GET" resourcePath="/fhir/Patient" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="Query For Olly Oid Using URL" id="713f712a-88fe-431f-bee7-918f0afc5a02" mediaType="application/fhir+json">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config" /></con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config"/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080/</con:endpoint>
@@ -18873,12 +18873,10 @@
         <con:config service="HL7 Fast Health Interoperability Resources (FHIR) R4" methodName="GET" resourcePath="/fhir/Patient/$ihe-pix" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="Execute PIXm For Patient" id="61be28e5-d07d-421a-8222-6640bec0abac" mediaType="application/fhir+json">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">
-                &lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
-                &lt;con:entry key="Authorization" value="BEARER ${#TestSuite#Token}" />
-                &lt;con:entry key="accept" value="application/fhir+json" />
-                &lt;/xml-fragment>
-              </con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  &lt;con:entry key="Authorization" value="BEARER ${#TestSuite#Token}"/>
+  &lt;con:entry key="accept" value="application/fhir+json"/>
+&lt;/xml-fragment></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080/</con:endpoint>
@@ -21874,7 +21872,7 @@
       <con:properties>
         <con:property>
           <con:name>VictimID</con:name>
-          <con:value>4b96dee0-7cff-42df-82e4-000bb0714812</con:value>
+          <con:value>25abbc02-9240-4232-abe3-c7b9c96477dc</con:value>
         </con:property>
       </con:properties>
     </con:testCase>
@@ -22877,7 +22875,7 @@
         <con:config service="HL7 Fast Health Interoperability Resources (FHIR) R4" methodName="POST" resourcePath="/fhir/Subscription" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="Subscribe to Deceased Patient (REST-HOOK)" id="bbf966f5-3af2-4594-8c06-af0f1041eb7a" mediaType="application/fhir+json" postQueryString="false">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config" /></con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config"/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080/</con:endpoint>
@@ -22956,7 +22954,7 @@
       "family": "Subscription"
    }],
    "active": true,
-   "id": "e677d7d1-0254-492a-8414-d0fb3a21c16c",
+   "id": "ff959785-f7d9-46ba-adea-e0b239d7adba",
    "text":    {
       "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n\t\t\t<table>\n\t\t\t\t<tbody>\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>Name<\/td>\n\t\t\t\t\t\t<td>Peter James \n              <b>Chalmers<\/b> (&quot;Jim&quot;)\n            <\/td>\n\t\t\t\t\t<\/tr>\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>Address<\/td>\n\t\t\t\t\t\t<td>534 Erewhon, Pleasantville, Vic, 3999<\/td>\n\t\t\t\t\t<\/tr>\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>Contacts<\/td>\n\t\t\t\t\t\t<td>Home: unknown. Work: (03) 5555 6473<\/td>\n\t\t\t\t\t<\/tr>\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>Id<\/td>\n\t\t\t\t\t\t<td>MRN: 12345 (Acme Healthcare)<\/td>\n\t\t\t\t\t<\/tr>\n\t\t\t\t<\/tbody>\n\t\t\t<\/table>\n\t\t<\/div>",
       "status": "generated"
@@ -22976,7 +22974,7 @@
             </con:credentials>
             <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
             <con:jmsPropertyConfig/>
-            <con:parameters><entry key="id" value="e677d7d1-0254-492a-8414-d0fb3a21c16c" xmlns="http://eviware.com/soapui/config"/></con:parameters>
+            <con:parameters><entry key="id" value="ff959785-f7d9-46ba-adea-e0b239d7adba" xmlns="http://eviware.com/soapui/config"/></con:parameters>
           </con:restRequest>
         </con:config>
       </con:testStep>
@@ -23266,7 +23264,7 @@
     <con:properties>
       <con:property>
         <con:name>Token</con:name>
-        <con:value>E03FF7769048EC1183070242AC1400026BF627518116CA3291A71CC00412860D37F7B6CE87665F0D461D7351A0C1280C</con:value>
+        <con:value>7A3FD4C15049EC1191040242AC14000285881875D2C8AF430A18D93AA7294D86ADE7A050CF27CC1A6650FE4E11F2564A</con:value>
       </con:property>
     </con:properties>
   </con:testSuite>
