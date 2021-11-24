@@ -24,6 +24,8 @@ namespace SanteMPI.Messaging.IHE.Test
 
         private readonly byte[] DeviceSecretB = new byte[] { 0x6, 0x5, 0x4, 0x3, 0x2, 0x1 };
 
+        private IServiceManager m_serviceManager;
+
         /// <summary>
         /// Test context
         /// </summary>
@@ -35,6 +37,7 @@ namespace SanteMPI.Messaging.IHE.Test
             var p = FirebirdSql.Data.FirebirdClient.FbCharset.Ascii;
             TestApplicationContext.TestAssembly = typeof(TestOpenHIEPixPdq).Assembly;
             TestApplicationContext.Initialize(TestContext.CurrentContext.TestDirectory);
+            this.m_serviceManager = TestApplicationContext.Current.GetService<IServiceManager>();
         }
 
         /// <summary>
@@ -45,7 +48,7 @@ namespace SanteMPI.Messaging.IHE.Test
         {
             // Step 1: Test harness sends ADT^A01 message where CX.4 of PID is missing
             var message = TestUtil.GetMessageEvent("OHIE-CR-01-10");
-            var result = new PixAdtMessageHandler(new TestLocalizationService()).HandleMessage(message);
+            var result = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>().HandleMessage(message);
 
             // Response is ACK A01
             Assert.AreEqual("ACK", (result.GetStructure("MSH") as MSH).MessageType.MessageCode.Value);
@@ -72,7 +75,7 @@ namespace SanteMPI.Messaging.IHE.Test
 
                 // Test harness sends ADT^A01 Message where CX.4.1 of PID is missing by message containss 4.2 and 4.3
                 var message = TestUtil.GetMessageEvent("OHIE-CR-02-10", DeviceSecretA);
-                var result = new PixAdtMessageHandler(new TestLocalizationService()).HandleMessage(message);
+                var result = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>().HandleMessage(message);
 
                 // Response is ACK A01
                 Assert.AreEqual("ACK", (result.GetStructure("MSH") as MSH).MessageType.MessageCode.Value);
@@ -99,7 +102,7 @@ namespace SanteMPI.Messaging.IHE.Test
 
                 // Test hanress sneds ADT A01 with OID missing but namespace
                 message = TestUtil.GetMessageEvent("OHIE-CR-02-30", DeviceSecretA);
-                result = new PixAdtMessageHandler(new TestLocalizationService()).HandleMessage(message);
+                result = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>().HandleMessage(message);
 
                 // Response is ACK A01
                 Assert.AreEqual("ACK", (result.GetStructure("MSH") as MSH).MessageType.MessageCode.Value);
@@ -145,7 +148,7 @@ namespace SanteMPI.Messaging.IHE.Test
 
                 // Test harness sends ADT A01 with 2.16.840.1.113883.3.72.5.9.4 as OID
                 var message = TestUtil.GetMessageEvent("OHIE-CR-03-10");
-                var result = new PixAdtMessageHandler(new TestLocalizationService()).HandleMessage(message);
+                var result = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>().HandleMessage(message);
 
                 // Response is ACK A01
                 Assert.AreEqual("ACK", (result.GetStructure("MSH") as MSH).MessageType.MessageCode.Value);
@@ -154,7 +157,7 @@ namespace SanteMPI.Messaging.IHE.Test
 
                 // Test harness sends ADT A01 with TEST_BLOCK as AA
                 message = TestUtil.GetMessageEvent("OHIE-CR-03-20");
-                result = new PixAdtMessageHandler(new TestLocalizationService()).HandleMessage(message);
+                result = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>().HandleMessage(message);
 
                 // Response is ACK A01
                 Assert.AreEqual("ACK", (result.GetStructure("MSH") as MSH).MessageType.MessageCode.Value);
@@ -176,7 +179,7 @@ namespace SanteMPI.Messaging.IHE.Test
 
             // Step 20 - Harness A sends ADT^A01
             var message = TestUtil.GetMessageEvent("OHIE-CR-04-20", DeviceSecretA);
-            var result = new PixAdtMessageHandler(new TestLocalizationService()).HandleMessage(message);
+            var result = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>().HandleMessage(message);
 
             // Response is ACK A01
             Assert.AreEqual("ACK", (result.GetStructure("MSH") as MSH).MessageType.MessageCode.Value);
@@ -185,7 +188,7 @@ namespace SanteMPI.Messaging.IHE.Test
 
             // TEST HARNESS B attempts to send for authority A
             message = TestUtil.GetMessageEvent("OHIE-CR-04-30", DeviceSecretB);
-            result = new PixAdtMessageHandler(new TestLocalizationService()).HandleMessage(message);
+            result = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>().HandleMessage(message);
 
             // Response is ACK A01
             Assert.AreEqual("ACK", (result.GetStructure("MSH") as MSH).MessageType.MessageCode.Value);
@@ -204,12 +207,12 @@ namespace SanteMPI.Messaging.IHE.Test
 
             // Ensure that patient is registered with minimal data
             var message = TestUtil.GetMessageEvent("OHIE-CR-05-10", DeviceSecretA);
-            var result = new PixAdtMessageHandler(new TestLocalizationService()).HandleMessage(message);
+            var result = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>().HandleMessage(message);
             TestUtil.AssertOutcome(result, "AA", "CA");
             TestUtil.AssertPatientExists("TEST", "RJ-439");
             // Test harness sends ADT^A01 message with minimal data set
             message = TestUtil.GetMessageEvent("OHIE-CR-05-20", DeviceSecretA);
-            result = new PixAdtMessageHandler(new TestLocalizationService()).HandleMessage(message);
+            result = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>().HandleMessage(message);
             Assert.AreEqual("ACK", (result.GetStructure("MSH") as MSH).MessageType.MessageCode.Value);
             Assert.AreEqual("A01", (result.GetStructure("MSH") as MSH).MessageType.TriggerEvent.Value);
             TestUtil.AssertOutcome(result, "AA", "CA");
@@ -241,11 +244,11 @@ namespace SanteMPI.Messaging.IHE.Test
             TestUtil.CreateAuthority("NID", "2.16.840.1.113883.3.72.5.9.9", "", "NID_AUTH", DeviceSecretA);
 
             var message = TestUtil.GetMessageEvent("OHIE-CR-06-20", DeviceSecretA);
-            var result = new PixAdtMessageHandler(new TestLocalizationService()).HandleMessage(message);
+            var result = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>().HandleMessage(message);
             TestUtil.AssertOutcome(result, "AA", "CA");
             TestUtil.AssertPatientExists("NID", "NID-000345435");
             message = TestUtil.GetMessageEvent("OHIE-CR-06-30", DeviceSecretA);
-            result = new PixAdtMessageHandler(new TestLocalizationService()).HandleMessage(message);
+            result = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>().HandleMessage(message);
             TestUtil.AssertOutcome(result, "AA", "CA");
             TestUtil.AssertPatientExists("TEST_A", "RJ-449");
             TestUtil.AssertPatientExists("NID", "NID-000345435");
@@ -274,12 +277,12 @@ namespace SanteMPI.Messaging.IHE.Test
 
             // Ensure patient is registered
             var message = TestUtil.GetMessageEvent("OHIE-CR-07-10", DeviceSecretA);
-            var result = new PixAdtMessageHandler(new TestLocalizationService()).HandleMessage(message);
+            var result = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>().HandleMessage(message);
             TestUtil.AssertOutcome(result, "AA", "CA");
 
             // Test harness sends minimal data set for newborn
             message = TestUtil.GetMessageEvent("OHIE-CR-07-20", DeviceSecretA);
-            result = new PixAdtMessageHandler(new TestLocalizationService()).HandleMessage(message);
+            result = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>().HandleMessage(message);
             TestUtil.AssertOutcome(result, "AA", "CA");
 
             // Verify that the infant was created
@@ -316,7 +319,7 @@ namespace SanteMPI.Messaging.IHE.Test
 
             // Register patient with full demographic information
             var message = TestUtil.GetMessageEvent("OHIE-CR-08-10", DeviceSecretA);
-            var result = new PixAdtMessageHandler(new TestLocalizationService()).HandleMessage(message);
+            var result = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>().HandleMessage(message);
             TestUtil.AssertOutcome(result, "AA", "CA");
 
             // Test harness verifies data by looking up created patient
@@ -388,7 +391,7 @@ namespace SanteMPI.Messaging.IHE.Test
 
             // Harness sends registering patient
             message = TestUtil.GetMessageEvent("OHIE-CR-09-30", DeviceSecretA);
-            response = new PixAdtMessageHandler(new TestLocalizationService()).HandleMessage(message);
+            response = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>().HandleMessage(message);
 
             // Assert success
             TestUtil.AssertOutcome(response, "AA", "CA");
@@ -418,7 +421,7 @@ namespace SanteMPI.Messaging.IHE.Test
 
             // Ensure that patient is registered
             var message = TestUtil.GetMessageEvent("OHIE-CR-10-10", DeviceSecretA);
-            var response = new PixAdtMessageHandler(new TestLocalizationService()).HandleMessage(message);
+            var response = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>().HandleMessage(message);
             TestUtil.AssertOutcome(response, "AA", "CA");
 
             // Test harness requests that the receiver gives it only TEST identities
@@ -460,7 +463,7 @@ namespace SanteMPI.Messaging.IHE.Test
 
             // Ensure that the patient Jennifer Jones with RJ-439 is registered
             var message = TestUtil.GetMessageEvent("OHIE-CR-11-10", DeviceSecretA);
-            var response = new PixAdtMessageHandler(new TestLocalizationService()).HandleMessage(message);
+            var response = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>().HandleMessage(message);
             TestUtil.AssertOutcome(response, "AA", "CA");
 
             // Test harness sends PDQ message containing known ID to supplier

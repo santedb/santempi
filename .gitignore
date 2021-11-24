@@ -292,3 +292,4 @@ SanteDB.sln.GhostDoc.xml
 .vs/
 Help/
 dist/
+**/Version.cs

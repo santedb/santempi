@@ -73,6 +73,7 @@ Name: interop\gs1; Description: GS1 BMS Messaging; Types: full demo
 Name: interop\jira; Description: JIRA Integration; Types: full
 Name: interop\atna; Description: ATNA & DICOM Auditing; Types: full
 Name: interop\openapi; Description: OpenAPI; Types: full demo
+Name: interop\msmq; Description: Microsoft Message Queue Support; Types: full demo
 Name: reporting; Description: Reporting Services; Types: full
 Name: reporting\bis; Description: Business Intelligence Services; Types: full bis 
 Name: tfa; Description: Two Factor Authentication; Types: full
@@ -111,6 +112,8 @@ Source: {#iCDRBase}\bin\Release\firebird.conf; DestDir: {app}; Components: db\fb
 Source: {#iCDRBase}\bin\Release\firebird.msg; DestDir: {app}; Components: db\fbsql
 ;Source: {#iCDRBase}\bin\Release\fbembed.dll; DestDir: {app}; Components: db\fbsql
 Source: {#iCDRBase}\bin\Release\fbclient.dll; DestDir: {app}; Components: db\fbsql
+; MSMQ Support
+Source: {#iCDRBase}\bin\Release\SanteDB.Queue.Msmq.dll; DestDir: {app}; Components: interop\msmq
 
 ; Demo Data
 Source: {#iCDRBase}\SanteDB\Data\Demo\*.dataset; DestDir: {app}\data; Components: demo
@@ -236,6 +239,7 @@ Source: {#iCDRBase}\bin\Release\Data\SQL\AuditDB\FBSQL\*.sql; DestDir: {app}\dat
 Source: {#iCDRBase}\bin\Release\Phonix.dll; DestDir: {app}; Components: match
 Source: {#iCDRBase}\bin\Release\SanteDB.Matcher.dll; DestDir: {app}; Components: match
 Source: {#iCDRBase}\santedb-match\SanteDB.Matcher.Test\Matching\example.xml; DestDir: {app}\matching; Components: match
+Source: {#iCDRBase}\bin\Release\Pipelines.Sockets.Unofficial.dll; DestDir: {app}; Components: cache\redis
 
 ; OAUTH
 Source: {#iCDRBase}\bin\Release\SanteDB.Authentication.OAuth2.dll; DestDir: {app}; Components: msg\auth
@@ -276,7 +280,6 @@ Source: {#iCDRBase}\bin\Release\SanteDB.Rest.HDSI.dll; DestDir: {app}; Component
 
 ; Common .NET Standard
 Source: {#iCDRBase}\bin\Release\Microsoft.Bcl.AsyncInterfaces.dll; DestDir: {app}; 
-Source: {#iCDRBase}\bin\Release\Microsoft.Diagnostics.Runtime.dll; DestDir: {app}; 
 Source: {#iCDRBase}\bin\Release\Microsoft.Win32.Primitives.dll; DestDir: {app}; 
 Source: {#iCDRBase}\bin\Release\netstandard.dll; DestDir: {app}; Components: core server
 Source: {#iCDRBase}\bin\Release\System.*.dll; DestDir: {app}; 

@@ -2053,7 +2053,7 @@
           <con:params/>
           <con:element>data</con:element>
         </con:representation>
-        <con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html; charset=us-ascii</con:mediaType><con:status>503</con:status><con:params/><con:element>html</con:element></con:representation><con:request name="Request 1" id="030ac8aa-1a61-4185-8771-7a79d3216c26" mediaType="application/fhir+json">
+        <con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html; charset=us-ascii</con:mediaType><con:status>503</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Request 1" id="030ac8aa-1a61-4185-8771-7a79d3216c26" mediaType="application/fhir+json">
           <con:settings>
             <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="accept" value="application/fhir+json" xmlns="http://eviware.com/soapui/config"/></con:setting>
           </con:settings>
@@ -2427,7 +2427,7 @@
         </con:representation>
         <con:representation type="FAULT">
           <con:mediaType>application/fhir+json</con:mediaType>
-          <con:status>404 400 403</con:status>
+          <con:status>404 400 403 503</con:status>
           <con:params/>
           <con:element xmlns:ihe="http://localhost/fhir/Patient/$ihe-pix">ihe:Fault</con:element>
         </con:representation>
@@ -2443,7 +2443,7 @@
           <con:params/>
           <con:element>data</con:element>
         </con:representation>
-        <con:request name="Request 1" id="f2aa8b59-ca23-4c6b-9375-349424658244" mediaType="application/fhir+json">
+        <con:representation type="FAULT"><con:mediaType>text/html; charset=us-ascii</con:mediaType><con:status>503</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Request 1" id="f2aa8b59-ca23-4c6b-9375-349424658244" mediaType="application/fhir+json">
           <con:settings/>
           <con:endpoint>http://localhost:8080</con:endpoint>
           <con:parameters/>
@@ -15891,7 +15891,7 @@
         <con:config service="HL7 Fast Health Interoperability Resources (FHIR) R4" methodName="GET" resourcePath="/fhir/Patient" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="Query For Olly Oid Using URL" id="713f712a-88fe-431f-bee7-918f0afc5a02" mediaType="application/fhir+json">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config" /></con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config"/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080/</con:endpoint>
@@ -18873,12 +18873,10 @@
         <con:config service="HL7 Fast Health Interoperability Resources (FHIR) R4" methodName="GET" resourcePath="/fhir/Patient/$ihe-pix" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="Execute PIXm For Patient" id="61be28e5-d07d-421a-8222-6640bec0abac" mediaType="application/fhir+json">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">
-                &lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
-                &lt;con:entry key="Authorization" value="BEARER ${#TestSuite#Token}" />
-                &lt;con:entry key="accept" value="application/fhir+json" />
-                &lt;/xml-fragment>
-              </con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  &lt;con:entry key="Authorization" value="BEARER ${#TestSuite#Token}"/>
+  &lt;con:entry key="accept" value="application/fhir+json"/>
+&lt;/xml-fragment></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080/</con:endpoint>
@@ -21292,12 +21290,10 @@
         <con:config service="HL7 Fast Health Interoperability Resources (FHIR) R4" methodName="GET" resourcePath="/fhir/Patient/$ihe-pix" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="Execute PIXm To Validate Patient 1" id="f9a2025e-ed22-46b1-a5e2-05cb9e98324f" mediaType="application/fhir+json">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">
-                &lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
-                &lt;con:entry key="Authorization" value="BEARER ${#TestSuite#Token}" />
-                &lt;con:entry key="Accept" value="application/fhir+json" />
-                &lt;/xml-fragment>
-              </con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  &lt;con:entry key="Authorization" value="BEARER ${#TestSuite#Token}"/>
+  &lt;con:entry key="Accept" value="application/fhir+json"/>
+&lt;/xml-fragment></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080/</con:endpoint>
@@ -21353,7 +21349,7 @@
         <con:config service="HL7 Fast Health Interoperability Resources (FHIR) R4" methodName="POST" resourcePath="/fhir/Bundle" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="Register Patient 2" id="87ed10b9-5373-4cf2-bfc5-42b93585b601" mediaType="application/fhir+json" postQueryString="false">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config" /></con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config"/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080/</con:endpoint>
@@ -21468,12 +21464,10 @@
         <con:config service="HL7 Fast Health Interoperability Resources (FHIR) R4" methodName="GET" resourcePath="/fhir/Patient/$ihe-pix" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="Execute PIXm To Validate Patient 2" id="f9a2025e-ed22-46b1-a5e2-05cb9e98324f" mediaType="application/fhir+json">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">
-                &lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
-                &lt;con:entry key="Authorization" value="BEARER ${#TestSuite#Token}" />
-                &lt;con:entry key="Accept" value="application/fhir+json" />
-                &lt;/xml-fragment>
-              </con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  &lt;con:entry key="Authorization" value="BEARER ${#TestSuite#Token}"/>
+  &lt;con:entry key="Accept" value="application/fhir+json"/>
+&lt;/xml-fragment></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080/</con:endpoint>
@@ -21520,12 +21514,10 @@
         <con:config service="HL7 Fast Health Interoperability Resources (FHIR) R4" methodName="GET" resourcePath="/fhir/Patient" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="(internal) Fetch Created Patient for Property Transfer" id="574fe6a9-6753-46e8-a071-cb2d5346d50f" mediaType="application/fhir+json">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">
-                &lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
-                &lt;con:entry key="Authorization" value="BEARER ${#TestSuite#Token}" />
-                &lt;con:entry key="Accept" value="application/fhir+json" />
-                &lt;/xml-fragment>
-              </con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  &lt;con:entry key="Authorization" value="BEARER ${#TestSuite#Token}"/>
+  &lt;con:entry key="Accept" value="application/fhir+json"/>
+&lt;/xml-fragment></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080/</con:endpoint>
@@ -21578,7 +21570,7 @@
         <con:config service="HL7 Fast Health Interoperability Resources (FHIR) R4" methodName="POST" resourcePath="/fhir/Bundle" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="Merge Patient 2 into Patient 1" id="87ed10b9-5373-4cf2-bfc5-42b93585b601" mediaType="application/fhir+json" postQueryString="false">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config" /></con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config"/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080/</con:endpoint>
@@ -21694,12 +21686,10 @@
         <con:config service="HL7 Fast Health Interoperability Resources (FHIR) R4" methodName="GET" resourcePath="/fhir/Patient" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="Validate Merge (FHR-081)" id="f5a0a42b-50a0-425a-b6e2-ad160b0ab3a9" mediaType="application/fhir+json">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">
-                &lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
-                &lt;con:entry key="Authorization" value="BEARER ${#TestSuite#Token}" />
-                &lt;con:entry key="Accept" value="application/fhir+json" />
-                &lt;/xml-fragment>
-              </con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  &lt;con:entry key="Authorization" value="BEARER ${#TestSuite#Token}"/>
+  &lt;con:entry key="Accept" value="application/fhir+json"/>
+&lt;/xml-fragment></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080/</con:endpoint>
@@ -21882,7 +21872,7 @@
       <con:properties>
         <con:property>
           <con:name>VictimID</con:name>
-          <con:value>da135faf-394c-4d63-9f0c-d969431847dc</con:value>
+          <con:value>25abbc02-9240-4232-abe3-c7b9c96477dc</con:value>
         </con:property>
       </con:properties>
     </con:testCase>
@@ -22885,7 +22875,7 @@
         <con:config service="HL7 Fast Health Interoperability Resources (FHIR) R4" methodName="POST" resourcePath="/fhir/Subscription" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="Subscribe to Deceased Patient (REST-HOOK)" id="bbf966f5-3af2-4594-8c06-af0f1041eb7a" mediaType="application/fhir+json" postQueryString="false">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config" /></con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config"/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080/</con:endpoint>
@@ -22964,7 +22954,7 @@
       "family": "Subscription"
    }],
    "active": true,
-   "id": "4676dca4-8a6a-4c9b-9090-0d504d8d669a",
+   "id": "ff959785-f7d9-46ba-adea-e0b239d7adba",
    "text":    {
       "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n\t\t\t<table>\n\t\t\t\t<tbody>\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>Name<\/td>\n\t\t\t\t\t\t<td>Peter James \n              <b>Chalmers<\/b> (&quot;Jim&quot;)\n            <\/td>\n\t\t\t\t\t<\/tr>\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>Address<\/td>\n\t\t\t\t\t\t<td>534 Erewhon, Pleasantville, Vic, 3999<\/td>\n\t\t\t\t\t<\/tr>\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>Contacts<\/td>\n\t\t\t\t\t\t<td>Home: unknown. Work: (03) 5555 6473<\/td>\n\t\t\t\t\t<\/tr>\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>Id<\/td>\n\t\t\t\t\t\t<td>MRN: 12345 (Acme Healthcare)<\/td>\n\t\t\t\t\t<\/tr>\n\t\t\t\t<\/tbody>\n\t\t\t<\/table>\n\t\t<\/div>",
       "status": "generated"
@@ -22984,7 +22974,7 @@
             </con:credentials>
             <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
             <con:jmsPropertyConfig/>
-            <con:parameters><entry key="id" value="4676dca4-8a6a-4c9b-9090-0d504d8d669a" xmlns="http://eviware.com/soapui/config"/></con:parameters>
+            <con:parameters><entry key="id" value="ff959785-f7d9-46ba-adea-e0b239d7adba" xmlns="http://eviware.com/soapui/config"/></con:parameters>
           </con:restRequest>
         </con:config>
       </con:testStep>
@@ -23274,7 +23264,7 @@
     <con:properties>
       <con:property>
         <con:name>Token</con:name>
-        <con:value>1046B49E0C43EC11A35C0242AC140002AFB1B32155B78F5F4817E4601B101A08E924398EDFFA1C7F5E90BBE9466C67D6</con:value>
+        <con:value>7A3FD4C15049EC1191040242AC14000285881875D2C8AF430A18D93AA7294D86ADE7A050CF27CC1A6650FE4E11F2564A</con:value>
       </con:property>
     </con:properties>
   </con:testSuite>
@@ -23662,7 +23652,7 @@
       <con:refreshAccessTokenMethod>AUTOMATIC</con:refreshAccessTokenMethod>
       <con:refreshToken>B78E4B5DA8C0D54983DA8714BF056788050D9D0F746CE9745228B4B612DDA24B157A33FCF51C496C2D5DD76C58372D60</con:refreshToken>
       <con:scope>*</con:scope>
-      <con:accessTokenStatus>RETRIEVED_FROM_SERVER</con:accessTokenStatus>
+      <con:accessTokenStatus>UNKNOWN</con:accessTokenStatus>
       <con:accessTokenStartingStatus>RETRIEVED_FROM_SERVER</con:accessTokenStartingStatus>
       <con:accessTokenExpirationTime>3599974</con:accessTokenExpirationTime>
       <con:accessTokenIssuedTime>1636648672</con:accessTokenIssuedTime>

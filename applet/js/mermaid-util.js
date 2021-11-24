@@ -45,7 +45,14 @@ async function renderBlockingSubgraph(configuration, showActuals, detailOutput, 
         }
         else {
             retVal += `Block${i}\nsubgraph Block${i}\ndirection TB\n`;
+            // dose the block has a note?
+            if (block.description) {
+                var w = 0;
+                var descriptionText = block.description.split(' ').reduce((a, b) => ++w % 6 == 0 ? `${a}\r\n${b}` : `${a} ${b}`);
+                retVal += `NOTE${i}["<i class='fas fa-sticky-note'></i> ${descriptionText}"]\nstyle NOTE${i} fill:#ffa,stroke:#aaf\n`
+            }
             for (var f = 0; f < block.filter.length; f++) {
+
                 var filter = block.filter[f];
 
                 if (detailOutput && block.filter[f].when && block.filter[f].when != "") {
@@ -230,6 +237,12 @@ async function renderScoringSubgraph(configuration, actuals, detailOutput, instr
             }
             retVal += `Attribute${s}\nsubgraph Attribute${s}["<i class='fas fa-star-half-alt'></i> ${score.id || `Attribute${s}`}"]\ndirection LR\n`;
 
+            // dose the block has a note?
+            if (score.description) {
+                var w = 0;
+                var descriptionText = score.description.split(' ').reduce((a, b) => ++w % 6 == 0 ? `${a}\r\n${b}` : `${a} ${b}`);
+                retVal += `NOTE_S${s}["<i class='fas fa-sticky-note'></i> ${descriptionText}"]\nstyle NOTE_S${s} fill:#ffa,stroke:#aaf\n`
+            }
 
             var rootNode = `PARM${s}`;
 
@@ -239,7 +252,7 @@ async function renderScoringSubgraph(configuration, actuals, detailOutput, instr
 
                     var refIdx = configuration.scoring.findIndex(o => o.id == when.ref);
 
-                    retVal += `PARM${s}W${w}{{"<button data-toggle='collapse' class='btn btn-link' data-target='#score${refIdx}'><i class='fas fa-star-half-alt'></i> ${when.ref} ${renderOpCode(when.op)} ${when.value}</button>"}}`;
+                    retVal += `PARM${s}W${w}{{"<button data-toggle='collapse' class='btn btn-link' data-target='#score${refIdx}'><i class='fas fa-star-half-alt'></i> ${when.ref}</button>"}}`;
 
                     if (w < score.when.length - 1) {
                         retVal += `-->|"[true]"| PARM${s}W${w + 1}\n`;
@@ -263,180 +276,181 @@ async function renderScoringSubgraph(configuration, actuals, detailOutput, instr
                             break;
                         default:
                             retVal += `${rootNode}\n`;
-                        break;
+                            break;
                     }
                 }
-
-                // Null score
-                switch (score.whenNull) {
-                    case 'Zero':
-                        retVal += `${rootNode}[/"${score.property[0]}"/]-->|"[null]"| PARMWHENNULL${s}(["0.0"])\n`;
-                        break;
-                    case 'Match':
-                        retVal += `${rootNode}[/"${score.property[0]}"/]-->|"[null]"| S${s}SCORE\n`;
-                        break;
-                    case 'NonMatch':
-                        retVal += `${rootNode}[/"${score.property[0]}"/]-->|"[null]"| S${s}NSCORE\n`;
-                        break;
-                    case 'Disqualify':
-                        retVal += `${rootNode}[/"${score.property[0]}"/]-->|"[null]"| PARMWHENNULL${s}[["<i class='fas fa-exclamation'></i> disqualify()"]]\n`;
-                        break;
-                    case 'Ignore':
-                        retVal += `${rootNode}[/"${score.property[0]}"/]-->|"[null]"| PARMWHENNULL${s}(["null"])\n`;
-                        break;
-                    default:
-                        rootNode = `${rootNode}[/"${score.property[0]}"/]`;
-                        break;
-
-                }
             }
 
-                retVal += await renderAssertionBlock(rootNode, `S${s}`, score.assert, actuals);
-
-                // Assign output 
-
-                if (score.partialWeight) {
-                    retVal += `S${s}OUT-->|"[true]"| S${s}SCORE(["${score.matchWeight.toPrecision(2)} * ${score.partialWeight.name}(${score.partialWeight.args.join(",")})"])\n`;
-                }
-                else {
-                    retVal += `S${s}OUT-->|"[true]"| S${s}SCORE(["${score.matchWeight.toPrecision(2)}"])\n`;
-                }
-                retVal += `S${s}OUT-->|"[false]"| S${s}NSCORE([${score.nonMatchWeight.toPrecision(2)}])\n`;
-
-
-                retVal += 'end\n';
-                retVal += `style Attribute${s} fill:#fff,stroke:#000\n`;
+            // Null score
+            switch (score.whenNull) {
+                case 'Zero':
+                    retVal += `${rootNode}[/"${score.property[0]}"/]-->|"[null]"| PARMWHENNULL${s}(["0.0"])\n`;
+                    break;
+                case 'Match':
+                    retVal += `${rootNode}[/"${score.property[0]}"/]-->|"[null]"| S${s}SCORE\n`;
+                    break;
+                case 'NonMatch':
+                    retVal += `${rootNode}[/"${score.property[0]}"/]-->|"[null]"| S${s}NSCORE\n`;
+                    break;
+                case 'Disqualify':
+                    retVal += `${rootNode}[/"${score.property[0]}"/]-->|"[null]"| PARMWHENNULL${s}[["<i class='fas fa-exclamation'></i> disqualify()"]]\n`;
+                    break;
+                case 'Ignore':
+                    retVal += `${rootNode}[/"${score.property[0]}"/]-->|"[null]"| PARMWHENNULL${s}(["null"])\n`;
+                    break;
+                default:
+                    rootNode = `${rootNode}[/"${score.property[0]}"/]`;
+                    break;
             }
+
+            retVal += await renderAssertionBlock(rootNode, `S${s}`, score.assert, actuals);
+
+            // Assign output 
+
+            if (score.partialWeight) {
+                retVal += `S${s}OUT-->|"[true]"| S${s}SCORE(["${score.matchWeight.toPrecision(2)} * ${score.partialWeight.name}(${score.partialWeight.args.join(",")})"])\n`;
+            }
+            else {
+                retVal += `S${s}OUT-->|"[true]"| S${s}SCORE(["${score.matchWeight.toPrecision(2)}"])\n`;
+            }
+            retVal += `S${s}OUT-->|"[false]"| S${s}NSCORE([${score.nonMatchWeight.toPrecision(2)}])\n`;
+
+
+            retVal += 'end\n';
+            retVal += `style Attribute${s} fill:#fff,stroke:#000\n`;
         }
-
-        retVal += 'end\n';
-
-        return retVal;
     }
 
-    /**
-     * @method
-     * @summary Render the classification instructions from the configuration
-     * @param {MatchConfiguration} configuration The matching configuration to emit the classification instructions from
-     * @param {object} actuals When not-null, emit the counts from the actual variable (this is the result of the $test operation)
-     * @returns {string} The MermaidJS graph
-     */
-    async function renderClassificationSubgraph(configuration, actuals) {
-        var targetResource = configuration.target[0].resource.toCamelCase();
-        var retVal = `subgraph Classification["<i class='fas fa-brain'></i> Classification"]\ndirection LR\n`;
+    retVal += 'end\n';
 
-        // for (var s in configuration.scoring) {
-        //     var score = configuration.scoring[s];
+    return retVal;
+}
 
-        //     retVal += `score_${score.id ?? s}-->`;
-        //     if (actuals) {
-        //         retVal += '|? records|';
-        //     }
-        //     else {
-        //         retVal += `|"${score.matchWeight.toPrecision(2)} / ${score.nonMatchWeight.toPrecision(2)}"|`;
-        //     }
-        //     retVal += `CLASS{"<i class='fas fa-brain'></i> Classify"}\n`//[["<i class='fas fa-calculator'></i> sum()"]]\n`;
-        // }
+/**
+ * @method
+ * @summary Render the classification instructions from the configuration
+ * @param {MatchConfiguration} configuration The matching configuration to emit the classification instructions from
+ * @param {object} actuals When not-null, emit the counts from the actual variable (this is the result of the $test operation)
+ * @returns {string} The MermaidJS graph
+ */
+async function renderClassificationSubgraph(configuration, actuals) {
+    var targetResource = configuration.target[0].resource.toCamelCase();
+    var retVal = `subgraph Classification["<i class='fas fa-shapes'></i> Classification"]\ndirection LR\n`;
 
-        retVal += "Scoring==>CLASS{{\"<i class='fas fa-brain'></i> Classify\"}}\n";
-        // retVal += 'SUMCLS-->CLASS{Classify}\n';
-        if (actuals) {
-            retVal += `CLASS-->|? records| NON["<i class='fas fa-times'></i> Non Match"]\n`;
-            retVal += `CLASS-->|? records| PROB["<i class='fas fa-question'></i> Probable Match"]\n`;
-            retVal += `CLASS-->|? records| MATCH["<i class='fas fa-check'></i> Match"]\n`;
+    // for (var s in configuration.scoring) {
+    //     var score = configuration.scoring[s];
 
-        }
-        else {
-            retVal += `CLASS-->|"[< ${configuration.nonmatchThreshold}]"| NON["<i class='fas fa-times'></i> Non Match"]\n`;
-            retVal += `CLASS-->|"[< ${configuration.matchThreshold}]"| PROB["<i class='fas fa-question'></i> Probable Match"]\n`;
-            retVal += `CLASS-->|"[]> ${configuration.matchThreshold}]"| MATCH["<i class='fas fa-check'></i> Match"]\n`;
-        }
-        retVal += 'style NON fill:#f99,stroke:#900\n';
-        retVal += 'style PROB fill:#ff9,stroke:#990\n';
-        retVal += 'style MATCH fill:#9f9,stroke:#090\n';
-        retVal += 'end\n';
-        return retVal;
+    //     retVal += `score_${score.id ?? s}-->`;
+    //     if (actuals) {
+    //         retVal += '|? records|';
+    //     }
+    //     else {
+    //         retVal += `|"${score.matchWeight.toPrecision(2)} / ${score.nonMatchWeight.toPrecision(2)}"|`;
+    //     }
+    //     retVal += `CLASS{"<i class='fas fa-brain'></i> Classify"}\n`//[["<i class='fas fa-calculator'></i> sum()"]]\n`;
+    // }
+
+    retVal += "Scoring==>CLASS{{\"<i class='fas fa-shapes'></i> Classify\"}}\n";
+    // retVal += 'SUMCLS-->CLASS{Classify}\n';
+    if (actuals) {
+        retVal += `CLASS-->|? records| NON["<i class='fas fa-times'></i> Non Match"]\n`;
+        retVal += `CLASS-->|? records| PROB["<i class='fas fa-question'></i> Probable Match"]\n`;
+        retVal += `CLASS-->|? records| MATCH["<i class='fas fa-check'></i> Match"]\n`;
+
     }
-
-
-    // Render blocking summary
-    function renderBlockingSummary(n) {
-        return new Promise(function (fulfill, reject) {
-            var graphData = `flowchart LR\n`;
-            renderBlockingSubgraph(n, false, true).then(
-                function (g) {
-                    graphData += g;
-                    graphData += 'Blocking-->Scoring[["<i class=\'fas fa-star-half-alt\'></i> Scoring"]]\n';
-                    graphData += 'style Scoring fill:#eff,stroke:#0ff\n';
-                    graphData += 'style Blocking fill:#efe,stroke:#0f0\n';
-                    mermaid.mermaidAPI.render('blockingConfigurationDiv', graphData, (svg) => {
-                        $('#blockingConfigurationSvg').html(svg.replaceAll('flowchart-pointEnd', 'blocking-pointEnd'));
-                        fulfill(true);
-                    });
-                }
-            )
-        });
+    else {
+        retVal += `CLASS-->|"[< ${configuration.nonmatchThreshold}]"| NON["<i class='fas fa-times'></i> Non Match"]\n`;
+        retVal += `CLASS-->|"[< ${configuration.matchThreshold}]"| PROB["<i class='fas fa-question'></i> Probable Match"]\n`;
+        retVal += `CLASS-->|"[> ${configuration.matchThreshold}]"| MATCH["<i class='fas fa-check'></i> Match"]\n`;
     }
+    retVal += 'style NON fill:#f99,stroke:#900\n';
+    retVal += 'style PROB fill:#ff9,stroke:#990\n';
+    retVal += 'style MATCH fill:#9f9,stroke:#090\n';
+    retVal += 'end\n';
+    return retVal;
+}
 
-    // Render overall summary
-    function renderOverallSummary(n) {
-        return new Promise(function (fulfill, reject) {
-            var graphData = `flowchart LR\n`;
-            renderBlockingSubgraph(n, false, false).then(
-                function (g1) {
-                    graphData += g1;
-                    renderScoringSubgraph(n, false, false).then(
-                        function (g2) {
-                            graphData += g2;
-                            renderClassificationSubgraph(n).then(
-                                function (g3) {
-                                    graphData += g3;
-                                    graphData += 'style Scoring fill:#eff,stroke:#0ff\n';
-                                    graphData += 'style Blocking fill:#efe,stroke:#0f0\n';
-                                    graphData += 'style Classification fill:#fef,stroke:#f0f\n';
-                                    mermaid.mermaidAPI.render('matchConfigurationDiv', graphData, (svg) => {
-                                        $('#matchConfigurationSvg').html(svg.replaceAll('flowchart-pointEnd', 'summary-pointEnd'));
-                                        fulfill(true);
-                                    });
-                                }
-                            )
 
-                        }
-                    )
-                }
-            )
-        });
-    }
 
-    // Render scoring summary
-    function renderScoringSummary(n, i) {
-        return new Promise(function (fulfill, reject) {
-            var graphData = `flowchart LR\n`;
-            renderScoringSubgraph(n, false, true, i).then(
-                function (g) {
-                    graphData += g;
-                    graphData += 'Blocking[["<i class=\'fas fa-database\'></i> Blocking"]]-->Scoring\nScoring-->Classification[["<i class=\'fas fa-brain\'></i> Classification"]]\n';
-                    graphData += 'style Scoring fill:#eff,stroke:#0ff\n';
-                    graphData += 'style Blocking fill:#efe,stroke:#0f0\n';
-                    graphData += 'style Classification fill:#fef,stroke:#f0f\n';
+// Render blocking summary
+function renderBlockingSummary(n) {
+    return new Promise(function (fulfill, reject) {
+        var graphData = `flowchart LR\n`;
+        renderBlockingSubgraph(n, false, true).then(
+            function (g) {
+                graphData += g;
+                graphData += 'Blocking-->Scoring[["<i class=\'fas fa-star-half-alt\'></i> Scoring"]]\n';
+                graphData += 'style Scoring fill:#eff,stroke:#0ff\n';
+                graphData += 'style Blocking fill:#efe,stroke:#0f0\n';
+                mermaid.mermaidAPI.render('blockingConfigurationDiv', graphData, (svg) => {
+                    $('#blockingConfigurationSvg').html(svg.replaceAll('flowchart-pointEnd', 'blocking-pointEnd'));
+                    fulfill(true);
+                });
+            }
+        )
+    });
+}
 
-                    mermaid.mermaidAPI.render(`scoringConfigurationDiv${i}`, graphData, (svg) => {
+// Render overall summary
+function renderOverallSummary(n) {
+    return new Promise(function (fulfill, reject) {
+        var graphData = `flowchart LR\n`;
+        renderBlockingSubgraph(n, false, false).then(
+            function (g1) {
+                graphData += g1;
+                renderScoringSubgraph(n, false, false).then(
+                    function (g2) {
+                        graphData += g2;
+                        renderClassificationSubgraph(n).then(
+                            function (g3) {
+                                graphData += g3;
+                                graphData += 'style Scoring fill:#eff,stroke:#0ff\n';
+                                graphData += 'style Blocking fill:#efe,stroke:#0f0\n';
+                                graphData += 'style Classification fill:#fef,stroke:#f0f\n';
+                                mermaid.mermaidAPI.render('matchConfigurationDiv', graphData, (svg) => {
+                                    $('#matchConfigurationSvg').html(svg.replaceAll('flowchart-pointEnd', 'summary-pointEnd'));
+                                    fulfill(true);
+                                });
+                            }
+                        )
 
-                        $(`#scoringConfigurationSvg${i}`).html(svg.replaceAll('flowchart-pointEnd', `score${i}-pointEnd`));
-                        fulfill(true);
-                    });
-                }
-            )
-        });
-    }
+                    }
+                )
+            }
+        )
+    });
+}
 
-    // HACK: Use an interval to spread apart the mermaid JS stuff
-    async function refreshDiagrams(configuration) {
-        await renderOverallSummary(configuration);
-        await renderBlockingSummary(configuration);
-        await renderScoringSummary(configuration);
-        await Promise.all($(".scoreDiagramSvg").map((i, e) => {
-            //var idx = $(e).attr('id').substr(4);
-            renderScoringSummary(configuration, i);
-        }));
-    }
+// Render scoring summary
+function renderScoringSummary(n, i) {
+    return new Promise(function (fulfill, reject) {
+        var graphData = `flowchart LR\n`;
+        renderScoringSubgraph(n, false, true, i).then(
+            function (g) {
+                graphData += g;
+                graphData += 'Blocking[["<i class=\'fas fa-database\'></i> Blocking"]]-->Scoring\nScoring-->Classification[["<i class=\'fas fa-shapes\'></i> Classification"]]\n';
+                graphData += 'style Scoring fill:#eff,stroke:#0ff\n';
+                graphData += 'style Blocking fill:#efe,stroke:#0f0\n';
+                graphData += 'style Classification fill:#fef,stroke:#f0f\n';
+
+                mermaid.mermaidAPI.render(`scoringConfigurationDiv${i}`, graphData, (svg) => {
+
+                    $(`#scoringConfigurationSvg${i}`).html(svg.replaceAll('flowchart-pointEnd', `score${i}-pointEnd`));
+                    fulfill(true);
+                });
+            }
+        )
+    });
+}
+
+// HACK: Use an interval to spread apart the mermaid JS stuff
+async function refreshDiagrams(configuration) {
+    await renderOverallSummary(configuration);
+    await renderBlockingSummary(configuration);
+    await renderScoringSummary(configuration);
+    await Promise.all($(".scoreDiagramSvg").map((i, e) => {
+        //var idx = $(e).attr('id').substr(4);
+        renderScoringSummary(configuration, i);
+    }));
+}
+

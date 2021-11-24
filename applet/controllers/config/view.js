@@ -1,4 +1,10 @@
 /// <reference path="../../.ref/js/santedb.js"/>
+
+// Load available transforms
+SanteDB.resources.matchConfiguration.invokeOperationAsync(null, "transforms").then((o) => {
+    SanteDB.configuration._globalMatchTransforms =  o;
+});
+
 angular.module('santedb').controller('MpiConfigurationDetailController', ["$scope", "$rootScope", "$state", "$stateParams", "$timeout", "$interval", function ($scope, $rootScope, $state, $stateParams, $timeout, $interval) {
 
     // Initialize the view
@@ -7,6 +13,8 @@ angular.module('santedb').controller('MpiConfigurationDetailController', ["$scop
         var configId = $stateParams.id;
 
         try {
+
+            
             var matchConfiguration = {
                 meta: {
                     version: 1,
@@ -27,6 +35,28 @@ angular.module('santedb').controller('MpiConfigurationDetailController', ["$scop
             };
             if (configId != '$new') {
                 matchConfiguration = await SanteDB.resources.matchConfiguration.getAsync(configId);
+
+                // Initialize the uuids on all statements
+                if(matchConfiguration.blocking) {
+                    matchConfiguration.blocking.forEach((b) =>
+                    {
+                        b._id = `blk${SanteDB.application.newGuid().replace('-','')}`;
+                        b.filter.forEach((f) => {
+                            f._id = `flt${SanteDB.application.newGuid().replace('-','')}`;
+                        });
+                    });
+                }
+                if(matchConfiguration.scoring) {
+                    matchConfiguration.scoring.forEach((s) =>
+                    {
+                        s._id = `scr${SanteDB.application.newGuid().replace('-','')}`;
+                        if(s.transform) {
+                            s.transform.forEach((t) => {
+                                t._id = `blk${SanteDB.application.newGuid().replace('-','')}`;
+                            });
+                        }
+                    });
+                }
             }
 
             $timeout(_ => {
@@ -62,8 +92,14 @@ angular.module('santedb').controller('MpiConfigurationDetailController', ["$scop
     $scope.$watch('matchConfiguration.scoring', function (n, o) {
         if ($scope.matchConfiguration) {
             if (n != o && n && n.length > 0) {
-                $scope.matchConfiguration.minScore = n.reduce((a, b) => (a.nonMatchWeight || a) + b.nonMatchWeight);
-                $scope.matchConfiguration.maxScore = n.reduce((a, b) => (a.matchWeight || a) + b.matchWeight);
+                if(n.length < 2) {
+                    $scope.matchConfiguration.minScore = n[0].nonMatchWeight;
+                    $scope.matchConfiguration.maxScore = n[0].matchWeight;
+                }
+                else {
+                    $scope.matchConfiguration.minScore = n.reduce((a, b) => (a.nonMatchWeight || a) + b.nonMatchWeight);
+                    $scope.matchConfiguration.maxScore = n.reduce((a, b) => (a.matchWeight || a) + b.matchWeight);
+                }
             }
             else {
                 $scope.matchConfiguration.maxScore = $scope.matchConfiguration.minScore = 0;
@@ -120,6 +156,81 @@ angular.module('santedb').controller('MpiConfigurationDetailController', ["$scop
         }
     }
 }]).controller('MpiConfigurationEditController', ["$scope", "$rootScope", "$state", "$timeout", function ($scope, $rootScope, $state, $timeout) {
+
+
+    $scope.transformAlgorithms = SanteDB.configuration._globalMatchTransforms ;
+
+    var noRender = false, needsRender = false;
+
+    $scope.$watch('panel.view', function(n,e) {
+        if(n != e) {
+            refreshDiagrams($scope.scopedObject);
+        }
+    });
+    // Add a blocking instruction
+    $scope.addBlock = function() {
+        if(!$scope.scopedObject.blocking)
+        {
+            $scope.scopedObject.blocking = [];
+        }
+
+        $scope.scopedObject.blocking.push({
+            maxResults : 10,
+            op: 'AndAlso',
+            filter: [
+                {
+                    _id: `flt${SanteDB.application.newGuid().replace('-','')}`,
+                    expression: "",
+                    when: []
+                }
+            ]
+            
+            
+        });
+        refreshDiagrams($scope.scopedObject);
+
+    }
+
+     // Add a blocking instruction
+     $scope.addScore = function() {
+        if(!$scope.scopedObject.scoring)
+        {
+            $scope.scopedObject.scoring = [];
+        }
+
+        var scoreId = `scr${SanteDB.application.newGuid().replace('-','')}`;
+
+        $scope.scopedObject.scoring.push({
+            _id: scoreId,
+            assert : {
+                transform: [],
+                assert: [],
+                op: "Equal"
+            },
+            when: [],
+            property: [ 'id' ],
+            whenNull: "None"
+        });
+
+        var i = $scope.scopedObject.scoring.length - 1;
+        $timeout(o=> {
+            $(`#scoreEdit${i}`).collapse('show');
+            renderScoringSummary($scope.scopedObject, i);
+        }, 500);
+
+
+    }
+
+
+    // Add a filter expression
+    $scope.addFilter = function(block) {
+        block.filter.push({   
+            _id: `flt${SanteDB.application.newGuid().replace('-','')}`,
+            expression: "", 
+            when: [] });
+        refreshDiagrams($scope.scopedObject);
+
+    }
 
     // Add a tag
     $scope.addTag = function (tag) {
@@ -193,6 +304,76 @@ angular.module('santedb').controller('MpiConfigurationDetailController', ["$scop
         }
     }
 
+
+    // Update a score's weight
+    $scope.recalcScore = function(score) {
+
+        score.matchWeight = Math.log2(score.m / score.u) / Math.log2(2.0);
+        score.nonMatchWeight = Math.log2((1 - score.m) / (1- score.u)) / Math.log2(2.0);
+
+        if($scope.scopedObject.scoring.length < 2) {
+            $scope.scopedObject.minScore = $scope.scopedObject.scoring[0].nonMatchWeight;
+            $scope.scopedObject.maxScore = $scope.scopedObject.scoring[0].matchWeight;
+        }
+        else {
+            $scope.scopedObject.minScore = $scope.scopedObject.scoring.reduce((a, b) => (a.nonMatchWeight || a) + b.nonMatchWeight);
+            $scope.scopedObject.maxScore = $scope.scopedObject.scoring.reduce((a, b) => (a.matchWeight || a) + b.matchWeight);
+        }
+
+        var index = $scope.scopedObject.scoring.findIndex((o) => o._id == score._id);
+
+        if(!noRender) {
+            noRender = true;
+            renderScoringSummary($scope.scopedObject, index);
+            $timeout(() => {
+                noRender = false;
+                if(needsRender) {
+                    renderScoringSummary($scope.scopedObject, index);
+                    needsRender = false;
+                }
+            }, 1000);
+        }
+        else {
+            needsRender = true;
+        }
+    }
+
+    // Update the transform
+    $scope.updateTransform = function(score, txCollection, tx) {
+
+        var txDef = SanteDB.configuration._globalMatchTransforms.find(o=>o.name == tx.name);
+        tx._meta = txDef.arguments;
+
+        if(tx.args.length != txDef.arguments.length) {
+            tx.args = txDef.arguments.map(o => "");
+        }
+
+        // Is there any unary txfs?
+        var index = $scope.scopedObject.scoring.findIndex((o) => o._id == score._id);
+
+        if(!noRender) {
+            noRender = true;
+            renderScoringSummary($scope.scopedObject, index);
+            $timeout(() => {
+                noRender = false;
+                if(needsRender) {
+                    renderScoringSummary($scope.scopedObject, index);
+                    needsRender = false;
+                }
+            }, 1000);
+        }
+        else {
+            needsRender = true;
+        }
+        
+
+        var retVal = false;
+        txCollection.forEach((b)=> {
+            var def = SanteDB.configuration._globalMatchTransforms.find(d=>d.name == b.name);
+            retVal |= def.type == "Binary";
+        });
+        return retVal;
+    }
 
 
 }]);

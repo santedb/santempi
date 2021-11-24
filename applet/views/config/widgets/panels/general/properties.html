@@ -81,8 +81,8 @@
                 <label class="control-label col-sm-12 col-md-3">{{ 'ui.model.matchConfiguration.target' | i18n
                     }} <hint-popover hint-title="ui.model.matchConfiguration.target" /></label>
                 <div class="col-sm-12 col-md-9">
-                    <entity-search name="txtTarget" multiple="multiple" required="required" type="'Concept'"
-                        ng-model="scopedObject.target" search-field="'name.value'" value-property="'resource'"
+                    <entity-search name="txtTarget" required="required" type="'Concept'"
+                        ng-model="scopedObject.target[0].resource" search-field="'name.value'" 
                         key="'mnemonic'" filter="{ 'conceptSet' : [  '4E6DA567-0094-4F23-8555-11DA499593AF'] }">
                     </entity-search>
                     <div ng-show="panel.editForm.txtTarget.$error['required']" class="alert-danger">
