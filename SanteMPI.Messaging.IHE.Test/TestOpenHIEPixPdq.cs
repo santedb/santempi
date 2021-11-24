@@ -1,21 +1,19 @@
-﻿using System;
-using System.Linq;
-using System.Security.Principal;
-using NHapi.Base.Model;
-using NHapi.Base.Parser;
-using NHapi.Model.V25.Message;
+﻿using NHapi.Model.V25.Message;
 using NHapi.Model.V25.Segment;
 using NUnit.Framework;
 using SanteDB.Core;
 using SanteDB.Core.Security;
-using SanteDB.Core.Security.Claims;
-using SanteDB.Core.Security.Services;
 using SanteDB.Core.Services;
 using SanteDB.Core.TestFramework;
 using SanteMPI.Messaging.IHE.HL7;
+using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using SanteDB.Core.Model.Security;
 
 namespace SanteMPI.Messaging.IHE.Test
 {
+    [ExcludeFromCodeCoverage]
     [TestFixture(Category = "Integration")]
     public class TestOpenHIEPixPdq : DataTest
     {

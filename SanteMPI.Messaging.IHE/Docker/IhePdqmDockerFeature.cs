@@ -5,6 +5,7 @@ using SanteDB.Messaging.FHIR.Configuration;
 using SanteMPI.Messaging.IHE.FHIR;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace SanteMPI.Messaging.IHE.Docker
@@ -12,6 +13,7 @@ namespace SanteMPI.Messaging.IHE.Docker
     /// <summary>
     /// Docker feature for PMIR
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class IhePdqmDockerFeature : IDockerFeature
     {
 

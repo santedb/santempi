@@ -12,6 +12,7 @@ using SanteDB.Core.Services;
 using SanteDB.Messaging.HL7.TransportProtocol;
 using SanteDB.Messaging.HL7.Utils;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 
@@ -20,6 +21,7 @@ namespace SanteMPI.Messaging.IHE.Test
     /// <summary>
     /// Test utility classes
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public static class TestUtil
     {
 
