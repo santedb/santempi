@@ -1,20 +1,17 @@
 ﻿using Hl7.Fhir.Model;
 using NUnit.Framework;
 using SanteDB.Core;
-using SanteDB.Core.Interfaces;
 using SanteDB.Core.Model.DataTypes;
-using SanteDB.Core.Model.Security;
 using SanteDB.Core.Security;
 using SanteDB.Core.Security.Services;
 using SanteDB.Core.Services;
 using SanteDB.Core.TestFramework;
 using SanteDB.Messaging.FHIR.Exceptions;
 using SanteDB.Messaging.FHIR.Handlers;
-using SanteDB.Messaging.FHIR.Rest;
 using SanteDB.Messaging.FHIR.Util;
 using SanteMPI.Messaging.IHE.FHIR;
-using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
 
@@ -24,6 +21,7 @@ namespace SanteMPI.Messaging.IHE.Test
     /// Test that functions are operating as expected
     /// </summary>
     [TestFixture]
+    [ExcludeFromCodeCoverage]
     public class TestPMIR : DataTest
     {
 

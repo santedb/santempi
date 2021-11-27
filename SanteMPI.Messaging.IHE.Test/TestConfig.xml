@@ -57,6 +57,11 @@
       <add action="c r u d" insert="true" ship="true" />
       <add action="x" event="network security restrictedFn" outcome="ok" insert="false" ship="false" />
     </filters>
+	<auditSource>
+		<enterpriseSite>UNIT_TEST</enterpriseSite>
+		<enterpriseSiteKey>78E8AC74-88D8-45C3-B129-3C78ADF40479</enterpriseSiteKey>
+		<siteName>DEFAULT</siteName>
+	</auditSource>
   </section>
   <section xsi:type="MemoryCacheConfigurationSection" autoSubscribe="true" maxSize="10000" maxAge="3600" maxQueryAge="3600" />
   <section xsi:type="DataConfigurationSection">
@@ -89,7 +94,7 @@
       <add>SanteMPI.Messaging.IHE.Test, Version=1.0.0</add>
     </assemblies>
   </section>
-  <section xsi:type="Hl7ConfigurationSection" security="None" anonUser="SYSTEM">
+  <section xsi:type="Hl7ConfigurationSection" security="None" noAuthSecret="010203040506">
     <localAuthority>
       <domainName xmlns="http://santedb.org/model">KEY</domainName>
       <oid xmlns="http://santedb.org/model">1.2.3.4.5.6.7</oid>
@@ -99,6 +104,7 @@
       <name xmlns="http://santedb.org/model">Social Security Administration</name>
       <oid xmlns="http://santedb.org/model">1.2.3.4.5.6.99999</oid>
     </ssnAuthority>
+	<facility>6DEDDE35-2997-46B3-A851-E9E3C4C51ABC</facility>
   </section>
   <section xsi:type="ResourceManagementConfigurationSection">
     <resources>
@@ -136,7 +142,6 @@
       <add type="SanteDB.Core.Security.DefaultPolicyDecisionService, SanteDB.Core.Api" />
       <add type="SanteDB.Caching.Memory.MemoryCacheService, SanteDB.Caching.Memory" />
       <add type="SanteDB.Core.Services.Impl.DefaultThreadPoolService, SanteDB.Core.Api, Version=0.6.0.0" />
-      <add type="SanteDB.Server.Core.Services.Impl.LocalRepositoryFactoryService, SanteDB.Server.Core,Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" />
       <add type="SanteDB.Server.Core.Services.Impl.LocalRepositoryService, SanteDB.Server.Core" />
       <add type="SanteDB.Persistence.Data.ADO.Services.AdoApplicationIdentityProvider, SanteDB.Persistence.Data.ADO" />
       <add type="SanteDB.Persistence.Data.ADO.Services.AdoDeviceIdentityProvider, SanteDB.Persistence.Data.ADO" />
@@ -145,8 +150,9 @@
       <add type="SanteDB.Persistence.Data.ADO.Services.AdoPolicyInformationService, SanteDB.Persistence.Data.ADO" />
       <add type="SanteDB.Persistence.Data.ADO.Services.AdoRoleProvider, SanteDB.Persistence.Data.ADO" />
       <add type="SanteDB.Server.Core.Services.Impl.DefaultPolicyEnforcementService, SanteDB.Server.Core" />
-      <add type="SanteDB.Server.Core.Services.Impl.DefaultNetworkInformationService, SanteDB.Server.Core,Version=2.0.0.0, Culture=neutral, PublicKeyToken=null"/>
-      <add type="SanteDB.Persistence.MDM.Services.MdmDataManagementService, SanteDB.Persistence.MDM"/>
+      <add type="SanteDB.Server.Core.Services.Impl.DefaultNetworkInformationService, SanteDB.Server.Core" />
+      <add type="SanteDB.Persistence.Data.ADO.Services.AdoServiceFactory, SanteDB.Persistence.Data.ADO" />
+      <add type="SanteDB.Persistence.MDM.Services.MdmDataManagementService, SanteDB.Persistence.MDM" />
     </serviceProviders>
   </section>
 </SanteDBConfiguration>

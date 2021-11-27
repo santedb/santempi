@@ -7,6 +7,7 @@ using SanteMPI.Messaging.IHE.FHIR;
 using SanteMPI.Messaging.IHE.HL7;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 
@@ -15,6 +16,7 @@ namespace SanteMPI.Messaging.IHE.Docker
     /// <summary>
     /// Docker feature for PMIR
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class IhePdqDockerFeature : IDockerFeature
     {
         private Tracer m_tracer = Tracer.GetTracer(typeof(IhePdqDockerFeature));
