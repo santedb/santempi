@@ -294,4 +294,4 @@ Help/
 dist/
 **/Version.cs
 
-santempi-*
+santempi-*/*
