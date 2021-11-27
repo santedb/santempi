@@ -50,7 +50,7 @@
 
   
   <section xsi:type="FileSystemQueueConfigurationSection" queueRoot=".\queue" />
-  <section xsi:type="ApplicationServiceContextConfigurationSection" threadPoolSize="8">
+  <section xsi:type="ApplicationServiceContextConfigurationSection" threadPoolSize="24">
     <serviceProviders>
 
 
