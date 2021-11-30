@@ -71,11 +71,12 @@ angular.module('santedb').controller('MpiMatchViewController', ["$scope", "$root
                 throw new Exception("ArgumentException", "ui.mpi.error.match.missingArguments");
             }
             // Load other matches for the screen
-            recordA.relationship['MDM-Duplicate'] = await loadOtherCandidiates(recordA, candidate.id);
-            recordB.relationship['MDM-Duplicate'] = await loadOtherCandidiates(recordB, candidate.id);
-
+            if(candidate.id) {
+                recordA.relationship['MDM-Duplicate'] = await loadOtherCandidiates(recordA, candidate.id);
+                recordB.relationship['MDM-Duplicate'] = await loadOtherCandidiates(recordB, candidate.id);
+            }
             // Get the match report for the specified objects A<>B
-            var matchReport = await SanteDB.resources.patient.getAssociatedAsync(recordA.id, "mdm-candidate", recordB.id, null, true);
+            var matchReport = await SanteDB.resources.patient.getAssociatedAsync(recordA.id, "mdm-candidate", recordB.id, { _configuration : $stateParams.configurationId }, true);
             matchReport.recordA = recordA;
             matchReport.recordB = recordB;
             matchReport.candidate = candidate;
@@ -132,5 +133,7 @@ angular.module('santedb').controller('MpiMatchViewController', ["$scope", "$root
             SanteDB.display.buttonWait(`#btnResolve`, false);
         }
     }
+
+
     initializeView();
 }]);
