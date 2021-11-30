@@ -159,7 +159,7 @@ angular.module('santedb').controller('MpiConfigurationDetailController', ["$scop
 
 
     $scope.transformAlgorithms = SanteDB.configuration._globalMatchTransforms ;
-
+    
     var noRender = false, needsRender = false;
 
     $scope.$watch('panel.view', function(n,e) {
@@ -167,6 +167,7 @@ angular.module('santedb').controller('MpiConfigurationDetailController', ["$scop
             refreshDiagrams($scope.scopedObject);
         }
     });
+
     // Add a blocking instruction
     $scope.addBlock = function() {
         if(!$scope.scopedObject.blocking)
@@ -375,5 +376,121 @@ angular.module('santedb').controller('MpiConfigurationDetailController', ["$scop
         return retVal;
     }
 
+    // Run the test
+    $scope.runTest = async function(testForm) {
+        if(!testForm.$valid) { return; }
+
+        console.info($scope.scopedObject._test.input);
+        try {
+            SanteDB.display.buttonWait("#runTest", true);
+            $("#runTest").html(`<i class='fas fa-circle-notch fa-spin'></i> ${SanteDB.locale.getString("ui.mpi.matches.config.test.runningMatch")}`);
+
+
+            var test = await SanteDB.resources.matchConfiguration.invokeOperationAsync($scope.scopedObject.id, "test", {
+                "input" : $scope.scopedObject._test.input,
+                "targets": $scope.scopedObject._test.knownDuplicates.map(o=>o.id)
+            }, true);
+
+           
+            $timeout(() => {
+                var scores = test.results.map(o=>o.score);
+                scores = scores.sort((a,b) => a - b);
+
+                var stats = { count: scores.length, NonMatch: 0, Match: 0, Probable: 0,  min: scores[0], max: scores[scores.length - 1], avg: scores.reduce((a,b) => a+b) / scores.length, median: scores[Math.trunc(scores.length / 2)] };
+
+                test.results.forEach((c) => {
+                    if(!stats[c.classification]) stats[c.classification] = 0;
+                    stats[c.classification]++;
+                });
+                $scope.scopedObject._test.stats = stats;
+                $scope.scopedObject._test.results = [];
+
+                $scope.scopedObject._test.analysis = [];
+
+                // Recommendations
+                if(stats.count > 20) {
+                    $scope.scopedObject._test.analysis.push("wideBlocking");
+                }
+                if(stats.NonMatch / stats.count > 0.2 || stats.Probable / stats.count > 0.6) {
+                    $scope.scopedObject._test.analysis.push("poorBlocking");
+                }
+                if(stats.count == 0) {
+                    $scope.scopedObject._test.analysis.push("strictBlocking");
+                }
+                if(stats.avg < stats.median) {
+                    $scope.scopedObject._test.analysis.push("poorScoring");
+                }
+            });
+
+            
+            $("#runTest").html(`<i class='fas fa-circle-notch fa-spin'></i> ${SanteDB.locale.getString("ui.mpi.matches.config.test.gatheringResults")}`);
+
+            if($scope.dtInit) {
+                $scope.dtInit.destroy();
+                $scope.dtInit = null;
+            }
+            
+            var resultCollection = [];
+            var maxResults = test.results.length;
+            if(maxResults > 100) {
+                maxResults = 100; // only allow for fetching of 50 details
+            }
+            test.results = test.results.sort((a,b)=> b.strength - a.strength);
+
+            for(var i = 0; i < maxResults; i+=10) {
+
+                var resultSlice = test.results.slice(i, i + 10);
+                var resultBatch = await SanteDB.resources.patient.findAsync({ "_id" : resultSlice.map(o=>o.record) });
+                resultSlice.forEach((r) => {
+                    var patientDetail = resultBatch.resource.find(o=>o.id == r.record);
+                    patientDetail._match = r;
+                    resultCollection.push(patientDetail);
+                });
+            }
+
+            $timeout(() => {
+                $scope.scopedObject._test.results = resultCollection.sort((a,b) => b.tag["$match.strength"] - a.tag["$match.strength"]);
+                
+                $timeout(() => 
+                    $scope.dtInit = $("#resultTable").DataTable(), 500);
+           });
+
+            
+            // Draw the diagram 
+            await renderActualSummary($scope.scopedObject, test);
+
+        }
+        catch(e) {
+            $rootScope.errorHandler(e);
+        }
+        finally {
+            SanteDB.display.buttonWait("#runTest", false);
+
+        }
+
+    }
+
+    
+     // Show match detail
+     $scope.matchDetail = async function (id) {
+        try {
+            $timeout(() => {
+                delete($scope.scopedObject.candidateObject);
+                $("#candidateDetailModal").modal('show');
+            });
+            
+            var matchReport = await SanteDB.resources.patient.getAssociatedAsync(id, "mdm-candidate", $scope.scopedObject._test.input, { _configuration: $scope.scopedObject.id , _upstream: true });
+
+            $timeout(_ => {
+                $scope.scopedObject.candidateObject = {
+                    results: matchReport.results
+                };
+            });
+
+        }
+        catch (e) {
+            $rootScope.errorHandler(e);
+        }
+    }
 
 }]);

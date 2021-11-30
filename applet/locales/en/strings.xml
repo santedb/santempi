@@ -216,4 +216,32 @@
     <string name="ui.mpi.matches.config.addTransform">Add Value Transform</string>
     <string name="ui.mpi.matches.config.addAssertion">Add Sub-Assertion</string>
     <string name="ui.mpi.matches.config.removeAssertion">Remove Sub-Assertion</string>
+    <string name="ui.mpi.matches.config.test.input">Input Patient</string>
+    <string name="ui.mpi.matches.config.test.input.hint"><![CDATA[Set the patient which will be used as the <code>$input</code> of the match test run. This is the simulated patient registration/update event which will be passed to the test service.]]></string>
+    <string name="ui.mpi.matches.config.test.stats">Test Overview</string>
+    <string name="ui.mpi.matches.config.test.stats.min">Worst Score</string>
+    <string name="ui.mpi.matches.config.test.stats.max">Best Score</string>
+    <string name="ui.mpi.matches.config.test.stats.avg">Average Score</string>
+    <string name="ui.mpi.matches.config.test.stats.median">Median Score</string>
+    <string name="ui.mpi.matches.config.test.stats.NonMatch">Non-Matches</string>
+    <string name="ui.mpi.matches.config.test.stats.Match">Matches</string>
+    <string name="ui.mpi.matches.config.test.stats.Probable">Probable Matches</string>
+    <string name="ui.mpi.matches.config.test.stats.count">Blocked Records</string>
+    <string name="ui.mpi.matches.config.test.runningMatch">Running Match</string>
+    <string name="ui.mpi.matches.config.test.analyzeResults">Analyzing Results</string>
+    <string name="ui.mpi.matches.config.test.gatheringResults">Gathering Result Details</string>
+    <string name="ui.mpi.matches.config.test.results">Match Test Results</string>
+    <string name="ui.mpi.matches.config.test.knownMatch">Test Target</string>
+    <string name="ui.mpi.matches.config.test.knownMatch.hint"><![CDATA[Specifies one or more other records which you want to test against the <code>$input</code> - if no objects are specified here, the match engine will perform an entire block. Use this option if you're attempting to diagnose scoring results with particular record pairs]]></string>
+    <string name="ui.mpi.matches.config.test.analysis">Hints / Analysis</string>
+    <string name="ui.mpi.matches.config.doctor.poorBlocking.title"><![CDATA[<i class="fas fa-info-circle"></i> Excessive results in blocking result]]></string>
+    <string name="ui.mpi.matches.config.doctor.poorBlocking.description"><![CDATA[The proportion of results which are non-matches ({NonMatch}) was the majority of records blocked ({count}). This indicates that your blocking configuration is too liberal. Try reducing the number of NonMatch by adding more stringent blocking criteria to your dataset.]]></string>
+    <string name="ui.mpi.matches.config.doctor.strictBlocking.title"><![CDATA[<i class="fas fa-info-circle"></i> Blocking may be too restrictive]]></string>
+    <string name="ui.mpi.matches.config.doctor.strictBlocking.description"><![CDATA[Your blocking configuration resulted in no records being retrieved from the database. This may indicate that your blocking configuration is too stringent. Try using <code>levenshtein</code> or <code>soundex</code> or other fuzzy matching to your blocking configuration to allow querying of more records.]]></string>
+    <string name="ui.mpi.matches.config.doctor.poorScoring.title"><![CDATA[<i class="fas fa-info-circle"></i> Check your Scoring Weights]]></string>
+    <string name="ui.mpi.matches.config.doctor.poorScoring.description"><![CDATA[The median score ({median}) is higher than the average score ({avg}), this might indicate that your scoring may be too stringent. Try: <ul><li>Ensuring your <code>U</code> values are appropriate (for example: if using <code>genderConcept</code> then your U should be close to 0.5)</li><li>Ensure that your extractions and partial scores are applied properly (for example: Ensure that appropriate <code>extract</code> functions are applied, and proper thresholds apply</li><li>Ensure your exclusion or <code>when</code> conditions are appropriate</li></ul>)]]></string>
+    <string name="ui.mpi.matches.config.test.diagram">Test Result</string>
+    <string name="ui.mpi.matches.config.doctor.wideBlocking.title"><![CDATA[<i class="fas fa-exclamation-triangle"></i> Blocking Criteria &amp; Performance]]></string>
+    <string name="ui.mpi.matches.config.doctor.wideBlocking.description"><![CDATA[Your blocking criteria has returned a large number of results ({count}) from the database. This may have serious performance impacts if scoring requires complex criteria. Consider adding more blocking criteria to speed up your matching configuration]]></string>
+
 </resources>
