@@ -68,18 +68,22 @@ angular.module('santedb').controller('EntityRelationshipDiagramController', ["$s
                         retVal += `\nrel${entity.id.substr(0,8)}[<span class='mr-2'>${entity.$type} ${SanteDB.display.renderIdentifier(entity.identifier)}</span>]`;
                 }
 
-                var dashType = `-- <span class='mr-2'>${SanteDB.display.renderConcept(entityRelationship.relationshipTypeModel || fallbackRelationship)}</span> -->`;
+                var relationshipText = SanteDB.display.renderConcept(entityRelationship.relationshipTypeModel || fallbackRelationship);
+                if(entityRelationship.relationshipRoleModel) {
+                    relationshipText += ` / ${SanteDB.display.renderConcept(entityRelationship.relationshipRoleModel)}`;
+                }
+                var dashType = `-- "${relationshipText}" -->`;
                  if(entityRelationship.$type == 'EntityRelationshipMaster')
                  {
-                     //retVal += `\nrel${entityRelationship.originalHolder.substr(0,8)} ${dashType} rel${entityRelationship.originalTarget.substr(0,8)}`;
+                     retVal += `\nrel${entityRelationship.originalHolder.substr(0,8)} ${dashType} rel${entityRelationship.originalTarget.substr(0,8)}`;
                      dashType = `-. <span class='mr-2'>${SanteDB.display.renderConcept(entityRelationship.relationshipTypeModel || fallbackRelationship)}</span> .->`;
                  }
-                 //else {
+                 else {
                     if(reverse)
                         retVal += `\nrel${entity.id.substr(0,8)} ${dashType} root`;
                     else if(!entity.$ref)
                         retVal += `\nroot ${dashType} rel${entity.id.substr(0,8)}`;
-                //  }
+                 }
             }
             
             if(reverse)

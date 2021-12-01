@@ -52,8 +52,14 @@
         <label class="col-md-3 control-label">{{ 'ui.model.entity.telecom' | i18n }}</label>
         <div class="col-md-9"
             ng-repeat="(k,tel) in rel.targetModel.telecom track by $index"
-            ng-class="{ 'offset-md-3': $index > 0 }">
-            <a href="{{tel.value}}" target="_blank">{{tel.value}} <span
-                    class="badge badge-pill badge-info">{{ tel.useModel | concept }}</span></a>
+            ng-class="{ 'offset-md-3': $index > 0 }"> 
+            <ul class="list-group">
+                <li class="d-flex align-items-center"
+                    ng-repeat="i in tel">
+                    <a href="{{i.value}}" target="_blank">{{i.value}} <span
+                        class="badge badge-pill badge-info">{{ i.useModel | concept }}</span></a>
+                </li>
+            </ul>
+            
         </div>
     </div></div>
