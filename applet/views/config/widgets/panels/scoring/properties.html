@@ -198,7 +198,7 @@
                                 <div class="col-md-10 col-sm-12">
                                     <input type="text" class="form-control" name="score{{score._id}}Id"
                                         pattern="^[\w\._\d]+$" maxlength="32" ng-model="score.id" />
-                                    <div class="alert alert-danger"
+                                    <div class="text-danger"
                                         ng-show="panel.editForm['score' + score._id + 'Id'].$error['pattern']">
                                         <i class="fas fa-exclamation-triangle"></i> {{ 'ui.error.pattern' | i18n}}
                                     </div>

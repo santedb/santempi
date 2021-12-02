@@ -245,4 +245,8 @@
     <string name="ui.mpi.matches.config.doctor.wideBlocking.title"><![CDATA[<i class="fas fa-exclamation-triangle"></i> Blocking Criteria &amp; Performance]]></string>
     <string name="ui.mpi.matches.config.doctor.wideBlocking.description"><![CDATA[Your blocking criteria has returned a large number of results ({count}) from the database. This may have serious performance impacts if scoring requires complex criteria. Consider adding more blocking criteria to speed up your matching configuration]]></string>
 
+  <!-- Rendering Graphs -->
+  <string name="ui.mpi.entity.relationship.mode">Graph Mode</string>
+  <string name="ui.mpi.entity.relationship.mode.advanced">Detailed Relationship Diagram</string>
+  <string name="ui.mpi.entity.relationship.mode.simple">Simple Relationship Diagram</string>
 </resources>
