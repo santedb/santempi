@@ -83,8 +83,11 @@
                             <label
                                 class="col-md-3 col-sm-12 control-label">{{ 'ui.model.entity.relationship.relationshipType' | i18n }}</label>
                             <div class="col-md-9 col-sm-12">
-                                <concept-select concept-set="'FamilyMember'" ng-model="rel.relationshipType"
+                                <concept-select ng-rquired="required" name="newRelationshipType" concept-set="'FamilyMember'" ng-model="rel.relationshipType"
                                     class="form-control" ng-change="rel._active = true" />
+                                    <div class="text-danger" ng-show="panel.editForm.newRelationshipType.$error['required'] || !rel.relationshipType">
+                                        <i class="fas fa-exclamation-triangle"></i> {{ 'ui.error.required' | i18n }}
+                                    </div>
                             </div>
                         </div>
                         <!-- #include virtual="~/views/mpi/patients/widgets/partials/nextOfKinEdit.html" -->

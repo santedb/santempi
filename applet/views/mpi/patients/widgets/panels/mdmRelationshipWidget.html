@@ -1,18 +1,29 @@
-<div xmlns="http://www.w3.org/1999/xhtml" xmlns:sdb="http://santedb.org/applet" class="container-fluid" ng-controller="MasterDataManagementController"
-    oc-lazy-load="{ name: 'EntityRelationshipDiagramController', files: ['/org.santedb.smpi/controllers/widgets/relations.js'] }"
->
-    <sdb:widget order="1000" name="org.santedb.widget.smpi.mdm.net" headerClass="bg-light" size="Medium"
-        type="Panel" context="org.santedb.patient.demographics">
+<div xmlns="http://www.w3.org/1999/xhtml" xmlns:sdb="http://santedb.org/applet" class="container-fluid"
+    ng-controller="MasterDataManagementController"
+    oc-lazy-load="{ name: 'EntityRelationshipDiagramController', files: ['/org.santedb.smpi/controllers/widgets/relations.js'] }">
+    <sdb:widget order="1000" name="org.santedb.widget.smpi.mdm.net" headerClass="bg-light" size="Medium" type="Panel"
+        context="org.santedb.patient.demographics">
         <sdb:icon>fas fa-project-diagram</sdb:icon>
         <sdb:description lang="en">Entity Relationships</sdb:description>
         <sdb:guard>(!scopedObject.tag || scopedObject.tag["$upstream"] != "true")</sdb:guard>
     </sdb:widget>
 
-    <div ng-controller="EntityRelationshipDiagramController" class="row">
-    <div id="entityNetworkDiagram{{socpedObject.sequence}}">
-    </div>
-    <div id="renderSvg{{scopedObject.sequence}}" class="col">
-        <i class="fas fa-spin fa-circle-notch"></i> {{ 'ui.wait' | i18n }}
-    </div>
+    <div ng-controller="EntityRelationshipDiagramController" class="container-fluid">
+        <div class="row">
+            <label class="col-sm-12 col-md-3 control-label">{{ 'ui.mpi.entity.relationship.mode' | i18n }}</label>
+            <div class="col-sm-12 col-md-9">
+                <select ng-change="redraw()" ng-model="view.mode" class="form-control">
+                    <option value="simple">{{ 'ui.mpi.entity.relationship.mode.simple' | i18n }}</option>
+                    <option value="advanced">{{ 'ui.mpi.entity.relationship.mode.advanced' | i18n }}</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div id="entityNetworkDiagram{{socpedObject.sequence}}">
+            </div>
+            <div id="renderSvg{{scopedObject.sequence}}" class="col">
+                <i class="fas fa-spin fa-circle-notch"></i> {{ 'ui.wait' | i18n }}
+            </div>
+        </div>
     </div>
 </div>

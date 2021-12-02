@@ -15,7 +15,7 @@
                     <entity-search name="txtInputPatient" required="required" type="'Patient'"
                         ng-model="scopedObject._test.input" search-field="'identifier.value'">
                     </entity-search>
-                    <div class="alert alert-danger" ng-show="testForm.txtInputPatient.$error['required']">
+                    <div class="text-danger" ng-show="testForm.txtInputPatient.$error['required']">
                         <i class="fas fa-exclamation-triangle"></i> {{ 'ui.error.required' | i18n }}
                     </div>
                 </div>
@@ -30,7 +30,7 @@
                             <entity-search name="txtDuplicate{{$index}}" required="required" type="'Patient'"
                                 ng-model="dup.id" search-field="'identifier.value'">
                             </entity-search>
-                            <div class="alert alert-danger" ng-show="testForm['txtDuplicate' + $index].$error['required']">
+                            <div class="text-danger" ng-show="testForm['txtDuplicate' + $index].$error['required']">
                                 <i class="fas fa-exclamation-triangle"></i> {{ 'ui.error.required' | i18n }}
                             </div>
                         </li>
