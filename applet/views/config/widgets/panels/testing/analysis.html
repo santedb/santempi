@@ -1,0 +1,23 @@
+<div xmlns="http://www.w3.org/1999/xhtml" xmlns:sdb="http://santedb.org/applet">
+    <sdb:widget order="150" name="ui.mpi.matches.config.test.analysis" type="Panel" size="Medium" headerClass="alert-primary"
+        context="org.santedb.mpi.matches.config.test">
+        <sdb:icon>fas fa-stethoscope</sdb:icon>
+        <sdb:description lang="en">Match Analysis</sdb:description>
+        <sdb:guard>scopedObject._test.analysis</sdb:guard>
+    </sdb:widget>
+
+    <div class="accordion" id="matchAnalysisAccordion">
+        <div class="card" ng-repeat="a in scopedObject._test.analysis track by $index">
+            <div class="card-header">
+                <h5 class="m-0">
+                    <button class="btn btn-link" data-toggle="collapse" data-target="#matchAnalysis{{$index}}" ng-bind-html="'ui.mpi.matches.config.doctor.' + a + '.title' | i18n: scopedObject._test.stats ">
+                    </button>
+                </h5>
+            </div>
+            <div class="collapse" id="matchAnalysis{{$index}}">
+                <div class="card-body" ng-bind-html="'ui.mpi.matches.config.doctor.' + a + '.description' | i18n: scopedObject._test.stats"></div>
+                
+            </div>
+        </div>
+    </div>
+</div>

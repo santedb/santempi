@@ -32,7 +32,7 @@
 
 
         <ul class="nav nav-tabs" role="tablist" id="demographicEditTabs">
-            <li class="nav-item" ng-repeat="rel in relationships track by $index" role="presentation">
+            <li class="nav-item" ng-repeat="rel in relationships track by $index" ng-if="!rel._delete" role="presentation">
                 <a class="nav-link" ng-class="{'active': $index == 0}"
                     data-target="#{{rel.relationshipTypeModel.mnemonic}}{{$index}}relative" data-toggle="tab">
                     <span ng-if="rel.relationshipTypeModel">
@@ -64,17 +64,17 @@
             novalidate="novalidate">
 
             <div class="tab-content">
-                <div role="tabpanel" class="tab-pane fade" id="{{rel.relationshipTypeModel.mnemonic}}{{$index}}relative"
+                <div role="tabpanel" class="tab-pane fade" ng-if="!rel._delete" id="{{rel.relationshipTypeModel.mnemonic}}{{$index}}relative"
                     ng-repeat="rel in relationships track by $index" ng-class="{'active show': $index == 0}">
                     <div class="container mt-2">
-                        <div class="form-group row">
-                            <label class="col-sm-12 col-md-9 offset-md-3 checkbox-container">
-                                <input type="checkbox" class="checkbox-control" ng-model="rel._active" />
-                                <span></span>
-                                {{ 'ui.model.patient.relationship.activate' | i18n }} {{ rel.relationshipTypeModel | concept }}
-                            </label>
-                        </div>
                         <!-- #include virtual="~/views/mpi/patients/widgets/partials/nextOfKinEdit.html" -->
+                        <div class="row">
+                            <div class="col">
+                                <div class="btn-group float-right">
+                                    <button type="button" ng-click="rel = deleteRelationship(rel)" class="btn btn-danger"><i class="fas fa-times"></i> {{ 'ui.action.delete' | i18n }}</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div role="tabpanel" class="tab-pane fade" id="otherRelative">
@@ -83,7 +83,7 @@
                             <label
                                 class="col-md-3 col-sm-12 control-label">{{ 'ui.model.entity.relationship.relationshipType' | i18n }}</label>
                             <div class="col-md-9 col-sm-12">
-                                <concept-select concept-set="'FamilyMember'" ng-model="rel.relationshipTypeModel"
+                                <concept-select concept-set="'FamilyMember'" ng-model="rel.relationshipType"
                                     class="form-control" ng-change="rel._active = true" />
                             </div>
                         </div>

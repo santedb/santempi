@@ -10,6 +10,12 @@
 async function renderBlockingSubgraph(configuration, showActuals, detailOutput, instructionIndex) {
     var retVal = `subgraph Blocking["<i class='fas fa-database'></i> Blocking"]\ndirection ${detailOutput ? 'LR' : 'TB'}\n`;
 
+
+    var actualBlockingCounts = null;
+    if(showActuals && showActuals.diagnostics) {
+        actualBlockingCounts = showActuals.diagnostics.stages.find(o=>o.name == "blocking");
+    }
+
     for (var i in configuration.blocking) {
 
         // Don't show this instruction
@@ -28,13 +34,15 @@ async function renderBlockingSubgraph(configuration, showActuals, detailOutput, 
 
         if (showActuals) {
             // TODO: Call Filter 
-            retVal += `|? records| `;
+            var counter = await SanteDB.resources[configuration.target[0].resource.toCamelCase()].findAsync({_count:0});
+            retVal += `|${counter.totalResults} ${configuration.target[0].resource} records|`;
         }
         else {
             retVal += ' ';
         }
 
 
+        var queryBlock = {};
         if (block.filter.length == 1) {
 
             if (detailOutput && block.filter[0].when && block.filter[0].when != "") {
@@ -78,13 +86,8 @@ async function renderBlockingSubgraph(configuration, showActuals, detailOutput, 
 
                 if (f < block.filter.length - 1) {
                     retVal += '-->';
-                    // Not the first so we are going to point to another record
-                    if (showActuals) {
-                        retVal += `|? records| `;
-                    }
-                    else {
+                    
                         retVal += `|"intersect"| `;
-                    }
 
 
                     if (f < block.filter.length - 2) {
@@ -110,8 +113,15 @@ async function renderBlockingSubgraph(configuration, showActuals, detailOutput, 
 
         }
 
-        if (showActuals) {
-            retVal += '|? records| ';
+        if (showActuals && actualBlockingCounts) {
+
+            var blockingStage = actualBlockingCounts.actions.find(a=>a.type == "blocking-instruction" && a.id.every(i => block.filter.find(f=>f.expression == i)));
+            if(blockingStage) {
+                retVal += `|${blockingStage.data.length == 0 ? 0 : blockingStage.data[blockingStage.data.length - 1].value} records| `;
+            }
+            else {
+                retVal += '|? records| ';
+            }
         }
         else {
             retVal += `|${block.op == 'AndAlso' ? 'intersect' : 'union'}| `;
@@ -225,15 +235,24 @@ async function renderScoringSubgraph(configuration, actuals, detailOutput, instr
             retVal += `Blocking==>`;
 
             if (actuals) {
-                retVal += '|? records|';
+                retVal += `|${actuals.results.length} records|`;
             }
             retVal += `Attribute${s}[["<i class='fas fa-star-half-alt'></i> ${score.property[0]}"]]\n`;
-            retVal += `Attribute${s}-->SCORE(["<i class='fas fa-calculator'> Sum"])\n`
+            retVal += `Attribute${s}`;
+            
+            if(actuals) {
+                var mrecs = actuals.results.map(o=>o.vectors).flat().filter(o=>(o.name == score.id || o.name == score.property[0]) && o.evaluated && o.score > 0).length;
+                retVal += `-->|${mrecs} records| `;
+            }
+            else {
+                retVal += '-->';
+            }
+            retVal += 'SCORE(["<i class=\'fas fa-calculator\'> Sum"])\n';
         }
         else {
             retVal += `Blocking==>`;
             if (actuals) {
-                retVal += `|? records| `;
+                retVal += `|${actuals.results.length} records| `;
             }
             retVal += `Attribute${s}\nsubgraph Attribute${s}["<i class='fas fa-star-half-alt'></i> ${score.id || `Attribute${s}`}"]\ndirection LR\n`;
 
@@ -353,9 +372,14 @@ async function renderClassificationSubgraph(configuration, actuals) {
     retVal += "Scoring==>CLASS{{\"<i class='fas fa-shapes'></i> Classify\"}}\n";
     // retVal += 'SUMCLS-->CLASS{Classify}\n';
     if (actuals) {
-        retVal += `CLASS-->|? records| NON["<i class='fas fa-times'></i> Non Match"]\n`;
-        retVal += `CLASS-->|? records| PROB["<i class='fas fa-question'></i> Probable Match"]\n`;
-        retVal += `CLASS-->|? records| MATCH["<i class='fas fa-check'></i> Match"]\n`;
+        var grps = {};
+        var groupedResults = actuals.results.forEach(o=>{
+            if(!grps[o.classification]) grps[o.classification] = 0;
+            grps[o.classification]++;
+        })
+        retVal += `CLASS-->|${grps.NonMatch || 0} records| NON["<i class='fas fa-times'></i> Non Match"]\n`;
+        retVal += `CLASS-->|${grps.Probable || 0} records| PROB["<i class='fas fa-question'></i> Probable Match"]\n`;
+        retVal += `CLASS-->|${grps.Match || 0} records| MATCH["<i class='fas fa-check'></i> Match"]\n`;
 
     }
     else {
@@ -452,5 +476,21 @@ async function refreshDiagrams(configuration) {
         //var idx = $(e).attr('id').substr(4);
         renderScoringSummary(configuration, i);
     }));
+}
+
+// Render actual summary of the data
+async function renderActualSummary(configuration, actuals) {
+    
+    var graphData = `flowchart LR\n`;
+    graphData += await renderBlockingSubgraph(configuration, actuals, false);
+    graphData += await renderScoringSubgraph(configuration, actuals, false);
+    graphData += await renderClassificationSubgraph(configuration, actuals);
+    graphData += 'style Scoring fill:#eff,stroke:#0ff\n';
+    graphData += 'style Blocking fill:#efe,stroke:#0f0\n';
+    graphData += 'style Classification fill:#fef,stroke:#f0f\n';
+    mermaid.mermaidAPI.render('scoringRunAnalysis', graphData, (svg) => {
+        $('#scoringRunAnalysisSvg').html(svg.replaceAll('flowchart-pointEnd', 'actual-pointEnd'));
+    });
+   
 }
 
