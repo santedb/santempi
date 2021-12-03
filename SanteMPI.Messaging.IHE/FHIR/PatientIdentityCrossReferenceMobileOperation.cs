@@ -11,7 +11,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
 
 namespace SanteMPI.Messaging.IHE.FHIR
 {
@@ -23,8 +22,8 @@ namespace SanteMPI.Messaging.IHE.FHIR
     {
 
         // Patient repository
-        private IRepositoryService<SanteDB.Core.Model.Roles.Patient> m_patientRepository;
-        private IAssigningAuthorityRepositoryService m_assigningAuthorityRepository;
+        private readonly IRepositoryService<SanteDB.Core.Model.Roles.Patient> m_patientRepository;
+        private readonly IAssigningAuthorityRepositoryService m_assigningAuthorityRepository;
 
         /// <summary>
         /// Creates a new patient identity cross reference service
@@ -96,6 +95,7 @@ namespace SanteMPI.Messaging.IHE.FHIR
 
                 var targetSystems = RestOperationContext.Current.IncomingRequest.QueryString.GetValues("targetSystem");
                 Guid[] authorityList = new Guid[0];
+
                 if (targetSystems?.Any() == true)
                 {
                     var targetSystemUris = targetSystems.Select(o => new Uri(o));
@@ -110,31 +110,27 @@ namespace SanteMPI.Messaging.IHE.FHIR
                     }).Select(o => o.Key.Value).ToArray();
                 }
 
-                Parameters retVal = new Parameters();
+                var retVal = new Parameters();
+
                 foreach (var res in result)
                 {
-                    IEnumerable<EntityIdentifier> identifierList = null;
-                    if (authorityList.Any())
-                    {
-                        identifierList = res.LoadCollection(o => o.Identifiers).Where(i => authorityList.Contains(i.AuthorityKey.Value));
-                    }
-                    else
-                    {
-                        identifierList = res.LoadCollection(o => o.Identifiers);
-                    }
+                    IEnumerable<EntityIdentifier> identifierList = authorityList.Any() ? 
+                        res.LoadCollection(o => o.Identifiers).Where(i => authorityList.Contains(i.AuthorityKey.Value)) : 
+                        res.LoadCollection(o => o.Identifiers);
 
                     // Identifiers
                     foreach (var id in identifierList)
                     {
                         retVal.Add("targetIdentifier", DataTypeConverter.ToFhirIdentifier(id));
                     }
+
                     retVal.Add("targetId", DataTypeConverter.CreateNonVersionedReference<Patient>(res));
                 }
 
                 IheAuditUtil.SendAuditPatientIdentityXrefMobile(SanteDB.Core.Auditing.OutcomeIndicator.Success, result.Select(o => new Patient() { Id = o.Key.ToString() }).ToArray());
                 return retVal;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 IheAuditUtil.SendAuditPatientIdentityXrefMobile(SanteDB.Core.Auditing.OutcomeIndicator.MinorFail);
                 throw;
