@@ -1,10 +1,12 @@
 ﻿using Hl7.Fhir.Model;
+using Hl7.Fhir.Serialization;
 using Newtonsoft.Json;
 using NHapi.Base.Model;
 using NHapi.Base.Parser;
 using NHapi.Model.V25.Segment;
 using NUnit.Framework;
 using SanteDB.Core;
+using SanteDB.Core.Model.DataTypes;
 using SanteDB.Core.Model.Security;
 using SanteDB.Core.Security;
 using SanteDB.Core.Security.Services;
@@ -15,6 +17,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using Patient = SanteDB.Core.Model.Roles.Patient;
 
 namespace SanteMPI.Messaging.IHE.Test
 {
@@ -24,75 +27,60 @@ namespace SanteMPI.Messaging.IHE.Test
     [ExcludeFromCodeCoverage]
     public static class TestUtil
     {
-
         /// <summary>
-        /// Get a FHIR message
+        /// Assert FHIR outcome
         /// </summary>
-        public static Resource GetFhirMessage(String messageName)
+        internal static void AssertFhirOutcome<TFocalResource>(Resource response, MessageHeader.ResponseType expectedResponse, out TFocalResource responseFocus)
+            where TFocalResource : class
         {
-            using (var s = typeof(TestUtil).Assembly.GetManifestResourceStream($"SanteMPI.Messaging.IHE.Test.Resources.FHIR.{messageName}.json"))
-            using (var sr = new StreamReader(s))
-            using (var jr = new JsonTextReader(sr))
-                return new Hl7.Fhir.Serialization.FhirJsonParser().Parse(jr) as Resource;
-        }
-
-        /// <summary>
-        /// Get the message from the test assembly
-        /// </summary>
-        public static IMessage GetMessage(String messageName)
-        {
-            using (var s = typeof(TestUtil).Assembly.GetManifestResourceStream($"SanteMPI.Messaging.IHE.Test.Resources.HL7.{messageName}.txt"))
-            using (var sw = new StreamReader(s))
-                return MessageUtils.ParseMessage(sw.ReadToEnd(), out string originalVersion);
-        }
-
-        /// <summary>
-        /// Get the message from the test assembly
-        /// </summary>
-        public static Hl7MessageReceivedEventArgs GetMessageEvent(String messageName)
-        {
-            return new Hl7MessageReceivedEventArgs(
-                message: GetMessage(messageName),
-                solicitorEp: new Uri("test://sut"),
-                receiveEp: new Uri("test://test"),
-                timestamp: DateTime.Now
-            );
+            Assert.IsInstanceOf<Bundle>(response);
+            var bundleResponse = response as Bundle;
+            Assert.AreEqual(1, bundleResponse.Entry.Count(o => o.Resource is MessageHeader));
+            var mh = bundleResponse.Entry.FirstOrDefault(o => o.Resource is MessageHeader)?.Resource as MessageHeader;
+            Assert.AreEqual(expectedResponse, mh.Response.Code);
+            Assert.IsNotNull(mh.Response.Details);
+            Assert.AreEqual(1, bundleResponse.Entry.Count(o => o.Resource is TFocalResource));
+            //Assert.AreEqual(1, bundleResponse.Entry.Count(o => o.FullUrl == mh.Response.Details.Reference)); // Must resolve oo
+            responseFocus = bundleResponse.Entry.FirstOrDefault(o => o.FullUrl == mh.Response.Details.Reference)?.Resource as TFocalResource;
         }
 
         /// <summary>
         /// Assert the outcome of a message
         /// </summary>
-        public static void AssertOutcome(IMessage message, params String[] acknowledgement)
+        public static void AssertOutcome(IMessage message, params string[] acknowledgement)
         {
             Assert.IsTrue(acknowledgement.Any(a => a == (message.GetStructure("MSA") as MSA).AcknowledgmentCode.Value), new PipeParser().Encode(message));
         }
 
         /// <summary>
-        /// Get the message from the test assembly
+        /// Assert that a patient exits
         /// </summary>
-        public static Hl7MessageReceivedEventArgs GetMessageEvent(String messageName, byte[] deviceSecret)
+        internal static void AssertPatientExists(string authority, string identifier)
         {
-            return new AuthenticatedHl7MessageReceivedEventArgs(
-                message: GetMessage(messageName),
-                solicitorEp: new Uri("test://sut"),
-                receiveEp: new Uri("test://test"),
-                timestamp: DateTime.Now,
-                authorization: deviceSecret
-            );
+            using (AuthenticationContext.EnterSystemContext())
+            {
+                var results = ApplicationServiceContext.Current.GetService<IRepositoryService<Patient>>().Find(o => o.Identifiers.Any(i => i.Authority.DomainName == authority && i.Value == identifier));
+                Assert.AreEqual(1, results.Count());
+            }
         }
-        /// <summary>
-        /// Represent message as string
-        /// </summary>
-        public static String ToString(IMessage msg)
-        {
 
-            return MessageUtils.EncodeMessage(msg, "2.5.1");
+        /// <summary>
+        /// Mimic an authentication
+        /// </summary>
+        internal static IDisposable AuthenticateFhir(string appId, byte[] appSecret)
+        {
+            var appIdService = ApplicationServiceContext.Current.GetService<IApplicationIdentityProviderService>();
+            var appPrincipal = appIdService.Authenticate(appId, BitConverter.ToString(appSecret).Replace("-", ""));
+            var sesPvdService = ApplicationServiceContext.Current.GetService<ISessionProviderService>();
+            var sesIdService = ApplicationServiceContext.Current.GetService<ISessionIdentityProviderService>();
+            var session = sesPvdService.Establish(appPrincipal, "http://localhost", false, null, null, null);
+            return AuthenticationContext.EnterContext(sesIdService.Authenticate(session));
         }
 
         /// <summary>
         /// Create the specified authority
         /// </summary>
-        public static void CreateAuthority(string nsid, string oid, String url, string applicationName, byte[] deviceSecret)
+        public static void CreateAuthority(string nsid, string oid, string url, string applicationName, byte[] deviceSecret)
         {
             // Create the test harness device / application
             var securityDevService = ApplicationServiceContext.Current.GetService<IRepositoryService<SecurityDevice>>();
@@ -102,13 +90,13 @@ namespace SanteMPI.Messaging.IHE.Test
 
             using (AuthenticationContext.EnterSystemContext())
             {
-                if (!String.IsNullOrEmpty(applicationName))
+                if (!string.IsNullOrEmpty(applicationName))
                 {
-                    string pubId = $"{applicationName}|TEST";
+                    var pubId = $"{applicationName}|TEST";
                     var device = securityDevService.Find(o => o.Name == pubId).FirstOrDefault();
                     if (device == null)
                     {
-                        device = new SecurityDevice()
+                        device = new SecurityDevice
                         {
                             DeviceSecret = BitConverter.ToString(deviceSecret).Replace("-", ""),
                             Name = $"{applicationName}|TEST"
@@ -121,7 +109,7 @@ namespace SanteMPI.Messaging.IHE.Test
                     app = securityAppService.Find(o => o.Name == applicationName).FirstOrDefault();
                     if (app == null)
                     {
-                        app = new SecurityApplication()
+                        app = new SecurityApplication
                         {
                             Name = applicationName,
                             ApplicationSecret = BitConverter.ToString(deviceSecret).Replace("-", "")
@@ -137,7 +125,7 @@ namespace SanteMPI.Messaging.IHE.Test
                 var aa = metadataService.Get(nsid);
                 if (aa == null)
                 {
-                    aa = new SanteDB.Core.Model.DataTypes.AssigningAuthority(nsid, nsid, oid)
+                    aa = new AssigningAuthority(nsid, nsid, oid)
                     {
                         AssigningApplicationKey = app?.Key,
                         IsUnique = true,
@@ -155,45 +143,52 @@ namespace SanteMPI.Messaging.IHE.Test
         }
 
         /// <summary>
-        /// Assert FHIR outcome
+        /// Get a FHIR message
         /// </summary>
-        internal static void AssertFhirOutcome<TFocalResource>(Resource response, MessageHeader.ResponseType expectedResponse, out TFocalResource responseFocus)
-            where TFocalResource: class
+        public static Resource GetFhirMessage(string messageName)
         {
-            Assert.IsInstanceOf<Bundle>(response);
-            var bundleResponse = response as Bundle;
-            Assert.AreEqual(1, bundleResponse.Entry.Count(o => o.Resource is MessageHeader));
-            var mh = bundleResponse.Entry.FirstOrDefault(o => o.Resource is MessageHeader)?.Resource as MessageHeader;
-            Assert.AreEqual(expectedResponse, mh.Response.Code);
-            Assert.IsNotNull(mh.Response.Details);
-            Assert.AreEqual(1, bundleResponse.Entry.Count(o => o.Resource is TFocalResource));
-            //Assert.AreEqual(1, bundleResponse.Entry.Count(o => o.FullUrl == mh.Response.Details.Reference)); // Must resolve oo
-            responseFocus = bundleResponse.Entry.FirstOrDefault(o => o.FullUrl == mh.Response.Details.Reference)?.Resource as TFocalResource;
-        }
-
-        /// <summary>
-        /// Mimic an authentication
-        /// </summary>
-        internal static IDisposable AuthenticateFhir(string appId, byte[] appSecret)
-        {
-            var appIdService = ApplicationServiceContext.Current.GetService<IApplicationIdentityProviderService>();
-            var appPrincipal = appIdService.Authenticate(appId, BitConverter.ToString(appSecret).Replace("-", ""));
-            var sesPvdService = ApplicationServiceContext.Current.GetService<ISessionProviderService>();
-            var sesIdService = ApplicationServiceContext.Current.GetService<ISessionIdentityProviderService>();
-            var session = sesPvdService.Establish(appPrincipal, "http://localhost", false, null, null, null);
-            return AuthenticationContext.EnterContext(sesIdService.Authenticate(session));
-        }
-
-        /// <summary>
-        /// Assert that a patient exits
-        /// </summary>
-        internal static void AssertPatientExists(string authority, string identifier)
-        {
-            using(AuthenticationContext.EnterSystemContext())
+            using (var s = typeof(TestUtil).Assembly.GetManifestResourceStream($"SanteMPI.Messaging.IHE.Test.Resources.FHIR.{messageName}.json"))
+            using (var sr = new StreamReader(s))
+            using (var jr = new JsonTextReader(sr))
             {
-                var results = ApplicationServiceContext.Current.GetService<IRepositoryService<SanteDB.Core.Model.Roles.Patient>>().Find(o => o.Identifiers.Any(i => i.Authority.DomainName == authority && i.Value == identifier));
-                Assert.AreEqual(1, results.Count());
+                return new FhirJsonParser().Parse(jr) as Resource;
             }
+        }
+
+        /// <summary>
+        /// Get the message from the test assembly
+        /// </summary>
+        public static IMessage GetMessage(string messageName)
+        {
+            using (var s = typeof(TestUtil).Assembly.GetManifestResourceStream($"SanteMPI.Messaging.IHE.Test.Resources.HL7.{messageName}.txt"))
+            using (var sw = new StreamReader(s))
+            {
+                return MessageUtils.ParseMessage(sw.ReadToEnd(), out var originalVersion);
+            }
+        }
+
+        /// <summary>
+        /// Get the message from the test assembly
+        /// </summary>
+        public static Hl7MessageReceivedEventArgs GetMessageEvent(string messageName)
+        {
+            return new Hl7MessageReceivedEventArgs(GetMessage(messageName), new Uri("test://sut"), new Uri("test://test"), DateTime.Now);
+        }
+
+        /// <summary>
+        /// Get the message from the test assembly
+        /// </summary>
+        public static Hl7MessageReceivedEventArgs GetMessageEvent(string messageName, byte[] deviceSecret)
+        {
+            return new AuthenticatedHl7MessageReceivedEventArgs(GetMessage(messageName), new Uri("test://sut"), new Uri("test://test"), DateTime.Now, deviceSecret);
+        }
+
+        /// <summary>
+        /// Represent message as string
+        /// </summary>
+        public static string ToString(IMessage msg)
+        {
+            return MessageUtils.EncodeMessage(msg, "2.5.1");
         }
     }
 }

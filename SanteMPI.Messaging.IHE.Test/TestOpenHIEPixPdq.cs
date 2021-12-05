@@ -27,12 +27,11 @@ namespace SanteMPI.Messaging.IHE.Test
         /// <summary>
         /// Test context
         /// </summary>
-        /// <param name="context"></param>
         [SetUp]
         public void Initialize()
         {
             // Force load of the DLL
-            var p = FirebirdSql.Data.FirebirdClient.FbCharset.Ascii;
+            Assert.NotNull(FirebirdSql.Data.FirebirdClient.FbCharset.Ascii);
             TestApplicationContext.TestAssembly = typeof(TestOpenHIEPixPdq).Assembly;
             TestApplicationContext.Initialize(TestContext.CurrentContext.TestDirectory);
             this.m_serviceManager = TestApplicationContext.Current.GetService<IServiceManager>();
