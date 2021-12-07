@@ -23,120 +23,194 @@
  */
 angular.module('santedb').controller('EntityRelationshipDiagramController', ["$scope", "$rootScope", "$timeout", function ($scope, $rootScope, $timeout) {
 
-    
+
     mermaid.mermaidAPI.initialize({
         "theme": "default",
-        flowchart:{
-            useMaxWidth:true,
+        flowchart: {
+            useMaxWidth: true,
             htmlLabels: true
         },
         securityLevel: 'loose'
-      });
+    });
+
+    $scope.view = {
+        mode: "simple",
+        graphs: {
+            simple: null,
+            advanced: null
+        }
+    }
 
     var relationshipDrawn = false;
     var relationshipCount = 0;
     // Render a relationship
     async function renderRelationship(entity, entityRelationship, fallbackRelationship, reverse) {
         try {
-            if(!entityRelationship)
+            if (!entityRelationship)
                 return;
-            if(entityRelationship && entityRelationship.source && entityRelationship.source != entity.id && entityRelationship.target == entity.id)
+            if (entityRelationship && entityRelationship.source && entityRelationship.source != entity.id && entityRelationship.target == entity.id)
                 reverse = true;
             var entity = entityRelationship.targetModel;
 
-            if(reverse) {
+            if (reverse) {
                 entity = await SanteDB.resources.entity.getAsync(entityRelationship.holder || entityRelationship.source);
             }
-            else if(!entity || !entity.$ref && !entity.name)
+            else if (!entity || !entity.$ref && !entity.name)
                 entity = entityRelationship.targetModel = await SanteDB.resources.patient.getAsync(entityRelationship.target);
 
             var retVal = "";
-            if(entity) {
+            if (entity) {
 
                 // Is this a patient? Then provide a link
-                var resolver = SanteDB.display.get
-                if(entity.$type == "Patient") {
-                    if(entity.name)
-                        retVal += `\nrel${entity.id.substr(0,8)}["<a class='mr-2' href='#!/mpi/patient/${entity.id}'>${SanteDB.display.renderEntityName(entity.name)}</a>"]`;
-                    else if(entity.identifier)
-                        retVal += `\nrel${entity.id.substr(0,8)}["<a class='mr-2' href='#!/mpi/patient/${entity.id}'>${SanteDB.display.renderIdentifier(entity.identifier)}</a>"]`;
+                var resolver = SanteDB.display.get;
+                var iconography = "fa-circle";
+                if (entity.determinerConcept == "6b1d6764-12be-42dc-a5dc-52fc275c4935") {
+                    iconography = "fa-user-check";
+                }
+                else switch (entity.$type) {
+                    case 'Patient':
+                        iconography = "fa-user-plus";
+                        break;
+                    case 'Person':
+                        iconography = "fa-user-minus";
+                        break;
+                    case 'Organization':
+                        iconography = "fa-sitemap";
+                        break;
+                    case 'Place':
+                        iconography = "fa-map-marker-alt";
+                        break;
+                    case 'Provider':
+                        iconography = "fa-user-md";
+                        break;
+                }
+                if (entity.$type == "Patient") {
+                    if (entity.name)
+                        retVal += `\nrel${entity.id.substr(0, 8)}["<a class='mr-2' title='View Record' href='#!/mpi/patient/${entity.id}'><i class='fas fa-fw ${iconography} mr-1'></i> ${SanteDB.display.renderEntityName(entity.name)}</a>"]`;
+                    else if (entity.identifier)
+                        retVal += `\nrel${entity.id.substr(0, 8)}["<a class='mr-2' title='View Record' href='#!/mpi/patient/${entity.id}'><i class='fas fa-fw ${iconography} mr-1'></i>${SanteDB.display.renderIdentifier(entity.identifier)}</a>"]`;
                 }
                 else {
-                    if(entity.name)
-                        retVal += `\nrel${entity.id.substr(0,8)}["<span class='mr-2'>${SanteDB.display.renderEntityName(entity.name)}</span>"]`;
-                    else if(entity.identifier)
-                        retVal += `\nrel${entity.id.substr(0,8)}[<span class='mr-2'>${entity.$type} ${SanteDB.display.renderIdentifier(entity.identifier)}</span>]`;
+                    if (entity.name)
+                        retVal += `\nrel${entity.id.substr(0, 8)}["<span class='mr-2' title='Related ${entity.$type}'><i class='fas fa-fw ${iconography} mr-1'></i>${SanteDB.display.renderEntityName(entity.name)}</span>"]`;
+                    else if (entity.identifier)
+                        retVal += `\nrel${entity.id.substr(0, 8)}[<span class='mr-2' title='Related ${entity.$type}'><i class='fas fa-fw ${iconography} mr-1'></i>${entity.$type} ${SanteDB.display.renderIdentifier(entity.identifier)}</span>]`;
                 }
 
                 var relationshipText = SanteDB.display.renderConcept(entityRelationship.relationshipTypeModel || fallbackRelationship);
-                if(entityRelationship.relationshipRoleModel) {
+                if (entityRelationship.relationshipRoleModel) {
                     relationshipText += ` / ${SanteDB.display.renderConcept(entityRelationship.relationshipRoleModel)}`;
                 }
                 var dashType = `-- "${relationshipText}" -->`;
-                 if(entityRelationship.$type == 'EntityRelationshipMaster')
-                 {
-                     retVal += `\nrel${entityRelationship.originalHolder.substr(0,8)} ${dashType} rel${entityRelationship.originalTarget.substr(0,8)}`;
-                     dashType = `-. <span class='mr-2'>${SanteDB.display.renderConcept(entityRelationship.relationshipTypeModel || fallbackRelationship)}</span> .->`;
-                 }
-                 else {
-                    if(reverse)
-                        retVal += `\nrel${entity.id.substr(0,8)} ${dashType} root`;
-                    else if(!entity.$ref)
-                        retVal += `\nroot ${dashType} rel${entity.id.substr(0,8)}`;
-                 }
+
+                if ($scope.view.mode == "advanced") {
+                    // To show physical relationships
+                    if (entityRelationship.$type == 'EntityRelationshipMaster') {
+
+                        if (entityRelationship.originalTarget != entityRelationship.target) {
+                            retVal += `\nrel${entityRelationship.originalHolder.substr(0, 8)} ---- rel${entityRelationship.originalTarget.substr(0, 8)}`;
+                            retVal += `\nrel${entityRelationship.originalTarget.substr(0, 8)}("<i class='fas fa-random fa-fw' title='MDM Redirected Link'></i>") ${dashType} rel${entityRelationship.target.substr(0, 8)}`;
+                        }
+                        else {
+                            retVal += `\nrel${entityRelationship.originalHolder.substr(0, 8)} ${dashType} rel${entityRelationship.originalTarget.substr(0, 8)}`;
+
+                        }
+                        dashType = `-. <span class='mr-2'>${relationshipText}</span> .->`;
+                    }
+                    //else {
+                    if (reverse)
+                        retVal += `\nrel${entity.id.substr(0, 8)} ${dashType} root`;
+                    else if (!entity.$ref)
+                        retVal += `\nroot ${dashType} rel${entity.id.substr(0, 8)}`;
+                    //}
+                }
+                else {
+                    if (entityRelationship.$type == 'EntityRelationshipMaster') {
+                        dashType = `-. <span class='mr-2'>${relationshipText}</span> .->`;
+                    }
+                    if (reverse)
+                        retVal += `\nrel${entity.id.substr(0, 8)} ${dashType} root`;
+                    else if (!entity.$ref)
+                        retVal += `\nroot ${dashType} rel${entity.id.substr(0, 8)}`;
+                }
             }
-            
-            if(reverse)
-                retVal += `\nstyle rel${entity.id.substr(0,8)} fill:#ccf,stroke:#cc0,stroke-width:1px,stroke-dasharray: 5, 5`;
-            else if(entityRelationship.$type == 'EntityRelationshipMaster') {
-               retVal += `\nstyle rel${entity.id.substr(0,8)} fill:#fcf,stroke:#c0c,stroke-width:1px,stroke-dasharray: 5, 5`;
+
+            if (entity && entity.determinerConcept == "6b1d6764-12be-42dc-a5dc-52fc275c4935")
+                retVal += `\nstyle rel${entity.id.substr(0, 8)} fill:#ffc,stroke:#00c,stroke-width:1px`;
+            else if (reverse)
+                retVal += `\nstyle rel${entity.id.substr(0, 8)} fill:#ccf,stroke:#cc0,stroke-width:1px,stroke-dasharray: 5, 5`;
+            else if (entityRelationship.$type == 'EntityRelationshipMaster') {
+                retVal += `\nstyle rel${entity.id.substr(0, 8)} fill:#fcf,stroke:#c0c,stroke-width:1px,stroke-dasharray: 5, 5`;
             }
             return retVal;
         }
-        catch(e) {
+        catch (e) {
             console.error(e);
             return `\n??-- ${SanteDB.display.renderConcept(entityRelationship.relationshipTypeModel || fallbackRelationship)} ---root`;
         }
     }
 
-    $scope.$watch("scopedObject", async function(n, o) {
-        if(n && !relationshipDrawn) {
-            try {
-                var graphDefinition = `graph LR\nroot(("<span class='mr-2'>${SanteDB.display.renderEntityName(n.name)}</span>"))\nstyle root fill:#afa,stroke:#0c0,stroke-width:2px`;
+    // Draw functions
+    async function drawRelationships(entity) {
+        try {
+
+            var graphDefinition = $scope.view.graphs[$scope.view.mode];
+            if (!graphDefinition) {
+                graphDefinition = `graph LR\nroot(("<span class='mr-2'>${SanteDB.display.renderEntityName(entity.name)}</span>"))\nstyle root fill:#afa,stroke:#0c0,stroke-width:2px`;
 
                 // Root is scoped object
-                if(n.relationship) {
-                    var promises = Object.keys(n.relationship).map(function(k) {
+                if (entity.relationship) {
+                    var promises = Object.keys(entity.relationship).map(function (k) {
                         var retVal = [];
-                        if(Array.isArray(n.relationship[k]))
-                            retVal = n.relationship[k].map(function(r) {
-                                return renderRelationship(n, r, k);
+                        if (Array.isArray(entity.relationship[k]))
+                            retVal = entity.relationship[k].map(function (r) {
+                                return renderRelationship(entity, r, k);
                             });
-                        else 
-                            retVal = renderRelationship(n, n.relationship[k], k) ;
+                        else
+                            retVal = renderRelationship(entity, entity.relationship[k], k);
                         return retVal;
                     }).flat();
                     var results = await Promise.all(promises);
-                    results.filter((r)=>graphDefinition.indexOf(r) == -1).forEach((r)=>graphDefinition += r);
+                    results.filter((r) => graphDefinition.indexOf(r) == -1).forEach((r) => graphDefinition += r);
                 }
 
                 // reverse relationships
-                var reverseRelationships = await SanteDB.resources.entityRelationship.findAsync({ target: n.id, _viewModel: 'smpi.reverseRelationship' });
-                if(reverseRelationships.resource)
-                {
-                    var promises = reverseRelationships.resource.map(function(r) {
-                        return renderRelationship(n, r, 'UNK', true) ;
+                var reverseRelationships = await SanteDB.resources.entityRelationship.findAsync({ target: entity.id, _viewModel: 'smpi.reverseRelationship' });
+                if (reverseRelationships.resource) {
+                    var promises = reverseRelationships.resource.map(function (r) {
+                        return renderRelationship(entity, r, 'UNK', true);
                     }).flat();
                     var results = await Promise.all(promises);
-                    results.filter((r)=>graphDefinition.indexOf(r) == -1).forEach((r)=>graphDefinition += r);
+                    results.filter((r) => graphDefinition.indexOf(r) == -1).forEach((r) => graphDefinition += r);
                 }
+                mermaid.mermaidAPI.render(`entityNetworkDiagram${entity.sequence}`, graphDefinition, (svg) => { 
+                    $scope.view.graphs[$scope.view.mode] = svg;
+                    $(`#renderSvg${entity.sequence}`).html(svg);
+                });
 
-                mermaid.mermaidAPI.render(`entityNetworkDiagram${n.sequence}`, graphDefinition, (svg)=> $(`#renderSvg${n.sequence}`).html(svg));
-                relationshipDrawn = true;
             }
-            catch (e) {
-                $rootScope.errorHandler(e);
+            else {
+                $(`#renderSvg${entity.sequence}`).html(graphDefinition);
+
             }
+        }
+        catch (e) {
+            $rootScope.errorHandler(e);
+        }
+    }
+
+    $scope.redraw = function () {
+
+        $(`#entityNetworkDiagram${$scope.scopedObject.sequence}`).html("<i class='fas fa-circle-notch fa-spin'></i>");
+        drawRelationships($scope.scopedObject);
+    }
+
+    // Draw when scope ready
+    $scope.$watch("scopedObject", function (n, o) {
+        if (n && !relationshipDrawn) {
+            relationshipDrawn = true;
+
+            drawRelationships(n);
 
         }
     });

@@ -27,7 +27,7 @@
                       xmlns="http://santedb.org/configuration">
   <sections>
     <add type="SanteDB.Core.Configuration.ApplicationServiceContextConfigurationSection, SanteDB.Core.Api" />
-    <add type="SanteDB.Server.Core.Configuration.FileSystemDispatcherQueueConfigurationSection, SanteDB.Server.Core" />
+    <add type="SanteDB.Core.Configuration.FileSystemDispatcherQueueConfigurationSection, SanteDB.Core.Api" />
   </sections>
   <include>config\santedb.audit_accountability.config.xml</include>
   <include>config\santedb.email_notification.config.xml</include>
@@ -59,7 +59,7 @@
       <add type="SanteDB.Server.Core.Services.Impl.FileConfigurationService, SanteDB.Server.Core" />
       <add type="SanteDB.Core.Jobs.DefaultJobManagerService, SanteDB.Core.Api" />
       <add type="SanteDB.Core.Services.Impl.DefaultThreadPoolService, SanteDB.Core.Api" />
-      <add type="SanteDB.Server.Core.Services.Impl.FileSystemQueueService, SanteDB.Server.Core" />
+      <add type="SanteDB.Core.Services.Impl.FileSystemDispatcherQueueService, SanteDB.Core.Api" />
       <add type="SanteDB.Server.Core.Rest.RestServiceFactory, SanteDB.Server.Core" />
       <add type="SanteDB.Server.Core.Services.Impl.DefaultNetworkInformationService, SanteDB.Server.Core" />
       <!-- Security Services -->

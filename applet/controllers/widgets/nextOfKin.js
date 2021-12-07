@@ -76,20 +76,21 @@ angular.module('santedb').controller('MpiPatientNextOfKinController', ["$scope",
                     if (!existing) // new relationship type
                         existing = patient.relationship[relType.mnemonic] = [];
 
+                    var newRel = new EntityRelationship({
+                        target: rel.targetModel.id,
+                        relationshipType: rel.relationshipType
+                    }) ;
                     var instance = existing.filter(o => o.target == rel.target);
                     if (instance.length == 0) // none currently
-                        existing.push(rel);
+                        existing.push(newRel);
                     else {
                         var others = existing.filter(o => o.target != rel.target);
-                        others.push(rel);
+                        others.push(newRel);
                         patient.relationship[relType.mnemonic] = others;
                     }
 
                     // Erase target model and replace with identifier
-                    rel.target = rel.targetModel.id;
                     submissionBundle.resource.push(rel.targetModel);
-                    rel.holder = patient.id;
-                    delete (rel.targetModel);
                 }
             }));
 

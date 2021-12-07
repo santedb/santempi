@@ -121,11 +121,11 @@
                                         </span>
                                     </div>
                                 </div>
-                                <div class="alert alert-danger"
+                                <div class="text-danger"
                                     ng-show="panel.editForm['block' + $index + 'maxResults'].$error['required']">
                                     <i class="fas fa-exclamation-triangle"></i> {{ 'ui.error.required' | i18n }}
                                 </div>
-                                <div class="alert alert-danger"
+                                <div class="text-danger"
                                     ng-show="panel.editForm['block' + $index + 'maxResults'].$error['max'] || panel.editForm['block' + $index + 'maxResults'].$error['min']">
                                     <i class="fas fa-exclamation-triangle"></i> {{ 'ui.error.range' | i18n: { min: 0 ,
                                     max: 25 } }}
@@ -157,7 +157,7 @@
                                     <option value="AndAlso">{{ 'ui.model.matchConfiguration.blocking.op.AndAlso' | i18n }}</option>
                                     <option value="OrElse">{{ 'ui.model.matchConfiguration.blocking.op.OrElse' | i18n }}</option>
                                 </select>
-                                <div class="alert alert-danger"
+                                <div class="text-danger"
                                 ng-show="panel.editForm['block' + $index + 'op'].$error['required']">
                                 <i class="fas fa-exclamation-triangle"></i> {{ 'ui.error.required' | i18n }}
                             </div>
@@ -187,7 +187,7 @@
                                                                 name="expr{{flt._id}}when"
                                                                 simple-input="true"
                                                                 ng-model="flt.when[0]" />
-                                                                <div class="alert alert-danger"
+                                                                <div class="text-danger"
                                                                 ng-show="panel.editForm['expr' + flt._id + 'when'].$error['hdsiProperty'] ">
                                                                 <i class="fas fa-exclamation-triangle"></i> {{ 'ui.error.hdsi.propertyMissing' | i18n }}
                                                             </div>
@@ -217,11 +217,11 @@
                                                                         {{ 'ui.action.remove' | i18n }}</button>
                                                                 </div>
                                                             </div>
-                                                            <div class="alert alert-danger"
+                                                            <div class="text-danger"
                                                                     ng-show="panel.editForm['expr' + flt._id + 'lhs'].$error['required'] ">
                                                                     <i class="fas fa-exclamation-triangle"></i> {{ 'ui.error.required' | i18n }}
                                                                 </div>
-                                                                <div class="alert alert-danger"
+                                                                <div class="text-danger"
                                                                 ng-show="panel.editForm['expr' + flt._id + 'lhs'].$error['hdsiNeedsRhs'] ">
                                                                 <i class="fas fa-exclamation-triangle"></i> {{ 'ui.error.hdsi.rhsMissing' | i18n }}
                                                             </div>
