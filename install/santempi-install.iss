@@ -140,6 +140,7 @@ Source: {#iCDRBase}\bin\release\applets\*.pak; DestDir: {app}\applets; Component
 
 ; Tools
 Source: {#iCDRBase}\bin\release\sdbac.exe; DestDir: {app}; Components: tools
+Source: {#iCDRBase}\bin\Release\Mono.Posix.dll; DestDir: {app}; Components: core
 Source: {#iCDRBase}\bin\Release\SanteDB.exe.config; DestDir: {app}; DestName: sdbac.exe.config; Components: tools
 Source: {#iCDRBase}\bin\release\SanteDB.Server.AdminConsole.Api.dll; DestDir: {app}; Components: tools
 
