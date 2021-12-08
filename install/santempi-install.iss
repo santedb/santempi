@@ -205,6 +205,8 @@ Source: {#iCDRBase}\bin\Release\AtnaApi.dll; DestDir: {app}; Components: interop
 
 ; FHIR R4 Support
 Source: {#iCDRBase}\bin\Release\Hl7.Fhir.ElementModel.dll; DestDir: {app}; Components: interop\fhir
+Source: {#iCDRBase}\bin\Release\Microsoft.IdentityModel.Tokens.dll; DestDir: {app}; Components: interop\fhir
+Source: {#iCDRBase}\bin\Release\Microsoft.IdentityModel.Logging.dll; DestDir: {app}; Components: interop\fhir
 Source: {#iCDRBase}\bin\Release\Hl7.Fhir.R4.Core.dll; DestDir: {app}; Components: interop\fhir
 Source: {#iCDRBase}\bin\Release\Hl7.Fhir.Serialization.dll; DestDir: {app}; Components: interop\fhir
 Source: {#iCDRBase}\bin\Release\Hl7.Fhir.Support.dll; DestDir: {app}; Components: interop\fhir
