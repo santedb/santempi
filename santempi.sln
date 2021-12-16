@@ -7,6 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SanteMPI.Persistence.ADO", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CC41FDC2-DA37-42A1-BE9D-49F779067390}"
 	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
 		Dockerfile = Dockerfile
 	EndProjectSection
 EndProject
@@ -16,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SanteMPI.Messaging.IHE.Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SanteMPI", "SanteMPI\SanteMPI.csproj", "{D6481699-8BDE-495D-B28E-BE6F309718DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SanteMPI.i18n", "SanteMPI.i18n\SanteMPI.i18n.csproj", "{B5773AB6-F15D-4474-A852-B355C830ABA4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SanteMPI.i18n", "SanteMPI.i18n\SanteMPI.i18n.csproj", "{B5773AB6-F15D-4474-A852-B355C830ABA4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -2,13 +2,6 @@
 
 angular.module('santedb').controller('recentPatientsController', ["$scope", "$rootScope", "$state", "$templateCache", "$interval", function ($scope, $rootScope, $state, $templateCache, $interval) {
 
-    $scope.recentPatientQuery = {
-        "modifiedOn" : `>${moment(new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() - 1)).format('YYYY-MM-DD')}`,
-        "_orderBy" : "creationTime:desc",
-        "obsoletionTime": "null"
-    }
-
-    registerAssetsViewers($state);
 
     // Render the names
     $scope.renderName = function(patient) {

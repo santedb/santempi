@@ -25,11 +25,18 @@ namespace SanteMPI.Messaging.IHE.HL7
     public class PixAdtMessageHandler : AdtMessageHandler
     {
         /// <summary>
+        /// Localization service
+        /// </summary>
+        public PixAdtMessageHandler(ILocalizationService localizationService, IRecordMergingService<Patient> mergeService, IRepositoryService<Bundle> bundleService) : base(localizationService, mergeService, bundleService)
+        {
+        }
+
+        /// <summary>
         /// Send an audit for admit
         /// </summary>
         protected override void SendAuditAdmit(OutcomeIndicator success, IMessage message, IEnumerable<IdentifiedData> enumerable)
         {
-            IheAuditUtil.SendAuditPatientIdentityFeed(success, ActionType.Create, message, enumerable.OfType<Patient>().First());
+            IheAuditUtil.SendAuditPatientIdentityFeed(success, ActionType.Create, message, enumerable?.OfType<Patient>().First());
         }
 
         /// <summary>
@@ -37,7 +44,7 @@ namespace SanteMPI.Messaging.IHE.HL7
         /// </summary>
         protected override void SendAuditUpdate(OutcomeIndicator outcome, IMessage message, IEnumerable<IdentifiedData> results)
         {
-            IheAuditUtil.SendAuditPatientIdentityFeed(outcome, ActionType.Update, message, results.OfType<Patient>().First());
+            IheAuditUtil.SendAuditPatientIdentityFeed(outcome, ActionType.Update, message, results?.OfType<Patient>().First());
         }
 
         /// <summary>

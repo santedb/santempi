@@ -1,0 +1,14 @@
+<div xmlns="http://www.w3.org/1999/xhtml" xmlns:sdb="http://santedb.org/applet">
+    <sdb:widget order="100" name="ui.mpi.matches.config.general.diagram" type="Panel" size="Large"
+        headerClass="alert-info" context="org.santedb.mpi.matches.config.general">
+        <sdb:icon>fas fa-project-diagram</sdb:icon>
+        <sdb:description lang="en">Diagram</sdb:description>
+        <sdb:guard>scopedObject.uuid</sdb:guard>
+    </sdb:widget>
+
+        <div id="matchConfigurationDiv"></div>
+        <div id="matchConfigurationSvg" >
+            <i class="fas fa-spin fa-circle-notch"></i> {{ 'ui.wait' | i18n }}
+        </div>
+
+</div>

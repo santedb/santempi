@@ -1,0 +1,39 @@
+<div xmlns="http://www.w3.org/1999/xhtml" xmlns:sdb="http://santedb.org/applet" class="container-fluid p-0"
+    >
+    <sdb:widget order="50" name="ui.mpi.matches.view.resolve" type="Tab" context="org.santedb.mpi.match.view">
+        <sdb:icon>fas fa-project-diagram</sdb:icon>
+        <sdb:description lang="en">Resolution Detail</sdb:description>
+    </sdb:widget>
+
+    <div class="row" ng-if="!scopedObject">
+        <div class="col">
+            <p class="m-auto"><i class="fas fa-circle-notch fa-spin"></i> {{ 'ui.wait' | i18n }}</p>
+        </div>
+    </div>
+
+    <div>
+        
+        <!-- MASTER <> MASTER -->
+        <h1>{{ 'ui.mpi.match.resolve.title' | i18n }}</h1>
+        <p ng-bind-html="'ui.mpi.match.resolve.description' | i18n"></p>
+
+        <div ng-if="scopedObject.recordA.tag['$mdm.type'] == 'M' &amp;&amp; scopedObject.recordB.tag['$mdm.type'] == 'M' &amp;&amp; $root.session.scope.indexOf('1.3.6.1.4.1.33349.3.1.5.9.2.6.3') > -1">
+            <h2>{{ 'ui.mpi.match.resolve.masterMaster.title' | i18n }}</h2>
+            <p ng-bind-html="'ui.mpi.match.resolve.masterMaster.description' | i18n"></p>
+        </div>
+        <!-- LOCAL / MASTER -->
+        <div ng-if="scopedObject.recordA.tag['$mdm.type'] != 'M' &amp;&amp; scopedObject.recordB.tag['$mdm.type'] == 'M' &amp;&amp; $root.session.scope.indexOf('1.3.6.1.4.1.33349.3.1.5.9.2.6.1') > -1">
+            <h2>{{ 'ui.mpi.match.resolve.localMaster.title' | i18n }}</h2>
+            <p ng-bind-html="'ui.mpi.match.resolve.localMaster.description' | i18n"></p>
+
+        </div>
+        <!-- Local / Local-->
+        <div ng-if="scopedObject.recordA.tag['$mdm.type'] != 'M' &amp;&amp; scopedObject.recordB.tag['$mdm.type'] != 'M' || $root.session.scope.indexOf('1.3.6.1.4.1.33349.3.1.5.9.2.6.1') == -1">
+            <h2>{{ 'ui.mpi.match.resolve.localLocal.title' | i18n }}</h2>
+            <p ng-bind-html="'ui.mpi.match.resolve.localLocal.description' | i18n"></p>
+        </div>
+
+        <h1>{{ 'ui.mpi.match.ignore.title' | i18n }}</h1>
+        <p ng-bind-html="'ui.mpi.match.ignore.description' | i18n"></p>
+    </div>
+</div>

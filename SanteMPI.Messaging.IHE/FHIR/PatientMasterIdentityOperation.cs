@@ -30,12 +30,12 @@ namespace SanteMPI.Messaging.IHE.FHIR
     [DisplayName("IHE PMIR Message Handler")]
     public class PatientMasterIdentityOperation : IFhirMessageOperation
     {
-
         // Error strings
         private ResourceManager m_errorStrings = new ResourceManager(typeof(ErrorMessages));
 
         // Repository service
         private IRepositoryService<SanteDB.Core.Model.Roles.Patient> m_repository;
+
         private IRecordMergingService<SanteDB.Core.Model.Roles.Patient> m_mergeService;
         private IRepositoryService<SanteDB.Core.Model.Collection.Bundle> m_batchRepository;
 
@@ -71,6 +71,7 @@ namespace SanteMPI.Messaging.IHE.FHIR
                 )
             );
         }
+
         /// <summary>
         /// The event URI
         /// </summary>
@@ -109,7 +110,7 @@ namespace SanteMPI.Messaging.IHE.FHIR
                 }
 
                 // Create SanteDB bundle of objects to be persisted
-                // This is done because the odd way FHIR does RelatedPerson linkages, we want to process the entire bundle and let the mapper handle resolving 
+                // This is done because the odd way FHIR does RelatedPerson linkages, we want to process the entire bundle and let the mapper handle resolving
                 var sdbBundle = this.m_bundleHandler?.MapToModel(bundle) as SanteDB.Core.Model.Collection.Bundle;
                 if (sdbBundle == null)
                 {
@@ -142,12 +143,11 @@ namespace SanteMPI.Messaging.IHE.FHIR
                             case HTTPVerb.POST:
                             case HTTPVerb.PUT: // Might be a merge or might be an update?
                                 {
-                                    // PMIR -> Replaced By is a link that exists on the focal object 
+                                    // PMIR -> Replaced By is a link that exists on the focal object
                                     var fhirPatientReplacementInstruction = patient.Link.FirstOrDefault(l => l.Type == Patient.LinkType.ReplacedBy);
                                     if (!patient.Active.GetValueOrDefault() &&
                                         fhirPatientReplacementInstruction != null) // Requesting a replacement (old is obsolete and there is a replaced by)
                                     {
-
                                         var survivor = DataTypeConverter.ResolveEntity<SanteDB.Core.Model.Roles.Patient>(fhirPatientReplacementInstruction.Other, itm.Resource);
                                         if (survivor == null)
                                         {
@@ -189,10 +189,8 @@ namespace SanteMPI.Messaging.IHE.FHIR
                                                     Diagnostics = $"Merge was redirected from Patient/{focalObject.Key} to alternate Patient/{mergeResult.Replaced.First()}"
                                                 });
                                                 retVal.AddExtension("http://santedb.org/santempi/merge-replaced", new ResourceReference($"Patient/{mergeResult.Replaced.First()}"));
-
                                             }
                                         }
-
                                     }
                                     else
                                     {
@@ -209,7 +207,9 @@ namespace SanteMPI.Messaging.IHE.FHIR
                                             Diagnostics = $"Register/Update {focalObject}"
                                         });
                                     }
-                                    break;
+
+                                    IheAuditUtil.SendAuditPatientMasterIdentityRegistry(SanteDB.Core.Auditing.OutcomeIndicator.Success, requestHeader, patientsAdded.ToArray());
+                                    return retVal;
                                 }
                             case HTTPVerb.DELETE:
                                 {
@@ -219,7 +219,9 @@ namespace SanteMPI.Messaging.IHE.FHIR
                                         Severity = OperationOutcome.IssueSeverity.Information,
                                         Diagnostics = $"Deleted {focalObject}"
                                     });
-                                    break;
+
+                                    IheAuditUtil.SendAuditPatientMasterIdentityRegistry(SanteDB.Core.Auditing.OutcomeIndicator.Success, requestHeader, patientsAdded.ToArray());
+                                    return retVal;
                                 }
                             default:
                                 throw new InvalidOperationException();
@@ -227,8 +229,8 @@ namespace SanteMPI.Messaging.IHE.FHIR
                     }
                 }
 
-                IheAuditUtil.SendAuditPatientMasterIdentityRegistry(SanteDB.Core.Auditing.OutcomeIndicator.Success, requestHeader, patientsAdded.ToArray());
-                return retVal;
+                // If this area of code is called then we couldn't find a patient nor a valid method
+                throw new InvalidOperationException("Could not find a Patient or valid REST verb in bundle");
             }
             catch
             {

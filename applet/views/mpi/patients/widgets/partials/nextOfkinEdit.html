@@ -1,0 +1,27 @@
+<div xmlns="http://www.w3.org/1999/xhtml">
+    <name-edit is-required="rel._active" control-prefix="'nok' + rel.id" owner-form="panel.editForm" no-add="true" readonly="readonly" no-type="true" simple-entry="true" name="rel.targetModel.name" />
+    <div class="form-group row">
+        <label
+            class="col-sm-12 col-md-3 control-label">{{ 'ui.model.patient.dateOfBirth' | i18n }}</label>
+        <div class="col-sm-12 col-md-9">
+            <div class="input-group m-0">
+                <input max="{{ $root.page.maxEventTime | date: 'yyyy-MM-dd' }}" class="form-control"
+                    type="date" ng-model="rel.targetModel.dateOfBirth"  
+                    name="nok{{rel.id}}dob"
+                     />
+                <div class="input-group-append">
+                        <label class="input-group-text">
+                            <input type="checkbox" ng-model="rel.targetModel.dateOfBirthPrecision"
+                                ng-true-value="1" ng-false-value="3" />
+                            {{ 'ui.model.patient.dateOfBirth.approx' | i18n }}
+                        </label>
+                </div>
+            </div>
+            <div class="text-danger" ng-if="panel.editForm['nok' + rel.id + 'dob'].$invalid">
+                <i class="fas fa-exclamation-triangle"></i> {{ 'ui.error.required' | i18n}}
+            </div>
+        </div>
+    </div>
+    <telecom-edit single-edit="'MobileContact'" telecom="rel.targetModel.telecom"/>
+    <address-edit is-required="rel._active"  control-prefix="'nok' + rel.id" owner-form="panel.editForm" no-add="true" no-type="true" simple-entry="true" address="rel.targetModel.address"/>
+</div>

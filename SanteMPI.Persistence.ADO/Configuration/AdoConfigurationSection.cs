@@ -1,11 +1,5 @@
-﻿using SanteDB.Core;
-using SanteDB.Core.Configuration;
-using SanteDB.Core.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SanteDB.Core.Configuration;
+using System.Diagnostics.CodeAnalysis;
 using System.Xml.Serialization;
 
 namespace SanteMPI.Persistence.ADO.Configuration
@@ -13,6 +7,7 @@ namespace SanteMPI.Persistence.ADO.Configuration
     /// <summary>
     /// MPI Ado Configuration section
     /// </summary>
+    [ExcludeFromCodeCoverage]
     [XmlType(nameof(AdoConfigurationSection), Namespace = "http://santedb.org/configuration/santempi")]
     public class AdoConfigurationSection : SanteDB.OrmLite.Configuration.OrmConfigurationBase, IConfigurationSection
     {

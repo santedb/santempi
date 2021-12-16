@@ -54,17 +54,12 @@ angular.module('santedb').controller('MpiPatientNextOfKinController', ["$scope",
                 relationships.push(angular.copy($scope.newRelationship));
             var submissionBundle = new Bundle({ resource: [patient] });
 
-            if (patient.tag && patient.tag["$generated"]) {
-                patient.tag["$mdm.type"] = "T"; // Set a ROT tag
-                patient.determinerConcept = '6b1d6764-12be-42dc-a5dc-52fc275c4935'; // set update as a ROT
-            }
-            else 
-                patient.determinerConcept = DeterminerKeys.Specific;
-
+            relationships = relationships.filter(o=>!o._delete);
             // Process relationships
-            relationships.forEach(function (rel) {
+            await Promise.all(relationships.map(async function (rel) {
 
-                var existing = patient.relationship[rel.relationshipTypeModel.mnemonic];
+                var relType = await SanteDB.resources.concept.getAsync(rel.relationshipType);
+                var existing = patient.relationship[relType.mnemonic];
                 if (existing && !Array.isArray(existing))
                     existing = [existing];
 
@@ -73,32 +68,33 @@ angular.module('santedb').controller('MpiPatientNextOfKinController', ["$scope",
                     // Find this relationship and remove it
                     var others = existing.filter(o => o.target != rel.target);
                     if (others.length > 0) // more left
-                        patient.relationship[rel.relationshipTypeModel.mnemonic] = others;
+                        patient.relationship[relType.mnemonic] = others;
                     else  // none left, remove relationship
-                        delete (patient.relationship[rel.relationshipTypeModel.mnemonic]);
+                        delete (patient.relationship[relType.mnemonic]);
                 }
                 else {
                     if (!existing) // new relationship type
-                        existing = patient.relationship[rel.relationshipTypeModel.mnemonic] = [];
+                        existing = patient.relationship[relType.mnemonic] = [];
 
+                    var newRel = new EntityRelationship({
+                        target: rel.targetModel.id,
+                        relationshipType: rel.relationshipType
+                    }) ;
                     var instance = existing.filter(o => o.target == rel.target);
                     if (instance.length == 0) // none currently
-                        existing.push(rel);
+                        existing.push(newRel);
                     else {
                         var others = existing.filter(o => o.target != rel.target);
-                        others.push(rel);
-                        patient.relationship[rel.relationshipTypeModel.mnemonic] = others;
+                        others.push(newRel);
+                        patient.relationship[relType.mnemonic] = others;
                     }
 
                     // Erase target model and replace with identifier
-                    rel.target = rel.targetModel.id;
                     submissionBundle.resource.push(rel.targetModel);
-                    rel.holder = patient.id;
-                    delete (rel.targetModel);
                 }
-            });
+            }));
 
-            await Promise.all(submissionBundle.resource.map(o => correctEntityInformation(o))); // Correct entity information
+            await Promise.all(submissionBundle.resource.map(o => prepareEntityForSubmission(o))); // Correct entity information
 
             await SanteDB.resources.bundle.insertAsync(submissionBundle);
 
@@ -198,4 +194,16 @@ angular.module('santedb').controller('MpiPatientNextOfKinController', ["$scope",
             }
         }
     });
+
+    // Delete relationship
+    $scope.deleteRelationship = function(rel) {
+        rel._delete = true;
+        var patIdx = Object.keys($scope.editObject.relationship).find(o=> $scope.editObject.relationship[o].find(r=>r.id == rel.id) != null);
+        if(patIdx) {
+            var relCollection = $scope.editObject.relationship[patIdx];
+            relCollection.splice(relCollection.findIndex(o=>o.id == rel.id), 1);
+        }
+        return rel;
+    }
+
 }]);

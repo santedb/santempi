@@ -73,6 +73,7 @@ Name: interop\gs1; Description: GS1 BMS Messaging; Types: full demo
 Name: interop\jira; Description: JIRA Integration; Types: full
 Name: interop\atna; Description: ATNA & DICOM Auditing; Types: full
 Name: interop\openapi; Description: OpenAPI; Types: full demo
+Name: interop\msmq; Description: Microsoft Message Queue Support; Types: full demo
 Name: reporting; Description: Reporting Services; Types: full
 Name: reporting\bis; Description: Business Intelligence Services; Types: full bis 
 Name: tfa; Description: Two Factor Authentication; Types: full
@@ -111,6 +112,8 @@ Source: {#iCDRBase}\bin\Release\firebird.conf; DestDir: {app}; Components: db\fb
 Source: {#iCDRBase}\bin\Release\firebird.msg; DestDir: {app}; Components: db\fbsql
 ;Source: {#iCDRBase}\bin\Release\fbembed.dll; DestDir: {app}; Components: db\fbsql
 Source: {#iCDRBase}\bin\Release\fbclient.dll; DestDir: {app}; Components: db\fbsql
+; MSMQ Support
+Source: {#iCDRBase}\bin\Release\SanteDB.Queue.Msmq.dll; DestDir: {app}; Components: interop\msmq
 
 ; Demo Data
 Source: {#iCDRBase}\SanteDB\Data\Demo\*.dataset; DestDir: {app}\data; Components: demo
@@ -137,11 +140,12 @@ Source: {#iCDRBase}\bin\release\applets\*.pak; DestDir: {app}\applets; Component
 
 ; Tools
 Source: {#iCDRBase}\bin\release\sdbac.exe; DestDir: {app}; Components: tools
+Source: {#iCDRBase}\bin\Release\Mono.Posix.dll; DestDir: {app}; Components: core
 Source: {#iCDRBase}\bin\Release\SanteDB.exe.config; DestDir: {app}; DestName: sdbac.exe.config; Components: tools
 Source: {#iCDRBase}\bin\release\SanteDB.Server.AdminConsole.Api.dll; DestDir: {app}; Components: tools
 
 Source: {#iCDRBase}\bin\release\SanteDB.Messaging.AMI.Client.dll; DestDir: {app}; Components: tools
-Source: {#iCDRBase}\bin\release\SanteDB.Tools.DataSandbox.dll; DestDir: {app}; Components: tools
+Source: {#iCDRBase}\bin\release\SanteDB.Tools.Debug.dll; DestDir: {app}; Components: tools
 
 ;Documentation For OpenAPI
 Source: {#iCDRBase}\bin\Release\RestSrvr.xml; DestDir: {app}; Components: interop\openapi
@@ -190,7 +194,7 @@ Source: {#iCDRBase}\bin\Release\RazorTemplates.Core.dll; DestDir: {app}; Compone
 
 ; Common BRE
 Source: {#iCDRBase}\bin\Release\Antlr3.Runtime.dll; DestDir: {app}; Components: core\bre core\protocol core
-Source: {#iCDRBase}\bin\Release\ExpressionEvaluator.dll; DestDir: {app}; Components: core\bre core\protocol                              
+Source: {#iCDRBase}\bin\Release\DynamicExpresso.Core.dll; DestDir: {app}; Components: core\bre core\protocol                              
 Source: {#iCDRBase}\bin\Release\Jint.dll; DestDir: {app}; Components: core\bre
 Source: {#iCDRBase}\bin\Release\Esprima.dll; DestDir: {app}; Components: core\bre
 Source: {#iCDRBase}\bin\Release\SanteDB.BusinessRules.JavaScript.dll; DestDir: {app}; Components: core\bre
@@ -201,6 +205,8 @@ Source: {#iCDRBase}\bin\Release\AtnaApi.dll; DestDir: {app}; Components: interop
 
 ; FHIR R4 Support
 Source: {#iCDRBase}\bin\Release\Hl7.Fhir.ElementModel.dll; DestDir: {app}; Components: interop\fhir
+Source: {#iCDRBase}\bin\Release\Microsoft.IdentityModel.Tokens.dll; DestDir: {app}; Components: interop\fhir
+Source: {#iCDRBase}\bin\Release\Microsoft.IdentityModel.Logging.dll; DestDir: {app}; Components: interop\fhir
 Source: {#iCDRBase}\bin\Release\Hl7.Fhir.R4.Core.dll; DestDir: {app}; Components: interop\fhir
 Source: {#iCDRBase}\bin\Release\Hl7.Fhir.Serialization.dll; DestDir: {app}; Components: interop\fhir
 Source: {#iCDRBase}\bin\Release\Hl7.Fhir.Support.dll; DestDir: {app}; Components: interop\fhir
@@ -236,6 +242,7 @@ Source: {#iCDRBase}\bin\Release\Data\SQL\AuditDB\FBSQL\*.sql; DestDir: {app}\dat
 Source: {#iCDRBase}\bin\Release\Phonix.dll; DestDir: {app}; Components: match
 Source: {#iCDRBase}\bin\Release\SanteDB.Matcher.dll; DestDir: {app}; Components: match
 Source: {#iCDRBase}\santedb-match\SanteDB.Matcher.Test\Matching\example.xml; DestDir: {app}\matching; Components: match
+Source: {#iCDRBase}\bin\Release\Pipelines.Sockets.Unofficial.dll; DestDir: {app}; Components: cache\redis
 
 ; OAUTH
 Source: {#iCDRBase}\bin\Release\SanteDB.Authentication.OAuth2.dll; DestDir: {app}; Components: msg\auth
@@ -276,7 +283,6 @@ Source: {#iCDRBase}\bin\Release\SanteDB.Rest.HDSI.dll; DestDir: {app}; Component
 
 ; Common .NET Standard
 Source: {#iCDRBase}\bin\Release\Microsoft.Bcl.AsyncInterfaces.dll; DestDir: {app}; 
-Source: {#iCDRBase}\bin\Release\Microsoft.Diagnostics.Runtime.dll; DestDir: {app}; 
 Source: {#iCDRBase}\bin\Release\Microsoft.Win32.Primitives.dll; DestDir: {app}; 
 Source: {#iCDRBase}\bin\Release\netstandard.dll; DestDir: {app}; Components: core server
 Source: {#iCDRBase}\bin\Release\System.*.dll; DestDir: {app}; 

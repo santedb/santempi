@@ -1,0 +1,54 @@
+<div xmlns="http://www.w3.org/1999/xhtml" xmlns:sdb="http://santedb.org/applet">
+    <sdb:widget order="0" name="ui.mpi.matches.config.test.input" type="Panel" size="Large" headerClass="alert-info"
+        context="org.santedb.mpi.matches.config.test">
+        <sdb:icon>fas fa-hospital-user</sdb:icon>
+        <sdb:description lang="en">Diagram</sdb:description>
+    </sdb:widget>
+
+    <div class="container-fluid" ng-controller="MpiConfigurationEditController" ng-init="scopedObject._test.limit = 10">
+        <form class="form" novalidate="novalidate" ng-submit="runTest(testForm)" name="testForm">
+            <div class="form-group row">
+                <label class="col-sm-12 col-md-3 control-label">{{ 'ui.mpi.matches.config.test.input' | i18n }}
+                    <hint-popover hint-title="ui.mpi.matches.config.test.input" />
+                </label>
+                <div class="col-sm-12 col-md-9">
+                    <entity-search name="txtInputPatient" required="required" type="'Patient'"
+                        ng-model="scopedObject._test.input" search-field="'identifier.value'">
+                    </entity-search>
+                    <div class="text-danger" ng-show="testForm.txtInputPatient.$error['required']">
+                        <i class="fas fa-exclamation-triangle"></i> {{ 'ui.error.required' | i18n }}
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row" ng-init="scopedObject._test.knownDuplicates = []">
+                <label class="col-sm-12 col-md-3 control-label">{{ 'ui.mpi.matches.config.test.knownMatch' | i18n }}
+                    <hint-popover hint-title="ui.mpi.matches.config.test.knownMatch" />
+                </label>
+                <div class="col-sm-12 col-md-9">
+                    <ul class="list-group">
+                        <li class="list-group-item" ng-repeat="dup in scopedObject._test.knownDuplicates track by $index">
+                            <entity-search name="txtDuplicate{{$index}}" required="required" type="'Patient'"
+                                ng-model="dup.id" search-field="'identifier.value'">
+                            </entity-search>
+                            <div class="text-danger" ng-show="testForm['txtDuplicate' + $index].$error['required']">
+                                <i class="fas fa-exclamation-triangle"></i> {{ 'ui.error.required' | i18n }}
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <button type="button" ng-click="scopedObject._test.knownDuplicates.push({})" ng-disabled="testForm.$invalid" class="btn btn-success w-100"><i class="fas fa-plus"></i> {{ 'ui.action.add' | i18n }}</button> 
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col">
+                    <div class="btn-group float-right">
+                        <button class="btn btn-primary" type="submit" id="runTest"><i class="fas fa-play"></i> {{ 'ui.action.run' | i18n }}</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+</div>

@@ -25,7 +25,11 @@
     <string name="ui.mpi.patient.advSearch.parameters.dateOfBirth">Date of Birth</string>
     <string name="ui.mpi.patient.advSearch.parameters.facility">Facility Association</string>
     <string name="ui.mpi.patient.search.term">Search For</string>
+    <string name="ui.mpi.patient.search.term.hint"><![CDATA[General search - depending on the coifguration of the server, this field may search on one or more of: <ul><li>Address</li><li>Identifier</li><li>Name(s)</li><li>Telecom Address</li></ul>]]></string>
     <string name="ui.mpi.patient.search.results">Search Results</string>
+    <string name="ui.action.rematch">Re-Match</string>
+    <string name="ui.action.unignore">Un-Ignore</string>
+
     <!-- Patient Demographics Tab Options -->
     <string name="org.santedb.smpi.admin.demographics">Demographics</string>
     <!-- Operators -->
@@ -33,6 +37,12 @@
     <string name="ui.operator.approx">Approximately</string>
 
   <string name="ui.action.mpiSearch">Search MPI</string>
+  <string name="ui.mpi.patient.search.id">Identifier</string>
+    <string name="ui.mpi.patient.search.id.hint"><![CDATA[Filter the result sets using a business identifier for the patient. Business identifiers include: <ul><li>Driver's license numbers</li><li>Passport numbers</li><li>Medical Records Numbers</li><li>Etc.</li></ul>]]></string>
+  <string name="ui.mpi.patient.search.gender">Gender</string>
+    <string name="ui.mpi.patient.search.gender.hint"><![CDATA[Restrict the result set using the administrative gender/sex of the patient (administrative genders are those used for administrative purposes)]]></string>
+  <string name="ui.mpi.patient.search.dob">Date of Birth</string>
+    <string name="ui.mpi.patient.search.dob.hint"><![CDATA[Restricts the result set using a range of date of birth. For example: <ul><li>Ranges - <code>1990-01-01</code> to <code>1992-03-02</code></li><li>Lower bounds (anyone born since) - <code>1990-01-01</code> to <code>not selected</code></li><li>Upper bounds (anyone born before) - <code>not selected</code> to <code>1992-03-02</code></li></ul>]]></string>
     <!-- Relationship Viewer -->
     <string name="org.santedb.widget.smpi.mdm.net">Entity Relationships</string>
 
@@ -44,6 +54,11 @@
     <string name="ui.mpi.matches.patient.a">Person A</string>
     <string name="ui.mpi.matches.patient.b">Person B</string>
     <string name="ui.mpi.matches.confidence">Match Strength</string>
+    <string name="ui.model.patient.duplicate.resolve">Resolves this candidate by linking the A and B records together</string>
+    <string name="ui.model.patient.duplicate.view">View details about this candidate match pair</string>
+    <string name="ui.model.patient.duplicate.ignore">Ignore this match pair - the two candidates will never be considered in future matching activities</string>
+    <string name="ui.model.patient.duplicate.downloadCandidates">Candidiate Report</string>
+    <string name="ui.model.patient.duplicate.downloadAll">Linkage Report</string>
     <string name="ui.mpi.matches.action">Action</string>
     
     <!-- Match View -->
@@ -54,6 +69,8 @@
 
     <!-- Summary View -->
     <string name="ui.mpi.matches.detail">Match Detail</string>
+    <string name="ui.mpi.matches.view.detail">A/B Compare</string>
+
     <string name="ui.mpi.matches.view.summary">Matched Entities</string>
     <string name="ui.mpi.matches.view.diff">A/B Comparison</string>
     <string name="ui.mpi.matches.view.score">Scoring</string>
@@ -90,48 +107,30 @@
       ]]></string>
 
       
-      <!-- Master Data Management -->
-      <string name="org.santedb.widget.patient.mdm">Master Data Management</string>
-      <string name="org.santedb.widget.mdm.locals">Local Records</string>
-      <string name="org.santedb.widget.mdm.duplicates">Probable Local Records</string>
-      <string name="ui.santedb.widget.mdm.duplicates.link">Link this candidate local to the master record</string>
-      <string name="ui.santedb.widget.mdm.duplicates.ignore">Ignore this candidate local and NEVER flag the candidate again</string>
-      <string name="ui.santedb.widget.mdm.duplicates.detail">Show a detailed match report for the match pair</string>
-      <string name="ui.santedb.widget.mdm.duplicates.strength">Strength</string>
-      <string name="ui.santedb.widget.mdm.duplicates.recordInfo">Local Record</string>
-      <string name="ui.santedb.widget.mdm.duplicates.createdBy">Source</string>
-      <string name="ui.mdm.type.L">LOCAL RECORD</string>
-      <string name="ui.mdm.type.M">MASTER RECORD</string>
-      <string name="ui.mdm.type.T">RECORD OF TRUTH</string>
-      <string name="ui.mdm.action.openMaster">Go to MASTER</string>
-      <string name="ui.mdm.action.openRot">Go to RECORD OF TRUTH</string>
-      <string name="ui.mdm.view.local">You are viewing a LOCAL record. This record comes from a particular source system</string>
-      <string name="ui.mdm.view.master">You are looking at a MASTER record. This record is synthesized from multiple LOCAL records</string>
-      <string name="ui.mdm.view.masterAdjudicated">You are looking at a &lt;strong&gt;MASTER&lt;/strong&gt; record with a &lt;strong&gt;RECORD OF TRUTH&lt;/strong&gt;. Use the MDM tab to pull data from locals into this record of truth</string>
-      <string name="ui.mdm.isTrue">This MASTER is based on the RECORD OF TRUTH meaning it has been validated by an authorized device</string>
-      <string name="ui.mdm.edit.master">This is a MASTER record. Editing it will result in the creation a new LOCAL record for the administrative panel which will be.</string>
-      <string name="ui.mdm.edit.recordOfTruth">You are editing a RECORD OF TRUTH, this record should contain the &quot;official&quot; data for this object.</string>
-      <string name="ui.mdm.edit.local">This is a LOCAL record. Editing it may result in data mis-match between the system which supplied the data and the server</string>
-      <string name="ui.mdm.edit.linkedEditWarning">This data may be linked to other entities which may not be subject to MDM rules. You should either clone it convert it.</string>
-      <string name="ui.mdm.action.ignore.confirm">Are you sure you want to mark this record as a non-match?</string>
-      <string name="ui.mdm.action.merge.confirm">Are you sure you want to integrate/merge this local record with the current master record?</string>
-      <string name="ui.mdm.action.detach.confirm">Are you sure you want to detach (unmerge) this local record from the current master record?</string>
-
-
     <!-- Actions for Merging -->
     <string name="ui.mpi.matches.ignore.confirm">Are you sure you want to ignore this candidate? It will never be considered as a merge candidate again</string>
     <string name="ui.mpi.matches.ignore.success">Ignore instruction committed successfully</string>
     <string name="ui.mpi.matches.ignore.error">There was an error issuing the ignore request. Check the server logs.</string>
+
+    <string name="ui.mpi.matches.unignore.confirm">Are you sure you want to un-ignore this candidiate? If you do this the candidiate will be considered for matching.</string>
+    <string name="ui.mpi.matches.unignore.success">Un-ignore completed successfully</string>
+    <string name="ui.mpi.matches.unignore.error">There was an error performing the un-ignore. Check the server ogs.</string>
+
     <string name="ui.mpi.matches.attach.confirm">Are you sure you want to confirm this match candidate? It will be assigned to the same MASTER record</string>
     <string name="ui.mpi.matches.attach.success">Candidate was attached to target master successfully.</string>
     <string name="ui.mpi.matches.attach.error">There was an error issuing the attach request. Check the server logs.</string>
     <string name="ui.mpi.matches.alreadyResolved">This detected match has already been resolved</string>
+    <string name="ui.mpi.matches.detach.confirm">Are you sure you want to unlink/detach this local record from this master?</string>
+    <string name="ui.mpi.matches.detach.success">Detach of local record successful</string>
+    <string name="ui.mpi.matches.detach.error">There was an error issuing the unlink request. Check the server logs</string>
+    <string name="ui.mpi.matches.rematch.confirm">The server will clear all candidiates for this record and will initiate a re-match. Continue?</string>
     <!-- Score View -->
-    <string name="ui.mpi.match.configuration">Configuration</string>
+    <string name="ui.mpi.matches.configuration">Configuration</string>
     <string name="ui.mpi.match.method.0">Other/Unknown</string>
     <string name="ui.mpi.match.method.1">Identifier</string>
     <string name="ui.mpi.match.method.2">Simple</string>
     <string name="ui.mpi.match.method.3">Weighted</string>
+    
     <string name="ui.mpi.match.class.0">Non-Match</string>
     <string name="ui.mpi.match.class.1">Probable</string>
     <string name="ui.mpi.match.class.2">Match</string>
@@ -155,4 +154,99 @@
     <string name="ui.mdm.candidate.master">MASTER Record</string>
     <string name="ui.mdm.candidate.local">Candidate Record</string>
     <string name="ui.mpi.match.detail.title">Candidate Match Report</string>
+
+    <!-- Dashboard -->
+    <string name="ui.mpi.widgets.dashboard.search">Quick Search</string>
+    <string name="ui.mpi.widgets.dashboard.search.term">Search (ID)</string>
+    <string name="ui.mpi.widgets.dashboard.recent">Recent Patients</string>
+    <string name="ui.mpi.widgets.dashboard.patStats">Patient Population</string>
+    <string name="ui.mpi.widgets.dashboard.activity">Recent Activity</string>
+    <string name="ui.mpi.widgets.patient.card">VRP QR Code</string>
+    <string name="ui.mpi.vrp.help">What is a SanteDB VRP Code?</string>
+    <string name="ui.mpi.vrp.title">SanteDB Visual Resource Pointer</string>
+    <string name="org.santedb.widget.mdm.ignored">Ignored Candidates</string>
+
+    <!-- Match Configuration -->
+    <string name="ui.mpi.matches.config.id">Configuration ID</string>
+    <string name="ui.mpi.matches.config.state">Status</string>
+    <string name="ui.mpi.matches.config.modifiedOn">Last Updated</string>
+    <string name="ui.mpi.matches.config.backgroundRunning">Enabling or Disabling match configurations while a background match task is running is not advised, and can result in unpredictable results</string>
+    <string name="ui.mpi.matches.config.backgroundState">rematching complete</string>
+    <string name="ui.mpi.matches.config.html">HTML</string>
+    <string name="ui.mpi.matches.config.enable.confirm">Are you sure you want to enable match configuration {id}? It will be used to score future registration and re-matches</string>
+    <string name="ui.mpi.matches.config.enable.success">Match configuration {id} is now enabled</string>
+    <string name="ui.mpi.matches.config.enable.error">Match configuration {id} could not be enabled  ({e})</string>
+    <string name="ui.mpi.matches.config.enable.confirm">Are you sure you want to enable match configuration {id}? It will be used to score future registration and re-matches</string>
+    <string name="ui.mpi.matches.config.disable.confirm">Are you sure you want to disable match configuration {id}? It will no longer be used to score matches</string>
+    <string name="ui.mpi.matches.config.disable.success">Match configuration {id} is now disabled</string>
+    <string name="ui.mpi.matches.config.disable.error">Match configuration {id} could not be disabled ({e})</string>
+    <string name="ui.mpi.matches.config.delete.confirm">Are you sure you want permanently delete match configuration {id}? After deletion it can not be retrieved.</string>
+    <string name="ui.mpi.matches.config.delete.success">Match configuration {id} was deleted</string>
+    <string name="ui.mpi.matches.config.delete.error">Match configuration {id} could not be deleted ({e})</string>
+    <string name="ui.mpi.matches.config.general">General</string>
+    <string name="ui.mpi.matches.config.blocking">Blocking</string>
+    <string name="ui.mpi.matches.config.scoring">Scoring</string>
+    <string name="ui.mpi.matches.config.addBlock">Add Blocking Rule</string>
+    <string name="ui.mpi.matches.config.removeBlock">Remove Blocking Rule</string>
+    <string name="ui.mpi.matches.config.addFilter">Add Filter</string>
+    <string name="ui.mpi.matches.config.classification">Classification</string>
+    <string name="ui.mpi.matches.config.test">Testing</string>
+    <string name="ui.mpi.matches.config.general.diagram">Explain</string>
+    <string name="ui.mpi.matches.config.general.properties">Properties</string>
+    <string name="ui.mpi.matches.config.save.success">Match configuration {id} was updated successfully</string>
+    <string name="ui.mpi.matches.config.save.error">Could not save match configuration {id}</string>
+    <string name="ui.mpi.matches.config.save.overwrite">A match configuration with id {id} already exists (created by {author}). Do you want to overwrite the current configuration with this empty configuration? (This cannot be undone)</string>
+    <string name="ui.mpi.matches.config.blocking.diagram">Explain</string>
+    <string name="ui.mpi.matches.config.scoring.properties">Scored Attributes</string>
+    <string name="ui.mpi.matches.config.classification.properties">Classification Ranges</string>
+    <string name="ui.mpi.matches.config.classification.noAttributes">This match configuration does not have any scoring attributes! You cannot set the classification score ranges until the match configuration has at least one scoring attribute </string>
+    <string name="ui.mpi.matches.config.scoring.diagram">Explain</string>
+    <string name="ui.mpi.matches.config.blocking.properties">Blocking Filters</string>
+    <string name="ui.mpi.matches.config.block.none">This match configuration does not contain any block statements or filters. Use the ADD button to create a block statement.</string>
+    <string name="ui.mpi.matches.config.block.filter.whenHeader">When Expression</string>
+    <string name="ui.model.matchConfiguration.blocking.description">Notes</string>
+    <string name="ui.mpi.matches.config.oddballScore"><![CDATA[Hmmm - something seems off with your weight configuration. If your <strong>M</strong> value is less than your <strong>U</strong> value the match score will be negative. If this attribute is a negative indicator of a match (i.e. you intend this) you can ignore this message. Otherwise it is recommended you check your M and U values]]></string>
+    <string name="ui.model.matchConfiguration.blocking.description.hint"><![CDATA[These are comments/notes by the author of the match configuration which provide context to the blocking instruction.]]></string>
+    <string name="ui.mpi.matches.config.block.filter.whenHeader.hint"><![CDATA[Indicates that the specified filter should only be evaluated when the <code>$input</code> record contains a value at the specified property location]]></string>
+    <string name="ui.mpi.matches.config.block.filter.filterHeader.hint"><![CDATA[The HDSI guard expression to apply to the database. <strong>Note:</strong> This expression is translated to SQL statements - the functions used in your expression must be compatible with the expressions supported on the database technology being used.]]></string>
+    <string name="ui.mpi.matches.config.block.filter.filterHeader">Filter Expression</string>
+    <string name="ui.mpi.matches.config.block.filter.info"><![CDATA[When the incoming record ($input) has property <strong>WHEN</strong> then the <strong>FILTER</strong> is applied. See <a href="https://help.santesuite.org/santedb/extending-santedb/service-apis/health-data-service-interface-hdsi/hdsi-query-syntax" target="_blank">HDSI Query Syntax</a> on the SanteSuite WIKI]]></string>
+    <string name="ui.mpi.matches.config.scoring.none">This match configuration does not contain any attributes for scoring. Use the ADD button to create a scoring statement</string>
+    <string name="ui.mpi.matches.config.addScore">Add Scored Attribute</string>
+    <string name="ui.mpi.matches.config.removeScore">Remove Scored Attribute</string>
+    <string name="ui.mpi.matches.config.addTransform">Add Value Transform</string>
+    <string name="ui.mpi.matches.config.addAssertion">Add Sub-Assertion</string>
+    <string name="ui.mpi.matches.config.removeAssertion">Remove Sub-Assertion</string>
+    <string name="ui.mpi.matches.config.test.input">Input Patient</string>
+    <string name="ui.mpi.matches.config.test.input.hint"><![CDATA[Set the patient which will be used as the <code>$input</code> of the match test run. This is the simulated patient registration/update event which will be passed to the test service.]]></string>
+    <string name="ui.mpi.matches.config.test.stats">Test Overview</string>
+    <string name="ui.mpi.matches.config.test.stats.min">Worst Score</string>
+    <string name="ui.mpi.matches.config.test.stats.max">Best Score</string>
+    <string name="ui.mpi.matches.config.test.stats.avg">Average Score</string>
+    <string name="ui.mpi.matches.config.test.stats.median">Median Score</string>
+    <string name="ui.mpi.matches.config.test.stats.NonMatch">Non-Matches</string>
+    <string name="ui.mpi.matches.config.test.stats.Match">Matches</string>
+    <string name="ui.mpi.matches.config.test.stats.Probable">Probable Matches</string>
+    <string name="ui.mpi.matches.config.test.stats.count">Blocked Records</string>
+    <string name="ui.mpi.matches.config.test.runningMatch">Running Match</string>
+    <string name="ui.mpi.matches.config.test.analyzeResults">Analyzing Results</string>
+    <string name="ui.mpi.matches.config.test.gatheringResults">Gathering Result Details</string>
+    <string name="ui.mpi.matches.config.test.results">Match Test Results</string>
+    <string name="ui.mpi.matches.config.test.knownMatch">Test Target</string>
+    <string name="ui.mpi.matches.config.test.knownMatch.hint"><![CDATA[Specifies one or more other records which you want to test against the <code>$input</code> - if no objects are specified here, the match engine will perform an entire block. Use this option if you're attempting to diagnose scoring results with particular record pairs]]></string>
+    <string name="ui.mpi.matches.config.test.analysis">Hints / Analysis</string>
+    <string name="ui.mpi.matches.config.doctor.poorBlocking.title"><![CDATA[<i class="fas fa-info-circle"></i> Excessive results in blocking result]]></string>
+    <string name="ui.mpi.matches.config.doctor.poorBlocking.description"><![CDATA[The proportion of results which are non-matches ({NonMatch}) was the majority of records blocked ({count}). This indicates that your blocking configuration is too liberal. Try reducing the number of NonMatch by adding more stringent blocking criteria to your dataset.]]></string>
+    <string name="ui.mpi.matches.config.doctor.strictBlocking.title"><![CDATA[<i class="fas fa-info-circle"></i> Blocking may be too restrictive]]></string>
+    <string name="ui.mpi.matches.config.doctor.strictBlocking.description"><![CDATA[Your blocking configuration resulted in no records being retrieved from the database. This may indicate that your blocking configuration is too stringent. Try using <code>levenshtein</code> or <code>soundex</code> or other fuzzy matching to your blocking configuration to allow querying of more records.]]></string>
+    <string name="ui.mpi.matches.config.doctor.poorScoring.title"><![CDATA[<i class="fas fa-info-circle"></i> Check your Scoring Weights]]></string>
+    <string name="ui.mpi.matches.config.doctor.poorScoring.description"><![CDATA[The median score ({median}) is higher than the average score ({avg}), this might indicate that your scoring may be too stringent. Try: <ul><li>Ensuring your <code>U</code> values are appropriate (for example: if using <code>genderConcept</code> then your U should be close to 0.5)</li><li>Ensure that your extractions and partial scores are applied properly (for example: Ensure that appropriate <code>extract</code> functions are applied, and proper thresholds apply</li><li>Ensure your exclusion or <code>when</code> conditions are appropriate</li></ul>)]]></string>
+    <string name="ui.mpi.matches.config.test.diagram">Test Result</string>
+    <string name="ui.mpi.matches.config.doctor.wideBlocking.title"><![CDATA[<i class="fas fa-exclamation-triangle"></i> Blocking Criteria &amp; Performance]]></string>
+    <string name="ui.mpi.matches.config.doctor.wideBlocking.description"><![CDATA[Your blocking criteria has returned a large number of results ({count}) from the database. This may have serious performance impacts if scoring requires complex criteria. Consider adding more blocking criteria to speed up your matching configuration]]></string>
+
+  <!-- Rendering Graphs -->
+  <string name="ui.mpi.entity.relationship.mode">Graph Mode</string>
+  <string name="ui.mpi.entity.relationship.mode.advanced">Detailed Relationship Diagram</string>
+  <string name="ui.mpi.entity.relationship.mode.simple">Simple Relationship Diagram</string>
 </resources>

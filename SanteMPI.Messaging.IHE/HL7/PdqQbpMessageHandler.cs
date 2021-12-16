@@ -3,6 +3,7 @@ using NHapi.Model.V25.Message;
 using SanteDB.Core.Auditing;
 using SanteDB.Core.Model;
 using SanteDB.Core.Model.Roles;
+using SanteDB.Core.Services;
 using SanteDB.Messaging.HL7.Messages;
 using SanteDB.Messaging.HL7.TransportProtocol;
 using SanteMPI.Messaging.IHE.Audit;
@@ -22,13 +23,27 @@ namespace SanteMPI.Messaging.IHE.HL7
     public class PdqQbpMessageHandler : QbpMessageHandler
     {
         /// <summary>
+        /// PDQ message handler
+        /// </summary>
+        public PdqQbpMessageHandler(ILocalizationService localizationService) : base(localizationService)
+        {
+        }
+
+        /// <summary>
         /// Create NACK per the IHE spec
         /// </summary>
         protected override IMessage CreateNACK(Type nackType, IMessage request, Exception error, Hl7MessageReceivedEventArgs receiveData)
         {
-            var retVal = base.CreateNACK(nackType, request, error, receiveData) as RSP_K21;
-            retVal.MSA.AcknowledgmentCode.Value = "AE";
-            retVal.QAK.QueryResponseStatus.Value = "AE";
+            var retVal = base.CreateNACK(typeof(RSP_K21), request, error, receiveData);
+            if (retVal is RSP_K21 rsp)
+            {
+                rsp.MSA.AcknowledgmentCode.Value = "AE";
+                rsp.QAK.QueryResponseStatus.Value = "AE";
+            }
+            else if (retVal is ACK ack)
+            {
+                ack.MSA.AcknowledgmentCode.Value = "AE";
+            }
             return retVal;
         }
 
@@ -37,7 +52,7 @@ namespace SanteMPI.Messaging.IHE.HL7
         /// </summary>
         protected override void SendAuditQuery(OutcomeIndicator success, IMessage message, IEnumerable<IdentifiedData> results)
         {
-            IheAuditUtil.SendAuditPatientDemographicsQuery(success, message, results.OfType<Patient>().ToArray());
+            IheAuditUtil.SendAuditPatientDemographicsQuery(success, message, results?.OfType<Patient>().ToArray());
         }
     }
 }

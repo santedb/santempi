@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+ - Portions Copyright 2015-2019 Mohawk College of Applied Arts and Technology
+ - Portions Copyright 2019-2019 SanteSuite Contributors (See NOTICE)
+ - 
+ - 
+ - Licensed under the Apache License, Version 2.0 (the "License"); you 
+ - may not use this file except in compliance with the License. You may 
+ - obtain a copy of the License at 
+ - 
+ - http://www.apache.org/licenses/LICENSE-2.0 
+ - 
+ - Unless required by applicable law or agreed to in writing, software
+ - distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ - WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the 
+ - License for the specific language governing permissions and limitations under 
+ - the License.
+ - 
+ - User: Justin Fyfe
+ - Date: 2019-12-16
+ -->
+<BiReportDefinition xmlns="http://santedb.org/bi" id="org.santempi.bi.reports.matches.full" label="ui.mpi.bi.reports.matches.full">
+  <meta>
+    <authors>
+      <add>Justin Fyfe (Fyfe Software Inc.) &lt;justin@fyfesoftware.ca></add>
+    </authors>
+    <annotation>
+      <div xmlns="http://www.w3.org/1999/xhtml">
+        <p>Full MDM dump  with demographics</p>
+      </div>
+    </annotation>
+  </meta>
+  <dataSources>
+      <query ref="#org.santempi.bi.query.matches.full" name="demographics"  />
+  </dataSources>
+  <views>
+    <add id="org.santempi.bi.reports.matches.full.table" label="ui.mpi.bi.reports.matches.full" name="table">
+      <div xmlns="http://www.w3.org/1999/xhtml" xmlns:bi="http://santedb.org/bi/view">
+        <bi:dataTable source="demographics">
+          <bi:column>
+            <bi:header>MDM Link</bi:header>
+              
+            <bi:column>
+              <bi:header>
+                Relationship Type
+              </bi:header>
+              <bi:cell>
+                <bi:switch value="rel_mnemonic">
+                  <bi:when op="eq" value="MDM-Duplicate">
+                    Candidate
+                  </bi:when>
+                  <bi:when op="eq" value="MDM-Master">
+                    Master
+                  </bi:when>
+                  <bi:when op="eq" value="MDM-IgnoreCandidateLocalRecord">
+                    Ignore
+                  </bi:when>
+                </bi:switch>
+              </bi:cell>
+            </bi:column>
+            <bi:column>
+              <bi:header>
+                Classification
+              </bi:header>
+              <bi:cell>
+                <bi:switch value="cls_mnemonic">
+                  <bi:when op="eq" value="MDM-AutomagicLink">
+                    Auto
+                  </bi:when>
+                  <bi:when op="eq" value="MDM-Verified">
+                    Verified
+                  </bi:when>
+                  <bi:when op="eq" value="MDM-SystemLink">
+                    System
+                  </bi:when>
+                </bi:switch>
+              </bi:cell>
+            </bi:column>
+            <bi:column>
+              <bi:header>UUID</bi:header>
+              <bi:cell><bi:value>ent_rel_id</bi:value></bi:cell>
+            </bi:column>
+            <bi:column>
+              <bi:header>Confidence</bi:header>
+              <bi:cell><bi:value format="#0.0%">confidence</bi:value></bi:cell>
+            </bi:column>
+          </bi:column>
+          <bi:column>
+            <bi:header>Patient A</bi:header>
+            <bi:column>
+              <bi:header>UUID</bi:header>
+              <bi:cell><bi:value>local_a</bi:value></bi:cell>
+            </bi:column>
+            <bi:column>
+              <bi:header>Source</bi:header>
+              <bi:cell><bi:value>a_source</bi:value></bi:cell>
+            </bi:column>
+            <bi:column>
+              <bi:header>Timestamp</bi:header>
+              <bi:cell><bi:value format="yyyy-MM-dd HH:mm:ss">a_timestamp</bi:value></bi:cell>
+            </bi:column>
+            <bi:column>
+              <bi:header>DOB</bi:header>
+              <bi:cell><bi:value format="yyyy-MM-dd">a_dob</bi:value></bi:cell>
+            </bi:column>
+            <bi:column>
+              <bi:header>Gender</bi:header>
+              <bi:cell><bi:value>a_gender</bi:value></bi:cell>
+            </bi:column>
+            <bi:column>
+              <bi:header>Given Name</bi:header>
+              <bi:cell><bi:value>a_given</bi:value></bi:cell>
+            </bi:column>
+            <bi:column>
+              <bi:header>Family Name</bi:header>
+              <bi:cell><bi:value>a_family</bi:value></bi:cell>
+            </bi:column>
+            <bi:column>
+              <bi:header>Address Line</bi:header>
+              <bi:cell><bi:value>a_adr_line</bi:value></bi:cell>
+            </bi:column>
+            <bi:column>
+              <bi:header>City</bi:header>
+              <bi:cell><bi:value>a_adr_city</bi:value></bi:cell>
+            </bi:column>
+            <bi:column>
+              <bi:header>State</bi:header>
+              <bi:cell><bi:value>a_adr_state</bi:value></bi:cell>
+            </bi:column>
+            <bi:column>
+              <bi:header>Country</bi:header>
+              <bi:cell><bi:value>a_adr_country</bi:value></bi:cell>
+            </bi:column>
+            <bi:column>
+              <bi:header>ID Values</bi:header>
+              <bi:cell><bi:value>a_id_val</bi:value></bi:cell>
+            </bi:column>
+          </bi:column>
+          <bi:column>
+            <bi:header>Patient B</bi:header>
+            <bi:column>
+              <bi:header>UUID</bi:header>
+              <bi:cell><bi:value>local_b</bi:value></bi:cell>
+            </bi:column>
+            <bi:column>
+              <bi:header>Source</bi:header>
+              <bi:cell><bi:value>b_source</bi:value></bi:cell>
+            </bi:column>
+            <bi:column>
+              <bi:header>Timestamp</bi:header>
+              <bi:cell><bi:value format="yyyy-MM-dd HH:mm:ss">b_timestamp</bi:value></bi:cell>
+            </bi:column>
+            <bi:column>
+              <bi:header>DOB</bi:header>
+              <bi:cell><bi:value format="yyyy-MM-dd">b_dob</bi:value></bi:cell>
+            </bi:column>
+            <bi:column>
+              <bi:header>Gender</bi:header>
+              <bi:cell><bi:value>b_gender</bi:value></bi:cell>
+            </bi:column>
+            <bi:column>
+              <bi:header>Given Name</bi:header>
+              <bi:cell><bi:value>b_given</bi:value></bi:cell>
+            </bi:column>
+            <bi:column>
+              <bi:header>Family Name</bi:header>
+              <bi:cell><bi:value>b_family</bi:value></bi:cell>
+            </bi:column>
+            <bi:column>
+              <bi:header>Address Line</bi:header>
+              <bi:cell><bi:value>b_adr_line</bi:value></bi:cell>
+            </bi:column>
+            <bi:column>
+              <bi:header>City</bi:header>
+              <bi:cell><bi:value>b_adr_city</bi:value></bi:cell>
+            </bi:column>
+            <bi:column>
+              <bi:header>State</bi:header>
+              <bi:cell><bi:value>b_adr_state</bi:value></bi:cell>
+            </bi:column>
+            <bi:column>
+              <bi:header>Country</bi:header>
+              <bi:cell><bi:value>b_adr_country</bi:value></bi:cell>
+            </bi:column>
+            <bi:column>
+              <bi:header>ID Values</bi:header>
+              <bi:cell><bi:value>b_id_val</bi:value></bi:cell>
+            </bi:column>
+          </bi:column>
+        </bi:dataTable>
+      </div>
+    </add>
+  </views>
+</BiReportDefinition>

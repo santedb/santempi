@@ -1,0 +1,81 @@
+<div xmlns="http://www.w3.org/1999/xhtml" xmlns:sdb="http://santedb.org/applet" class="p-2"
+    oc-lazy-load="{ name: 'MpiIdCardWidgetController', files: ['/org.santedb.smpi/controllers/widgets/patientIdCard.js'] }">
+    <sdb:widget name="ui.mpi.widgets.patient.card" size="Medium" type="Tab" context="org.santedb.patient" order="110">
+        <sdb:icon>fas fa-qrcode</sdb:icon>
+        <sdb:description lang="en">Patient Demographics Widget Tab</sdb:description>
+        <sdb:guard>!scopedObject._upstream &amp;&amp; !scopedObject.deceasedDate</sdb:guard>
+    </sdb:widget>
+
+    <div class="can-print print-only">
+        <div>
+            <table class="table w-100" ng-controller="MpiIdCardWidgetController">
+                <caption class="print-only">{{ 'ui.generated.on' | i18n }} {{ :: $root.page.currentTime | extDate: 'M' }}
+                </caption>
+                <tr>
+                    <td colspan="2" align="center" class="bg-light">
+                        <img ng-if="scopedObject.barcodeUrl" class="m-auto" src="{{scopedObject.barcodeUrl}}" style="height:350px; width:350px" />
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        {{ 'ui.model.patient.name' | i18n }}:
+                    </th>
+                    <td>
+                        {{ scopedObject.name | name }}
+                    </td>
+                </tr>
+                <tr>
+                    <th>{{ 'ui.model.patient.dateOfBirth' | i18n }}:</th>
+                    <td>{{ scopedObject.dateOfBirth | extDate: scopedObject.dateOfBirthPrecision }}</td>
+                </tr>
+                <tr>
+                    <th>{{ 'ui.model.patient.genderConcept' | i18n }}:</th>
+                    <td>{{ scopedObject.genderConceptModel | concept }}</td>
+                </tr>
+                <tr>
+                    <th>{{ 'ui.model.patient.address' | i18n }}:</th>
+                    <td> {{ scopedObject.address | address }}
+                    </td>
+                </tr>
+
+            </table>
+        </div>
+    </div>
+
+    <table class="table" ng-controller="MpiIdCardWidgetController">
+        
+        <tbody>
+            <tr>
+                <td width="35%" rowspan="4" align="center" class="bg-light">
+                    <img ng-if="scopedObject.barcodeUrl" class="m-auto" src="{{scopedObject.barcodeUrl}}" style="height:250px; width:250px" />
+                    <br/> {{ 'ui.mpi.vrp.title' | i18n }}
+                </td>
+                <td width="65%">
+                    <strong>{{ 'ui.model.patient.name' | i18n }}:</strong>
+                    {{ scopedObject.name | name }}
+                </td>
+            </tr>
+            <tr>
+                <td><strong>{{ 'ui.model.patient.dateOfBirth' | i18n }}:</strong>
+                    {{ scopedObject.dateOfBirth | extDate: scopedObject.dateOfBirthPrecision }}</td>
+            </tr>
+            <tr>
+                <td><strong>{{ 'ui.model.patient.genderConcept' | i18n }}:</strong>
+                    {{ scopedObject.genderConceptModel | concept }}</td>
+            </tr>
+            <tr>
+                <td><strong>{{ 'ui.model.patient.address' | i18n }}:</strong> {{ scopedObject.address | address }}
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="text-right">
+                    <a href="https://help.santesuite.org/santedb/extending-santedb/service-apis/health-data-service-interface-hdsi/digitally-signed-visual-code-api"
+                        target="_blank">
+                        <i class="fas fa-question-circle"></i> {{ 'ui.mpi.vrp.help' | i18n }}</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+
+</div>

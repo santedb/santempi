@@ -58,10 +58,11 @@
         <bi:chart source="by-date" type="line" legend="true">
           <bi:title>Match Dates</bi:title>
           <bi:labels format="yyyy-MM-dd">date_of_match</bi:labels>
-          <bi:dataset label="Auto Mathces" fn="sum">MasterAutomagicLink</bi:dataset>
-          <bi:dataset label="Verified Matches" fn="sum">MasterVerified</bi:dataset>
-          <bi:dataset label="Probable Matches" fn="sum">DuplicateAutomagicLink</bi:dataset>
-          <bi:dataset label="Verified Non-Matches" fn="sum">IgnoreCandidateRecord</bi:dataset>
+          <bi:dataset label="System Links (System/Master)" fn="sum">MasterSystemLink</bi:dataset>
+          <bi:dataset label="Auto Mathces (Auto/Master)" fn="sum">MasterAutomagicLink</bi:dataset>
+          <bi:dataset label="Verified Matches (Verified/Master)" fn="sum">MasterVerified</bi:dataset>
+          <bi:dataset label="Probable Matches (Auto/Probable)" fn="sum">DuplicateAutomagicLink</bi:dataset>
+          <bi:dataset label="Verified Non-Matches (Verified/Ignore)" fn="sum">IgnoreCandidateRecord</bi:dataset>
         </bi:chart>
       </div>
     </add>

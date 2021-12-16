@@ -1,20 +1,17 @@
 ﻿using Hl7.Fhir.Model;
 using NUnit.Framework;
 using SanteDB.Core;
-using SanteDB.Core.Interfaces;
 using SanteDB.Core.Model.DataTypes;
-using SanteDB.Core.Model.Security;
 using SanteDB.Core.Security;
 using SanteDB.Core.Security.Services;
 using SanteDB.Core.Services;
 using SanteDB.Core.TestFramework;
 using SanteDB.Messaging.FHIR.Exceptions;
 using SanteDB.Messaging.FHIR.Handlers;
-using SanteDB.Messaging.FHIR.Rest;
 using SanteDB.Messaging.FHIR.Util;
 using SanteMPI.Messaging.IHE.FHIR;
-using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
 
@@ -24,9 +21,9 @@ namespace SanteMPI.Messaging.IHE.Test
     /// Test that functions are operating as expected
     /// </summary>
     [TestFixture]
+    [ExcludeFromCodeCoverage]
     public class TestPMIR : DataTest
     {
-
         // Device secret
         private readonly byte[] HarnessSecret = System.Text.Encoding.UTF8.GetBytes("TEST_HARNESS");
 
@@ -39,12 +36,11 @@ namespace SanteMPI.Messaging.IHE.Test
         /// <summary>
         /// Test context
         /// </summary>
-        /// <param name="context"></param>
         [OneTimeSetUp]
         public void Initialize()
         {
             // Force load of the DLL
-            var p = FirebirdSql.Data.FirebirdClient.FbCharset.Ascii;
+            Assert.NotNull(FirebirdSql.Data.FirebirdClient.FbCharset.Ascii);
             TestApplicationContext.TestAssembly = typeof(TestPMIR).Assembly;
             TestApplicationContext.Initialize(TestContext.CurrentContext.TestDirectory);
             this.m_serviceManager = ApplicationServiceContext.Current.GetService<IServiceManager>();
@@ -53,7 +49,7 @@ namespace SanteMPI.Messaging.IHE.Test
             
             var testConfiguration = new SanteDB.Messaging.FHIR.Configuration.FhirServiceConfigurationSection()
             {
-                Resources = new System.Collections.Generic.List<string>()
+                Resources = new List<string>
                 {
                     "Patient",
                     "Bundle",
@@ -61,17 +57,17 @@ namespace SanteMPI.Messaging.IHE.Test
                     "Practitioner",
                     "Organization"
                 },
-                OperationHandlers = new System.Collections.Generic.List<SanteDB.Core.Configuration.TypeReferenceConfiguration>(),
-                ExtensionHandlers = new System.Collections.Generic.List<SanteDB.Core.Configuration.TypeReferenceConfiguration>()
+                OperationHandlers = new List<SanteDB.Core.Configuration.TypeReferenceConfiguration>(),
+                ExtensionHandlers = new List<SanteDB.Core.Configuration.TypeReferenceConfiguration>
                 {
                     new SanteDB.Core.Configuration.TypeReferenceConfiguration(typeof(MothersMaidenNameExtension))
                 },
-                ProfileHandlers = new System.Collections.Generic.List<SanteDB.Core.Configuration.TypeReferenceConfiguration>(),
-                BehaviorModifiers = new System.Collections.Generic.List<SanteDB.Core.Configuration.TypeReferenceConfiguration>()
+                ProfileHandlers = new List<SanteDB.Core.Configuration.TypeReferenceConfiguration>(),
+                BehaviorModifiers = new List<SanteDB.Core.Configuration.TypeReferenceConfiguration>
                 {
                     new SanteDB.Core.Configuration.TypeReferenceConfiguration(typeof(PatientDemographicsQueryModifier))
                 },
-                MessageHandlers = new System.Collections.Generic.List<SanteDB.Core.Configuration.TypeReferenceConfiguration>()
+                MessageHandlers = new List<SanteDB.Core.Configuration.TypeReferenceConfiguration>
                 {
                     new SanteDB.Core.Configuration.TypeReferenceConfiguration(typeof(PatientMasterIdentityOperation))
                 }
@@ -82,7 +78,6 @@ namespace SanteMPI.Messaging.IHE.Test
                 FhirResourceHandlerUtil.Initialize(testConfiguration, this.m_serviceManager);
                 ExtensionUtil.Initialize(testConfiguration);
             }
-
         }
 
         /// <summary>

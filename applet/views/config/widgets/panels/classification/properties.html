@@ -1,0 +1,96 @@
+<div xmlns="http://www.w3.org/1999/xhtml" xmlns:sdb="http://santedb.org/applet">
+    <sdb:widget order="0" name="ui.mpi.matches.config.classification.properties" type="Panel" size="Large"
+        altViews="Edit" context="org.santedb.mpi.matches.config.classification">
+        <sdb:icon>fas fa-brain</sdb:icon>
+        <sdb:description lang="en">Properties</sdb:description>
+    </sdb:widget>
+
+    <div class="container" ng-if="panel.view != 'Edit'">
+
+
+        <div class="form-group row">
+            
+            <div class="col">
+                <ul class="list-group">
+                    <li class="list-group-item list-group-item-danger"><i class="fas fa-times-circle"></i> {{
+                        'ui.mpi.match.class.0' | i18n }}
+                        <span class=" mr-2 alert-primary"
+                            > {{ scopedObject.minScore | number: 4 }} - {{
+                            scopedObject.nonmatchThreshold | number: 4 }}</span><span class=" mr-2 alert-info"> 0% - {{ (scopedObject.nonmatchThreshold +
+                            -scopedObject.minScore) / (scopedObject.maxScore + -scopedObject.minScore) * 100 |
+                            number: 2
+                            }}%</span>
+                    </li>
+                    
+                    <li class="list-group-item list-group-item-warning"><i class="fas fa-question-circle"></i> {{
+                        'ui.mpi.match.class.1' | i18n }} <span class=" alert-primary mr-2"
+                            > {{ scopedObject.nonmatchThreshold | number: 4 }} - {{
+                            scopedObject.matchThreshold | number: 4 }}</span><span class=" alert-info mr-2"> {{ (scopedObject.nonmatchThreshold +
+                            -scopedObject.minScore)
+                            / (scopedObject.maxScore + -scopedObject.minScore) * 100 | number: 2 }} - {{
+                            (scopedObject.matchThreshold + -scopedObject.minScore) / (scopedObject.maxScore +
+                            -scopedObject.minScore) * 100 | number: 2 }}%</span></li>
+                   
+                    <li class="list-group-item list-group-item-success"><i class="fas fa-check-circle"></i> {{
+                        'ui.mpi.match.class.2' | i18n }} <span class=" mr-2 alert-primary" > {{ scopedObject.matchThreshold | number: 4 }} - {{
+                            scopedObject.maxScore | number: 4 }}</span><span class=" alert-info mr-2"> {{ (scopedObject.matchThreshold +
+                            -scopedObject.minScore) /
+                            (scopedObject.maxScore + -scopedObject.minScore) * 100 | number: 2 }}% - 100%</span>
+                    </li>
+                </ul>
+        </div>
+    </div>
+</div>
+    <div class="container" ng-controller="MpiConfigurationEditController" ng-if="panel.view == 'Edit'">
+        
+        <div ng-if="!scopedObject.maxScore" class="row">
+            <div class="alert alert-info col-12">
+                <i class="fas fa-info-circle"></i> {{ 'ui.mpi.matches.config.classification.noAttributes' | i18n}}
+            </div>
+        </div>
+
+        <form name="panel.editForm" ng-submit="save(panel.editForm)" method="dialog" novalidate="novalidate">
+            <div class="form-group row">
+                <div class="col-12">
+                    <ul class="list-group">
+                        <li class="list-group-item list-group-item-danger"><i class="fas fa-times-circle"></i> {{
+                            'ui.mpi.match.class.0' | i18n }}
+                            <span class=" mr-2 alert-primary"
+                                > {{ scopedObject.minScore | number: 4 }} - {{
+                                scopedObject.nonmatchThreshold | number: 4 }}</span><span class=" mr-2 alert-info"> 0% - {{ (scopedObject.nonmatchThreshold +
+                                -scopedObject.minScore) / (scopedObject.maxScore + -scopedObject.minScore) * 100 |
+                                number: 2
+                                }}%</span>
+                        </li>
+                        <li class="list-group-item">
+                            <input ng-disabled="scopedObject.scoring.length == 0" class="form-control d-inline" step="0.25" name="rgNonMatch" type="range"
+                                min="{{scopedObject.minScore}}" max="{{scopedObject.matchThreshold}}"
+                                ng-model="scopedObject.nonmatchThreshold" />
+
+                        </li>
+                        <li class="list-group-item list-group-item-warning"><i class="fas fa-question-circle"></i> {{
+                            'ui.mpi.match.class.1' | i18n }} <span class=" alert-primary mr-2"
+                                > {{ scopedObject.nonmatchThreshold | number: 4 }} - {{
+                                scopedObject.matchThreshold | number: 4 }}</span><span class=" alert-info mr-2"> {{ (scopedObject.nonmatchThreshold +
+                                -scopedObject.minScore)
+                                / (scopedObject.maxScore + -scopedObject.minScore) * 100 | number: 2 }} - {{
+                                (scopedObject.matchThreshold + -scopedObject.minScore) / (scopedObject.maxScore +
+                                -scopedObject.minScore) * 100 | number: 2 }}%</span></li>
+                        <li class="list-group-item">
+                            <input ng-disabled="scopedObject.scoring.length == 0"  class="form-control" step="0.25" name="rg-match" type="range"
+                                min="{{ scopedObject.nonmatchThreshold}}" max="{{ scopedObject.maxScore }}"
+                                ng-model="scopedObject.matchThreshold" />
+                        </li>
+                        <li class="list-group-item list-group-item-success"><i class="fas fa-check-circle"></i> {{
+                            'ui.mpi.match.class.2' | i18n }} <span class=" mr-2 alert-primary" > {{ scopedObject.matchThreshold | number: 4 }} - {{
+                                scopedObject.maxScore | number: 4 }}</span><span class=" alert-info mr-2"> {{ (scopedObject.matchThreshold +
+                                -scopedObject.minScore) /
+                                (scopedObject.maxScore + -scopedObject.minScore) * 100 | number: 2 }}% - 100%</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </form>
+    </div>
+
+</div>

@@ -1,0 +1,65 @@
+<div xmlns="http://www.w3.org/1999/xhtml">
+    <div class="row">
+        <label class="col-md-3 control-label">{{ 'ui.model.entity.name' | i18n }}</label>
+        <div class="col-md-9">
+            <ul class="list-group">
+                <li class="d-flex align-items-center"
+                    ng-repeat="(n, name) in rel.targetModel.name">
+                    {{ name | name }} <span
+                        class="badge badge-light">{{ name.useModel | concept }}</span></li>
+            </ul>
+        </div>
+        <label class="col-md-3 control-label">{{ 'ui.model.entity.dateOfBirth' | i18n }}</label>
+        <div class="col-md-9"
+            ng-if="rel.targetModel.dateOfBirth">
+            {{ rel.targetModel.dateOfBirth | extDate: rel.targetModel.dateOfBirthPrecision }}
+            <span ng-if="!rel.targetModel.deceasedDate">
+                (
+                {{ rel.targetModel.dateOfBirth | age }}
+                )</span>
+        </div>
+        <div class="col-md-9"
+            ng-if="!rel.targetModel.dateOfBirth">
+            {{ 'ui.unknown' | i18n}}
+        </div>
+        <label
+            class="col-md-3 control-label">{{ 'ui.model.patient.genderConcept' | i18n }}</label>
+        <div class="col-md-9"
+            ng-if="rel.targetModel.genderConceptModel">
+            <i class="fas"
+                ng-class="{ 'fa-male' : rel.targetModel.genderConceptModel.mnemonic == 'Male' , 'fa-female' :  rel.targetModel.genderConceptModel.mnemonic == 'Female' }"></i>
+            {{ rel.targetModel.genderConceptModel | concept }}
+        </div>
+        <div class="col-md-9"
+            ng-if="!rel.targetModel.genderConceptModel">
+            {{ 'ui.unknown' | i18n}}
+        </div>
+        <label class="col-md-3 control-label">{{ 'ui.model.entity.address' | i18n }}</label>
+        <div class="col-md-9">
+            <div ng-if="rel.targetModel.address">
+                <ul class="list-group">
+                    <li class="d-flex align-items-center"
+                        ng-repeat="(n, address) in rel.targetModel.address">
+                        {{ address | address }} <span
+                            class="badge badge-light">{{ address.useModel | concept }}</span>
+                    </li>
+                </ul>
+            </div>
+            <div ng-if="!rel.targetModel.address">
+                {{ 'ui.unknown' | i18n }}
+            </div>
+        </div>
+        <label class="col-md-3 control-label">{{ 'ui.model.entity.telecom' | i18n }}</label>
+        <div class="col-md-9"
+            ng-repeat="(k,tel) in rel.targetModel.telecom track by $index"
+            ng-class="{ 'offset-md-3': $index > 0 }"> 
+            <ul class="list-group">
+                <li class="d-flex align-items-center"
+                    ng-repeat="i in tel">
+                    <a href="{{i.value}}" target="_blank">{{i.value}} <span
+                        class="badge badge-pill badge-info">{{ i.useModel | concept }}</span></a>
+                </li>
+            </ul>
+            
+        </div>
+    </div></div>
