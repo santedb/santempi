@@ -140,6 +140,7 @@ Source: {#iCDRBase}\bin\release\applets\*.pak; DestDir: {app}\applets; Component
 
 ; Tools
 Source: {#iCDRBase}\bin\release\sdbac.exe; DestDir: {app}; Components: tools
+Source: {#iCDRBase}\bin\Release\Mono.Posix.dll; DestDir: {app}; Components: core
 Source: {#iCDRBase}\bin\Release\SanteDB.exe.config; DestDir: {app}; DestName: sdbac.exe.config; Components: tools
 Source: {#iCDRBase}\bin\release\SanteDB.Server.AdminConsole.Api.dll; DestDir: {app}; Components: tools
 
@@ -204,6 +205,8 @@ Source: {#iCDRBase}\bin\Release\AtnaApi.dll; DestDir: {app}; Components: interop
 
 ; FHIR R4 Support
 Source: {#iCDRBase}\bin\Release\Hl7.Fhir.ElementModel.dll; DestDir: {app}; Components: interop\fhir
+Source: {#iCDRBase}\bin\Release\Microsoft.IdentityModel.Tokens.dll; DestDir: {app}; Components: interop\fhir
+Source: {#iCDRBase}\bin\Release\Microsoft.IdentityModel.Logging.dll; DestDir: {app}; Components: interop\fhir
 Source: {#iCDRBase}\bin\Release\Hl7.Fhir.R4.Core.dll; DestDir: {app}; Components: interop\fhir
 Source: {#iCDRBase}\bin\Release\Hl7.Fhir.Serialization.dll; DestDir: {app}; Components: interop\fhir
 Source: {#iCDRBase}\bin\Release\Hl7.Fhir.Support.dll; DestDir: {app}; Components: interop\fhir
