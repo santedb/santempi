@@ -29,7 +29,8 @@
             { name: 'enable', action: 'enable', demand: '1.3.6.1.4.1.33349.3.1.5.9.2.0.15.1.2', when: 'r.meta.status == \'Inactive\' &amp;&amp; !r.meta.isReadonly', className: 'btn-success', icon: 'fas fa-arrow-up' },
             { name: 'disable', action: 'disable', demand: '1.3.6.1.4.1.33349.3.1.5.9.2.0.15.1.2', when: 'r.meta.status == \'Active\' &amp;&amp; !r.meta.isReadonly', className: 'btn-warning', icon: 'fas fa-arrow-down' },
             { name: 'delete', action: 'delete', demand: '1.3.6.1.4.1.33349.3.1.5.9.2.0.15.1', when: 'r.meta.status != \'Active\' &amp;&amp; !r.meta.isReadonly', className: 'btn-danger', icon: 'fas fa-trash' },
-            { name: 'download', label: 'html', action: 'download', demand: '1.3.6.1.4.1.33349.3.1.5.9.2.0.15.1.1', icon: 'fas fa-download', className: 'btn-info' }
+            { name: 'clone', action: 'clone', demand: '1.3.6.1.4.1.33349.3.1.5.9.2.0.15.1.1', className: 'btn-info', icon: 'fas fa-copy' },
+            { name: 'download', label: 'html', action: 'download', demand: '1.3.6.1.4.1.33349.3.1.5.9.2.0.15.1.1', icon: 'fas fa-download', className: 'btn-outline-info' }
              ]"
         />
     </div>

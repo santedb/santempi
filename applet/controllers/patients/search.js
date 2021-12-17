@@ -178,6 +178,12 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
                 // Build query and bind query to the search table
                 queryObject["_any"] = $scope.search.val;
             }
+
+            queryObject["statusConcept"] = [
+                StatusKeys.Active,
+                StatusKeys.New,
+                StatusKeys.Completed
+            ];
             $scope.$parent.lastSearch = {
                 search: $scope.search
             };

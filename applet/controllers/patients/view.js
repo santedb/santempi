@@ -28,7 +28,7 @@ angular.module('santedb').controller('MpiPatientViewController', ["$scope", "$ro
             $scope.patient = await SanteDB.resources.patient.getAsync(id, "full");
             $scope.$apply();
         }
-        catch(e) {
+        catch (e) {
             // Remote patient perhaps?
             if (e.$type == "FileNotFoundException" || e.cause && e.cause.$type == "FileNotFoundException") {
                 try {
@@ -49,7 +49,7 @@ angular.module('santedb').controller('MpiPatientViewController', ["$scope", "$ro
                         delete $scope.patient.tag["$altkeys"];
                         delete $scope.patient.tag["$generated"];
                     }
-                    
+
                     $scope.$apply();
                     return;
                 }
@@ -77,5 +77,38 @@ angular.module('santedb').controller('MpiPatientViewController', ["$scope", "$ro
             $rootScope.errorHandler(e);
         }
     }
-    
+
+    // Set the active state
+    $scope.setState = async function (status) {
+        try {
+
+            SanteDB.display.buttonWait("#btnSetState", true);
+
+            // Set the status and update
+            var patch = new Patch({
+                appliesTo: new PatchTarget({
+                    id : $scope.patient.id,
+                    version: $scope.patient.version
+                }),
+                change: [
+                    new PatchOperation({
+                        op: PatchOperationType.Replace,
+                        path: "statusConcept",
+                        value: status
+                    })
+                ]
+            });
+            await SanteDB.resources.entity.patchAsync($stateParams.id, $scope.patient.etag, patch);
+            toastr.info(SanteDB.locale.getString("ui.model.patient.saveSuccess"));
+            $state.reload();
+
+        }
+        catch (e) {
+            $rootScope.errorHandler(e);
+        }
+        finally {
+            SanteDB.display.buttonWait("#btnSetState", false);
+        }
+    }
+
 }]);

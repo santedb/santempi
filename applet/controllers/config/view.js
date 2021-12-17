@@ -77,17 +77,6 @@ angular.module('santedb').controller('MpiConfigurationDetailController', ["$scop
     initializeView();
 
 
-    mermaid.mermaidAPI.initialize({
-        "theme": "default",
-        flowchartConfig: {
-            width: '100%',
-            htmlLabels: true,
-            curve: 'linear'
-        },
-        securityLevel: 'loose'
-    });
-
-
     // Watch for changes in scores to update the min and max scores
     $scope.$watch('matchConfiguration.scoring', function (n, o) {
         if ($scope.matchConfiguration) {
