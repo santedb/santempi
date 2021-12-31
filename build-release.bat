@@ -112,8 +112,8 @@ if exist "%msbuild%\msbuild.exe" (
 		%signtool% sign /sha1 f3bea1ee156254656669f00c03eeafe8befc4441 /d "SanteMPI" "%%G"
 	)
 
-	docker build --no-cache -t santesuite/santedb-mpi:%version% .
-	docker build --no-cache -t santesuite/santedb-mpi .
+	docker build --pull=false -t santesuite/santedb-mpi:%version% .
+	docker build --pull=false -t santesuite/santedb-mpi .
 
 ) else (	
 	echo Cannot find MSBUILD
