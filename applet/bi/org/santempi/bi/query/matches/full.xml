@@ -19,7 +19,7 @@
  - User: Justin Fyfe
  - Date: 2019-12-16
  -->
-<BiQueryDefinition xmlns="http://santedb.org/bi" id="org.santempi.bi.query.matches.full" label="ui.mpi.bi.query.matches.full">
+<BiQueryDefinition xmlns="http://santedb.org/bi" id="org.santempi.bi.query.matches.full" label="ui.mpi.bi.query.matches.full" name="MPI Linkage Report">
   <meta status="active">
     <authors>
       <add>Justin Fyfe (Fyfe Software Inc.) &lt;justin@fyfesoftware.ca></add>
@@ -33,183 +33,186 @@
   <dataSources>
     <add ref="#org.santedb.bi.dataSource.main"/>
   </dataSources>
-  <parameters>
-    <add ref="#org.santempi.bi.core.parameter.matchclass" name="class" type="uuid"/>
-  </parameters>
   <definitions>
     <add>
       <providers>
         <invariant>npgsql</invariant>
       </providers>
-      <![CDATA[
--- COMMON TABLE EXPRESSION JOINING IDENTITY VALUES WITH IDENTITY DOMAIN
-with cte_id_tbl as (
-	select ent_id, id_val, nsid 
-	from 
-		ent_id_tbl
-		inner join asgn_aut_tbl using (aut_id)
-	where 
-		obslt_vrsn_seq_id is null
-	order by 
-		id_val
-), 
--- CTE WHICH JOINS THE ADDRESSING AND SELECTS ADDRESS PARTS USING THEIR TYPE COMPONENT ID
-cte_addr_tbl as (
-	select 
-		ent_id, 
-		mnemonic as addr_type, 
-		string_agg(case when typ_cd_id = '4F342D28-8850-4DAF-8BCA-0B44A255F7ED' or typ_cd_id = 'F69DCFA8-DF18-403B-9217-C59680BAD99E' then val end , ' ' order by val_seq_id) as adr_line,
-		string_agg(case when typ_cd_id = '05B85461-578B-4988-BCA6-E3E94BE9DB76' then val end , ' ' order by val_seq_id ) as adr_city,
-		string_agg(case when typ_cd_id = '48B2FFB3-07DB-47BA-AD73-FC8FB8502471' then val end , ' ' order by val_seq_id) as adr_country,
-		string_agg(case when typ_cd_id = '8CF4B0B0-84E5-4122-85FE-6AFA8240C218' then val end , ' ' order by val_seq_id) as adr_state		
-	from 
-		ent_addr_cmp_val_tbl
-		inner join ent_addr_cmp_tbl using (val_seq_id)
-		inner join ent_addr_tbl using (addr_id)
-		inner join cd_vrsn_tbl on (cd_id = ent_addr_tbl.use_cd_id and obslt_utc is null)
-	where 
-		obslt_vrsn_seq_id is null
-		and typ_cd_id in ('8CF4B0B0-84E5-4122-85FE-6AFA8240C218','F69DCFA8-DF18-403B-9217-C59680BAD99E','48B2FFB3-07DB-47BA-AD73-FC8FB8502471','05B85461-578B-4988-BCA6-E3E94BE9DB76','4F342D28-8850-4DAF-8BCA-0B44A255F7ED')
-	group by 
-		ent_id, mnemonic 
-), 
--- CTE WHICH JOINS THE NAME COMPONENTS AND SELECTS FAMILY/GIVEN BASED ON COMPONENT ID
-cte_name_tbl as (
-	select 
-		ent_id,
-		string_agg(case when typ_cd_id = '2F64BDE2-A696-4B0A-9690-B21EBD7E5092' then val end, ' ' order by val_seq_id) as nam_given,
-		string_agg(case when typ_cd_id = '29B98455-ED61-49F8-A161-2D73363E1DF0' then val end, ' ' order by val_seq_id) as nam_family
-	from 
-		phon_val_tbl 
-		inner join ent_name_cmp_tbl using (val_seq_id)
-		inner join ent_name_tbl using (name_id)
-	where 
-		obslt_vrsn_seq_id is null
-		and typ_cd_id in ('2F64BDE2-A696-4B0A-9690-B21EBD7E5092', '29B98455-ED61-49F8-A161-2D73363E1DF0')
-	group by 
-		ent_id
-), 
--- CTE WHICH EXTRACTS PATIENT PROFILE DATA
--- NOTE: THE LEFT JOINS HANDLE THE CASE WHERE ONE PATIENT HAS MULTIPLE NAME TYPES AND IDENTIFIERS
---		 AND THE QUERY USES A GROUP BY TO ENSURE DISTINCT PATIENT RECORDS ARE SELECTED
-cte_pat_tbl as (
-	select 
-		ent_id,
-		sec_app_tbl.app_pub_id as source_app,
-		ent_vrsn_tbl.crt_utc as crt_utc,
-		psn_tbl.dob,
-		pat_tbl.dcsd_utc,
-		gender.mnemonic as gender,
-		string_agg(distinct nam_given , ' ') as nam_given,
-		string_agg(distinct nam_family, ' ') as nam_family,
-		string_agg(distinct adr_line, ' ') as adr_line ,
-		string_agg(distinct adr_city , ' ') as adr_city,
-		string_agg(distinct adr_state , ' ') as adr_state,
-		string_agg(distinct adr_country , ' ') as adr_country,
-		string_agg(distinct id_val || '[' || nsid || ']', ',') as id_val
-	from 
-		ent_vrsn_tbl 
-		inner join psn_tbl using (ent_vrsn_id)
-		inner join pat_tbl using (ent_vrsn_id)
-		inner join sec_prov_tbl on (ent_vrsn_tbl.crt_prov_id = sec_prov_tbl.prov_id)
-		inner join sec_app_tbl using (app_id)
-		left join cd_vrsn_tbl gender on (psn_tbl.gndr_cd_id = gender.cd_id and gender.obslt_utc is null)
-		left join cte_name_tbl using (ent_id)
-		left join cte_addr_tbl using (ent_id)
-		left join cte_id_tbl using (ent_id)
-	where
-		ent_vrsn_tbl.obslt_utc is null
-	group by
-		ent_id, dob, dcsd_utc, gender.mnemonic, ent_vrsn_tbl.crt_utc , app_pub_id
-), 
--- QUERY FOR SOURCES WHICH ARE RELATED TO A COMMON MASTER WITH A TYPE OF CANDIDATE
-possible as (
+	  <materialize name="org_santempi_bi_query_matches_full">
+		<![CDATA[
+	-- COMMON TABLE EXPRESSION JOINING IDENTITY VALUES WITH IDENTITY DOMAIN
+	with cte_id_tbl as (
+		select ent_id, id_val, nsid 
+		from 
+			ent_id_tbl
+			inner join asgn_aut_tbl using (aut_id)
+		where 
+			obslt_vrsn_seq_id is null
+		order by 
+			id_val
+	), 
+	-- CTE WHICH JOINS THE ADDRESSING AND SELECTS ADDRESS PARTS USING THEIR TYPE COMPONENT ID
+	cte_addr_tbl as (
+		select 
+			ent_id, 
+			mnemonic as addr_type, 
+			string_agg(case when typ_cd_id = '4F342D28-8850-4DAF-8BCA-0B44A255F7ED' or typ_cd_id = 'F69DCFA8-DF18-403B-9217-C59680BAD99E' then val end , ' ' order by val_seq_id) as adr_line,
+			string_agg(case when typ_cd_id = '05B85461-578B-4988-BCA6-E3E94BE9DB76' then val end , ' ' order by val_seq_id ) as adr_city,
+			string_agg(case when typ_cd_id = '48B2FFB3-07DB-47BA-AD73-FC8FB8502471' then val end , ' ' order by val_seq_id) as adr_country,
+			string_agg(case when typ_cd_id = '8CF4B0B0-84E5-4122-85FE-6AFA8240C218' then val end , ' ' order by val_seq_id) as adr_state		
+		from 
+			ent_addr_cmp_val_tbl
+			inner join ent_addr_cmp_tbl using (val_seq_id)
+			inner join ent_addr_tbl using (addr_id)
+			inner join cd_vrsn_tbl on (cd_id = ent_addr_tbl.use_cd_id and obslt_utc is null)
+		where 
+			obslt_vrsn_seq_id is null
+			and typ_cd_id in ('8CF4B0B0-84E5-4122-85FE-6AFA8240C218','F69DCFA8-DF18-403B-9217-C59680BAD99E','48B2FFB3-07DB-47BA-AD73-FC8FB8502471','05B85461-578B-4988-BCA6-E3E94BE9DB76','4F342D28-8850-4DAF-8BCA-0B44A255F7ED')
+		group by 
+			ent_id, mnemonic 
+	), 
+	-- CTE WHICH JOINS THE NAME COMPONENTS AND SELECTS FAMILY/GIVEN BASED ON COMPONENT ID
+	cte_name_tbl as (
+		select 
+			ent_id,
+			string_agg(case when typ_cd_id = '2F64BDE2-A696-4B0A-9690-B21EBD7E5092' then val end, ' ' order by val_seq_id) as nam_given,
+			string_agg(case when typ_cd_id = '29B98455-ED61-49F8-A161-2D73363E1DF0' then val end, ' ' order by val_seq_id) as nam_family
+		from 
+			phon_val_tbl 
+			inner join ent_name_cmp_tbl using (val_seq_id)
+			inner join ent_name_tbl using (name_id)
+		where 
+			obslt_vrsn_seq_id is null
+			and typ_cd_id in ('2F64BDE2-A696-4B0A-9690-B21EBD7E5092', '29B98455-ED61-49F8-A161-2D73363E1DF0')
+		group by 
+			ent_id
+	), 
+	-- CTE WHICH EXTRACTS PATIENT PROFILE DATA
+	-- NOTE: THE LEFT JOINS HANDLE THE CASE WHERE ONE PATIENT HAS MULTIPLE NAME TYPES AND IDENTIFIERS
+	--		 AND THE QUERY USES A GROUP BY TO ENSURE DISTINCT PATIENT RECORDS ARE SELECTED
+	cte_pat_tbl as (
+		select 
+			ent_id,
+			sec_app_tbl.app_pub_id as source_app,
+			ent_vrsn_tbl.crt_utc as crt_utc,
+			psn_tbl.dob,
+			pat_tbl.dcsd_utc,
+			gender.mnemonic as gender,
+			string_agg(distinct nam_given , ' ') as nam_given,
+			string_agg(distinct nam_family, ' ') as nam_family,
+			string_agg(distinct adr_line, ' ') as adr_line ,
+			string_agg(distinct adr_city , ' ') as adr_city,
+			string_agg(distinct adr_state , ' ') as adr_state,
+			string_agg(distinct adr_country , ' ') as adr_country,
+			string_agg(distinct id_val || '[' || nsid || ']', ',') as id_val
+		from 
+			ent_vrsn_tbl 
+			inner join psn_tbl using (ent_vrsn_id)
+			inner join pat_tbl using (ent_vrsn_id)
+			inner join sec_prov_tbl on (ent_vrsn_tbl.crt_prov_id = sec_prov_tbl.prov_id)
+			inner join sec_app_tbl using (app_id)
+			left join cd_vrsn_tbl gender on (psn_tbl.gndr_cd_id = gender.cd_id and gender.obslt_utc is null)
+			left join cte_name_tbl using (ent_id)
+			left join cte_addr_tbl using (ent_id)
+			left join cte_id_tbl using (ent_id)
+		where
+			ent_vrsn_tbl.obslt_utc is null
+		group by
+			ent_id, dob, dcsd_utc, gender.mnemonic, ent_vrsn_tbl.crt_utc , app_pub_id
+	), 
+	-- QUERY FOR SOURCES WHICH ARE RELATED TO A COMMON MASTER WITH A TYPE OF CANDIDATE
+	possible as (
+		select distinct
+				candidate_rel.ent_rel_id,
+			FIRST(candidate_rel.src_ent_id) as local_a, 
+			FIRST(master_rel.src_ent_id) as local_b,
+			MAX(candidate_rel.conf) as confidence,
+			candidate_rel.rel_typ_cd_id,
+			candidate_rel.cls_cd_id 
+		from 
+			-- SOURCE TO MASTER CANDIDATE
+			ent_rel_tbl as candidate_rel
+			-- MASTER BACK TO SOURCE FOR LOCAL OF TARGET
+			inner join ent_rel_tbl as master_rel on (candidate_rel.trg_ent_id = master_rel.trg_ent_id and master_rel.rel_typ_cd_id = '97730a52-7e30-4dcd-94cd-fd532d111578' and master_rel.obslt_vrsn_seq_id is null)
+		where 
+			candidate_rel.rel_typ_cd_id IN ('56cfb115-8207-4f89-b52e-d20dbad8f8cc', 'decfb115-8207-4f89-b52e-d20dbad8f8cc') -- filter for candidates
+			and candidate_rel.obslt_vrsn_seq_id is null 
+			
+		group by candidate_rel.ent_rel_id
+			
+			
+	),
+	-- CTE FOR TWO SOURCES WHICH SHARE A COMMON MASTER
+	multi_master as (
+		select distinct
+			master_a.ent_rel_id,
+			least(master_a.src_ent_id, master_b.src_ent_id) as local_a,
+			greatest(master_a.src_ent_id, master_b.src_ent_id) as local_b,
+			greatest(master_a.conf, master_b.conf) as conf,
+			'97730a52-7e30-4dcd-94cd-fd532d111578'::UUID as rel_typ_cd_id ,
+			master_a.cls_cd_id 
+		from 
+			ent_rel_tbl master_a
+			inner join ent_rel_tbl master_b  on (master_a.trg_ent_id = master_b.trg_ent_id and master_b.rel_typ_cd_id = '97730a52-7e30-4dcd-94cd-fd532d111578' and master_a.src_ent_id <> master_b.src_ent_id)
+			inner join cd_vrsn_tbl on (master_b.cls_cd_id = cd_vrsn_tbl.cd_id)
+		where 
+			master_a.rel_typ_cd_id = '97730a52-7e30-4dcd-94cd-fd532d111578' 
+			and master_a.obslt_vrsn_seq_id is null
+			and master_b.obslt_vrsn_seq_id is null
+	), 
+	-- UNION OF ALL LINKS
+	all_links as (
+		select *
+		from
+			possible
+		union
+		select *
+		from
+			multi_master
+	) 
 	select distinct
-			candidate_rel.ent_rel_id,
-	       FIRST(candidate_rel.src_ent_id) as local_a, 
-	       FIRST(master_rel.src_ent_id) as local_b,
-	       MAX(candidate_rel.conf) as confidence,
-	       candidate_rel.rel_typ_cd_id,
-	       candidate_rel.cls_cd_id 
+		rel_cd.mnemonic as rel_mnemonic,
+		cls_cd.mnemonic as cls_mnemonic,
+		ent_rel_id,
+		confidence ,
+		local_a,
+		a.source_app as a_source_app,
+		a.crt_utc as a_timestamp,
+		a.dob as a_dob,
+		a.gender as a_gender,
+		a.nam_given as a_given,
+		a.nam_family as a_family,
+		a.adr_line as a_adr_line,
+		a.adr_city as a_adr_city,
+		a.adr_state as a_adr_state,
+		a.adr_country as a_adr_country,
+		a.id_val as a_id_val,
+		local_b,
+		b.source_app as b_source_app,
+		b.crt_utc as b_timestamp,
+		b.dob as b_dob,
+		b.gender as b_gender,
+		b.nam_given as b_given,
+		b.nam_family as b_family,
+		b.adr_line as b_adr_line,
+		b.adr_city as b_adr_city,
+		b.adr_state as b_adr_state,
+		b.adr_country as b_adr_country,
+		b.id_val as b_id_val
 	from 
-	    -- SOURCE TO MASTER CANDIDATE
-	       ent_rel_tbl as candidate_rel
-	       -- MASTER BACK TO SOURCE FOR LOCAL OF TARGET
-	       inner join ent_rel_tbl as master_rel on (candidate_rel.trg_ent_id = master_rel.trg_ent_id and master_rel.rel_typ_cd_id = '97730a52-7e30-4dcd-94cd-fd532d111578' and master_rel.obslt_vrsn_seq_id is null)
-	where 
-	       candidate_rel.rel_typ_cd_id IN ('56cfb115-8207-4f89-b52e-d20dbad8f8cc', 'decfb115-8207-4f89-b52e-d20dbad8f8cc') -- filter for candidates
-	       and candidate_rel.obslt_vrsn_seq_id is null 
-           and candidate_rel.cls_cd_id = COALESCE(${class}, candidate_rel.cls_cd_id)
-           
-    group by candidate_rel.ent_rel_id
-           
-           
-),
--- CTE FOR TWO SOURCES WHICH SHARE A COMMON MASTER
-multi_master as (
-	select distinct
-		master_a.ent_rel_id,
-		least(master_a.src_ent_id, master_b.src_ent_id) as local_a,
-		greatest(master_a.src_ent_id, master_b.src_ent_id) as local_b,
-		greatest(master_a.conf, master_b.conf) as conf,
-		'97730a52-7e30-4dcd-94cd-fd532d111578'::UUID as rel_typ_cd_id ,
-		master_a.cls_cd_id 
-	from 
-		ent_rel_tbl master_a
-		inner join ent_rel_tbl master_b  on (master_a.trg_ent_id = master_b.trg_ent_id and master_b.rel_typ_cd_id = '97730a52-7e30-4dcd-94cd-fd532d111578' and master_a.src_ent_id <> master_b.src_ent_id)
-		inner join cd_vrsn_tbl on (master_b.cls_cd_id = cd_vrsn_tbl.cd_id)
-	where 
-		master_a.rel_typ_cd_id = '97730a52-7e30-4dcd-94cd-fd532d111578' 
-		and master_a.obslt_vrsn_seq_id is null
-		and master_b.obslt_vrsn_seq_id is null
-), 
--- UNION OF ALL LINKS
-all_links as (
-	select *
-	from
-		possible
-	union
-	select *
-	from
-		multi_master
-) 
-select distinct
-	rel_cd.mnemonic as rel_mnemonic,
-	cls_cd.mnemonic as cls_mnemonic,
-	ent_rel_id,
-	confidence ,
-	local_a,
-	a.source_app as a_source_app,
-	a.crt_utc as a_timestamp,
-	a.dob as a_dob,
-	a.gender as a_gender,
-	a.nam_given as a_given,
-	a.nam_family as a_family,
-	a.adr_line as a_adr_line,
-	a.adr_city as a_adr_city,
-	a.adr_state as a_adr_state,
-	a.adr_country as a_adr_country,
-	a.id_val as a_id_val,
-	local_b,
-	b.source_app as b_source_app,
-	b.crt_utc as b_timestamp,
-	b.dob as b_dob,
-	b.gender as b_gender,
-	b.nam_given as b_given,
-	b.nam_family as b_family,
-	b.adr_line as b_adr_line,
-	b.adr_city as b_adr_city,
-	b.adr_state as b_adr_state,
-	b.adr_country as b_adr_country,
-	b.id_val as b_id_val
-from 
-	all_links
-	inner join cte_pat_tbl a on (local_a = a.ent_id)
-	inner join cte_pat_tbl b on (local_b = b.ent_id)
-	inner join cd_vrsn_tbl as rel_cd on (rel_cd.cd_id = rel_typ_cd_id)
-	inner join cd_vrsn_tbl as cls_cd on (cls_cd.cd_id = cls_cd_id)
-        
-      ]]>
+		all_links
+		inner join cte_pat_tbl a on (local_a = a.ent_id)
+		inner join cte_pat_tbl b on (local_b = b.ent_id)
+		inner join cd_vrsn_tbl as rel_cd on (rel_cd.cd_id = rel_typ_cd_id)
+		inner join cd_vrsn_tbl as cls_cd on (cls_cd.cd_id = cls_cd_id)
+			
+		]]>
+		</materialize>
+		<![CDATA[
+			SELECT * 
+			FROM 
+				org_santempi_bi_query_matches_full
+		]]>
     </add>
     <add>
       <providers>
@@ -303,7 +306,6 @@ possible as (
 	where 
 	       candidate_rel.rel_typ_cd_id IN (char_to_uuid('56cfb115-8207-4f89-b52e-d20dbad8f8cc'), char_to_uuid('decfb115-8207-4f89-b52e-d20dbad8f8cc')) -- filter for candidates
 	       and candidate_rel.obslt_vrsn_seq_id is null 
-           and candidate_rel.cls_cd_id = COALESCE(char_to_uuid(${class}), candidate_rel.cls_cd_id)
            
     group by candidate_rel.ent_rel_id
            
