@@ -15,6 +15,10 @@ async function renderBlockingSubgraph(configuration, showActuals, detailOutput, 
     if(showActuals && showActuals.diagnostics) {
         actualBlockingCounts = showActuals.diagnostics.stages.find(o=>o.name == "blocking");
     }
+    var totalDatabaseCount = 0;
+    if(showActuals) {
+        totalDatabaseCount = await SanteDB.resources[configuration.target[0].resource.toCamelCase()].findAsync({_count:0});
+    }
 
     for (var i in configuration.blocking) {
 
@@ -33,9 +37,7 @@ async function renderBlockingSubgraph(configuration, showActuals, detailOutput, 
         }
 
         if (showActuals) {
-            // TODO: Call Filter 
-            var counter = await SanteDB.resources[configuration.target[0].resource.toCamelCase()].findAsync({_count:0});
-            retVal += `|${counter.totalResults} ${configuration.target[0].resource} records|`;
+            retVal += `|${totalDatabaseCount.totalResults} ${configuration.target[0].resource} records|`;
         }
         else {
             retVal += ' ';

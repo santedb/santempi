@@ -33,70 +33,73 @@
   <dataSources>
     <add ref="#org.santedb.bi.dataSource.main"/>
   </dataSources>
-  <parameters>
-    <add ref="#org.santempi.bi.core.parameter.matchclass" name="class" type="uuid"/>
-  </parameters>
+
   <definitions>
     <add>
       <providers>
         <invariant>npgsql</invariant>
         <invariant>FirebirdSQL</invariant>
       </providers>
-      <![CDATA[
-with possible_ignored as (
-	select 
-		   candidate_rel.efft_vrsn_seq_id,
-		   candidate_rel.ent_rel_id ,
-	       candidate_rel.src_ent_id as local_a, 
-	       master_rel.src_ent_id as local_b,
-	       candidate_rel.conf as confidence,
-	       class_cd.mnemonic as class_code,
-		   rel_cd.mnemonic as rel_type,
-	       ent_vrsn_tbl.crt_utc 
-	from 
-	    -- SOURCE TO MASTER CANDIDATE
-	       ent_rel_tbl as candidate_rel
-	       -- MASTER BACK TO SOURCE FOR LOCAL OF TARGET
-	       inner join ent_rel_tbl as master_rel on (candidate_rel.trg_ent_id = master_rel.trg_ent_id and master_rel.rel_typ_cd_id = '97730a52-7e30-4dcd-94cd-fd532d111578' and master_rel.obslt_vrsn_seq_id is null)
-	       inner join cd_vrsn_tbl class_cd on (class_cd.cd_id = candidate_rel.cls_cd_id and class_cd.obslt_utc is null)
-	       inner join cd_vrsn_tbl rel_cd on (rel_cd.cd_id = candidate_rel.rel_typ_cd_id and rel_cd.obslt_utc is null)
-	       inner join ent_vrsn_tbl on (candidate_rel.efft_vrsn_seq_id = ent_vrsn_tbl.vrsn_seq_id)
-	where 
-	       candidate_rel.rel_typ_cd_id in ('56cfb115-8207-4f89-b52e-d20dbad8f8cc','decfb115-8207-4f89-b52e-d20dbad8f8cc')  -- filter for candidates
-	       and candidate_rel.obslt_vrsn_seq_id is null 
-), multi_master as (
-	select distinct
-		master_a.efft_vrsn_seq_id,
-		master_a.ent_rel_id ,
-		master_a.src_ent_id as local_a,
-		master_b.src_ent_id as local_b,
-		case when master_a.conf > master_b.conf then master_a.conf else master_b.conf end as confidence,
-	    case when master_a_cls.mnemonic = master_b_cls.mnemonic then master_b_cls.mnemonic else master_a_cls.mnemonic end as class_code,
-	    'MDM-Master' as rel_type ,
-		ent_vrsn_tbl.crt_utc 
-	from 
-		ent_rel_tbl master_a
-		inner join ent_rel_tbl master_b  on (master_a.trg_ent_id = master_b.trg_ent_id and master_b.rel_typ_cd_id = '97730a52-7e30-4dcd-94cd-fd532d111578' and master_a.src_ent_id <> master_b.src_ent_id)
-		inner join cd_vrsn_tbl master_a_cls on (master_a_cls.cd_id = master_a.cls_cd_id and master_a_cls.obslt_utc is null)
-		inner join cd_vrsn_tbl master_b_cls on (master_b_cls.cd_id = master_b.cls_cd_id and master_b_cls.obslt_utc is null)
-	    inner join ent_vrsn_tbl on (master_a.efft_vrsn_seq_id = ent_vrsn_tbl.vrsn_seq_id)
-	where 
-		master_a.rel_typ_cd_id = '97730a52-7e30-4dcd-94cd-fd532d111578' 
-		and master_a.obslt_vrsn_seq_id is null
-		and master_b.obslt_vrsn_seq_id is null
-)
-	select * 
-	from (
-		select efft_vrsn_seq_id, ent_rel_id, local_a, local_b, confidence, class_code, rel_type, crt_utc
-		from
-			possible_ignored
-		union
-		select efft_vrsn_seq_id, ent_rel_id, local_a, local_b, confidence, class_code, rel_type, crt_utc
-		from
-			multi_master
-	) AS I
-	order by efft_vrsn_seq_id desc
-      ]]>
+	  <materialize name="org_santempi_bi_query_matches_stats">
+		<![CDATA[
+	with possible_ignored as (
+		select 
+			candidate_rel.efft_vrsn_seq_id,
+			candidate_rel.ent_rel_id ,
+			candidate_rel.src_ent_id as local_a, 
+			master_rel.src_ent_id as local_b,
+			candidate_rel.conf as confidence,
+			class_cd.mnemonic as class_code,
+			rel_cd.mnemonic as rel_type,
+			ent_vrsn_tbl.crt_utc 
+		from 
+			-- SOURCE TO MASTER CANDIDATE
+			ent_rel_tbl as candidate_rel
+			-- MASTER BACK TO SOURCE FOR LOCAL OF TARGET
+			inner join ent_rel_tbl as master_rel on (candidate_rel.trg_ent_id = master_rel.trg_ent_id and master_rel.rel_typ_cd_id = '97730a52-7e30-4dcd-94cd-fd532d111578' and master_rel.obslt_vrsn_seq_id is null)
+			inner join cd_vrsn_tbl class_cd on (class_cd.cd_id = candidate_rel.cls_cd_id and class_cd.obslt_utc is null)
+			inner join cd_vrsn_tbl rel_cd on (rel_cd.cd_id = candidate_rel.rel_typ_cd_id and rel_cd.obslt_utc is null)
+			inner join ent_vrsn_tbl on (candidate_rel.efft_vrsn_seq_id = ent_vrsn_tbl.vrsn_seq_id)
+		where 
+			candidate_rel.rel_typ_cd_id in ('56cfb115-8207-4f89-b52e-d20dbad8f8cc','decfb115-8207-4f89-b52e-d20dbad8f8cc')  -- filter for candidates
+			and candidate_rel.obslt_vrsn_seq_id is null 
+	), multi_master as (
+		select distinct
+			master_a.efft_vrsn_seq_id,
+			master_a.ent_rel_id ,
+			master_a.src_ent_id as local_a,
+			master_b.src_ent_id as local_b,
+			case when master_a.conf > master_b.conf then master_a.conf else master_b.conf end as confidence,
+			case when master_a_cls.mnemonic = master_b_cls.mnemonic then master_b_cls.mnemonic else master_a_cls.mnemonic end as class_code,
+			'MDM-Master' as rel_type ,
+			ent_vrsn_tbl.crt_utc 
+		from 
+			ent_rel_tbl master_a
+			inner join ent_rel_tbl master_b  on (master_a.trg_ent_id = master_b.trg_ent_id and master_b.rel_typ_cd_id = '97730a52-7e30-4dcd-94cd-fd532d111578' and master_a.src_ent_id <> master_b.src_ent_id)
+			inner join cd_vrsn_tbl master_a_cls on (master_a_cls.cd_id = master_a.cls_cd_id and master_a_cls.obslt_utc is null)
+			inner join cd_vrsn_tbl master_b_cls on (master_b_cls.cd_id = master_b.cls_cd_id and master_b_cls.obslt_utc is null)
+			inner join ent_vrsn_tbl on (master_a.efft_vrsn_seq_id = ent_vrsn_tbl.vrsn_seq_id)
+		where 
+			master_a.rel_typ_cd_id = '97730a52-7e30-4dcd-94cd-fd532d111578' 
+			and master_a.obslt_vrsn_seq_id is null
+			and master_b.obslt_vrsn_seq_id is null
+	)
+		select * 
+		from (
+			select efft_vrsn_seq_id, ent_rel_id, local_a, local_b, confidence, class_code, rel_type, crt_utc
+			from
+				possible_ignored
+			union
+			select efft_vrsn_seq_id, ent_rel_id, local_a, local_b, confidence, class_code, rel_type, crt_utc
+			from
+				multi_master
+		) AS I
+		order by efft_vrsn_seq_id desc
+		]]>
+		</materialize>
+		<![CDATA[
+		SELECT * FROM org_santempi_bi_query_matches_stats
+		]]>
     </add>
    </definitions>
 </BiQueryDefinition>
