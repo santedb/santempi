@@ -33,11 +33,11 @@
     </menuItem>
      <menuItem context="org.santedb.admin" launch="santedb-admin.mpi.patients.search" asset="/org.santedb.smpi/views/patients/search.html">
       <icon>fas fa-search</icon>
-      <text lang="en">Basic Search</text>
+      <text lang="en">Search</text>
     </menuItem>
     <menuItem context="org.santedb.admin" launch="santedb-admin.mpi.patients.advancedSearch" asset="/org.santedb.smpi/views/patients/advSearch.html">
       <icon>fas fa-search-plus</icon>
-      <text lang="en">Advanced Search</text>
+      <text lang="en">Power Search</text>
     </menuItem>
     <menuItem context="org.santedb.admin" launch="santedb-admin.mpi.config.index" asset="/org.santedb.smpi/views/config/index.html">
         <icon>fas fa-users-cog</icon>
