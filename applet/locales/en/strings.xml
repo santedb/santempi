@@ -25,7 +25,7 @@
     <string name="ui.mpi.patient.advSearch.parameters.dateOfBirth">Date of Birth</string>
     <string name="ui.mpi.patient.advSearch.parameters.facility">Facility Association</string>
     <string name="ui.mpi.patient.search.term">Search For</string>
-    <string name="ui.mpi.patient.search.term.hint"><![CDATA[General search - depending on the coifguration of the server, this field may search on one or more of: <ul><li>Address</li><li>Identifier</li><li>Name(s)</li><li>Telecom Address</li></ul>]]></string>
+    <string name="ui.mpi.patient.search.term.hint"><![CDATA[General search - depending on the coifguration of the server, this field may search on one or more of: <ul><li>Address</li><li>Identifier</li><li>Name(s)</li><li>Telecom Address</li></ul><p>This uses the freetext search configured for your SanteDB iCDR instance, you may be able to query simply by terms (such as <code>Jim Smith</code>) or for larger deployments using logic operators (such as <code>jim smith and ID123 and SomeCity</code>)</p>]]></string>
     <string name="ui.mpi.patient.search.results">Search Results</string>
     <string name="ui.action.rematch">Re-Match</string>
     <string name="ui.action.unignore">Un-Ignore</string>
