@@ -241,7 +241,6 @@ Source: {#iCDRBase}\bin\Release\Data\SQL\AuditDB\FBSQL\*.sql; DestDir: {app}\dat
 ; Matching Infrastructure
 Source: {#iCDRBase}\bin\Release\Phonix.dll; DestDir: {app}; Components: match
 Source: {#iCDRBase}\bin\Release\SanteDB.Matcher.dll; DestDir: {app}; Components: match
-Source: {#iCDRBase}\santedb-match\SanteDB.Matcher.Test\Matching\example.xml; DestDir: {app}\matching; Components: match
 Source: {#iCDRBase}\bin\Release\Pipelines.Sockets.Unofficial.dll; DestDir: {app}; Components: cache\redis
 
 ; OAUTH
