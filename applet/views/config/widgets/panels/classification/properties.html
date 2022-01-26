@@ -37,6 +37,9 @@
                             -scopedObject.minScore) /
                             (scopedObject.maxScore + -scopedObject.minScore) * 100 | number: 2 }}% - 100%</span>
                     </li>
+                    <li class="list-group-item">
+                        {{ 'ui.mpi.match.mode.' + scopedObject.evaluationMode | i18n }}
+                    </li>
                 </ul>
         </div>
     </div>
@@ -86,6 +89,12 @@
                                 scopedObject.maxScore | number: 4 }}</span><span class=" alert-info mr-2"> {{ (scopedObject.matchThreshold +
                                 -scopedObject.minScore) /
                                 (scopedObject.maxScore + -scopedObject.minScore) * 100 | number: 2 }}% - 100%</span>
+                        </li>
+                        <li class="list-group-item">
+                            <select class="form-control" ng-model="scopedObject.evaluationMode">
+                                <option value="AbsoluteScore">{{ 'ui.mpi.match.mode.AbsoluteScore' | i18n }}</option>
+                                <option value="Percentage">{{ 'ui.mpi.match.mode.Percentage' | i18n }}</option>
+                            </select>
                         </li>
                     </ul>
                 </div>
