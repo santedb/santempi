@@ -230,7 +230,8 @@ namespace SanteMPI.Messaging.IHE.Test
         }
 
         /// <summary>
-        /// This test ensures that the receiver is able to merge patient data from an assigning authority (TEST_A) which has an national patient identifier (assigning authority NID). The demographics data does not match, this is to test that matching is done on explicit identifiers.
+        /// This test ensures that the receiver is able to merge patient data from an assigning authority (TEST_A) which has an national patient identifier (assigning authority NID). 
+        /// The demographics data does not match, this is to test that matching is done on explicit identifiers.
         /// </summary>
         [Test]
         public void TestOhieCr06()
@@ -264,7 +265,9 @@ namespace SanteMPI.Messaging.IHE.Test
         }
 
         /// <summary>
-        /// This test ensures that the receiver is able to match an incoming patient with their mother via the “Mother’s Identifier” property. In this test, the harness with register a patient (the mother) and subsequently will register an infant record (only dob, gender and id) with the mother’s identifier attached. The test will ensure that the link occurred by validating a demographic query contains the mother’s name.
+        /// This test ensures that the receiver is able to match an incoming patient with their mother via the “Mother’s Identifier” property. 
+        /// In this test, the harness with register a patient (the mother) and subsequently will register an infant record (only dob, gender and id) 
+        /// with the mother’s identifier attached. The test will ensure that the link occurred by validating a demographic query contains the mother’s name.
         /// </summary>
         [Test]
         public void TestOhieCr07()
@@ -306,7 +309,8 @@ namespace SanteMPI.Messaging.IHE.Test
         }
 
         /// <summary>
-        /// This test ensures that the receiver is able to store and usefully convey (regurgitate) a more complete patient record having multiple names, addresses, telephone numbers, mother’s identifier, mother’s name, birth date, multiple birth order, etc.
+        /// This test ensures that the receiver is able to store and usefully convey (regurgitate) a more complete patient record having multiple names, 
+        /// addresses, telephone numbers, mother’s identifier, mother’s name, birth date, multiple birth order, etc.
         /// </summary>
         [Test]
         public void TestOhieCr08()
@@ -408,7 +412,10 @@ namespace SanteMPI.Messaging.IHE.Test
         }
 
         /// <summary>
-        /// In this test, the test harness will register a patient with a local identifier (TEST domain). The receiver is the assigning authority for the ECID domain and should generate an ECID by whatever means the software performs this task. The test harness will then ask the receiver to do a cross reference between the TEST domain and the ECID domain. This test ensures that the receiver adheres to the “What Domains Returned” query parameter.
+        /// In this test, the test harness will register a patient with a local identifier (TEST domain). The receiver is the assigning authority 
+        /// for the ECID domain and should generate an ECID by whatever means the software performs this task. The test harness will then ask the 
+        /// receiver to do a cross reference between the TEST domain and the ECID domain. This test ensures that the receiver adheres to the 
+        /// “What Domains Returned” query parameter.
         /// </summary>
         [Test]
         public void TestOhieCr10()
@@ -440,7 +447,7 @@ namespace SanteMPI.Messaging.IHE.Test
             Assert.AreEqual("QPD", rsp.ERR.GetErrorLocation(0).SegmentID.Value);
             Assert.AreEqual("4", rsp.ERR.GetErrorLocation(0).FieldPosition.Value);
 
-            // Test harness requests recevier giv it a domain identifier from valid domain but for which the patient has no ID
+            // Test harness requests recevier give it a domain identifier from valid domain but for which the patient has no ID
             message = TestUtil.GetMessageEvent("OHIE-CR-10-40", DeviceSecretA);
             response = new PdqQbpMessageHandler(new TestLocalizationService()).HandleMessage(message);
             TestUtil.AssertOutcome(response, "AA");
@@ -498,7 +505,7 @@ namespace SanteMPI.Messaging.IHE.Test
             Assert.AreEqual("AE", rsp.QAK.QueryResponseStatus.Value);
             Assert.AreEqual(0, rsp.QUERY_RESPONSERepetitionsUsed);
 
-            // Test harness sends PDQ message and specified domains that should be retutrned in QPD-8
+            // Test harness sends PDQ message and specified domains that should be returned in QPD-8
             message = TestUtil.GetMessageEvent("OHIE-CR-11-50");
             response = new PdqQbpMessageHandler(new TestLocalizationService()).HandleMessage(message);
             TestUtil.AssertOutcome(response, "AA");
