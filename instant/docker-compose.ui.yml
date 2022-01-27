@@ -28,6 +28,7 @@ services:
       - SDB_REDIS_SERVER=sdb-redis:6379
       - SDB_DATA_POLICY_ACTION=HIDE
       - SDB_DELAY_START=5000
+      - MONO_THREADS_PER_CPU=10
     ports:
       - "8080:8080"
       - "2100:2100"
