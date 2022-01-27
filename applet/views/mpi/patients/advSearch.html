@@ -63,7 +63,7 @@
 
                                     <div class="form-control">
                                         <select required="true" class="form-control" style="border:none" ng-model="s.value" ng-if="s.filter.values">
-                                            <option ng-repeat="v in s.filter.values" value="{{v}}">{{v}}</option>
+                                            <option ng-repeat="(k,v) in s.filter.values" value="{{k}}">{{v}}</option>
                                         </select>
                                         <div ng-switch="s.filter.type" ng-if="!s.filter.values">
                                             <input required="true" autocomplete="__away" type="text" style="border:none" class="form-control"

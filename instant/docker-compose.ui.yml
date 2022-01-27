@@ -15,20 +15,20 @@ services:
     image: santesuite/santedb-mpi:latest
     container_name: santedb-mpi
     environment:
-      - SDB_FEATURE=LOG;DATA_POLICY;AUDIT_REPO;ADO;PUBSUB_ADO;RAMCACHE;SEC;SWAGGER;OPENID;FHIR;FHIR_AUDIT;HL7;HDSI;AMI;BIS;MDM;MATCHING;IHE_PIXM;IHE_PDQM;IHE_PMIR;IHE_PIX;IHE_PDQ;ADO_FTS
+      - SDB_FEATURE=LOG;DATA_POLICY;AUDIT_REPO;ADO;PUBSUB_ADO;RAMCACHE;SEC;SWAGGER;OPENID;FHIR;HL7;HDSI;AMI;BIS;MDM;MATCHING;IHE_PIXM;IHE_PDQM;IHE_PMIR;IHE_PIX;IHE_PDQ;ADO_FTS
       - SDB_HL7_AUTHENTICATION=Msh8
-      - SDB_LOG_LEVEL=Informational
+      - SDB_LOG_LEVEL=Warning
       - SDB_MATCHING_MODE=WEIGHTED
       - SDB_MDM_RESOURCE=Patient=org.santedb.matching.patient.default
-      - SDB_FHIR_AUDIT_EP=http://host.docker.internal:8989/fhir
       - SDB_MDM_AUTO_MERGE=false
-      - SDB_DB_MAIN=server=sdb-postgres;port=5432; database=santedb; user id=santedb; password=SanteDB123; pooling=true; MinPoolSize=5; MaxPoolSize=15; Timeout=60;
-      - SDB_DB_AUDIT=server=sdb-postgres;port=5432; database=auditdb; user id=santedb; password=SanteDB123; pooling=true; MinPoolSize=5; MaxPoolSize=15; Timeout=60;
+      - SDB_DB_MAIN=server=sdb-postgres;port=5432; database=santedb; user id=santedb; password=SanteDB123; pooling=true; MinPoolSize=5; MaxPoolSize=90; Timeout=60;
+      - SDB_DB_AUDIT=server=sdb-postgres;port=5432; database=auditdb; user id=santedb; password=SanteDB123; pooling=true; MinPoolSize=5; MaxPoolSize=10; Timeout=60;
       - SDB_DB_MAIN_PROVIDER=Npgsql
       - SDB_DB_AUDIT_PROVIDER=Npgsql
       - SDB_REDIS_SERVER=sdb-redis:6379
       - SDB_DATA_POLICY_ACTION=HIDE
       - SDB_DELAY_START=5000
+      - MONO_THREADS_PER_CPU=10
     ports:
       - "8080:8080"
       - "2100:2100"

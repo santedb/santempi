@@ -2,7 +2,7 @@
 
 // Load available transforms
 SanteDB.resources.matchConfiguration.invokeOperationAsync(null, "transforms").then((o) => {
-    SanteDB.configuration._globalMatchTransforms =  o;
+    SanteDB.configuration._globalMatchTransforms = o;
 });
 
 angular.module('santedb').controller('MpiConfigurationDetailController', ["$scope", "$rootScope", "$state", "$stateParams", "$timeout", "$interval", function ($scope, $rootScope, $state, $stateParams, $timeout, $interval) {
@@ -14,7 +14,7 @@ angular.module('santedb').controller('MpiConfigurationDetailController', ["$scop
 
         try {
 
-            
+
             var matchConfiguration = {
                 meta: {
                     version: 1,
@@ -37,22 +37,20 @@ angular.module('santedb').controller('MpiConfigurationDetailController', ["$scop
                 matchConfiguration = await SanteDB.resources.matchConfiguration.getAsync(configId);
 
                 // Initialize the uuids on all statements
-                if(matchConfiguration.blocking) {
-                    matchConfiguration.blocking.forEach((b) =>
-                    {
-                        b._id = `blk${SanteDB.application.newGuid().replace('-','')}`;
+                if (matchConfiguration.blocking) {
+                    matchConfiguration.blocking.forEach((b) => {
+                        b._id = `blk${SanteDB.application.newGuid().replace('-', '')}`;
                         b.filter.forEach((f) => {
-                            f._id = `flt${SanteDB.application.newGuid().replace('-','')}`;
+                            f._id = `flt${SanteDB.application.newGuid().replace('-', '')}`;
                         });
                     });
                 }
-                if(matchConfiguration.scoring) {
-                    matchConfiguration.scoring.forEach((s) =>
-                    {
-                        s._id = `scr${SanteDB.application.newGuid().replace('-','')}`;
-                        if(s.transform) {
+                if (matchConfiguration.scoring) {
+                    matchConfiguration.scoring.forEach((s) => {
+                        s._id = `scr${SanteDB.application.newGuid().replace('-', '')}`;
+                        if (s.transform) {
                             s.transform.forEach((t) => {
-                                t._id = `blk${SanteDB.application.newGuid().replace('-','')}`;
+                                t._id = `blk${SanteDB.application.newGuid().replace('-', '')}`;
                             });
                         }
                     });
@@ -81,7 +79,7 @@ angular.module('santedb').controller('MpiConfigurationDetailController', ["$scop
     $scope.$watch('matchConfiguration.scoring', function (n, o) {
         if ($scope.matchConfiguration) {
             if (n != o && n && n.length > 0) {
-                if(n.length < 2) {
+                if (n.length < 2) {
                     $scope.matchConfiguration.minScore = n[0].nonMatchWeight;
                     $scope.matchConfiguration.maxScore = n[0].matchWeight;
                 }
@@ -147,63 +145,61 @@ angular.module('santedb').controller('MpiConfigurationDetailController', ["$scop
 }]).controller('MpiConfigurationEditController', ["$scope", "$rootScope", "$state", "$timeout", function ($scope, $rootScope, $state, $timeout) {
 
 
-    $scope.transformAlgorithms = SanteDB.configuration._globalMatchTransforms ;
-    
+    $scope.transformAlgorithms = SanteDB.configuration._globalMatchTransforms;
+
     var noRender = false, needsRender = false;
 
-    $scope.$watch('panel.view', function(n,e) {
-        if(n != e) {
+    $scope.$watch('panel.view', function (n, e) {
+        if (n != e) {
             refreshDiagrams($scope.scopedObject);
         }
     });
 
     // Add a blocking instruction
-    $scope.addBlock = function() {
-        if(!$scope.scopedObject.blocking)
-        {
+    $scope.addBlock = function () {
+        if (!$scope.scopedObject.blocking) {
             $scope.scopedObject.blocking = [];
         }
 
         $scope.scopedObject.blocking.push({
-            maxResults : 10,
+            maxResults: 10,
             op: 'AndAlso',
             filter: [
                 {
-                    _id: `flt${SanteDB.application.newGuid().replace('-','')}`,
+                    _id: `flt${SanteDB.application.newGuid().replace('-', '')}`,
                     expression: "",
                     when: []
                 }
             ]
-            
-            
+
+
         });
         refreshDiagrams($scope.scopedObject);
 
     }
 
-     // Add a blocking instruction
-     $scope.addScore = function() {
-        if(!$scope.scopedObject.scoring)
-        {
+    // Add a blocking instruction
+    $scope.addScore = function () {
+        if (!$scope.scopedObject.scoring) {
             $scope.scopedObject.scoring = [];
         }
 
-        var scoreId = `scr${SanteDB.application.newGuid().replace('-','')}`;
+        var scoreId = `scr${SanteDB.application.newGuid().replace('-', '')}`;
 
         $scope.scopedObject.scoring.push({
             _id: scoreId,
-            assert : {
+            assert: {
                 transform: [],
                 assert: [],
                 op: "Equal"
             },
             when: [],
-            property: [ 'id' ],
+            property: ['id'],
             whenNull: "None"
         });
 
         var i = $scope.scopedObject.scoring.length - 1;
-        $timeout(o=> {
+        $timeout(o => {
             $(`#scoreEdit${i}`).collapse('show');
             renderScoringSummary($scope.scopedObject, i);
         }, 500);
@@ -213,11 +209,12 @@ angular.module('santedb').controller('MpiConfigurationDetailController', ["$scop
 
 
     // Add a filter expression
-    $scope.addFilter = function(block) {
-        block.filter.push({   
-            _id: `flt${SanteDB.application.newGuid().replace('-','')}`,
-            expression: "", 
-            when: [] });
+    $scope.addFilter = function (block) {
+        block.filter.push({
+            _id: `flt${SanteDB.application.newGuid().replace('-', '')}`,
+            expression: "",
+            when: []
+        });
         refreshDiagrams($scope.scopedObject);
 
     }
@@ -296,12 +293,12 @@ angular.module('santedb').controller('MpiConfigurationDetailController', ["$scop
 
 
     // Update a score's weight
-    $scope.recalcScore = function(score) {
+    $scope.recalcScore = function (score) {
 
         score.matchWeight = Math.log2(score.m / score.u) / Math.log2(2.0);
-        score.nonMatchWeight = Math.log2((1 - score.m) / (1- score.u)) / Math.log2(2.0);
+        score.nonMatchWeight = Math.log2((1 - score.m) / (1 - score.u)) / Math.log2(2.0);
 
-        if($scope.scopedObject.scoring.length < 2) {
+        if ($scope.scopedObject.scoring.length < 2) {
             $scope.scopedObject.minScore = $scope.scopedObject.scoring[0].nonMatchWeight;
             $scope.scopedObject.maxScore = $scope.scopedObject.scoring[0].matchWeight;
         }
@@ -312,12 +309,12 @@ angular.module('santedb').controller('MpiConfigurationDetailController', ["$scop
 
         var index = $scope.scopedObject.scoring.findIndex((o) => o._id == score._id);
 
-        if(!noRender) {
+        if (!noRender) {
             noRender = true;
             renderScoringSummary($scope.scopedObject, index);
             $timeout(() => {
                 noRender = false;
-                if(needsRender) {
+                if (needsRender) {
                     renderScoringSummary($scope.scopedObject, index);
                     needsRender = false;
                 }
@@ -329,24 +326,24 @@ angular.module('santedb').controller('MpiConfigurationDetailController', ["$scop
     }
 
     // Update the transform
-    $scope.updateTransform = function(score, txCollection, tx) {
+    $scope.updateTransform = function (score, txCollection, tx) {
 
-        var txDef = SanteDB.configuration._globalMatchTransforms.find(o=>o.name == tx.name);
+        var txDef = SanteDB.configuration._globalMatchTransforms.find(o => o.name == tx.name);
         tx._meta = txDef.arguments;
 
-        if(tx.args.length != txDef.arguments.length) {
+        if (tx.args.length != txDef.arguments.length) {
             tx.args = txDef.arguments.map(o => "");
         }
 
         // Is there any unary txfs?
         var index = $scope.scopedObject.scoring.findIndex((o) => o._id == score._id);
 
-        if(!noRender) {
+        if (!noRender) {
             noRender = true;
             renderScoringSummary($scope.scopedObject, index);
             $timeout(() => {
                 noRender = false;
-                if(needsRender) {
+                if (needsRender) {
                     renderScoringSummary($scope.scopedObject, index);
                     needsRender = false;
                 }
@@ -355,101 +352,119 @@ angular.module('santedb').controller('MpiConfigurationDetailController', ["$scop
         else {
             needsRender = true;
         }
-        
+
 
         var retVal = false;
-        txCollection.forEach((b)=> {
-            var def = SanteDB.configuration._globalMatchTransforms.find(d=>d.name == b.name);
+        txCollection.forEach((b) => {
+            var def = SanteDB.configuration._globalMatchTransforms.find(d => d.name == b.name);
             retVal |= def.type == "Binary";
         });
         return retVal;
     }
 
     // Run the test
-    $scope.runTest = async function(testForm) {
-        if(!testForm.$valid) { return; }
+    $scope.runTest = async function (testForm) {
+        if (!testForm.$valid) { return; }
 
-        console.info($scope.scopedObject._test.input);
         try {
             SanteDB.display.buttonWait("#runTest", true);
             $("#runTest").html(`<i class='fas fa-circle-notch fa-spin'></i> ${SanteDB.locale.getString("ui.mpi.matches.config.test.runningMatch")}`);
 
 
             var test = await SanteDB.resources.matchConfiguration.invokeOperationAsync($scope.scopedObject.id, "test", {
-                "input" : $scope.scopedObject._test.input,
-                "targets": $scope.scopedObject._test.knownDuplicates.map(o=>o.id)
+                "input": $scope.scopedObject._test.input,
+                "targets": $scope.scopedObject._test.knownDuplicates.map(o => o.id)
             }, true);
 
-           
+
             $timeout(() => {
-                var scores = test.results.map(o=>o.score);
-                scores = scores.sort((a,b) => a - b);
 
-                var stats = { count: scores.length, NonMatch: 0, Match: 0, Probable: 0,  min: scores[0], max: scores[scores.length - 1], avg: scores.reduce((a,b) => a+b) / scores.length, median: scores[Math.trunc(scores.length / 2)] };
+                var scores = test.results.map(o => o.score);
+                scores = scores.sort((a, b) => a - b);
 
-                test.results.forEach((c) => {
-                    if(!stats[c.classification]) stats[c.classification] = 0;
-                    stats[c.classification]++;
-                });
-                $scope.scopedObject._test.stats = stats;
-                $scope.scopedObject._test.results = [];
+                if (scores && scores.length > 0) {
+                    var stats = { count: scores.length, NonMatch: 0, Match: 0, Probable: 0, min: scores[0], max: scores[scores.length - 1], avg: scores.reduce((a, b) => a + b) / scores.length, median: scores[Math.trunc(scores.length / 2)] };
 
-                $scope.scopedObject._test.analysis = [];
+                    test.results.forEach((c) => {
+                        if (!stats[c.classification]) stats[c.classification] = 0;
+                        stats[c.classification]++;
+                    });
+                    $scope.scopedObject._test.stats = stats;
 
-                // Recommendations
-                if(stats.count > 20) {
-                    $scope.scopedObject._test.analysis.push("wideBlocking");
-                }
-                if(stats.NonMatch / stats.count > 0.2 || stats.Probable / stats.count > 0.6) {
-                    $scope.scopedObject._test.analysis.push("poorBlocking");
-                }
-                if(stats.count == 0) {
-                    $scope.scopedObject._test.analysis.push("strictBlocking");
-                }
-                if(stats.avg < stats.median) {
-                    $scope.scopedObject._test.analysis.push("poorScoring");
+                    $scope.scopedObject._test.analysis = [];
+
+                    // Recommendations
+                    if (stats.count > 20) {
+                        $scope.scopedObject._test.analysis.push("wideBlocking");
+                    }
+                    if (stats.NonMatch / stats.count > 0.2 || stats.Probable / stats.count > 0.6) {
+                        $scope.scopedObject._test.analysis.push("poorBlocking");
+                    }
+                    if (stats.count == 0) {
+                        $scope.scopedObject._test.analysis.push("strictBlocking");
+                    }
+                    if (stats.avg < stats.median) {
+                        $scope.scopedObject._test.analysis.push("poorScoring");
+                    }
+                } else {
+                    console.info($scope.scopedObject._test);
+                    $scope.scopedObject._test = {
+                        results: [],
+                        analysis: [],
+                        knownDuplicates: [],
+                        stats: { count: 0, NonMatch: 0, Match: 0, Probable: 0, min: 0, max: 0, median: 0 }
+                    }
                 }
             });
 
-            
+
             $("#runTest").html(`<i class='fas fa-circle-notch fa-spin'></i> ${SanteDB.locale.getString("ui.mpi.matches.config.test.gatheringResults")}`);
 
-            if($scope.dtInit) {
+            if ($scope.dtInit) {
                 $scope.dtInit.destroy();
                 $scope.dtInit = null;
             }
-            
+
             var resultCollection = [];
             var maxResults = test.results.length;
-            if(maxResults > 100) {
+            if (maxResults > 100) {
                 maxResults = 100; // only allow for fetching of 50 details
             }
-            test.results = test.results.sort((a,b)=> b.strength - a.strength);
 
-            for(var i = 0; i < maxResults; i+=10) {
+            if (test.results && test.results.length > 0) {
+                test.results = test.results.sort((a, b) => b.strength - a.strength);
 
-                var resultSlice = test.results.slice(i, i + 10);
-                var resultBatch = await SanteDB.resources.patient.findAsync({ "_id" : resultSlice.map(o=>o.record) });
-                resultSlice.forEach((r) => {
-                    var patientDetail = resultBatch.resource.find(o=>o.id == r.record);
-                    patientDetail._match = r;
-                    resultCollection.push(patientDetail);
-                });
+                for (var i = 0; i < maxResults; i += 10) {
+
+                    var resultSlice = test.results.slice(i, i + 10);
+                    var resultBatch = await SanteDB.resources.patient.findAsync({ "_id": resultSlice.map(o => o.record) });
+                    resultSlice.forEach((r) => {
+                        var patientDetail = resultBatch.resource.find(o => o.id == r.record);
+                        patientDetail._match = r;
+                        resultCollection.push(patientDetail);
+                    });
+                }
+
+                if (resultCollection && resultCollection.length > 0) {
+                    $timeout(() => {
+                        $scope.scopedObject._test.results = resultCollection.sort((a, b) => b._match.strength - a._match.strength);
+
+                        $timeout(() =>
+                        {
+                            $scope.dtInit = $("#resultTable").DataTable();
+                            renderActualSummary($scope.scopedObject, test);
+
+                        }, 500);
+                    });
+                }
+            }
+            else {
+                // Draw the diagram 
+                renderActualSummary($scope.scopedObject, test);
             }
 
-            $timeout(() => {
-                $scope.scopedObject._test.results = resultCollection.sort((a,b) => b.tag["$match.strength"] - a.tag["$match.strength"]);
-                
-                $timeout(() => 
-                    $scope.dtInit = $("#resultTable").DataTable(), 500);
-           });
-
-            
-            // Draw the diagram 
-            await renderActualSummary($scope.scopedObject, test);
-
         }
-        catch(e) {
+        catch (e) {
             $rootScope.errorHandler(e);
         }
         finally {
@@ -459,16 +474,16 @@ angular.module('santedb').controller('MpiConfigurationDetailController', ["$scop
 
     }
 
-    
-     // Show match detail
-     $scope.matchDetail = async function (id) {
+
+    // Show match detail
+    $scope.matchDetail = async function (id) {
         try {
             $timeout(() => {
-                delete($scope.scopedObject.candidateObject);
+                delete ($scope.scopedObject.candidateObject);
                 $("#candidateDetailModal").modal('show');
             });
-            
-            var matchReport = await SanteDB.resources.patient.getAssociatedAsync(id, "mdm-candidate", $scope.scopedObject._test.input, { _configuration: $scope.scopedObject.id , _upstream: true });
+
+            var matchReport = await SanteDB.resources.patient.getAssociatedAsync(id, "mdm-candidate", $scope.scopedObject._test.input, { _configuration: $scope.scopedObject.id, _upstream: true });
 
             $timeout(_ => {
                 $scope.scopedObject.candidateObject = {

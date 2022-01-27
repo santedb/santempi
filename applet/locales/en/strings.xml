@@ -66,7 +66,6 @@
     <string name="ui.mpi.match.recordState.master">Master Record</string>
     <string name="ui.mpi.match.recordState.rot">Record of Truth</string>
     <string name="ui.mpi.match.patient.title">Person Summary</string>
-
     <!-- Summary View -->
     <string name="ui.mpi.matches.detail">Match Detail</string>
     <string name="ui.mpi.matches.view.detail">A/B Compare</string>
@@ -244,7 +243,8 @@
     <string name="ui.mpi.matches.config.test.diagram">Test Result</string>
     <string name="ui.mpi.matches.config.doctor.wideBlocking.title"><![CDATA[<i class="fas fa-exclamation-triangle"></i> Blocking Criteria &amp; Performance]]></string>
     <string name="ui.mpi.matches.config.doctor.wideBlocking.description"><![CDATA[Your blocking criteria has returned a large number of results ({count}) from the database. This may have serious performance impacts if scoring requires complex criteria. Consider adding more blocking criteria to speed up your matching configuration]]></string>
-
+    <string name="ui.mpi.match.mode.AbsoluteScore">Classification performed using absolute result score of attributes</string>
+    <string name="ui.mpi.match.mode.Percentage">Classify performed using normalized score of evaluated attributes</string>
   <!-- Rendering Graphs -->
   <string name="ui.mpi.entity.relationship.mode">Graph Mode</string>
   <string name="ui.mpi.entity.relationship.mode.advanced">Detailed Relationship Diagram</string>

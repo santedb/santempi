@@ -25,51 +25,50 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
 
     var defaultSearch = {
         advanced: {
-            name: [ new EntityName() ],
-            address: [ new EntityAddress() ],
+            name: [new EntityName()],
+            address: [new EntityAddress()],
             dateOfBirth: {
-                from : null,
+                from: null,
                 to: null
             },
             genderConcept: null
         },
         val: $stateParams.q,
-        custom: [ {} ]
+        custom: [{}]
     }
 
 
     // Convert value to a search clause
     function makeSearchClause(value) {
-        if(value == "") {
+        if (value == "") {
             return null;
         }
-        else if(value[0] == '~') // sound
+        else if (value[0] == '~') // sound
         {
             return `:(approx|'${value.substring(1)}')`;
         }
-        else if(value.indexOf("*") > -1) // fuzzy
+        else if (value.indexOf("*") > -1) // fuzzy
         {
             return `~${value}`;
         }
-        else 
-        {
+        else {
             return value;
         }
-    }   
+    }
 
     // Validate the advanced search 
     // At least 3 fuzzy fields must be filled OR an identifier
-    $scope.validateAdvancedSearch = function() {
-        if(!$scope.search._advanced) return false;
+    $scope.validateAdvancedSearch = function () {
+        if (!$scope.search._advanced) return false;
 
         var fields = 0, advanced = $scope.search.advanced;
-        var address= (advanced.address.$other[0].component || {});
+        var address = (advanced.address.$other[0].component || {});
         var name = (advanced.name.$other[0].component || {});
-        if(name.Given || name.Family) fields++;
-        if(advanced.identifier) fields += 3; // identifier= pass
-        if(address.City || address.State || address.StreetAddressLine || address.County) fields++;
-        if(advanced.genderConcept) fields++;
-        if(advanced.dateofBirth && (advanced.dateOfBirth.from || advanced.dateOfBirth.to)) fields++;
+        if (name.Given || name.Family) fields++;
+        if (advanced.identifier) fields += 3; // identifier= pass
+        if (address.City || address.State || address.StreetAddressLine || address.County) fields++;
+        if (advanced.genderConcept) fields++;
+        if (advanced.dateofBirth && (advanced.dateOfBirth.from || advanced.dateOfBirth.to)) fields++;
 
         return fields >= 1;
     }
@@ -98,11 +97,11 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
                 "_upstream": $scope.search._upstream
             };
 
-            if(custom) { // Custom HDSI search
+            if (custom) { // Custom HDSI search
                 $scope.search.custom.forEach((o) => {
 
                     var operator = "";
-                    switch(o.op) {
+                    switch (o.op) {
                         case "not-equal":
                             operator = "!";
                             break;
@@ -127,50 +126,48 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
                     }
 
                     var value = o.value;
-                    if(value instanceof Date) {
-                        value = value.toISOString(); 
+                    if (value instanceof Date) {
+                        value = value.toISOString();
                     }
                     var filterValue = `${operator}${value}`;
-                    if(queryObject[o.filter.expression])
-                    {
+                    if (queryObject[o.filter.expression]) {
                         queryObject[o.filter.expression].push(filterValue);
                     }
                     else {
-                        queryObject[o.filter.expression] = [ filterValue ];
+                        queryObject[o.filter.expression] = [filterValue];
                     }
                 });
             }
             else if ($scope.search._advanced) {
 
                 var advanced = $scope.search.advanced;
-               
+
                 // Query 
-                if(advanced.name.$other[0].component){
-                    if(advanced.name.$other[0].component.Given)
+                if (advanced.name.$other[0].component) {
+                    if (advanced.name.$other[0].component.Given)
                         queryObject["name.component[Given].value"] = makeSearchClause(advanced.name.$other[0].component.Given);
-                    if(advanced.name.$other[0].component.Family)
-                        queryObject["name.component[Family].value"] =  makeSearchClause(advanced.name.$other[0].component.Family);
+                    if (advanced.name.$other[0].component.Family)
+                        queryObject["name.component[Family].value"] = makeSearchClause(advanced.name.$other[0].component.Family);
                 }
-                if(advanced.address.$other[0].component)
-                {
-                    if(advanced.address.$other[0].component.City)
+                if (advanced.address.$other[0].component) {
+                    if (advanced.address.$other[0].component.City)
                         queryObject["address.component[City].value"] = makeSearchClause(advanced.address.$other[0].component.City);
-                    if(advanced.address.$other[0].component.County)
+                    if (advanced.address.$other[0].component.County)
                         queryObject["address.component[County].value"] = makeSearchClause(advanced.address.$other[0].component.County);
-                    if(advanced.address.$other[0].component.State)
+                    if (advanced.address.$other[0].component.State)
                         queryObject["address.component[State].value"] = makeSearchClause(advanced.address.$other[0].component.State);
-                    if(advanced.address.$other[0].component.Country)
+                    if (advanced.address.$other[0].component.Country)
                         queryObject["address.component[Country].value"] = makeSearchClause(advanced.address.$other[0].component.Country);
-                    if(advanced.address.$other[0].component.StreetAddressLine)
+                    if (advanced.address.$other[0].component.StreetAddressLine)
                         queryObject["address.component[StreetAddressLine].value"] = makeSearchClause(advanced.address.$other[0].component.StreetAddressLine);
                 }
-                if(advanced.identifier)
+                if (advanced.identifier)
                     queryObject["identifier.value"] = makeSearchClause(advanced.identifier);
-                if(advanced.dateOfBirth.from)
+                if (advanced.dateOfBirth.from)
                     queryObject["dateOfBirth"] = `>=${moment(advanced.dateOfBirth.from).format('YYYY-MM-DD')}`;
-                if(advanced.dateOfBirth.to)
+                if (advanced.dateOfBirth.to)
                     queryObject["dateOfBirth"] = `<=${moment(advanced.dateOfBirth.to).format('YYYY-MM-DD')}`;
-                if(advanced.genderConcept)
+                if (advanced.genderConcept)
                     queryObject["genderConcept"] = advanced.genderConcept;
 
             }
@@ -179,11 +176,13 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
                 queryObject["_any"] = $scope.search.val;
             }
 
-            queryObject["statusConcept"] = [
-                StatusKeys.Active,
-                StatusKeys.New,
-                StatusKeys.Completed
-            ];
+            if (!queryObject["statusConcept"]) {
+                queryObject["statusConcept"] = [
+                    StatusKeys.Active,
+                    StatusKeys.New,
+                    StatusKeys.Completed
+                ];
+            }
             $scope.$parent.lastSearch = {
                 search: $scope.search
             };
@@ -201,21 +200,21 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
     }
 
     // Research search
-    $scope.resetSearch = function() {
+    $scope.resetSearch = function () {
         $scope.search = angular.copy(defaultSearch);
     }
 
 
     // Scan identifier but don't search
-    $scope.scanIdentifier = async function() {
-        
+    $scope.scanIdentifier = async function () {
+
         SanteDB.display.buttonWait("#btnScanSecondary", true);
         try {
             $scope.search.advanced.identifier = await SanteDB.application.scanIdentifierAsync();
             try { $scope.$apply(); }
-            catch(e) {}
+            catch (e) { }
         }
-        catch(e) {
+        catch (e) {
             $rootScope.errorHandler(e);
         }
         finally {
@@ -233,7 +232,7 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
             if (!result)
                 return;
             else if (result.$type == "Bundle") {
-                $scope.search.val = result.$search; 
+                $scope.search.val = result.$search;
                 $scope.searchMpi();
             }
             else {
@@ -268,7 +267,7 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
         $scope.filter = $scope.$parent.lastSearch.filter;
         defaultSearch = $scope.search = $scope.$parent.lastSearch.search;
 
-        if($scope.search._advanced)
+        if ($scope.search._advanced)
             $('#searchCarousel').carousel(1);
     }
     else {

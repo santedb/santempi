@@ -45,17 +45,7 @@
                 Relationship Type
               </bi:header>
               <bi:cell>
-                <bi:switch value="rel_mnemonic">
-                  <bi:when op="eq" value="MDM-Duplicate">
-                    Candidate
-                  </bi:when>
-                  <bi:when op="eq" value="MDM-Master">
-                    Master
-                  </bi:when>
-                  <bi:when op="eq" value="MDM-IgnoreCandidateLocalRecord">
-                    Ignore
-                  </bi:when>
-                </bi:switch>
+                <bi:value>rel_mnemonic</bi:value>
               </bi:cell>
             </bi:column>
             <bi:column>
@@ -63,17 +53,7 @@
                 Classification
               </bi:header>
               <bi:cell>
-                <bi:switch value="cls_mnemonic">
-                  <bi:when op="eq" value="MDM-AutomagicLink">
-                    Auto
-                  </bi:when>
-                  <bi:when op="eq" value="MDM-Verified">
-                    Verified
-                  </bi:when>
-                  <bi:when op="eq" value="MDM-SystemLink">
-                    System
-                  </bi:when>
-                </bi:switch>
+                <bi:value>cls_mnemonic</bi:value>
               </bi:cell>
             </bi:column>
             <bi:column>
