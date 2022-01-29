@@ -40,7 +40,7 @@
             <invariant>FirebirdSQL</invariant>
           </providers>
           <grouping>
-            <column name="local_b">local_b</column>
+            <column name="local_a">local_a</column>
           </grouping>
           <select>
             <column name="n" fn="count-distinct">ent_rel_id</column>
@@ -56,7 +56,7 @@
         <bi:chart source="by-holder" type="pie" legend="true">
           <bi:title>Duplication per-Record</bi:title>
           <bi:labels>String.Format("{0} per", n)</bi:labels>
-          <bi:dataset label="1" aggregate="count">local_b</bi:dataset>
+          <bi:dataset label="1" aggregate="count">local_a</bi:dataset>
         </bi:chart>
       </div>
     </add>
