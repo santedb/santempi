@@ -245,6 +245,15 @@
     <string name="ui.mpi.matches.config.doctor.wideBlocking.description"><![CDATA[Your blocking criteria has returned a large number of results ({count}) from the database. This may have serious performance impacts if scoring requires complex criteria. Consider adding more blocking criteria to speed up your matching configuration]]></string>
     <string name="ui.mpi.match.mode.AbsoluteScore">Classification performed using absolute result score of attributes</string>
     <string name="ui.mpi.match.mode.Percentage">Classify performed using normalized score of evaluated attributes</string>
+    <string name="ui.model.matchConfiguration.blocking.useLowerLayer">Block Strategy</string>
+    <string name="ui.model.matchConfiguration.blocking.useLowerLayer.hint"><![CDATA[Specifies how blocked records should be filtered and loaded. Options are: <ul>
+    <li>MASTER (default) - Instructs the blocking to be considered on the MASTER record (i.e. the collection of sources)</li>
+    <li>LOCAL/SOURCE - Instructs the blocking to be considered on SOURCE records (this is faster but ignore instructions may be less accurate)</li>
+    </ul>
+    ]]></string>
+    <string name="ui.model.matchConfiguration.blocking.useLowerLayer.true">LOCAL/SOURCE - Blocking occurs against source records</string>
+    <string name="ui.model.matchConfiguration.blocking.useLowerLayer.false">MASTER - Blocking occurs against MASTER records</string>
+    <string name="ui.model.matchConfiguration.blocking.useLowerLayer.set">Use LOCAL/SOURCE blocking. This may result in better performance however generated properties or combined properties of the master may not be considered</string>
   <!-- Rendering Graphs -->
   <string name="ui.mpi.entity.relationship.mode">Graph Mode</string>
   <string name="ui.mpi.entity.relationship.mode.advanced">Detailed Relationship Diagram</string>

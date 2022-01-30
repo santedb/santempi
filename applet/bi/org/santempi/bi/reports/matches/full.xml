@@ -73,7 +73,7 @@
             </bi:column>
             <bi:column>
               <bi:header>Source</bi:header>
-              <bi:cell><bi:value>a_source</bi:value></bi:cell>
+              <bi:cell><bi:value>a_source_app</bi:value></bi:cell>
             </bi:column>
             <bi:column>
               <bi:header>Timestamp</bi:header>
@@ -124,7 +124,7 @@
             </bi:column>
             <bi:column>
               <bi:header>Source</bi:header>
-              <bi:cell><bi:value>b_source</bi:value></bi:cell>
+              <bi:cell><bi:value>b_source_app</bi:value></bi:cell>
             </bi:column>
             <bi:column>
               <bi:header>Timestamp</bi:header>

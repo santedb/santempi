@@ -65,7 +65,7 @@
     <Content Include="config\template\SanteMPI Server.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="match\DefaultPatientMatching.xml">
+    <Content Include="match\04af8439-2234-4a81-ac3a-635c9a76b30c.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="santempi.test.config.xml">
