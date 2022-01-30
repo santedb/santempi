@@ -1,0 +1,136 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<MatchConfiguration xmlns="http://santedb.org/matcher"
+                    id="org.santedb.matching.patient.default"
+                    evaluationMode="score"
+                    nonmatchThreshold="6.0"
+                    matchThreshold="12"
+                    uuid="04af8439-2234-4a81-ac3a-635c9a76b30c">
+  <target resource="Patient" />
+
+  <!-- Start: Blocking Configuration -->
+  <meta>
+    <createdBy>SanteSuite Community</createdBy>
+    <creationTime>2021-09-14T13:48:00Z</creationTime>
+    <status>Active</status>
+    <tags>
+      <add key="$mdm.auto-link">false</add>
+    </tags>
+  </meta>
+
+
+  <!-- 
+      Blocking configuration instructs the matcher to load candidate records from the primary data store
+      which have attributes matching the input criteria specified 
+  -->
+  
+  <!-- Retrieve patients with NID within 2 type-o's -->
+  <blocking op="or" maxResults="5">
+    <filter when="identifier[SSN].value">identifier[SSN].value=:(levenshtein|$input.identifier[SSN].value)&lt;3</filter>
+  </blocking>
+
+  <!-- Retrieve patients who:
+        + Given name sounds the same, 
+        + Family name is within 1 edit 
+        + Born the same year 
+        + Lives in the same city 
+    -->
+  <blocking op="or" maxResults="10">
+    <filter when="name?.component[Given].value">name.component[Given].value=:(soundex)$input.name?.component[Given].value</filter>
+    <filter when="name?.component[Family].value">name.component[Family].value=:(levenshtein|$input.name?.component[Family].value)&lt;2</filter>
+    <filter when="dateOfBirth">dateOfBirth=:(date_trunc|M)$input.dateOfBirth</filter>
+    <filter when="genderConcept">genderConcept=$input.genderConcept</filter>
+  </blocking>
+
+  <!-- End: Blocking Configuration -->
+
+  <!-- Start: Scoring Configuration -->
+  <!-- 
+      Once data records are loaded from the data store, the application service needs to perform scoring on 
+      the records. Scores are calculated using u and m probabilities configured where m is the probability of 
+      two records agreeing and actually being the same record, where u is the probability that two records which 
+      are not the same person will match by pure coincidence
+  -->
+  <scoring>
+
+    <!-- Date of birth exactly matches 
+         whenNull = ignore instructs the scoring process to assign a score of 0 if either record is null
+    -->
+    <attribute property="dateOfBirth" u="0.0027" m="0.75" whenNull="zero" >
+      <!-- Assert the a.dateOfBirth == b.dateOfBirth in order for this attribute to be scored successful otherwise score as non-match -->
+      <assert op="eq" />
+      
+    </attribute>
+
+    <!-- Gender exactly matches - note u is 0.5 to indicate a 50/50 probability 
+          whenNull = nonmatch instructs the scoring process to disqualify the record if either value is null
+      -->
+    <attribute property="genderConcept" u="0.5" m="0.75" whenNull="zero" >
+      <!-- Assert the a.genderConcept == b.genderConcept in order for this attribute to be scored successful otherwise score as non-match -->
+      <assert op="eq" />
+    </attribute>
+
+    <!-- State Exactly matches - 
+           + Here we are using address as the root because we want to compare the addresses as a single value 
+           we can use address.component[City] however that means that any address in A whose state matches any address in B
+           by using address we ensure that both addresses are the same type
+    -->
+    <attribute property="address" u="0.077" m="0.723" whenNull="zero">
+      <!-- We apply a transform since the scope of this assertion is currently an object -->
+      <assert op="gte" value="0.8">
+        <transform name="addresspart_extract">
+          <args>
+            <string>City</string>
+          </args>
+        </transform>
+        <transform name="jaro_winkler"/>
+      </assert>
+      <!-- Reduce score the more edits away the address is (i.e. exact is scored higher)-->
+      <partialWeight name="similarity">
+        <transform name="addresspart_extract" source="attribute">
+          <args>
+            <string>City</string>
+          </args>
+        </transform>
+      </partialWeight>
+    </attribute>
+
+    <!-- Any name matches with a given name that sounds like and family name is within 1 edit -->
+    <attribute property="name" m="0.4" u="0.2" whenNull="zero">
+      <assert op="and">
+        <assert op="gte" value="0.8">
+          <transform name="namepart_extract">
+            <args>
+              <string>Family</string>
+            </args>
+          </transform>
+          <transform name="jaro_winkler"/>
+        </assert>
+        <assert op="gte" value="0.8">
+          <transform name="namepart_extract">
+            <args>
+              <string>Given</string>
+            </args>
+          </transform>
+          <transform name="jaro_winkler"/>
+        </assert>
+      </assert>
+    </attribute>
+
+    <!-- SSN matches -->
+    <attribute property="identifier[SSN].value" u="0.05" m="0.95"  whenNull="zero">
+      <assert op="gte" value="0.8">
+        <transform name="jaro_winkler"/>
+      </assert>
+      <partialWeight name="similarity" />
+    </attribute>
+
+    <!-- Telecom address -->
+    <attribute property="telecom.value" u="0.1" m="0.85"  whenNull="zero">
+      <assert op="gte" value="0.8">
+        <transform name="jaro_winkler"/>
+      </assert>
+      <partialWeight name="similarity" />
+    </attribute>
+  </scoring>
+
+</MatchConfiguration>
