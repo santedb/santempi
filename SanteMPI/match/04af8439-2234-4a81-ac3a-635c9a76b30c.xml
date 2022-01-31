@@ -36,7 +36,7 @@
     -->
   <blocking op="or" maxResults="10">
     <filter when="name?.component[Given].value">name.component[Given].value=:(soundex)$input.name?.component[Given].value</filter>
-    <filter when="name?.component[Family].value">name.component[Family].value=:(levenshtein|$input.name?.component[Family].value)&lt;2</filter>
+    <filter when="name?.component[Family].value">name.component[Family].value=:(similarity|$input.name?.component[Family].value)&gt;0.8</filter>
     <filter when="dateOfBirth">dateOfBirth=:(date_trunc|M)$input.dateOfBirth</filter>
     <filter when="genderConcept">genderConcept=$input.genderConcept</filter>
   </blocking>
