@@ -364,7 +364,7 @@ namespace SanteMPI.Messaging.IHE.Test
 
             // Step 1: The test harness verifies that the PIX query handler behaves properly for un-regstered patient
             var message = TestUtil.GetMessageEvent("OHIE-CR-09-10", DeviceSecretA);
-            var response = new PdqQbpMessageHandler(new TestLocalizationService()).HandleMessage(message);
+            var response = new PixQbpMessageHandler(new TestLocalizationService()).HandleMessage(message);
 
             // Response should be AE
             TestUtil.AssertOutcome(response, "AE");
@@ -378,7 +378,7 @@ namespace SanteMPI.Messaging.IHE.Test
 
             // Harness sends PIX query for unregistered patient in random domain
             message = TestUtil.GetMessageEvent("OHIE-CR-09-20", DeviceSecretA);
-            response = new PdqQbpMessageHandler(new TestLocalizationService()).HandleMessage(message);
+            response = new PixQbpMessageHandler(new TestLocalizationService()).HandleMessage(message);
 
             // Response should be AE
             TestUtil.AssertOutcome(response, "AE");
@@ -399,7 +399,7 @@ namespace SanteMPI.Messaging.IHE.Test
 
             // Harness accepts message for xref
             message = TestUtil.GetMessageEvent("OHIE-CR-09-40", DeviceSecretA);
-            response = new PdqQbpMessageHandler(new TestLocalizationService()).HandleMessage(message);
+            response = new PixQbpMessageHandler(new TestLocalizationService()).HandleMessage(message);
 
             // Assert success
             TestUtil.AssertOutcome(response, "AA");
@@ -440,7 +440,7 @@ namespace SanteMPI.Messaging.IHE.Test
 
             // Test harness requests receiver to give it a domain that does not exist
             message = TestUtil.GetMessageEvent("OHIE-CR-10-30", DeviceSecretA);
-            response = new PdqQbpMessageHandler(new TestLocalizationService()).HandleMessage(message);
+            response = new PixQbpMessageHandler(new TestLocalizationService()).HandleMessage(message);
             TestUtil.AssertOutcome(response, "AE");
             rsp = response as RSP_K23;
             Assert.AreEqual("AE", rsp.QAK.QueryResponseStatus.Value);
@@ -449,7 +449,7 @@ namespace SanteMPI.Messaging.IHE.Test
 
             // Test harness requests recevier give it a domain identifier from valid domain but for which the patient has no ID
             message = TestUtil.GetMessageEvent("OHIE-CR-10-40", DeviceSecretA);
-            response = new PdqQbpMessageHandler(new TestLocalizationService()).HandleMessage(message);
+            response = new PixQbpMessageHandler(new TestLocalizationService()).HandleMessage(message);
             TestUtil.AssertOutcome(response, "AA");
             rsp = response as RSP_K23;
             Assert.AreEqual("NF", rsp.QAK.QueryResponseStatus.Value);

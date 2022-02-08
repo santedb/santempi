@@ -8,11 +8,14 @@ using SanteDB.Messaging.HL7.Messages;
 using SanteDB.Messaging.HL7.TransportProtocol;
 using SanteMPI.Messaging.IHE.Audit;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using SanteDB.Messaging.HL7.ParameterMap;
 
 namespace SanteMPI.Messaging.IHE.HL7
 {
@@ -35,6 +38,7 @@ namespace SanteMPI.Messaging.IHE.HL7
         protected override IMessage CreateNACK(Type nackType, IMessage request, Exception error, Hl7MessageReceivedEventArgs receiveData)
         {
             var retVal = base.CreateNACK(typeof(RSP_K21), request, error, receiveData);
+            
             if (retVal is RSP_K21 rsp)
             {
                 rsp.MSA.AcknowledgmentCode.Value = "AE";

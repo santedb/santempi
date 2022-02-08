@@ -425,7 +425,7 @@ namespace SanteMPI.Messaging.IHE.Test
 
             // Create TEST Domain
             TestUtil.CreateAuthority("TEST_FHIR_A", "1.3.6.1.4.1.52820.3.72.5.9.2", "http://ohie.org/test/test_a", "TEST_HARNESS_FHIR_A", HarnessSecret);
-            TestUtil.CreateAuthority("NID", "2.16.840.1.113883.3.72.5.9.9", "http://ohie.org/test/nid", null, null);
+            TestUtil.CreateAuthority("NID-FHIR", "2.16.840.1.113883.3.72.5.9.90", "http://ohie.org/test/nid-fhir", null, null);
 
             // Authenticate as TEST HARNESS_A
             using (TestUtil.AuthenticateFhir("TEST_HARNESS_FHIR_A", HarnessSecret))
@@ -460,7 +460,7 @@ namespace SanteMPI.Messaging.IHE.Test
                 Assert.AreEqual(1, queryResult.Total);
                 var victim = queryResult.Entry.First();
 
-                // Query based on old identifier should return no results
+                // Query based on old identifier should return one results
                 query = new System.Collections.Specialized.NameValueCollection();
                 query.Add("_id", victim.Resource.Id);
                 queryResult = patientHandler.Query(query);
@@ -486,13 +486,15 @@ namespace SanteMPI.Messaging.IHE.Test
                 queryResult = patientHandler.Query(query);
                 Assert.AreEqual(1, queryResult.Total);
                 Assert.AreEqual(survivor.Resource.Id, queryResult.Entry.First().Resource.Id);
-                Assert.AreEqual(2, (queryResult.Entry.First().Resource as Patient).Identifier.Count);
+                Assert.AreEqual(3, (queryResult.Entry.First().Resource as Patient).Identifier.Count);
 
                 // Direct load for FHRA-081 patient (by UUID) should return 404 or an inactive object
                 try
                 {
-                    var obsoleted = patientHandler.Read(victim.Resource.Id, null);
-                    Assert.Fail("Should not be here");
+                    var obsoleted = patientHandler.Read(victim.Resource.Id, null) as Patient;
+                    Assert.IsFalse(obsoleted.Active, "Should not be here - Active should be false");
+                    Assert.IsTrue(obsoleted.Link.Count > 0);
+                    Assert.AreEqual(survivor.Resource.Id, obsoleted.Link.First().Other.Reference);
                 }
                 catch(KeyNotFoundException)
                 {
@@ -500,9 +502,9 @@ namespace SanteMPI.Messaging.IHE.Test
                 catch(FhirException e) when (e.Status == HttpStatusCode.NotFound)
                 { 
                 }
-                catch
+                catch(System.Exception e)
                 {
-                    Assert.Fail("Wrong exception type");
+                    Assert.Fail("Wrong exception type - expected KeyNotFoundException or FhirException but got {0}", e.GetType().Name);
                 }
 
                 // Query based on old identifier should return no results
