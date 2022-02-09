@@ -8,7 +8,7 @@
     <string name="ui.mpi.dashboard.index">MPI Dashboard</string>
     <string name="ui.mpi.dashboard.patients.title">Locally Registered Patients</string>
     <string name="ui.mpi.dashboard.patients.count">number of patients at this endpoint</string>
-    <string name="ui.mpi.dashboard.recent">Recent Patients (&lt; 24h)</string>
+    <string name="ui.mpi.dashboard.recent">Recent Patients</string>
     <string name="ui.mpi.dashboard.stats">Patient Population</string>
 
     <!-- Search UI -->
