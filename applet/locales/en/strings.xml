@@ -172,6 +172,7 @@
     <string name="ui.mpi.matches.config.backgroundRunning">Enabling or Disabling match configurations while a background match task is running is not advised, and can result in unpredictable results</string>
     <string name="ui.mpi.matches.config.backgroundState">rematching complete</string>
     <string name="ui.mpi.matches.config.html">HTML</string>
+    <string name="ui.mpi.matches.config.xml">Source</string>
     <string name="ui.mpi.matches.config.enable.confirm">Are you sure you want to enable match configuration {id}? It will be used to score future registration and re-matches</string>
     <string name="ui.mpi.matches.config.enable.success">Match configuration {id} is now enabled</string>
     <string name="ui.mpi.matches.config.enable.error">Match configuration {id} could not be enabled  ({e})</string>
