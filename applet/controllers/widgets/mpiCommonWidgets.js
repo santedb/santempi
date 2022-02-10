@@ -1,7 +1,7 @@
 angular.module('santedb').controller('MpiCommonWidgetController', ['$scope', '$rootScope',  '$state', function ($scope, $rootScope, $state) {
 
     // Render demogrpahics function
-    $scope.renderDemographics = renderPatientAsString;
+    $scope.renderDemographics = SanteDB.display.renderPatientAsString;
 
     // Scanner search
     $scope.scanSearch = async function () {

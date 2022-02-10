@@ -320,8 +320,7 @@
                                                     <select ng-model="tx.name" class="form-control" required="required"
                                                         ng-change="score.assert._singleResult = updateTransform(score, score.assert.transform, tx)">
                                                         <option ng-repeat="ta in transformAlgorithms track by $index"
-                                                            value="{{ta.name}}"> {{tx._meta[$index-1]}} [{{ta.type}}] {{
-                                                            ta.display }} - <small class="text-subtle">{{ ta.description
+                                                            value="{{ta.name}}">{{ ta.display }} - <small class="text-subtle">{{ ta.description
                                                                 }}</small></option>
                                                     </select>
                                                     <div ng-repeat="a in tx.args track by $index"
@@ -405,8 +404,7 @@
                                                                 ng-change="sa._singleResult = updateTransform(score, sa.transform, tx)">
                                                                 <option
                                                                     ng-repeat="ta in transformAlgorithms track by $index"
-                                                                    value="{{ta.name}}"> {{tx._meta[$index-1]}}
-                                                                    [{{ta.type}}] {{ ta.display }} - <small
+                                                                    value="{{ta.name}}">{{ ta.display }} - <small
                                                                         class="text-subtle">{{ ta.description }}</small>
                                                                 </option>
                                                             </select>
@@ -557,8 +555,7 @@
                                     <select ng-model="score.partialWeight.name" class="form-control" 
                                                         ng-change="recalcScore(score)">
                                                         <option ng-repeat="ta in transformAlgorithms track by $index"
-                                                            value="{{ta.name}}" ng-if="ta.arguments.length == 0 &amp;&amp; ta.type == 'Binary'"> {{tx._meta[$index-1]}} [{{ta.type}}] {{
-                                                            ta.display }} - <small class="text-subtle">{{ ta.description }}</small></option>
+                                                            value="{{ta.name}}" ng-if="ta.arguments.length == 0 &amp;&amp; ta.type == 'Binary'">  {{ ta.display }} - <small class="text-subtle">{{ ta.description }}</small></option>
                                                     </select>
                                 </div>
                             </div>

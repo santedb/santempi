@@ -68,7 +68,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr ng-if="scopedObject._test.results.length == 0">
+            <tr ng-if="!scopedObject._test.results">
                 <td colspan="8"><i class="fas fa-circle-notch fa-spin"></i> {{ 'ui.wait' | i18n }}</td>
             </tr>
             <tr ng-class="{ 'bg-info text-light' : r.id == scopedObject._test.input }" ng-repeat="r in scopedObject._test.results track by $index">

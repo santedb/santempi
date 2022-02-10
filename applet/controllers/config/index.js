@@ -13,6 +13,10 @@ angular.module('santedb').controller('MpiConfigurationDashboardController', ["$s
     $scope.download = (r) =>
         window.open(`/ami/MatchConfiguration/${r}/html`);
 
+        
+    // Download
+    $scope.downloadXml = (r) =>
+        window.open(`/ami/MatchConfiguration/${r}/xml`);
 
     // Initialize the view
     async function initializeView() {

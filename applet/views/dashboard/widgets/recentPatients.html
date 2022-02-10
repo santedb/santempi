@@ -10,7 +10,7 @@ oc-lazy-load="{ name: 'MpiCommonWidgetController', files: ['/org.santedb.smpi/co
     <div class="row" ng-controller="MpiCommonWidgetController"> 
         <div class="col">
             <entity-table width="100%" id="recentPatientTable" type="Patient" search-field="name.component.value"
-                default-query="{ 'modifiedOn' : ':(age)&lt;24h', 'statusConcept.mnemonic' : ['ACTIVE','NEW'] }" i18n-prefix="'ui.model.patient.'"
+            default-query="{ 'modifiedOn' : ':(date_trunc|d)$now'  }" i18n-prefix="'ui.model.patient.'"
                 render="{ 'demographics': 'renderDemographics' }"
                 properties="[ 'demographics' ]"
                 item-actions="[ { name: 'view', demand: '1.3.6.1.4.1.33349.3.1.5.9.2.2.3', sref: 'santedb-admin.mpi.patients.view', className: 'btn-primary', icon: 'fas fa-arrow-right' } ]"

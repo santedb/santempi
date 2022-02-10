@@ -48,6 +48,9 @@
   <viewModel key="smpi.reverseRelationship">
     <definition>/org.santedb.smpi/models/reverseRelationship.xml</definition>
   </viewModel>
+  <viewModel key="smpi.fastRelationship">
+    <definition>/org.santedb.smpi/models/fastRelationship.xml</definition>
+  </viewModel>
   <strings lang="en" extern="locales/en/strings.xml" />
 
     
