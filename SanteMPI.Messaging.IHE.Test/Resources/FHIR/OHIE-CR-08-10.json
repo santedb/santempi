@@ -54,7 +54,7 @@
                 },
                 {
                   "use": "usual",
-                  "system": "http://ohie.org/test/nid",
+                  "system": "http://ohie.org/test/nid-fhir",
                   "value": "NID080"
                 }
               ],

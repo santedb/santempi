@@ -2,6 +2,7 @@
 using SanteDB.OrmLite.Providers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ namespace SanteMPI.Persistence.ADO.Data
     /// <summary>
     /// Filter for database function
     /// </summary>
+    [ExcludeFromCodeCoverage] // Cannot test PostgreSQL functions
     public class PgsqlAliasFunction : IDbFilterFunction
     {
         /// <summary>
