@@ -1,18 +1,12 @@
 ﻿using Hl7.Fhir.Model;
 using RestSrvr;
-using SanteDB.Core.Extensions;
-using SanteDB.Core.Model;
-using SanteDB.Core.Model.DataTypes;
-using SanteDB.Core.Model.Interfaces;
 using SanteDB.Core.Services;
 using SanteDB.Messaging.FHIR.Extensions;
-using SanteDB.Messaging.FHIR.Util;
 using SanteMPI.Messaging.IHE.Audit;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
 
 namespace SanteMPI.Messaging.IHE.FHIR
 {

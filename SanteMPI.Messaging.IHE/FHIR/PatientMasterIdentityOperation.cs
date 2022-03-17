@@ -2,11 +2,6 @@
 using SanteDB.Core;
 using SanteDB.Core.BusinessRules;
 using SanteDB.Core.Exceptions;
-using SanteDB.Core.Interfaces;
-using SanteDB.Core.Model;
-using SanteDB.Core.Model.Constants;
-using SanteDB.Core.Model.Entities;
-using SanteDB.Core.Model.Interfaces;
 using SanteDB.Core.Services;
 using SanteDB.Messaging.FHIR;
 using SanteDB.Messaging.FHIR.Extensions;
@@ -19,7 +14,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Resources;
-using System.Text;
 using static Hl7.Fhir.Model.Bundle;
 
 namespace SanteMPI.Messaging.IHE.FHIR
