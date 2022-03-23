@@ -543,5 +543,49 @@ namespace SanteMPI.Messaging.IHE.Test
             Assert.AreEqual("1", rsp.ERR.GetErrorLocation(0).SegmentSequence.Value);
             Assert.AreEqual(0, rsp.QUERY_RESPONSERepetitionsUsed);
         }
+
+        /// <summary>
+        /// This test ensures that the recipient of the query can perform an exact match on a patient’s name as provided in an admit message.
+        /// The test will additionally test partial matching using phonetics and patterns.The recipient must pass one of the phonetic or pattern matching cases.
+        /// </summary>
+        [Test]
+        public void TestOhieCr12()
+        {
+            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", DeviceSecretA);
+            TestUtil.CreateAuthority("NID", "2.16.840.1.113883.3.72.5.9.9", "", "NID_AUTH", DeviceSecretA);
+
+            
+            // step 10
+            // register patient
+            var adtMessageHandler = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>();
+
+            adtMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-12-10"));
+
+            // step 20
+            // query patient
+            var qbpMessageHandler = this.m_serviceManager.CreateInjected<PdqQbpMessageHandler>();
+
+            var actual = qbpMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-12-20"));
+
+            // example printing to console
+            Console.WriteLine(TestUtil.ToString(actual));
+
+            // perform assertions
+
+            Assert.NotNull(actual);
+            Assert.IsInstanceOf<RSP_K21>(actual);
+
+            var result = (RSP_K21) actual;
+
+            Assert.AreEqual("AA", result.MSA.AcknowledgmentCode.Value);
+            Assert.AreEqual("OK", result.QAK.QueryResponseStatus.Value);
+            Assert.IsTrue(result.QUERY_RESPONSEs.Any());
+            Assert.AreEqual("RJ-439", result.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().Last().IDNumber.Value);
+            Assert.AreEqual("TEST", result.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().Last().AssigningAuthority.NamespaceID.Value);
+
+            Assert.AreEqual("JONES", result.GetQUERY_RESPONSE(0).PID.GetPatientName(0).FamilyName.Surname.Value);
+            Assert.AreEqual("JENNIFER", result.GetQUERY_RESPONSE(0).PID.GetPatientName(0).GivenName.Value);
+            Assert.AreEqual("19840125", result.GetQUERY_RESPONSE(0).PID.DateTimeOfBirth.Time.Value);
+        }
     }
 }
