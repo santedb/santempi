@@ -551,21 +551,21 @@ namespace SanteMPI.Messaging.IHE.Test
         [Test]
         public void TestOhieCr12()
         {
-            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", DeviceSecretA);
-            TestUtil.CreateAuthority("NID", "2.16.840.1.113883.3.72.5.9.9", "", "NID_AUTH", DeviceSecretA);
+            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", this.DeviceSecretA);
+            TestUtil.CreateAuthority("NID", "2.16.840.1.113883.3.72.5.9.9", "", "NID_AUTH", this.DeviceSecretA);
 
-            
             // step 10
             // register patient
-            var adtMessageHandler = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>();
-
-            adtMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-12-10"));
+            var adtMessageHandler = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>(); 
+            
+            var actual = adtMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-12-10", this.DeviceSecretA));
+            TestUtil.AssertOutcome(actual, "CA", "AA");
 
             // step 20
             // query patient
             var qbpMessageHandler = this.m_serviceManager.CreateInjected<PdqQbpMessageHandler>();
 
-            var actual = qbpMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-12-20"));
+            actual = qbpMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-12-20", this.DeviceSecretA));
 
             // example printing to console
             Console.WriteLine(TestUtil.ToString(actual));
