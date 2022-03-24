@@ -67,7 +67,7 @@ namespace SanteMPI.Messaging.IHE.Test
             Assert.AreEqual("TEST", rsp.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().Last().AssigningAuthority.NamespaceID.Value);
 
             // Verify that the infant was created
-            message = TestUtil.GetMessageEvent("OHIE-CR-07-30", DeviceSecretA);
+            message = TestUtil.GetMessageEvent("OHIE-CR-13-30", DeviceSecretA);
             result = new PdqQbpMessageHandler(new TestLocalizationService()).HandleMessage(message);
             TestUtil.AssertOutcome(result, "AA");
             
