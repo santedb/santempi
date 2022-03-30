@@ -51,7 +51,6 @@
     <Compile Include="TestOhieCr13.cs" />
     <Compile Include="TestOhieCr14.cs" />
     <Compile Include="TestOhieCr16.cs" />
-    <Compile Include="TestOhieCr18.cs" />
     <Compile Include="TestOpenHIEPixPdq.cs" />
     <Compile Include="TestPMIR.cs" />
     <Compile Include="TestUtil.cs" />
@@ -194,6 +193,11 @@
       <Project>{d5f5c6e2-fbed-4295-85fa-00777c8e7353}</Project>
       <Name>SanteMPI.Messaging.IHE</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\HL7\OHIE-CR-18-20.txt" />
+    <Content Include="Resources\HL7\OHIE-CR-18-30.txt" />
+    <Content Include="Resources\HL7\OHIE-CR-18-40.txt" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
