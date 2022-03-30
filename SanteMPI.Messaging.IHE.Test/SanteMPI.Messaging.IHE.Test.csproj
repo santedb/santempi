@@ -51,6 +51,7 @@
     <Compile Include="TestOhieCr13.cs" />
     <Compile Include="TestOhieCr14.cs" />
     <Compile Include="TestOhieCr16.cs" />
+    <Compile Include="TestOhieCr15.cs" />
     <Compile Include="TestOpenHIEPixPdq.cs" />
     <Compile Include="TestPMIR.cs" />
     <Compile Include="TestUtil.cs" />
