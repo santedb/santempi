@@ -57,20 +57,73 @@ namespace SanteMPI.Messaging.IHE.Test
             Assert.AreEqual("AA", response.MSA.AcknowledgmentCode.Value);
             Assert.AreEqual("OK", response.QAK.QueryResponseStatus.Value);
 
-            //is this sufficient to check if only one PID segment is included?
+            // **is this sufficient to check if only one PID segment is included?
             Assert.AreEqual(1, response.QUERY_RESPONSERepetitionsUsed);
 
             var pidSegments = response.GetQUERY_RESPONSE().PID.GetPatientIdentifierList();
 
-            //check that one PID reciever sent only one PID segment with identifier RJ-439 in PID-3
+            // Check that one PID reciever sent only one PID segment with identifier RJ-439 in PID-3
             var matchingIdentifierCount = pidSegments.Count(x => x.IDNumber.Value == "RJ-439");
             Assert.AreEqual(1, matchingIdentifierCount);
 
-            //check that one PID reciever sent only one PID segment with domain TEST in PID-3
+            // Check that one PID reciever sent only one PID segment with domain TEST in PID-3
             var matchingDomainCount = pidSegments.Count(x => x.AssigningAuthority.NamespaceID.Value == "TEST");
             Assert.AreEqual(1, matchingDomainCount );
 
-            //Step 30
+            // **Step 30 - needed to remove repeating segment
+            message = TestUtil.GetMessageEvent("OHIE-CR-15-30", DeviceSecretA);
+            result = this.m_serviceManager.CreateInjected<PdqQbpMessageHandler>().HandleMessage(message);
+            response = (RSP_K21)result;
+
+            Assert.AreEqual("AA", response.MSA.AcknowledgmentCode.Value);
+            Assert.AreEqual("OK", response.QAK.QueryResponseStatus.Value);
+
+            
+            Assert.AreEqual(1, response.QUERY_RESPONSERepetitionsUsed);
+
+            pidSegments = response.GetQUERY_RESPONSE().PID.GetPatientIdentifierList();
+
+            // Check that one PID reciever sent only one PID segment with identifier RJ-439 in PID-3
+            matchingIdentifierCount = pidSegments.Count(x => x.IDNumber.Value == "RJ-439");
+            Assert.AreEqual(1, matchingIdentifierCount);
+
+            // **Step 40 - for passing test needed to remove repeating segments and change date to year only in QPD-3
+            message = TestUtil.GetMessageEvent("OHIE-CR-15-40", DeviceSecretA);
+            result = this.m_serviceManager.CreateInjected<PdqQbpMessageHandler>().HandleMessage(message);
+            response = (RSP_K21)result;
+
+            Assert.AreEqual("AA", response.MSA.AcknowledgmentCode.Value);
+            Assert.AreEqual("OK", response.QAK.QueryResponseStatus.Value);
+
+            
+            Assert.AreEqual(1, response.QUERY_RESPONSERepetitionsUsed);
+
+            pidSegments = response.GetQUERY_RESPONSE().PID.GetPatientIdentifierList();
+
+            // Check that one PID reciever sent only one PID segment with identifier RJ-439 in PID-3
+            matchingIdentifierCount = pidSegments.Count(x => x.IDNumber.Value == "RJ-439");
+            Assert.AreEqual(1, matchingIdentifierCount);
+
+            // **Step 50 - for passing test needed to remove repeating segments QPD-3
+            message = TestUtil.GetMessageEvent("OHIE-CR-15-50", DeviceSecretA);
+            result = this.m_serviceManager.CreateInjected<PdqQbpMessageHandler>().HandleMessage(message);
+            response = (RSP_K21)result;
+
+            Assert.AreEqual("AA", response.MSA.AcknowledgmentCode.Value);
+            Assert.AreEqual("NF", response.QAK.QueryResponseStatus.Value);
+            Assert.AreEqual(0, response.QUERY_RESPONSERepetitionsUsed);
+
+
+            // **Step 60 - for passing test needed to remove repeating segments QPD-3
+            message = TestUtil.GetMessageEvent("OHIE-CR-15-60", DeviceSecretA);
+            result = this.m_serviceManager.CreateInjected<PdqQbpMessageHandler>().HandleMessage(message);
+            response = (RSP_K21)result;
+
+            Assert.AreEqual("AA", response.MSA.AcknowledgmentCode.Value);
+            Assert.AreEqual("NF", response.QAK.QueryResponseStatus.Value);
+            Assert.AreEqual(0, response.QUERY_RESPONSERepetitionsUsed);
+
+
         }
     }
 }
