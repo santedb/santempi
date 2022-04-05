@@ -62,11 +62,11 @@ namespace SanteMPI.Messaging.IHE.Test
 
             var pidSegments = response.GetQUERY_RESPONSE().PID.GetPatientIdentifierList();
 
-            // Check that one PID reciever sent only one PID segment with identifier RJ-439 in PID-3
+            // Check that one PID receiver sent only one PID segment with identifier RJ-439 in PID-3
             var matchingIdentifierCount = pidSegments.Count(x => x.IDNumber.Value == "RJ-439");
             Assert.AreEqual(1, matchingIdentifierCount);
 
-            // Check that one PID reciever sent only one PID segment with domain TEST in PID-3
+            // Check that one PID receiver sent only one PID segment with domain TEST in PID-3
             var matchingDomainCount = pidSegments.Count(x => x.AssigningAuthority.NamespaceID.Value == "TEST");
             Assert.AreEqual(1, matchingDomainCount );
 
@@ -83,7 +83,7 @@ namespace SanteMPI.Messaging.IHE.Test
 
             pidSegments = response.GetQUERY_RESPONSE().PID.GetPatientIdentifierList();
 
-            // Check that one PID reciever sent only one PID segment with identifier RJ-439 in PID-3
+            // Check that one PID receiver sent only one PID segment with identifier RJ-439 in PID-3
             matchingIdentifierCount = pidSegments.Count(x => x.IDNumber.Value == "RJ-439");
             Assert.AreEqual(1, matchingIdentifierCount);
 
@@ -100,7 +100,7 @@ namespace SanteMPI.Messaging.IHE.Test
 
             pidSegments = response.GetQUERY_RESPONSE().PID.GetPatientIdentifierList();
 
-            // Check that one PID reciever sent only one PID segment with identifier RJ-439 in PID-3
+            // Check that one PID receiver sent only one PID segment with identifier RJ-439 in PID-3
             matchingIdentifierCount = pidSegments.Count(x => x.IDNumber.Value == "RJ-439");
             Assert.AreEqual(1, matchingIdentifierCount);
 
