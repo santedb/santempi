@@ -68,13 +68,13 @@ namespace SanteMPI.Messaging.IHE.Test
 
             // Verify that the infant was created
             message = TestUtil.GetMessageEvent("OHIE-CR-13-30", DeviceSecretA);
-            result = new PdqQbpMessageHandler(new TestLocalizationService()).HandleMessage(message);
-            TestUtil.AssertOutcome(result, "AA");
+            response = new PdqQbpMessageHandler(new TestLocalizationService()).HandleMessage(message);
+            TestUtil.AssertOutcome(response, "AA");
             
-            var rst = result as RSP_K23;
-            Assert.IsNotNull(rst.QUERY_RESPONSE);
-            Assert.AreEqual(2, rst.QUERY_RESPONSE.PID.GetPatientIdentifierList().Count()); // KEY and Infant ID
-            Assert.IsTrue(rst.QUERY_RESPONSE.PID.GetPatientIdentifierList().Any(o => o.AssigningAuthority.NamespaceID.Value == "TEST" && o.IDNumber.Value == "RJ-440"), "Missing Local ID");
+            rsp = response as RSP_K21;
+            Assert.AreEqual(1, rsp.QUERY_RESPONSERepetitionsUsed);
+            Assert.AreEqual("RJ-440", rsp.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().Last().IDNumber.Value);
+            Assert.AreEqual("TEST", rsp.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().Last().AssigningAuthority.NamespaceID.Value);
         }
     }
 }
