@@ -97,7 +97,7 @@ namespace SanteMPI.Messaging.IHE.Test
                 Assert.IsNotNull(resp.QUERY_RESPONSE);
                 Assert.IsTrue(resp.QUERY_RESPONSE.PID.GetPatientIdentifierList().Any(a => a.AssigningAuthority.NamespaceID.Value == "TEST" && a.AssigningAuthority.UniversalID.Value == "2.16.840.1.113883.3.72.5.9.1" && a.AssigningAuthority.UniversalIDType.Value == "ISO"));
 
-                // Test hanress sneds ADT A01 with OID missing but namespace
+                // Test harness sends ADT A01 with OID missing but namespace
                 message = TestUtil.GetMessageEvent("OHIE-CR-02-30", DeviceSecretA);
                 result = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>().HandleMessage(message);
 
@@ -110,7 +110,7 @@ namespace SanteMPI.Messaging.IHE.Test
                 Assert.AreEqual("TEST_HARNESS", (result.GetStructure("MSH") as MSH).ReceivingApplication.NamespaceID.Value);
                 Assert.AreEqual("TEST", (result.GetStructure("MSH") as MSH).ReceivingFacility.NamespaceID.Value);
 
-                // Test harnerss validates patient was registrered and populated segments properly
+                // Test harness validates patient was registered and populated segments properly
                 message = TestUtil.GetMessageEvent("OHIE-CR-02-40", DeviceSecretA);
                 result = new PdqQbpMessageHandler(new TestLocalizationService()).HandleMessage(message);
 
@@ -260,7 +260,7 @@ namespace SanteMPI.Messaging.IHE.Test
             var rsp = result as RSP_K23;
             Assert.IsNotNull(rsp.QUERY_RESPONSE);
             Assert.AreEqual(3, rsp.QUERY_RESPONSE.PID.GetPatientIdentifierList().Count());
-            Assert.IsTrue(rsp.QUERY_RESPONSE.PID.GetPatientIdentifierList().Any(o => o.AssigningAuthority.NamespaceID.Value == "NID" && o.IDNumber.Value == "NID-000345435"), "Misisng NID");
+            Assert.IsTrue(rsp.QUERY_RESPONSE.PID.GetPatientIdentifierList().Any(o => o.AssigningAuthority.NamespaceID.Value == "NID" && o.IDNumber.Value == "NID-000345435"), "Missing NID");
             Assert.IsTrue(rsp.QUERY_RESPONSE.PID.GetPatientIdentifierList().Any(o => o.AssigningAuthority.NamespaceID.Value == "TEST_A" && o.IDNumber.Value == "RJ-449"), "Missing Local ID");
         }
 
@@ -447,7 +447,7 @@ namespace SanteMPI.Messaging.IHE.Test
             Assert.AreEqual("QPD", rsp.ERR.GetErrorLocation(0).SegmentID.Value);
             Assert.AreEqual("4", rsp.ERR.GetErrorLocation(0).FieldPosition.Value);
 
-            // Test harness requests recevier give it a domain identifier from valid domain but for which the patient has no ID
+            // Test harness requests receiver give it a domain identifier from valid domain but for which the patient has no ID
             message = TestUtil.GetMessageEvent("OHIE-CR-10-40", DeviceSecretA);
             response = new PixQbpMessageHandler(new TestLocalizationService()).HandleMessage(message);
             TestUtil.AssertOutcome(response, "AA");
