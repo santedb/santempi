@@ -40,8 +40,46 @@ namespace SanteMPI.Messaging.IHE.Test
         [Test]
         public void TestOhieCr14_()
         {
+            // step 5
             TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", DeviceSecretA);
-            TestUtil.CreateAuthority("NID", "2.16.840.1.113883.3.72.5.9.9", "", "NID_AUTH", DeviceSecretA);
+
+            // step 10 - ensure that the patient is registered
+            var actual = TestUtil.GetMessageEvent("OHIE-CR-14-10", this.DeviceSecretA);
+            var response = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>().HandleMessage(actual);
+            TestUtil.AssertOutcome(response, "AA", "CA");
+
+            // step 20
+            // Test harness sends a query with date of birth precise to the year in which a patient’s date of birth falls.
+            actual = TestUtil.GetMessageEvent("OHIE-CR-14-20", this.DeviceSecretA);
+            response = new PdqQbpMessageHandler(new TestLocalizationService()).HandleMessage(actual);
+            TestUtil.AssertOutcome(response, "AA");
+            var rsp = response as RSP_K21;
+            Assert.AreEqual("OK", rsp.QAK.QueryResponseStatus.Value);
+            Assert.AreEqual("RJ-439", rsp.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().Last().IDNumber.Value);
+
+            // step 30
+            actual = TestUtil.GetMessageEvent("OHIE-CR-14-30", this.DeviceSecretA);
+            response = new PdqQbpMessageHandler(new TestLocalizationService()).HandleMessage(actual);
+            TestUtil.AssertOutcome(response, "AA");
+            rsp = response as RSP_K21;
+            Assert.AreEqual("OK", rsp.QAK.QueryResponseStatus.Value);
+            Assert.AreEqual("RJ-439", rsp.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().Last().IDNumber.Value);
+
+            // step 40
+            actual = TestUtil.GetMessageEvent("OHIE-CR-14-40", this.DeviceSecretA);
+            response = new PdqQbpMessageHandler(new TestLocalizationService()).HandleMessage(actual);
+            TestUtil.AssertOutcome(response, "AA");
+            rsp = response as RSP_K21;
+            Assert.AreEqual("OK", rsp.QAK.QueryResponseStatus.Value);
+            Assert.AreEqual("RJ-439", rsp.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().Last().IDNumber.Value);
+
+            // step 50
+            actual = TestUtil.GetMessageEvent("OHIE-CR-14-20", this.DeviceSecretA);
+            response = new PdqQbpMessageHandler(new TestLocalizationService()).HandleMessage(actual);
+            TestUtil.AssertOutcome(response, "AA");
+            rsp = response as RSP_K21;
+            Assert.AreEqual("NF", rsp.QAK.QueryResponseStatus.Value);
+            Assert.AreEqual(0, rsp.QUERY_RESPONSERepetitionsUsed);
         }
     }
 }
