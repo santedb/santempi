@@ -9,7 +9,6 @@ using SanteMPI.Messaging.IHE.HL7;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using SanteDB.Core.Model.Security;
 
 namespace SanteMPI.Messaging.IHE.Test
 {
@@ -628,6 +627,10 @@ namespace SanteMPI.Messaging.IHE.Test
             Assert.AreEqual("TEST", rsp.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().Last().AssigningAuthority.NamespaceID.Value);
         }
 
+        /// <summary>
+        /// This test ensures that the recipient supports the semantics of date matching and approximate matches by date range. This test case will query for
+        /// an exact date of birth as provided in an admit message, and a fuzzy date of birth(year, and year/month).
+        /// </summary>
         [Test]
         public void TestOhieCr14()
         {
@@ -673,6 +676,10 @@ namespace SanteMPI.Messaging.IHE.Test
             Assert.AreEqual(0, rsp.QUERY_RESPONSERepetitionsUsed);
         }
 
+        /// <summary>
+        /// This test ensures that the recipient of the query can perform a query on a series of demographics fields.
+        /// The test harness will perform a query on a series of combinations of parameters such as name + gender, name + date of birth, gender + date of birth.
+        /// </summary>
         [Test]
         public void TestOhieCr15()
         {
