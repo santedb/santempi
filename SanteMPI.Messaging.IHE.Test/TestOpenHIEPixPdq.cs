@@ -587,5 +587,281 @@ namespace SanteMPI.Messaging.IHE.Test
             Assert.AreEqual("JENNIFER", result.GetQUERY_RESPONSE(0).PID.GetPatientName(0).GivenName.Value);
             Assert.AreEqual("19840125", result.GetQUERY_RESPONSE(0).PID.DateTimeOfBirth.Time.Value);
         }
+
+        /// <summary>
+        /// This test ensures that the recipient of the query can perform a query by the patient’s mother’s identifier.
+        /// </summary>
+        [Test]
+        public void TestOhieCr13()
+        {
+            // Ensure TEST_A is setup
+            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", DeviceSecretA);
+
+            // Ensure patient is registered
+            var message = TestUtil.GetMessageEvent("OHIE-CR-13-10", DeviceSecretA);
+            var result = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>().HandleMessage(message);
+            TestUtil.AssertOutcome(result, "AA", "CA");
+
+            // Ensure patient's mother is registered
+            message = TestUtil.GetMessageEvent("OHIE-CR-13-15", DeviceSecretA);
+            result = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>().HandleMessage(message);
+            TestUtil.AssertOutcome(result, "AA", "CA");
+
+            // Test harness sends a query with mother's identifier
+            message = TestUtil.GetMessageEvent("OHIE-CR-13-20", DeviceSecretA);
+            var response = new PdqQbpMessageHandler(new TestLocalizationService()).HandleMessage(message);
+            TestUtil.AssertOutcome(response, "AA");
+
+            var rsp = response as RSP_K21;
+            Assert.AreEqual(1, rsp.QUERY_RESPONSERepetitionsUsed);
+            Assert.AreEqual("RJ-440", rsp.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().Last().IDNumber.Value);
+            Assert.AreEqual("TEST", rsp.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().Last().AssigningAuthority.NamespaceID.Value);
+
+            // Verify that the infant was created
+            message = TestUtil.GetMessageEvent("OHIE-CR-13-30", DeviceSecretA);
+            response = new PdqQbpMessageHandler(new TestLocalizationService()).HandleMessage(message);
+            TestUtil.AssertOutcome(response, "AA");
+
+            rsp = response as RSP_K21;
+            Assert.AreEqual(1, rsp.QUERY_RESPONSERepetitionsUsed);
+            Assert.AreEqual("RJ-440", rsp.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().Last().IDNumber.Value);
+            Assert.AreEqual("TEST", rsp.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().Last().AssigningAuthority.NamespaceID.Value);
+        }
+
+        [Test]
+        public void TestOhieCr14()
+        {
+            // step 5
+            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", DeviceSecretA);
+
+            // step 10 - ensure that the patient is registered
+            var actual = TestUtil.GetMessageEvent("OHIE-CR-14-10", this.DeviceSecretA);
+            var response = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>().HandleMessage(actual);
+            TestUtil.AssertOutcome(response, "AA", "CA");
+
+            // step 20
+            // Test harness sends a query with date of birth precise to the year in which a patient’s date of birth falls.
+            actual = TestUtil.GetMessageEvent("OHIE-CR-14-20", this.DeviceSecretA);
+            response = new PdqQbpMessageHandler(new TestLocalizationService()).HandleMessage(actual);
+            TestUtil.AssertOutcome(response, "AA");
+            var rsp = response as RSP_K21;
+            Assert.AreEqual("OK", rsp.QAK.QueryResponseStatus.Value);
+            Assert.AreEqual("RJ-439", rsp.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().Last().IDNumber.Value);
+
+            // step 30
+            actual = TestUtil.GetMessageEvent("OHIE-CR-14-30", this.DeviceSecretA);
+            response = new PdqQbpMessageHandler(new TestLocalizationService()).HandleMessage(actual);
+            TestUtil.AssertOutcome(response, "AA");
+            rsp = response as RSP_K21;
+            Assert.AreEqual("OK", rsp.QAK.QueryResponseStatus.Value);
+            Assert.AreEqual("RJ-439", rsp.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().Last().IDNumber.Value);
+
+            // step 40
+            actual = TestUtil.GetMessageEvent("OHIE-CR-14-40", this.DeviceSecretA);
+            response = new PdqQbpMessageHandler(new TestLocalizationService()).HandleMessage(actual);
+            TestUtil.AssertOutcome(response, "AA");
+            rsp = response as RSP_K21;
+            Assert.AreEqual("OK", rsp.QAK.QueryResponseStatus.Value);
+            Assert.AreEqual("RJ-439", rsp.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().Last().IDNumber.Value);
+
+            // step 50
+            actual = TestUtil.GetMessageEvent("OHIE-CR-14-20", this.DeviceSecretA);
+            response = new PdqQbpMessageHandler(new TestLocalizationService()).HandleMessage(actual);
+            TestUtil.AssertOutcome(response, "AA");
+            rsp = response as RSP_K21;
+            Assert.AreEqual("NF", rsp.QAK.QueryResponseStatus.Value);
+            Assert.AreEqual(0, rsp.QUERY_RESPONSERepetitionsUsed);
+        }
+
+        [Test]
+        public void TestOhieCr15()
+        {
+            // Step 5- set up receiver
+            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", DeviceSecretA);
+            //TestUtil.CreateAuthority("NID", "2.16.840.1.113883.3.72.5.9.9", "", "NID_AUTH", DeviceSecretA);
+
+            // Step 10 - register patient and check
+            var message = TestUtil.GetMessageEvent("OHIE-CR-15-10", DeviceSecretA);
+            var result = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>().HandleMessage(message);
+
+            TestUtil.AssertOutcome(result, "AA", "CA");
+
+            // Step 20-  send a query with patient's name and gender
+            message = TestUtil.GetMessageEvent("OHIE-CR-15-20", DeviceSecretA);
+            result = this.m_serviceManager.CreateInjected<PdqQbpMessageHandler>().HandleMessage(message);
+            var response = (RSP_K21)result;
+
+            Assert.AreEqual("AA", response.MSA.AcknowledgmentCode.Value);
+            Assert.AreEqual("OK", response.QAK.QueryResponseStatus.Value);
+
+            // **is this sufficient to check if only one PID segment is included?
+            Assert.AreEqual(1, response.QUERY_RESPONSERepetitionsUsed);
+
+            var pidSegments = response.GetQUERY_RESPONSE().PID.GetPatientIdentifierList();
+
+            // Check that one PID receiver sent only one PID segment with identifier RJ-439 in PID-3
+            var matchingIdentifierCount = pidSegments.Count(x => x.IDNumber.Value == "RJ-439");
+            Assert.AreEqual(1, matchingIdentifierCount);
+
+            // Check that one PID receiver sent only one PID segment with domain TEST in PID-3
+            var matchingDomainCount = pidSegments.Count(x => x.AssigningAuthority.NamespaceID.Value == "TEST");
+            Assert.AreEqual(1, matchingDomainCount);
+
+            // **Step 30 - needed to remove repeating segment
+            message = TestUtil.GetMessageEvent("OHIE-CR-15-30", DeviceSecretA);
+            result = this.m_serviceManager.CreateInjected<PdqQbpMessageHandler>().HandleMessage(message);
+            response = (RSP_K21)result;
+
+            Assert.AreEqual("AA", response.MSA.AcknowledgmentCode.Value);
+            Assert.AreEqual("OK", response.QAK.QueryResponseStatus.Value);
+
+
+            Assert.AreEqual(1, response.QUERY_RESPONSERepetitionsUsed);
+
+            pidSegments = response.GetQUERY_RESPONSE().PID.GetPatientIdentifierList();
+
+            // Check that one PID receiver sent only one PID segment with identifier RJ-439 in PID-3
+            matchingIdentifierCount = pidSegments.Count(x => x.IDNumber.Value == "RJ-439");
+            Assert.AreEqual(1, matchingIdentifierCount);
+
+            // **Step 40 - for passing test needed to remove repeating segments and change date to year only in QPD-3
+            message = TestUtil.GetMessageEvent("OHIE-CR-15-40", DeviceSecretA);
+            result = this.m_serviceManager.CreateInjected<PdqQbpMessageHandler>().HandleMessage(message);
+            response = (RSP_K21)result;
+
+            Assert.AreEqual("AA", response.MSA.AcknowledgmentCode.Value);
+            Assert.AreEqual("OK", response.QAK.QueryResponseStatus.Value);
+
+
+            Assert.AreEqual(1, response.QUERY_RESPONSERepetitionsUsed);
+
+            pidSegments = response.GetQUERY_RESPONSE().PID.GetPatientIdentifierList();
+
+            // Check that one PID receiver sent only one PID segment with identifier RJ-439 in PID-3
+            matchingIdentifierCount = pidSegments.Count(x => x.IDNumber.Value == "RJ-439");
+            Assert.AreEqual(1, matchingIdentifierCount);
+
+            // **Step 50 - for passing test needed to remove repeating segments QPD-3
+            message = TestUtil.GetMessageEvent("OHIE-CR-15-50", DeviceSecretA);
+            result = this.m_serviceManager.CreateInjected<PdqQbpMessageHandler>().HandleMessage(message);
+            response = (RSP_K21)result;
+
+            Assert.AreEqual("AA", response.MSA.AcknowledgmentCode.Value);
+            Assert.AreEqual("NF", response.QAK.QueryResponseStatus.Value);
+            Assert.AreEqual(0, response.QUERY_RESPONSERepetitionsUsed);
+
+
+            // **Step 60 - for passing test needed to remove repeating segments QPD-3
+            message = TestUtil.GetMessageEvent("OHIE-CR-15-60", DeviceSecretA);
+            result = this.m_serviceManager.CreateInjected<PdqQbpMessageHandler>().HandleMessage(message);
+            response = (RSP_K21)result;
+
+            Assert.AreEqual("AA", response.MSA.AcknowledgmentCode.Value);
+            Assert.AreEqual("NF", response.QAK.QueryResponseStatus.Value);
+            Assert.AreEqual(0, response.QUERY_RESPONSERepetitionsUsed);
+        }
+
+        /// <summary>
+        /// This test will ensure that the client registry can appropriately handle a merge condition whereby a local assigning authority notifies the client 
+        /// registry of a local merge(two local identifiers are in fact the same person).
+        /// </summary>
+        [Test]
+        public void TestOhieCr16()
+        {
+            // step 5 
+            // set up the receiver
+            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", this.DeviceSecretA);
+
+            // step 10
+            // register patient
+            var adtMessageHandler = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>();
+            var actual = adtMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-16-10", this.DeviceSecretA));
+            TestUtil.AssertOutcome(actual, "AA", "CA");
+
+            // step 15
+            // register another patient
+            adtMessageHandler = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>();
+            actual = adtMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-16-15", this.DeviceSecretA));
+            TestUtil.AssertOutcome(actual, "AA", "CA");
+
+            // step 20
+            // query patients
+            var qbpMessageHandler = this.m_serviceManager.CreateInjected<PdqQbpMessageHandler>();
+            actual = qbpMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-16-20", this.DeviceSecretA));
+
+            // perform assertions
+            Assert.NotNull(actual);
+            Assert.IsInstanceOf<RSP_K21>(actual);
+
+            var result = (RSP_K21)actual;
+
+            Assert.AreEqual("AA", result.MSA.AcknowledgmentCode.Value);
+            Assert.AreEqual("OK", result.QAK.QueryResponseStatus.Value);
+            Assert.IsTrue(result.QUERY_RESPONSEs.Any());
+
+            Assert.AreEqual(2, result.QUERY_RESPONSERepetitionsUsed);
+            Assert.AreEqual("RJ-999", result.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().Last().IDNumber.Value);
+            Assert.AreEqual("TEST", result.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().First().AssigningAuthority.NamespaceID.Value);
+            Assert.AreEqual("RJ-439", result.GetQUERY_RESPONSE(1).PID.GetPatientIdentifierList().First().IDNumber.Value);
+            Assert.AreEqual("TEST", result.GetQUERY_RESPONSE(1).PID.GetPatientIdentifierList().Last().AssigningAuthority.NamespaceID.Value);
+
+            // step 30
+            // merge identifier RJ-999 into record RJ-439
+            adtMessageHandler = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>();
+            actual = adtMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-16-30", this.DeviceSecretA));
+
+            TestUtil.AssertOutcome(actual, "AA");
+
+            // step 40
+            // merged using PIX query
+            var message = TestUtil.GetMessageEvent("OHIE-CR-16-40", DeviceSecretA);
+            var response = new PixQbpMessageHandler(new TestLocalizationService()).HandleMessage(message);
+
+            // Assert success
+            TestUtil.AssertOutcome(response, "AA");
+            var rsp = response as RSP_K23;
+            Assert.AreEqual("OK", rsp.QAK.QueryResponseStatus.Value);
+            Assert.AreEqual("RJ-439", rsp.QUERY_RESPONSE.PID.GetPatientIdentifierList().First().IDNumber.Value);
+            Assert.AreEqual("TEST", rsp.QUERY_RESPONSE.PID.GetPatientIdentifierList().Last().AssigningAuthority.NamespaceID.Value);
+            Assert.AreEqual("RJ-999", rsp.QUERY_RESPONSE.PID.GetPatientIdentifierList().Last().IDNumber.Value);
+            Assert.AreEqual("TEST", rsp.QUERY_RESPONSE.PID.GetPatientIdentifierList().First().AssigningAuthority.NamespaceID.Value);
+
+            // step 50
+            // verifies old identifier is de-referenced from patient record
+            message = TestUtil.GetMessageEvent("OHIE-CR-16-50", DeviceSecretA);
+            response = new PixQbpMessageHandler(new TestLocalizationService()).HandleMessage(message);
+
+            // Response should be AE
+            TestUtil.AssertOutcome(response, "AE");
+            rsp = response as RSP_K23;
+            Assert.AreEqual("AE", rsp.QAK.QueryResponseStatus.Value);
+            Assert.AreEqual("QPD", rsp.ERR.GetErrorLocation(0).SegmentID.Value);
+            Assert.AreEqual("1", rsp.ERR.GetErrorLocation(0).SegmentSequence.Value);
+            Assert.AreEqual("3", rsp.ERR.GetErrorLocation(0).FieldPosition.Value);
+            Assert.AreEqual("1", rsp.ERR.GetErrorLocation(0).FieldRepetition.Value);
+            Assert.AreEqual("1", rsp.ERR.GetErrorLocation(0).ComponentNumber.Value);
+
+            // step 60
+            // verify there are still two Jennifer Jones in the target 
+            qbpMessageHandler = this.m_serviceManager.CreateInjected<PdqQbpMessageHandler>();
+            actual = qbpMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-16-60", this.DeviceSecretA));
+
+            // perform assertions
+            Assert.NotNull(actual);
+            Assert.IsInstanceOf<RSP_K21>(actual);
+
+            result = (RSP_K21)actual;
+
+            Assert.AreEqual("AA", result.MSA.AcknowledgmentCode.Value);
+            Assert.AreEqual("OK", result.QAK.QueryResponseStatus.Value);
+            Assert.IsTrue(result.QUERY_RESPONSEs.Any());
+
+            Assert.AreEqual(2, result.QUERY_RESPONSERepetitionsUsed);
+            Assert.AreEqual("RJ-999", result.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().Last().IDNumber.Value);
+            Assert.AreEqual("TEST", result.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().First().AssigningAuthority.NamespaceID.Value);
+            Assert.AreEqual("RJ-439", result.GetQUERY_RESPONSE(1).PID.GetPatientIdentifierList().First().IDNumber.Value);
+            Assert.AreEqual("TEST", result.GetQUERY_RESPONSE(1).PID.GetPatientIdentifierList().Last().AssigningAuthority.NamespaceID.Value);
+
+        }
     }
 }
