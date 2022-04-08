@@ -83,7 +83,6 @@ namespace SanteMPI.Messaging.IHE.Test
             response = message as ACK;
             Assert.AreEqual("TEST_HARNESS_B", response.MSH.ReceivingApplication.NamespaceID.Value);
             Assert.AreEqual("TEST", response.MSH.SendingApplication.NamespaceID.Value);
-            Assert.AreEqual(204, response.ERRs.First().ApplicationErrorCode);
             Assert.AreEqual(204, response.ERRs.FirstOrDefault().ApplicationErrorCode);
         }
     }
