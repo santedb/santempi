@@ -650,6 +650,7 @@ namespace SanteMPI.Messaging.IHE.Test
             var rsp = response as RSP_K21;
             Assert.AreEqual("OK", rsp.QAK.QueryResponseStatus.Value);
             Assert.AreEqual("RJ-439", rsp.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().Last().IDNumber.Value);
+            Assert.AreEqual("TEST", rsp.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().First().AssigningAuthority.NamespaceID.Value);
 
             // step 30
             actual = TestUtil.GetMessageEvent("OHIE-CR-14-30", this.DeviceSecretA);
@@ -658,6 +659,7 @@ namespace SanteMPI.Messaging.IHE.Test
             rsp = response as RSP_K21;
             Assert.AreEqual("OK", rsp.QAK.QueryResponseStatus.Value);
             Assert.AreEqual("RJ-439", rsp.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().Last().IDNumber.Value);
+            Assert.AreEqual("TEST", rsp.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().First().AssigningAuthority.NamespaceID.Value);
 
             // step 40
             actual = TestUtil.GetMessageEvent("OHIE-CR-14-40", this.DeviceSecretA);
@@ -666,6 +668,7 @@ namespace SanteMPI.Messaging.IHE.Test
             rsp = response as RSP_K21;
             Assert.AreEqual("OK", rsp.QAK.QueryResponseStatus.Value);
             Assert.AreEqual("RJ-439", rsp.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().Last().IDNumber.Value);
+            Assert.AreEqual("TEST", rsp.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().First().AssigningAuthority.NamespaceID.Value);
 
             // step 50
             actual = TestUtil.GetMessageEvent("OHIE-CR-14-20", this.DeviceSecretA);
