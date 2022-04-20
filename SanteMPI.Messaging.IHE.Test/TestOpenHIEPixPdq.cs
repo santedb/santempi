@@ -550,26 +550,18 @@ namespace SanteMPI.Messaging.IHE.Test
         [Test]
         public void TestOhieCr12()
         {
+            // Pre-Conditions -- 5, 7 & 10
             TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", this.DeviceSecretA);
             TestUtil.CreateAuthority("NID", "2.16.840.1.113883.3.72.5.9.9", "", "NID_AUTH", this.DeviceSecretA);
-
-            // step 10
-            // register patient
             var adtMessageHandler = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>(); 
             
             var actual = adtMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-12-10", this.DeviceSecretA));
             TestUtil.AssertOutcome(actual, "CA", "AA");
 
-            // step 20
-            // query patient
+            // Step 20 -- Query Patient
             var qbpMessageHandler = this.m_serviceManager.CreateInjected<PdqQbpMessageHandler>();
 
             actual = qbpMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-12-20", this.DeviceSecretA));
-
-            // example printing to console
-            Console.WriteLine(TestUtil.ToString(actual));
-
-            // perform assertions
 
             Assert.NotNull(actual);
             Assert.IsInstanceOf<RSP_K21>(actual);
@@ -585,6 +577,123 @@ namespace SanteMPI.Messaging.IHE.Test
             Assert.AreEqual("JONES", result.GetQUERY_RESPONSE(0).PID.GetPatientName(0).FamilyName.Surname.Value);
             Assert.AreEqual("JENNIFER", result.GetQUERY_RESPONSE(0).PID.GetPatientName(0).GivenName.Value);
             Assert.AreEqual("19840125", result.GetQUERY_RESPONSE(0).PID.DateTimeOfBirth.Time.Value);
+
+            // Step 30
+            actual = qbpMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-12-30", this.DeviceSecretA));
+
+            Assert.NotNull(actual);
+            Assert.IsInstanceOf<RSP_K21>(actual);
+
+            result = (RSP_K21)actual;
+
+            Assert.AreEqual("AA", result.MSA.AcknowledgmentCode.Value);
+            Assert.AreEqual("NF", result.QAK.QueryResponseStatus.Value);
+            Assert.AreEqual(0, result.QUERY_RESPONSERepetitionsUsed);
+
+
+            // Step 40
+            actual = qbpMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-12-40", this.DeviceSecretA));
+
+            Assert.NotNull(actual);
+            Assert.IsInstanceOf<RSP_K21>(actual);
+
+            result = (RSP_K21)actual;
+
+            Assert.AreEqual("AA", result.MSA.AcknowledgmentCode.Value);
+            Assert.AreEqual("OK", result.QAK.QueryResponseStatus.Value);
+
+            Assert.AreEqual(1, result.QUERY_RESPONSERepetitionsUsed);
+
+            Assert.AreEqual("RJ-439", result.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().Last().IDNumber.Value);
+            Assert.AreEqual("TEST", result.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().Last().AssigningAuthority.NamespaceID.Value);
+
+            Assert.AreEqual("JONES", result.GetQUERY_RESPONSE(0).PID.GetPatientName(0).FamilyName.Surname.Value);
+            Assert.AreEqual("JENNIFER", result.GetQUERY_RESPONSE(0).PID.GetPatientName(0).GivenName.Value);
+            Assert.AreEqual("19840125", result.GetQUERY_RESPONSE(0).PID.DateTimeOfBirth.Time.Value);
+
+            // Step 45
+            actual = qbpMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-12-45", this.DeviceSecretA));
+
+            Assert.NotNull(actual);
+            Assert.IsInstanceOf<RSP_K21>(actual);
+
+            result = (RSP_K21)actual;
+
+            Assert.AreEqual("AE", result.QAK.QueryResponseStatus.Value);
+
+            Assert.IsFalse(result.QUERY_RESPONSEs.Any());
+
+            Assert.AreEqual("QPD", result.ERR.GetErrorLocation(0).SegmentID.Value);
+            Assert.AreEqual("1", result.ERR.GetErrorLocation(0).SegmentSequence.Value);
+            Assert.AreEqual("8", result.ERR.GetErrorLocation(0).FieldPosition.Value);
+
+
+            // Step 50
+            actual = qbpMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-12-50", this.DeviceSecretA));
+
+            Assert.NotNull(actual);
+            Assert.IsInstanceOf<RSP_K21>(actual);
+
+            result = (RSP_K21)actual;
+
+            Assert.AreEqual("AA", result.MSA.AcknowledgmentCode.Value);
+            Assert.AreEqual("OK", result.QAK.QueryResponseStatus.Value);
+
+            Assert.IsTrue(result.QUERY_RESPONSEs.Any());
+
+            Assert.AreEqual("RJ-439", result.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().Last().IDNumber.Value);
+            Assert.AreEqual("TEST", result.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().Last().AssigningAuthority.NamespaceID.Value);
+
+            Assert.AreEqual("JONES", result.GetQUERY_RESPONSE(0).PID.GetPatientName(0).FamilyName.Surname.Value);
+            Assert.AreEqual("JENNIFER", result.GetQUERY_RESPONSE(0).PID.GetPatientName(0).GivenName.Value);
+            Assert.AreEqual("19840125", result.GetQUERY_RESPONSE(0).PID.DateTimeOfBirth.Time.Value);
+
+            Assert.AreEqual("QRI-3", result.GetQUERY_RESPONSE(0).QRI);
+
+            // Step 60
+            actual = qbpMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-12-60", this.DeviceSecretA));
+
+            Assert.NotNull(actual);
+            Assert.IsInstanceOf<RSP_K21>(actual);
+
+            result = (RSP_K21)actual;
+
+            Assert.AreEqual("AA", result.MSA.AcknowledgmentCode.Value);
+            Assert.AreEqual("OK", result.QAK.QueryResponseStatus.Value);
+
+            Assert.IsTrue(result.QUERY_RESPONSEs.Any());
+
+            Assert.AreEqual("RJ-439", result.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().Last().IDNumber.Value);
+            Assert.AreEqual("TEST", result.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().Last().AssigningAuthority.NamespaceID.Value);
+
+            Assert.AreEqual("JONES", result.GetQUERY_RESPONSE(0).PID.GetPatientName(0).FamilyName.Surname.Value);
+            Assert.AreEqual("JENNIFER", result.GetQUERY_RESPONSE(0).PID.GetPatientName(0).GivenName.Value);
+            Assert.AreEqual("19840125", result.GetQUERY_RESPONSE(0).PID.DateTimeOfBirth.Time.Value);
+
+            Assert.AreEqual("QRI-3", result.GetQUERY_RESPONSE(0).QRI);
+
+
+            // Step 70
+            actual = qbpMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-12-70", this.DeviceSecretA));
+
+            Assert.NotNull(actual);
+            Assert.IsInstanceOf<RSP_K21>(actual);
+
+            result = (RSP_K21)actual;
+
+            Assert.AreEqual("AA", result.MSA.AcknowledgmentCode.Value);
+            Assert.AreEqual("OK", result.QAK.QueryResponseStatus.Value);
+
+            Assert.IsTrue(result.QUERY_RESPONSEs.Any());
+
+            Assert.AreEqual("RJ-439", result.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().Last().IDNumber.Value);
+            Assert.AreEqual("TEST", result.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().Last().AssigningAuthority.NamespaceID.Value);
+
+            Assert.AreEqual("JONES", result.GetQUERY_RESPONSE(0).PID.GetPatientName(0).FamilyName.Surname.Value);
+            Assert.AreEqual("JENNIFER", result.GetQUERY_RESPONSE(0).PID.GetPatientName(0).GivenName.Value);
+            Assert.AreEqual("19840125", result.GetQUERY_RESPONSE(0).PID.DateTimeOfBirth.Time.Value);
+
+            Assert.AreEqual("QRI-3", result.GetQUERY_RESPONSE(0).QRI);
         }
 
         /// <summary>
