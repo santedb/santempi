@@ -61,28 +61,28 @@
       <Version>13.0.1</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Caching.Memory">
-      <Version>$(VersionNumber)</Version>
+      <Version>2.2.3</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Matcher">
-      <Version>$(VersionNumber)</Version>
+      <Version>2.2.3</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Messaging.FHIR">
-      <Version>$(VersionNumber)</Version>
+      <Version>2.2.3</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Messaging.HL7">
-      <Version>$(VersionNumber)</Version>
+      <Version>2.2.3</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Persistence.MDM">
-      <Version>$(VersionNumber)</Version>
+      <Version>2.2.3</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Server.Plugin">
-      <Version>$(VersionNumber)</Version>
+      <Version>2.2.3</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Server.Plugin.Data">
-      <Version>$(VersionNumber)</Version>
+      <Version>2.2.3</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Server.TestFramework">
-      <Version>$(VersionNumber)</Version>
+      <Version>2.2.3</Version>
     </PackageReference>
     <PackageReference Include="System.Net.Http">
       <Version>4.3.0</Version>

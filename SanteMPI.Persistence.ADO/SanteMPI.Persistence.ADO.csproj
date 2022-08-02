@@ -4,7 +4,7 @@
   <PropertyGroup Condition="'$(VersionNumber)' == ''">
     <VersionNumber>2.1.0-debug</VersionNumber>
   </PropertyGroup>
-   <ItemGroup>
+  <ItemGroup>
     <PackageReference Include="MSBuildTasks" Version="1.5.0.235">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
@@ -62,7 +62,7 @@
     <EmbeddedResource Include="Data\Updates\20200530-PSQL.sql" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="SanteDB.OrmLite" Version="$(VersionNumber)" />
+    <PackageReference Include="SanteDB.OrmLite" Version="2.2.3" />
   </ItemGroup>
   <ItemGroup>
     <None Include="config\santempi.data.config">
@@ -70,7 +70,7 @@
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-   <Target Name="BeforeBuild" Condition="!$(VersionNumber.EndsWith('-debug'))">
+  <Target Name="BeforeBuild" Condition="!$(VersionNumber.EndsWith('-debug'))">
     <AssemblyInfo CodeLanguage="CS" OutputFile="$(MSBuildProjectDirectory)\Properties\Version.cs" AssemblyVersion="$(VersionNumber)" AssemblyFileVersion="$(VersionNumber)" />
   </Target>
 </Project>
