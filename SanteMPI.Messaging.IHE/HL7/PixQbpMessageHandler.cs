@@ -1,7 +1,5 @@
 ﻿using NHapi.Base.Model;
 using NHapi.Model.V25.Message;
-using NHapi.Model.V25.Segment;
-using SanteDB.Core;
 using SanteDB.Core.Auditing;
 using SanteDB.Core.Model;
 using SanteDB.Core.Model.Roles;
@@ -16,8 +14,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SanteMPI.Messaging.IHE.HL7
 {

@@ -1,10 +1,7 @@
 ﻿using Hl7.Fhir.Model;
 using SanteDB.Messaging.FHIR.Extensions;
 using SanteMPI.Messaging.IHE.Audit;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
 
 namespace SanteMPI.Messaging.IHE.FHIR
 {

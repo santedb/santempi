@@ -4,15 +4,12 @@ using SanteDB.Core.Model.Constants;
 using SanteDB.Core.Model.Interfaces;
 using SanteDB.Core.Services;
 using SanteDB.Messaging.FHIR.Extensions;
-using SanteDB.Messaging.FHIR.Handlers;
 using SanteDB.Messaging.FHIR.Util;
-using SanteDB.Persistence.MDM;
 using SanteDB.Persistence.MDM.Extensions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
 
 namespace SanteMPI.Messaging.IHE.FHIR
 {

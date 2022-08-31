@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestOhieCr17.cs" />
     <Compile Include="TestOpenHIEPixPdq.cs" />
     <Compile Include="TestPMIR.cs" />
     <Compile Include="TestUtil.cs" />
@@ -60,28 +61,28 @@
       <Version>13.0.1</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Caching.Memory">
-      <Version>$(VersionNumber)</Version>
+      <Version>2.2.3</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Matcher">
-      <Version>$(VersionNumber)</Version>
+      <Version>2.2.3</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Messaging.FHIR">
-      <Version>$(VersionNumber)</Version>
+      <Version>2.2.3</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Messaging.HL7">
-      <Version>$(VersionNumber)</Version>
+      <Version>2.2.3</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Persistence.MDM">
-      <Version>$(VersionNumber)</Version>
+      <Version>2.2.3</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Server.Plugin">
-      <Version>$(VersionNumber)</Version>
+      <Version>2.2.3</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Server.Plugin.Data">
-      <Version>$(VersionNumber)</Version>
+      <Version>2.2.3</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Server.TestFramework">
-      <Version>$(VersionNumber)</Version>
+      <Version>2.2.3</Version>
     </PackageReference>
     <PackageReference Include="System.Net.Http">
       <Version>4.3.0</Version>
@@ -190,6 +191,11 @@
       <Project>{d5f5c6e2-fbed-4295-85fa-00777c8e7353}</Project>
       <Name>SanteMPI.Messaging.IHE</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\HL7\OHIE-CR-18-20.txt" />
+    <Content Include="Resources\HL7\OHIE-CR-18-30.txt" />
+    <Content Include="Resources\HL7\OHIE-CR-18-40.txt" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

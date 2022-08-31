@@ -5,7 +5,6 @@ using SanteDB.Core.Model;
 using SanteDB.Core.Model.Collection;
 using SanteDB.Core.Model.Roles;
 using SanteDB.Core.Services;
-using SanteDB.Messaging.HL7.Exceptions;
 using SanteDB.Messaging.HL7.Messages;
 using SanteDB.Messaging.HL7.TransportProtocol;
 using SanteMPI.Messaging.IHE.Audit;
@@ -13,8 +12,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SanteMPI.Messaging.IHE.HL7
 {

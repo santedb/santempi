@@ -1,15 +1,12 @@
 ﻿using SanteDB.Core.Configuration;
 using SanteDB.Core.Diagnostics;
 using SanteDB.Docker.Core;
-using SanteDB.Messaging.FHIR.Configuration;
 using SanteDB.Messaging.HL7.Configuration;
-using SanteMPI.Messaging.IHE.FHIR;
 using SanteMPI.Messaging.IHE.HL7;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Text;
 
 namespace SanteMPI.Messaging.IHE.Docker
 {
