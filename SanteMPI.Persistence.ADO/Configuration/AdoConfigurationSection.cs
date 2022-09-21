@@ -12,5 +12,6 @@ namespace SanteMPI.Persistence.ADO.Configuration
     public class AdoConfigurationSection : SanteDB.OrmLite.Configuration.OrmConfigurationBase, IConfigurationSection
     {
        
+        
     }
 }

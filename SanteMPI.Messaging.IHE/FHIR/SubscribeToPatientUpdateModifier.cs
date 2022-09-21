@@ -1,4 +1,5 @@
 ﻿using Hl7.Fhir.Model;
+using SanteDB.Core.Model.Audit;
 using SanteDB.Messaging.FHIR.Extensions;
 using SanteMPI.Messaging.IHE.Audit;
 using System.ComponentModel;
@@ -30,7 +31,7 @@ namespace SanteMPI.Messaging.IHE.FHIR
                 
                 if (responseResource is Subscription subscription && subscription.Criteria.StartsWith("Patient"))
                 {
-                    IheAuditUtil.SendSubscribeToPatientUpdates(SanteDB.Core.Auditing.OutcomeIndicator.Success, interaction, subscription);
+                    IheAuditUtil.SendSubscribeToPatientUpdates(OutcomeIndicator.Success, interaction, subscription);
                 }
             }
             return responseResource;

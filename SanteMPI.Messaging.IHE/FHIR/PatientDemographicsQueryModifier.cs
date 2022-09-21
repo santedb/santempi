@@ -1,5 +1,6 @@
 ﻿using Hl7.Fhir.Model;
 using RestSrvr;
+using SanteDB.Core.Model.Audit;
 using SanteDB.Core.Services;
 using SanteDB.Messaging.FHIR.Extensions;
 using SanteMPI.Messaging.IHE.Audit;
@@ -18,12 +19,12 @@ namespace SanteMPI.Messaging.IHE.FHIR
     {
 
         // Authority repository
-        private readonly IAssigningAuthorityRepositoryService m_authorityRepository;
+        private readonly IIdentityDomainRepositoryService m_authorityRepository;
 
         /// <summary>
         /// Mother's maiden name
         /// </summary>
-        public PatientDemographicsQueryModifier(IAssigningAuthorityRepositoryService authorityRepository)
+        public PatientDemographicsQueryModifier(IIdentityDomainRepositoryService authorityRepository)
         {
             
             this.m_authorityRepository = authorityRepository;
@@ -96,7 +97,7 @@ namespace SanteMPI.Messaging.IHE.FHIR
                         }
 
                         // We want to audit this operation according to the ITI
-                        IheAuditUtil.SendAuditPatientDemographicsQueryMobile(SanteDB.Core.Auditing.OutcomeIndicator.Success, bundle.Entry.Where(o => o.Resource is Patient).Select(o => o.Resource as Patient).ToArray());
+                        IheAuditUtil.SendAuditPatientDemographicsQueryMobile(OutcomeIndicator.Success, bundle.Entry.Where(o => o.Resource is Patient).Select(o => o.Resource as Patient).ToArray());
                         return bundle;
                     }
                     else
@@ -112,7 +113,7 @@ namespace SanteMPI.Messaging.IHE.FHIR
             }
             catch
             {
-                IheAuditUtil.SendAuditPatientDemographicsQueryMobile(SanteDB.Core.Auditing.OutcomeIndicator.MinorFail);
+                IheAuditUtil.SendAuditPatientDemographicsQueryMobile(OutcomeIndicator.MinorFail);
                 throw;
             }
         }

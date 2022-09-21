@@ -5,6 +5,7 @@ using NHapi.Base.Model;
 using NHapi.Base.Parser;
 using NHapi.Model.V25.Segment;
 using NUnit.Framework;
+using SanteDB;
 using SanteDB.Core;
 using SanteDB.Core.Model.DataTypes;
 using SanteDB.Core.Model.Security;
@@ -17,6 +18,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using Patient = SanteDB.Core.Model.Roles.Patient;
 
 namespace SanteMPI.Messaging.IHE.Test
@@ -59,7 +61,7 @@ namespace SanteMPI.Messaging.IHE.Test
         {
             using (AuthenticationContext.EnterSystemContext())
             {
-                var results = ApplicationServiceContext.Current.GetService<IRepositoryService<Patient>>().Find(o => o.Identifiers.Any(i => i.Authority.DomainName == authority && i.Value == identifier));
+                var results = ApplicationServiceContext.Current.GetService<IRepositoryService<Patient>>().Find(o => o.Identifiers.Any(i => i.IdentityDomain.DomainName == authority && i.Value == identifier));
                 Assert.AreEqual(1, results.Count());
             }
         }
@@ -67,10 +69,10 @@ namespace SanteMPI.Messaging.IHE.Test
         /// <summary>
         /// Mimic an authentication
         /// </summary>
-        internal static IDisposable AuthenticateFhir(string appId, byte[] appSecret)
+        internal static IDisposable AuthenticateFhir(string appId, String appSecret)
         {
             var appIdService = ApplicationServiceContext.Current.GetService<IApplicationIdentityProviderService>();
-            var appPrincipal = appIdService.Authenticate(appId, BitConverter.ToString(appSecret).Replace("-", ""));
+            var appPrincipal = appIdService.Authenticate(appId, appSecret);
             var sesPvdService = ApplicationServiceContext.Current.GetService<ISessionProviderService>();
             var sesIdService = ApplicationServiceContext.Current.GetService<ISessionIdentityProviderService>();
             var session = sesPvdService.Establish(appPrincipal, "http://localhost", false, null, null, null);
@@ -80,44 +82,38 @@ namespace SanteMPI.Messaging.IHE.Test
         /// <summary>
         /// Create the specified authority
         /// </summary>
-        public static void CreateAuthority(string nsid, string oid, string url, string applicationName, byte[] deviceSecret)
+        public static void CreateAuthority(string nsid, string oid, string url, string applicationName, String applicationSecret, X509Certificate2 authenticationCertificate = null)
         {
             // Create the test harness device / application
             var securityDevService = ApplicationServiceContext.Current.GetService<IRepositoryService<SecurityDevice>>();
             var securityAppService = ApplicationServiceContext.Current.GetService<IRepositoryService<SecurityApplication>>();
-            var metadataService = ApplicationServiceContext.Current.GetService<IAssigningAuthorityRepositoryService>();
-            SecurityApplication app = null;
+            var metadataService = ApplicationServiceContext.Current.GetService<IIdentityDomainRepositoryService>();
+            var policyInfoService = ApplicationServiceContext.Current.GetService<IPolicyInformationService>();
+            var certIdService= ApplicationServiceContext.Current.GetService<ICertificateIdentityProvider>();
+            var devIdService = ApplicationServiceContext.Current.GetService<IDeviceIdentityProviderService>();
+            var appIdService = ApplicationServiceContext.Current.GetService<IApplicationIdentityProviderService>();
 
             using (AuthenticationContext.EnterSystemContext())
             {
                 if (!string.IsNullOrEmpty(applicationName))
                 {
                     var pubId = $"{applicationName}|TEST";
-                    var device = securityDevService.Find(o => o.Name == pubId).FirstOrDefault();
+                    var device = devIdService.GetIdentity(pubId);
                     if (device == null)
                     {
-                        device = new SecurityDevice
-                        {
-                            DeviceSecret = BitConverter.ToString(deviceSecret).Replace("-", ""),
-                            Name = $"{applicationName}|TEST"
-                        };
-                        device.AddPolicy(PermissionPolicyIdentifiers.LoginAsService);
-                        device = securityDevService.Insert(device);
+                        device = devIdService.CreateIdentity(pubId, Guid.NewGuid().ToString(), AuthenticationContext.Current.Principal);
+                        policyInfoService.AddPolicies(device, PolicyGrantType.Grant, AuthenticationContext.Current.Principal, PermissionPolicyIdentifiers.LoginAsService);
+                        certIdService.AddIdentityMap(device, authenticationCertificate, AuthenticationContext.Current.Principal);
                     }
 
                     // Application
-                    app = securityAppService.Find(o => o.Name == applicationName).FirstOrDefault();
+                    var app = appIdService.GetIdentity(applicationName);
                     if (app == null)
                     {
-                        app = new SecurityApplication
-                        {
-                            Name = applicationName,
-                            ApplicationSecret = BitConverter.ToString(deviceSecret).Replace("-", "")
-                        };
-                        app.AddPolicy(PermissionPolicyIdentifiers.LoginAsService);
-                        app.AddPolicy(PermissionPolicyIdentifiers.UnrestrictedClinicalData);
-                        app.AddPolicy(PermissionPolicyIdentifiers.UnrestrictedMetadata);
-                        app = securityAppService.Insert(app);
+
+                        app = appIdService.CreateIdentity(applicationName, applicationSecret, AuthenticationContext.Current.Principal);
+                        policyInfoService.AddPolicies(app, PolicyGrantType.Grant, AuthenticationContext.Current.Principal, PermissionPolicyIdentifiers.LoginAsService, PermissionPolicyIdentifiers.UnrestrictedClinicalData, PermissionPolicyIdentifiers.UnrestrictedMetadata);
+
                     }
                 }
 
@@ -125,9 +121,15 @@ namespace SanteMPI.Messaging.IHE.Test
                 var aa = metadataService.Get(nsid);
                 if (aa == null)
                 {
-                    aa = new AssigningAuthority(nsid, nsid, oid)
+                    aa = new IdentityDomain(nsid, nsid, oid)
                     {
-                        AssigningApplicationKey = app?.Key,
+                        AssigningAuthority = new System.Collections.Generic.List<AssigningAuthority>()
+                        {
+                            new AssigningAuthority()
+                            {
+                                AssigningApplicationKey = appIdService.GetSid(applicationName)
+                            }
+                        },
                         IsUnique = true,
                         Url = url
                     };
@@ -135,7 +137,10 @@ namespace SanteMPI.Messaging.IHE.Test
                 }
                 else
                 {
-                    aa.AssigningApplicationKey = app?.Key;
+                    aa.LoadProperty(o => o.AssigningAuthority).Add(new AssigningAuthority()
+                    {
+                        AssigningApplicationKey = appIdService.GetSid(applicationName)
+                    });
                     aa.Url = url;
                     metadataService.Save(aa);
                 }
@@ -147,7 +152,7 @@ namespace SanteMPI.Messaging.IHE.Test
         /// </summary>
         public static Resource GetFhirMessage(string messageName)
         {
-            using (var s = typeof(TestUtil).Assembly.GetManifestResourceStream($"SanteMPI.Messaging.IHE.Test.Resources.FHIR.{messageName}.json"))
+            using (var s = typeof(TestUtil).Assembly.GetManifestResourceStream($"SanteMPI.Test.Resources.FHIR.{messageName}.json"))
             using (var sr = new StreamReader(s))
             using (var jr = new JsonTextReader(sr))
             {
@@ -160,10 +165,12 @@ namespace SanteMPI.Messaging.IHE.Test
         /// </summary>
         public static IMessage GetMessage(string messageName)
         {
-            using (var s = typeof(TestUtil).Assembly.GetManifestResourceStream($"SanteMPI.Messaging.IHE.Test.Resources.HL7.{messageName}.txt"))
+            using (var s = typeof(TestUtil).Assembly.GetManifestResourceStream($"SanteMPI.Test.Resources.HL7.{messageName}.txt"))
             using (var sw = new StreamReader(s))
             {
-                return MessageUtils.ParseMessage(sw.ReadToEnd(), out var originalVersion);
+                var message = MessageUtils.ParseMessage(sw.ReadToEnd(), out var originalVersion);
+                (message.GetAll("MSH")[0] as ISegment).GetField(8).SetValue("I_AM_A_TEAPOT", 1);
+                return message;
             }
         }
 
@@ -178,9 +185,9 @@ namespace SanteMPI.Messaging.IHE.Test
         /// <summary>
         /// Get the message from the test assembly
         /// </summary>
-        public static Hl7MessageReceivedEventArgs GetMessageEvent(string messageName, byte[] deviceSecret)
+        public static Hl7MessageReceivedEventArgs GetMessageEvent(string messageName, X509Certificate2 authenticationCertificate)
         {
-            return new AuthenticatedHl7MessageReceivedEventArgs(GetMessage(messageName), new Uri("test://sut"), new Uri("test://test"), DateTime.Now, deviceSecret);
+            return new AuthenticatedHl7MessageReceivedEventArgs(GetMessage(messageName), new Uri("test://sut"), new Uri("test://test"), DateTime.Now, authenticationCertificate);
         }
 
         /// <summary>

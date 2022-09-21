@@ -86,7 +86,7 @@ namespace SanteMPI.Persistence.ADO.Services
             {
                 using (var dbContext = this.m_configuration.Provider.GetWriteConnection())
                 {
-                    dbContext.Delete<DbNameAlias>(o => o.PrimaryName.ToLower() == name.ToLower() && o.Synonym.ToLower() == alias.ToLower());
+                    dbContext.DeleteAll<DbNameAlias>(o => o.PrimaryName.ToLower() == name.ToLower() && o.Synonym.ToLower() == alias.ToLower());
                 }
             }
             catch (Exception e)

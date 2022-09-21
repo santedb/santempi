@@ -2,13 +2,16 @@
 using NHapi.Model.V25.Segment;
 using NUnit.Framework;
 using SanteDB.Core;
+using SanteDB.Core.Model.DataTypes;
 using SanteDB.Core.Security;
 using SanteDB.Core.Services;
 using SanteDB.Core.TestFramework;
 using SanteMPI.Messaging.IHE.HL7;
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 
 namespace SanteMPI.Messaging.IHE.Test
 {
@@ -17,11 +20,18 @@ namespace SanteMPI.Messaging.IHE.Test
     public class TestOpenHIEPixPdq : DataTest
     {
         // Device secret
-        private readonly byte[] DeviceSecretA = new byte[] { 0x1, 0x2, 0x3, 0x4, 0x5, 0x6 };
+        private readonly X509Certificate2 DeviceSecretA;
 
-        private readonly byte[] DeviceSecretB = new byte[] { 0x6, 0x5, 0x4, 0x3, 0x2, 0x1 };
+        private readonly X509Certificate2 DeviceSecretB;
 
         private IServiceManager m_serviceManager;
+
+        public TestOpenHIEPixPdq()
+        {
+            var myPath = Path.GetDirectoryName(typeof(TestOhieCr17).Assembly.Location);
+            DeviceSecretA = new X509Certificate2(X509Certificate.CreateFromCertFile(Path.Combine(myPath, "_pub1.cer")));
+            DeviceSecretB = new X509Certificate2(X509Certificate.CreateFromCertFile(Path.Combine(myPath, "_pub2.cer")));
+        }
 
         /// <summary>
         /// Test context
@@ -33,7 +43,7 @@ namespace SanteMPI.Messaging.IHE.Test
             Assert.NotNull(FirebirdSql.Data.FirebirdClient.FbCharset.Ascii);
             TestApplicationContext.TestAssembly = typeof(TestOpenHIEPixPdq).Assembly;
             TestApplicationContext.Initialize(TestContext.CurrentContext.TestDirectory);
-            this.m_serviceManager = TestApplicationContext.Current.GetService<IServiceManager>();
+            this.m_serviceManager = ApplicationServiceContext.Current.GetService<IServiceManager>();
         }
 
         /// <summary>
@@ -63,11 +73,11 @@ namespace SanteMPI.Messaging.IHE.Test
             // Pre-Conditions: Setup receiver so that OID is configured
             using (AuthenticationContext.EnterSystemContext())
             {
-                var aaService = ApplicationServiceContext.Current.GetService<IAssigningAuthorityRepositoryService>();
-                TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", DeviceSecretA);
+                var aaService = ApplicationServiceContext.Current.GetService<IIdentityDomainRepositoryService>();
+                TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", "I_AM_A_TEAPOT", DeviceSecretA);
                 var aa = aaService.Get("TEST");
                 if (aa == null)
-                    aaService.Insert(new SanteDB.Core.Model.DataTypes.AssigningAuthority("TEST", "TEST", "2.16.840.1.113883.3.72.5.9.1"));
+                    aaService.Insert(new IdentityDomain("TEST", "TEST", "2.16.840.1.113883.3.72.5.9.1"));
 
                 // Test harness sends ADT^A01 Message where CX.4.1 of PID is missing by message containss 4.2 and 4.3
                 var message = TestUtil.GetMessageEvent("OHIE-CR-02-10", DeviceSecretA);
@@ -134,13 +144,13 @@ namespace SanteMPI.Messaging.IHE.Test
             // Remove any reference to TEST_BLOCK or OID 2.16.840.1.113883.3.72.5.9.4
             using (AuthenticationContext.EnterSystemContext())
             {
-                var aaRepo = ApplicationServiceContext.Current.GetService<IAssigningAuthorityRepositoryService>();
+                var aaRepo = ApplicationServiceContext.Current.GetService<IIdentityDomainRepositoryService>();
                 var aa = aaRepo.Get("TEST_BLOCK");
                 if (aa != null)
-                    aaRepo.Obsolete(aa.Key.Value);
+                    aaRepo.Delete(aa.Key.Value);
                 aa = aaRepo.Get(new Uri("urn:oid:2.16.840.1.113883.3.72.5.9.4"));
                 if (aa != null)
-                    aaRepo.Obsolete(aa.Key.Value);
+                    aaRepo.Delete(aa.Key.Value);
 
                 // Test harness sends ADT A01 with 2.16.840.1.113883.3.72.5.9.4 as OID
                 var message = TestUtil.GetMessageEvent("OHIE-CR-03-10");
@@ -169,9 +179,9 @@ namespace SanteMPI.Messaging.IHE.Test
         public void TestOhieCr04()
         {
             // Setup: Ensure that TEST_HARNESS_A is created with
-            TestUtil.CreateAuthority("TEST_A", "2.16.840.1.113883.3.72.5.9.2", "", "TEST_HARNESS_A", DeviceSecretA);
+            TestUtil.CreateAuthority("TEST_A", "2.16.840.1.113883.3.72.5.9.2", "", "TEST_HARNESS_A", "I_AM_A_TEAPOT", DeviceSecretA);
             // Setup: Ensure that TEST_HARNESS_B is created with
-            TestUtil.CreateAuthority("TEST_B", "2.16.840.1.113883.3.72.5.9.3", "", "TEST_HARNESS_B", DeviceSecretB);
+            TestUtil.CreateAuthority("TEST_B", "2.16.840.1.113883.3.72.5.9.3", "", "TEST_HARNESS_B", "I_AM_A_TEAPOT", DeviceSecretB);
 
             // Step 20 - Harness A sends ADT^A01
             var message = TestUtil.GetMessageEvent("OHIE-CR-04-20", DeviceSecretA);
@@ -199,7 +209,7 @@ namespace SanteMPI.Messaging.IHE.Test
         public void TestOhieCr05()
         {
             // Setup: Ensure that TEST_HARNESS is created with authority over TEST
-            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", DeviceSecretA);
+            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", "I_AM_A_TEAPOT", DeviceSecretA);
 
             // Ensure that patient is registered with minimal data
             var message = TestUtil.GetMessageEvent("OHIE-CR-05-10", DeviceSecretA);
@@ -236,9 +246,9 @@ namespace SanteMPI.Messaging.IHE.Test
         public void TestOhieCr06()
         {
             // Setup: Ensure that TEST_HARNESS_A is created with
-            TestUtil.CreateAuthority("TEST_A", "2.16.840.1.113883.3.72.5.9.2", "", "TEST_HARNESS_A", DeviceSecretA);
+            TestUtil.CreateAuthority("TEST_A", "2.16.840.1.113883.3.72.5.9.2", "", "TEST_HARNESS_A", "I_AM_A_TEAPOT", DeviceSecretA);
             // Setup: Ensure that NID is created with
-            TestUtil.CreateAuthority("NID", "2.16.840.1.113883.3.72.5.9.9", "", "NID_AUTH", DeviceSecretA);
+            TestUtil.CreateAuthority("NID", "2.16.840.1.113883.3.72.5.9.9", "", "NID_AUTH", "I_AM_A_TEAPOT", DeviceSecretA);
 
             var message = TestUtil.GetMessageEvent("OHIE-CR-06-20", DeviceSecretA);
             var result = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>().HandleMessage(message);
@@ -272,7 +282,7 @@ namespace SanteMPI.Messaging.IHE.Test
         public void TestOhieCr07()
         {
             // Ensure TEST_A is setup
-            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", DeviceSecretA);
+            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", "I_AM_A_TEAPOT", DeviceSecretA);
 
             // Ensure patient is registered
             var message = TestUtil.GetMessageEvent("OHIE-CR-07-10", DeviceSecretA);
@@ -315,7 +325,7 @@ namespace SanteMPI.Messaging.IHE.Test
         public void TestOhieCr08()
         {
             // Ensure TEST_A is setup
-            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", DeviceSecretA);
+            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", "I_AM_A_TEAPOT", DeviceSecretA);
 
             // Register patient with full demographic information
             var message = TestUtil.GetMessageEvent("OHIE-CR-08-10", DeviceSecretA);
@@ -356,10 +366,10 @@ namespace SanteMPI.Messaging.IHE.Test
         public void TestOhieCr09()
         {
             // Setup the domain authority of TEST
-            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", DeviceSecretA);
+            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", "I_AM_A_TEAPOT", DeviceSecretA);
 
             // Setup the domain authority of NID
-            TestUtil.CreateAuthority("NID", "2.16.840.1.113883.3.72.5.9.9", "", "NID_AUTH", DeviceSecretA);
+            TestUtil.CreateAuthority("NID", "2.16.840.1.113883.3.72.5.9.9", "", "NID_AUTH", "I_AM_A_TEAPOT", DeviceSecretA);
 
             // Step 1: The test harness verifies that the PIX query handler behaves properly for un-regstered patient
             var message = TestUtil.GetMessageEvent("OHIE-CR-09-10", DeviceSecretA);
@@ -419,8 +429,8 @@ namespace SanteMPI.Messaging.IHE.Test
         [Test]
         public void TestOhieCr10()
         {
-            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", DeviceSecretA);
-            TestUtil.CreateAuthority("NID", "2.16.840.1.113883.3.72.5.9.9", "", "NID_AUTH", DeviceSecretA);
+            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", "I_AM_A_TEAPOT", DeviceSecretA);
+            TestUtil.CreateAuthority("NID", "2.16.840.1.113883.3.72.5.9.9", "", "NID_AUTH", "I_AM_A_TEAPOT", DeviceSecretA);
 
             // Ensure that patient is registered
             var message = TestUtil.GetMessageEvent("OHIE-CR-10-10", DeviceSecretA);
@@ -461,8 +471,8 @@ namespace SanteMPI.Messaging.IHE.Test
         [Test]
         public void TestOhieCr11()
         {
-            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", DeviceSecretA);
-            TestUtil.CreateAuthority("NID", "2.16.840.1.113883.3.72.5.9.9", "", "NID_AUTH", DeviceSecretA);
+            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", "I_AM_A_TEAPOT", DeviceSecretA);
+            TestUtil.CreateAuthority("NID", "2.16.840.1.113883.3.72.5.9.9", "", "NID_AUTH", "I_AM_A_TEAPOT", DeviceSecretA);
 
             // Ensure that the patient Jennifer Jones with RJ-439 is registered
             var message = TestUtil.GetMessageEvent("OHIE-CR-11-10", DeviceSecretA);
@@ -551,8 +561,8 @@ namespace SanteMPI.Messaging.IHE.Test
         public void TestOhieCr12()
         {
             // Pre-Conditions -- 5, 7 & 10
-            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", this.DeviceSecretA);
-            TestUtil.CreateAuthority("NID", "2.16.840.1.113883.3.72.5.9.9", "", "NID_AUTH", this.DeviceSecretA);
+            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", "I_AM_A_TEAPOT", this.DeviceSecretA);
+            TestUtil.CreateAuthority("NID", "2.16.840.1.113883.3.72.5.9.9", "", "NID_AUTH", "I_AM_A_TEAPOT", this.DeviceSecretA);
             var adtMessageHandler = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>(); 
             
             var actual = adtMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-12-10", this.DeviceSecretA));
@@ -648,7 +658,7 @@ namespace SanteMPI.Messaging.IHE.Test
             Assert.AreEqual("JENNIFER", result.GetQUERY_RESPONSE(0).PID.GetPatientName(0).GivenName.Value);
             Assert.AreEqual("19840125", result.GetQUERY_RESPONSE(0).PID.DateTimeOfBirth.Time.Value);
 
-            Assert.AreEqual("QRI-3", result.GetQUERY_RESPONSE(0).QRI);
+            Assert.AreEqual("QRI-3", result.GetQUERY_RESPONSE(0).QRI.CandidateConfidence.Value);
 
             // Step 60
             actual = qbpMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-12-60", this.DeviceSecretA));
@@ -670,7 +680,7 @@ namespace SanteMPI.Messaging.IHE.Test
             Assert.AreEqual("JENNIFER", result.GetQUERY_RESPONSE(0).PID.GetPatientName(0).GivenName.Value);
             Assert.AreEqual("19840125", result.GetQUERY_RESPONSE(0).PID.DateTimeOfBirth.Time.Value);
 
-            Assert.AreEqual("QRI-3", result.GetQUERY_RESPONSE(0).QRI);
+            Assert.AreEqual("QRI-3", result.GetQUERY_RESPONSE(0).QRI.CandidateConfidence.Value);
 
 
             // Step 70
@@ -693,7 +703,7 @@ namespace SanteMPI.Messaging.IHE.Test
             Assert.AreEqual("JENNIFER", result.GetQUERY_RESPONSE(0).PID.GetPatientName(0).GivenName.Value);
             Assert.AreEqual("19840125", result.GetQUERY_RESPONSE(0).PID.DateTimeOfBirth.Time.Value);
 
-            Assert.AreEqual("QRI-3", result.GetQUERY_RESPONSE(0).QRI);
+            Assert.AreEqual("QRI-3", result.GetQUERY_RESPONSE(0).QRI.CandidateConfidence.Value);
         }
 
         /// <summary>
@@ -703,7 +713,7 @@ namespace SanteMPI.Messaging.IHE.Test
         public void TestOhieCr13()
         {
             // Ensure TEST_A is setup
-            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", DeviceSecretA);
+            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", "I_AM_A_TEAPOT", DeviceSecretA);
 
             // Ensure patient is registered
             var message = TestUtil.GetMessageEvent("OHIE-CR-13-10", DeviceSecretA);
@@ -744,7 +754,7 @@ namespace SanteMPI.Messaging.IHE.Test
         public void TestOhieCr14()
         {
             // step 5
-            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", DeviceSecretA);
+            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", "I_AM_A_TEAPOT", DeviceSecretA);
 
             // step 10 - ensure that the patient is registered
             var actual = TestUtil.GetMessageEvent("OHIE-CR-14-10", this.DeviceSecretA);
@@ -796,7 +806,7 @@ namespace SanteMPI.Messaging.IHE.Test
         public void TestOhieCr15()
         {
             // Step 5- set up receiver
-            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", DeviceSecretA);
+            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", "I_AM_A_TEAPOT", DeviceSecretA);
             //TestUtil.CreateAuthority("NID", "2.16.840.1.113883.3.72.5.9.9", "", "NID_AUTH", DeviceSecretA);
 
             // Step 10 - register patient and check
@@ -891,7 +901,7 @@ namespace SanteMPI.Messaging.IHE.Test
         {
             // step 5 
             // set up the receiver
-            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", this.DeviceSecretA);
+            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", "I_AM_A_TEAPOT", this.DeviceSecretA);
 
             // step 10
             // register patient

@@ -1,7 +1,7 @@
 ﻿using NHapi.Base.Model;
 using NHapi.Model.V25.Segment;
-using SanteDB.Core.Auditing;
 using SanteDB.Core.Model;
+using SanteDB.Core.Model.Audit;
 using SanteDB.Core.Model.Collection;
 using SanteDB.Core.Model.Roles;
 using SanteDB.Core.Services;

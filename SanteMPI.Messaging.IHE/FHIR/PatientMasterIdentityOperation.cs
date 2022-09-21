@@ -2,6 +2,7 @@
 using SanteDB.Core;
 using SanteDB.Core.BusinessRules;
 using SanteDB.Core.Exceptions;
+using SanteDB.Core.Model.Audit;
 using SanteDB.Core.Services;
 using SanteDB.Messaging.FHIR;
 using SanteDB.Messaging.FHIR.Extensions;
@@ -202,19 +203,19 @@ namespace SanteMPI.Messaging.IHE.FHIR
                                         });
                                     }
 
-                                    IheAuditUtil.SendAuditPatientMasterIdentityRegistry(SanteDB.Core.Auditing.OutcomeIndicator.Success, requestHeader, patientsAdded.ToArray());
+                                    IheAuditUtil.SendAuditPatientMasterIdentityRegistry(OutcomeIndicator.Success, requestHeader, patientsAdded.ToArray());
                                     return retVal;
                                 }
                             case HTTPVerb.DELETE:
                                 {
-                                    this.m_repository.Obsolete(focalObject.Key.Value);
+                                    this.m_repository.Delete(focalObject.Key.Value);
                                     retVal.Issue.Add(new OperationOutcome.IssueComponent()
                                     {
                                         Severity = OperationOutcome.IssueSeverity.Information,
                                         Diagnostics = $"Deleted {focalObject}"
                                     });
 
-                                    IheAuditUtil.SendAuditPatientMasterIdentityRegistry(SanteDB.Core.Auditing.OutcomeIndicator.Success, requestHeader, patientsAdded.ToArray());
+                                    IheAuditUtil.SendAuditPatientMasterIdentityRegistry(OutcomeIndicator.Success, requestHeader, patientsAdded.ToArray());
                                     return retVal;
                                 }
                             default:
@@ -228,7 +229,7 @@ namespace SanteMPI.Messaging.IHE.FHIR
             }
             catch
             {
-                IheAuditUtil.SendAuditPatientMasterIdentityRegistry(SanteDB.Core.Auditing.OutcomeIndicator.MinorFail, requestHeader);
+                IheAuditUtil.SendAuditPatientMasterIdentityRegistry(OutcomeIndicator.MinorFail, requestHeader);
                 throw;
             }
         }

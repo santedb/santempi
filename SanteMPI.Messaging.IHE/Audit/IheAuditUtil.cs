@@ -4,7 +4,7 @@ using NHapi.Base.Parser;
 using RestSrvr;
 using SanteDB.Core;
 using SanteDB.Core.Attributes;
-using SanteDB.Core.Auditing;
+using SanteDB.Core.Model.Audit;
 using SanteDB.Core.Security.Audit;
 using SanteDB.Core.Services;
 using SanteDB.Messaging.HL7.Configuration;
@@ -70,9 +70,9 @@ namespace SanteMPI.Messaging.IHE.Audit
         /// <param name="actionType">The action type.</param>
         /// <param name="outcome">The outcome of the operation.</param>
         /// <param name="eventTypeCode">The event type code.</param>
-        public static AuditData CreateITIAuditEvent(EventIdentifierType eventIdentifier, ActionType actionType, OutcomeIndicator outcome, AuditCode eventTypeCode)
+        public static AuditEventData CreateITIAuditEvent(EventIdentifierType eventIdentifier, ActionType actionType, OutcomeIndicator outcome, AuditCode eventTypeCode)
         {
-            return new AuditData(DateTime.Now, actionType, outcome, eventIdentifier, eventTypeCode);
+            return new AuditEventData(DateTime.Now, actionType, outcome, eventIdentifier, eventTypeCode);
         }
 
         /// <summary>

@@ -1,6 +1,6 @@
 ﻿using NHapi.Base.Model;
 using NHapi.Model.V25.Message;
-using SanteDB.Core.Auditing;
+using SanteDB.Core.Model.Audit;
 using SanteDB.Core.Model;
 using SanteDB.Core.Model.Roles;
 using SanteDB.Core.Services;

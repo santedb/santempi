@@ -1,7 +1,7 @@
 ﻿using NHapi.Base.Model;
 using NHapi.Model.V25.Message;
-using SanteDB.Core.Auditing;
 using SanteDB.Core.Model;
+using SanteDB.Core.Model.Audit;
 using SanteDB.Core.Model.Roles;
 using SanteDB.Core.Services;
 using SanteDB.Messaging.HL7.Messages;
@@ -63,7 +63,7 @@ namespace SanteMPI.Messaging.IHE.HL7
         /// <summary>
         /// Create query response for the data according to ITI-9
         /// </summary>
-        protected override IMessage CreateQueryResponse(Hl7MessageReceivedEventArgs request, Expression filter, Hl7QueryParameterType map, IEnumerable results, Guid queryId, int offset, int count, int totalResults)
+        protected override IMessage CreateQueryResponse(Hl7MessageReceivedEventArgs request, Expression filter, Hl7QueryParameterType map, Array results, Guid queryId, int offset, int count, int totalResults)
         {
             var retVal = base.CreateQueryResponse(request, filter, map, results, queryId, offset, count, totalResults) as RSP_K23;
 

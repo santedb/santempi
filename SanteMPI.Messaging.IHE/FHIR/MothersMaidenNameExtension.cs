@@ -1,4 +1,5 @@
 ﻿using Hl7.Fhir.Model;
+using SanteDB;
 using SanteDB.Core.Model;
 using SanteDB.Core.Model.Constants;
 using SanteDB.Core.Model.Interfaces;
@@ -48,7 +49,7 @@ namespace SanteMPI.Messaging.IHE.FHIR
         /// <summary>
         /// Construct the extension value
         /// </summary>
-        public IEnumerable<Extension> Construct(IIdentifiedEntity modelObject)
+        public IEnumerable<Extension> Construct(IIdentifiedData modelObject)
         {
             if (modelObject is SanteDB.Core.Model.Roles.Patient patient)
             {

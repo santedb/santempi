@@ -1,6 +1,8 @@
 ﻿using Hl7.Fhir.Model;
 using RestSrvr;
+using SanteDB;
 using SanteDB.Core.Model;
+using SanteDB.Core.Model.Audit;
 using SanteDB.Core.Model.DataTypes;
 using SanteDB.Core.Services;
 using SanteDB.Messaging.FHIR.Exceptions;
@@ -23,12 +25,12 @@ namespace SanteMPI.Messaging.IHE.FHIR
 
         // Patient repository
         private readonly IRepositoryService<SanteDB.Core.Model.Roles.Patient> m_patientRepository;
-        private readonly IAssigningAuthorityRepositoryService m_assigningAuthorityRepository;
+        private readonly IIdentityDomainRepositoryService m_assigningAuthorityRepository;
 
         /// <summary>
         /// Creates a new patient identity cross reference service
         /// </summary>
-        public PatientIdentityCrossReferenceMobileOperation(IAssigningAuthorityRepositoryService assigningAuthorityRepositoryService, IRepositoryService<SanteDB.Core.Model.Roles.Patient> repositoryService)
+        public PatientIdentityCrossReferenceMobileOperation(IIdentityDomainRepositoryService assigningAuthorityRepositoryService, IRepositoryService<SanteDB.Core.Model.Roles.Patient> repositoryService)
         {
             this.m_patientRepository = repositoryService;
             this.m_assigningAuthorityRepository = assigningAuthorityRepositoryService;
@@ -86,7 +88,7 @@ namespace SanteMPI.Messaging.IHE.FHIR
                 }
 
                 // Attempt to find the patient
-                var result = this.m_patientRepository.Find(o => o.Identifiers.Any(i => i.Authority.Key == sourceDomain.Key && i.Value == sourceId));
+                var result = this.m_patientRepository.Find(o => o.Identifiers.Any(i => i.IdentityDomain.Key == sourceDomain.Key && i.Value == sourceId));
                 if (!result.Any())
                 {
                     throw new FhirException(System.Net.HttpStatusCode.NotFound, OperationOutcome.IssueType.NotFound, $"{sourceDomain}|{sourceId} Patient Identifier not found");
@@ -115,7 +117,7 @@ namespace SanteMPI.Messaging.IHE.FHIR
                 foreach (var res in result)
                 {
                     IEnumerable<EntityIdentifier> identifierList = authorityList.Any() ? 
-                        res.LoadCollection(o => o.Identifiers).Where(i => authorityList.Contains(i.AuthorityKey.Value)) : 
+                        res.LoadCollection(o => o.Identifiers).Where(i => authorityList.Contains(i.IdentityDomainKey.Value)) : 
                         res.LoadCollection(o => o.Identifiers);
 
                     // Identifiers
@@ -127,12 +129,12 @@ namespace SanteMPI.Messaging.IHE.FHIR
                     retVal.Add("targetId", DataTypeConverter.CreateNonVersionedReference<Patient>(res));
                 }
 
-                IheAuditUtil.SendAuditPatientIdentityXrefMobile(SanteDB.Core.Auditing.OutcomeIndicator.Success, result.Select(o => new Patient() { Id = o.Key.ToString() }).ToArray());
+                IheAuditUtil.SendAuditPatientIdentityXrefMobile(OutcomeIndicator.Success, result.Select(o => new Patient() { Id = o.Key.ToString() }).ToArray());
                 return retVal;
             }
             catch (Exception)
             {
-                IheAuditUtil.SendAuditPatientIdentityXrefMobile(SanteDB.Core.Auditing.OutcomeIndicator.MinorFail);
+                IheAuditUtil.SendAuditPatientIdentityXrefMobile(OutcomeIndicator.MinorFail);
                 throw;
             }
         }
