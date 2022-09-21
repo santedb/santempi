@@ -73,7 +73,7 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
         return fields >= 1;
     }
 
-    $scope.renderDemographics = renderPatientAsString;
+    $scope.renderDemographics = SanteDB.display.renderPatientAsString;
     // Search MPI
     $scope.searchMpi = async function (formData, custom) {
         if (formData != null && formData.$invalid)

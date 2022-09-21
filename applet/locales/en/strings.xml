@@ -8,7 +8,7 @@
     <string name="ui.mpi.dashboard.index">MPI Dashboard</string>
     <string name="ui.mpi.dashboard.patients.title">Locally Registered Patients</string>
     <string name="ui.mpi.dashboard.patients.count">number of patients at this endpoint</string>
-    <string name="ui.mpi.dashboard.recent">Recent Patients (&lt; 24h)</string>
+    <string name="ui.mpi.dashboard.recent">Recent Patients</string>
     <string name="ui.mpi.dashboard.stats">Patient Population</string>
 
     <!-- Search UI -->
@@ -66,7 +66,6 @@
     <string name="ui.mpi.match.recordState.master">Master Record</string>
     <string name="ui.mpi.match.recordState.rot">Record of Truth</string>
     <string name="ui.mpi.match.patient.title">Person Summary</string>
-
     <!-- Summary View -->
     <string name="ui.mpi.matches.detail">Match Detail</string>
     <string name="ui.mpi.matches.view.detail">A/B Compare</string>
@@ -173,6 +172,7 @@
     <string name="ui.mpi.matches.config.backgroundRunning">Enabling or Disabling match configurations while a background match task is running is not advised, and can result in unpredictable results</string>
     <string name="ui.mpi.matches.config.backgroundState">rematching complete</string>
     <string name="ui.mpi.matches.config.html">HTML</string>
+    <string name="ui.mpi.matches.config.xml">Source</string>
     <string name="ui.mpi.matches.config.enable.confirm">Are you sure you want to enable match configuration {id}? It will be used to score future registration and re-matches</string>
     <string name="ui.mpi.matches.config.enable.success">Match configuration {id} is now enabled</string>
     <string name="ui.mpi.matches.config.enable.error">Match configuration {id} could not be enabled  ({e})</string>
@@ -244,7 +244,17 @@
     <string name="ui.mpi.matches.config.test.diagram">Test Result</string>
     <string name="ui.mpi.matches.config.doctor.wideBlocking.title"><![CDATA[<i class="fas fa-exclamation-triangle"></i> Blocking Criteria &amp; Performance]]></string>
     <string name="ui.mpi.matches.config.doctor.wideBlocking.description"><![CDATA[Your blocking criteria has returned a large number of results ({count}) from the database. This may have serious performance impacts if scoring requires complex criteria. Consider adding more blocking criteria to speed up your matching configuration]]></string>
-
+    <string name="ui.mpi.match.mode.AbsoluteScore">Classification performed using absolute result score of attributes</string>
+    <string name="ui.mpi.match.mode.Percentage">Classify performed using normalized score of evaluated attributes</string>
+    <string name="ui.model.matchConfiguration.blocking.useLowerLayer">Block Strategy</string>
+    <string name="ui.model.matchConfiguration.blocking.useLowerLayer.hint"><![CDATA[Specifies how blocked records should be filtered and loaded. Options are: <ul>
+    <li>MASTER (default) - Instructs the blocking to be considered on the MASTER record (i.e. the collection of sources)</li>
+    <li>LOCAL/SOURCE - Instructs the blocking to be considered on SOURCE records (this is faster but ignore instructions may be less accurate)</li>
+    </ul>
+    ]]></string>
+    <string name="ui.model.matchConfiguration.blocking.useLowerLayer.true">LOCAL/SOURCE - Blocking occurs against source records</string>
+    <string name="ui.model.matchConfiguration.blocking.useLowerLayer.false">MASTER - Blocking occurs against MASTER records</string>
+    <string name="ui.model.matchConfiguration.blocking.useLowerLayer.set">Use LOCAL/SOURCE blocking. This may result in better performance however generated properties or combined properties of the master may not be considered</string>
   <!-- Rendering Graphs -->
   <string name="ui.mpi.entity.relationship.mode">Graph Mode</string>
   <string name="ui.mpi.entity.relationship.mode.advanced">Detailed Relationship Diagram</string>

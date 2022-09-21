@@ -4,12 +4,26 @@ angular.module('santedb').controller('MpiMatchDashboardController', ["$scope", "
 
     // Render holder patient
     $scope.renderHolder = function(rowData) {
-        return renderPatientAsString(rowData.holderModel, $rootScope.system.config.application.setting['aa.preferred']); // in mpi.js
+        if(rowData.holderModel) {
+            return SanteDB.display.renderPatientAsString(rowData.holderModel, $rootScope.system.config.application.setting['aa.preferred']); // in mpi.js
+        }
+        else {
+            SanteDB.resources.patient.getAsync(rowData.holder, 'fastview').then((d) => $(`div.${d.id.replace("-","_")}`).html(SanteDB.display.renderPatientAsString(d,  $rootScope.system.config.application.setting['aa.preferred'])))
+                .catch(e=>$rootScope.errorHandler(e));
+            return `<div style="min-width:20vw" class='${rowData.holder.replace("-", "_")}'><i class="fas fa-circle-notch fa-spin"></i> ${SanteDB.locale.getString("ui.wait")}</div>`;
+        }
     }
 
     // Render target patient
     $scope.renderTarget = function(rowData) {
-        return renderPatientAsString(rowData.targetModel, $rootScope.system.config.application.setting['aa.preferred']); // in mpi.js
+        if(rowData.targetModel) {
+            return SanteDB.display.renderPatientAsString(rowData.targetModel, $rootScope.system.config.application.setting['aa.preferred']); // in mpi.js
+        }
+        else {
+            SanteDB.resources.patient.getAsync(rowData.target, 'fastview').then((d) => $(`div.${d.id.replace("-","_")}`).html(SanteDB.display.renderPatientAsString(d,  $rootScope.system.config.application.setting['aa.preferred'])))
+                .catch(e=>$rootScope.errorHandler(e));
+            return `<div style="min-width:20vw"  class='${rowData.target.replace("-", "_")}'><i class='fas fa-circle-notch fa-spin'></i>  ${SanteDB.locale.getString("ui.wait")}</div>`;
+        }
     }
 
     // Render strength column
@@ -41,7 +55,7 @@ angular.module('santedb').controller('MpiMatchDashboardController', ["$scope", "
      */
     $scope.resolve = async function(candidateId, m) {
         try {
-            SanteDB.display.buttonWait(`#Patientesolve${m}`, true);
+            SanteDB.display.buttonWait(`#Patientresolve${m}`, true);
             var candidate = await SanteDB.resources.entityRelationship.getAsync(candidateId, "min", null, true);
             await attachCandidateAsync(candidate.holder, candidate.target);
             $("#duplicatesTable table").DataTable().ajax.reload();
@@ -50,7 +64,7 @@ angular.module('santedb').controller('MpiMatchDashboardController', ["$scope", "
             $rootScope.errorHandler(e);
         }
         finally {
-            SanteDB.display.buttonWait(`#Patientesolve${m}`, false);
+            SanteDB.display.buttonWait(`#Patientresolve${m}`, false);
         }
     }
 

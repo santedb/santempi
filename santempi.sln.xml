@@ -5,12 +5,14 @@
     <author>SanteSuite Contributors</author>
     <dependency id="org.santedb.hl7"/>
     <!--<dependency id="org.santedb.sg" />-->
+    <dependency id="org.santedb.i18n.en" />
     <dependency id="org.santedb.smpi" />
     <dependency id="org.santedb.admin" />
-    <dependency id="org.santedb.core" />
     <dependency id="org.santedb.uicore" />
     <dependency id="org.santedb.bicore" />
     <dependency id="org.santedb.config" />
-    <dependency id="org.santedb.i18n.en" />
+    <dependency id="org.santedb.config.init" />
+    <dependency id="org.santedb.sg" />
+    <dependency id="org.santedb.core" />
   </info>
 </AppletManifest>

@@ -35,6 +35,23 @@
 
                         <div class="row">
                             <label class="control-label col-md-2 col-sm-12">{{
+                                'ui.model.matchConfiguration.blocking.useLowerLayer' | i18n }}
+                                <hint-popover hint-title="ui.model.matchConfiguration.blocking.useLowerLayer" />
+                            </label>
+                            <div class="col-md-10 col-sm-12">
+                                <span ng-if="block.useLowerLayer">
+                                    <i class="fas fa-database"></i>
+                                    {{ 'ui.model.matchConfiguration.blocking.useLowerLayer.true' | i18n}}
+                                </span>
+                                <span ng-if="!block.useLowerLayer">
+                                    <i class="fas fa-list"></i>
+                                    {{ 'ui.model.matchConfiguration.blocking.useLowerLayer.false' | i18n}}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <label class="control-label col-md-2 col-sm-12">{{
                                 'ui.model.matchConfiguration.blocking.description' | i18n }}
                                 <hint-popover hint-title="ui.model.matchConfiguration.blocking.description" />
                             </label>
@@ -131,6 +148,18 @@
                                     max: 25 } }}
                                 </div>
                                
+                            </div>
+                        </div>
+
+                        <div class="row m-1">
+                            <label class="control-label col-md-2 col-sm-12">{{
+                                'ui.model.matchConfiguration.blocking.useLowerLayer' | i18n }}
+                                <hint-popover hint-title="ui.model.matchConfiguration.blocking.useLowerLayer" />
+                            </label>
+                            <div class="col-md-10 col-sm-12">
+                                <label>
+                                    <input type="checkbox" name="blocking{{$index}}" ng-model="block.useLowerLayer"  />
+                                    {{ 'ui.model.matchConfiguration.blocking.useLowerLayer.set' | i18n}}</label>
                             </div>
                         </div>
 

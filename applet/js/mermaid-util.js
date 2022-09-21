@@ -12,12 +12,12 @@ async function renderBlockingSubgraph(configuration, showActuals, detailOutput, 
 
 
     var actualBlockingCounts = null;
-    if(showActuals && showActuals.diagnostics) {
-        actualBlockingCounts = showActuals.diagnostics.stages.find(o=>o.name == "blocking");
+    if (showActuals && showActuals.diagnostics) {
+        actualBlockingCounts = showActuals.diagnostics.stages.find(o => o.name == "blocking");
     }
     var totalDatabaseCount = 0;
-    if(showActuals) {
-        totalDatabaseCount = await SanteDB.resources[configuration.target[0].resource.toCamelCase()].findAsync({_count:0});
+    if (showActuals) {
+        totalDatabaseCount = await SanteDB.resources[configuration.target[0].resource.toCamelCase()].findAsync({ _count: 0 });
     }
 
     for (var i in configuration.blocking) {
@@ -36,6 +36,7 @@ async function renderBlockingSubgraph(configuration, showActuals, detailOutput, 
             retVal += 'DB==>';
         }
 
+        
         if (showActuals) {
             retVal += `|${totalDatabaseCount.totalResults} ${configuration.target[0].resource} records|`;
         }
@@ -88,8 +89,8 @@ async function renderBlockingSubgraph(configuration, showActuals, detailOutput, 
 
                 if (f < block.filter.length - 1) {
                     retVal += '-->';
-                    
-                        retVal += `|"intersect"| `;
+
+                    retVal += `|"intersect"| `;
 
 
                     if (f < block.filter.length - 2) {
@@ -117,8 +118,8 @@ async function renderBlockingSubgraph(configuration, showActuals, detailOutput, 
 
         if (showActuals && actualBlockingCounts) {
 
-            var blockingStage = actualBlockingCounts.actions.find(a=>a.type == "blocking-instruction" && a.id.every(i => block.filter.find(f=>f.expression == i)));
-            if(blockingStage) {
+            var blockingStage = actualBlockingCounts.actions.find(a => a.type == "blocking-instruction" && a.id.every(i => block.filter.find(f => f.expression == i)));
+            if (blockingStage) {
                 retVal += `|${blockingStage.data.length == 0 ? 0 : blockingStage.data[blockingStage.data.length - 1].value} records| `;
             }
             else {
@@ -129,7 +130,16 @@ async function renderBlockingSubgraph(configuration, showActuals, detailOutput, 
             retVal += `|${block.op == 'AndAlso' ? 'intersect' : 'union'}| `;
         }
 
-        retVal += 'BJOIN';
+        if (!block.useLowerLayer) {
+            if (retVal.indexOf("MDM") == -1) {
+                retVal += `MDM\r\nMDM[["<i class='fas fa-list'></i> MDM Gather"]]==>BJOIN`;
+            } else {
+                retVal += "MDM"
+            }
+        }
+        else {
+            retVal += 'BJOIN';
+        }
         if (i == 0) {
             retVal += '(["<i class=\'fas fa-code-branch\'></i> Collect Blocked Records"])\n';
         }
@@ -241,9 +251,9 @@ async function renderScoringSubgraph(configuration, actuals, detailOutput, instr
             }
             retVal += `Attribute${s}[["<i class='fas fa-star-half-alt'></i> ${score.property[0]}"]]\n`;
             retVal += `Attribute${s}`;
-            
-            if(actuals) {
-                var mrecs = actuals.results.map(o=>o.vectors).flat().filter(o=>(o.name == score.id || o.name == score.property[0]) && o.evaluated && o.score > 0).length;
+
+            if (actuals) {
+                var mrecs = actuals.results.map(o => o.vectors).flat().filter(o => (o.name == score.id || o.name == score.property[0]) && o.evaluated && o.score > 0).length;
                 retVal += `-->|${mrecs} records| `;
             }
             else {
@@ -375,8 +385,8 @@ async function renderClassificationSubgraph(configuration, actuals) {
     // retVal += 'SUMCLS-->CLASS{Classify}\n';
     if (actuals) {
         var grps = {};
-        var groupedResults = actuals.results.forEach(o=>{
-            if(!grps[o.classification]) grps[o.classification] = 0;
+        var groupedResults = actuals.results.forEach(o => {
+            if (!grps[o.classification]) grps[o.classification] = 0;
             grps[o.classification]++;
         })
         retVal += `CLASS-->|${grps.NonMatch || 0} records| NON["<i class='fas fa-times'></i> Non Match"]\n`;
@@ -482,7 +492,7 @@ async function refreshDiagrams(configuration) {
 
 // Render actual summary of the data
 async function renderActualSummary(configuration, actuals) {
-    
+
     var graphData = `flowchart LR\n`;
     graphData += await renderBlockingSubgraph(configuration, actuals, false);
     graphData += await renderScoringSubgraph(configuration, actuals, false);
@@ -493,6 +503,6 @@ async function renderActualSummary(configuration, actuals) {
     mermaid.mermaidAPI.render('scoringRunAnalysis', graphData, (svg) => {
         $('#scoringRunAnalysisSvg').html(svg.replaceAll('flowchart-pointEnd', 'actual-pointEnd'));
     });
-   
+
 }
 

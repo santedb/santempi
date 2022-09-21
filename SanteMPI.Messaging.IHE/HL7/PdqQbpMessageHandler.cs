@@ -11,8 +11,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SanteMPI.Messaging.IHE.HL7
 {
@@ -35,6 +33,7 @@ namespace SanteMPI.Messaging.IHE.HL7
         protected override IMessage CreateNACK(Type nackType, IMessage request, Exception error, Hl7MessageReceivedEventArgs receiveData)
         {
             var retVal = base.CreateNACK(typeof(RSP_K21), request, error, receiveData);
+            
             if (retVal is RSP_K21 rsp)
             {
                 rsp.MSA.AcknowledgmentCode.Value = "AE";

@@ -24,18 +24,18 @@
     <author>SanteSuite Community Partners (see: santesuite.org)</author>
   </info>
 
-  <menuItem order="1000" context="org.santedb.admin" launch="santedb-admin.mpi.index" asset="/org.santedb.smpi/views/index.html">
+  <menuItem order="1000" context="org.santedb.admin" launch="santedb-admin.mpi.index" asset="/org.santedb.smpi/mpi/views/index.html">
     <icon>fas fa-street-view</icon>
     <text lang="en">SanteMPI</text>
-    <menuItem context="org.santedb.admin" launch="santedb-admin.mpi.matches.index" asset="/org.santedb.smpi/views/matches/index.html">
+    <menuItem context="org.santedb.admin" launch="santedb-admin.mpi.matches.index" asset="/org.santedb.smpi/views/mpi/matches/index.html">
       <icon>fas fa-clone</icon>
       <text lang="en">Matches</text>
     </menuItem>
-     <menuItem context="org.santedb.admin" launch="santedb-admin.mpi.patients.search" asset="/org.santedb.smpi/views/patients/search.html">
+     <menuItem context="org.santedb.admin" launch="santedb-admin.mpi.patients.search" asset="/org.santedb.smpi/views/mpi/patients/search.html">
       <icon>fas fa-search</icon>
       <text lang="en">Search</text>
     </menuItem>
-    <menuItem context="org.santedb.admin" launch="santedb-admin.mpi.patients.advancedSearch" asset="/org.santedb.smpi/views/patients/advSearch.html">
+    <menuItem context="org.santedb.admin" launch="santedb-admin.mpi.patients.advancedSearch" asset="/org.santedb.smpi/views/mpi/patients/advSearch.html">
       <icon>fas fa-search-plus</icon>
       <text lang="en">Power Search</text>
     </menuItem>
@@ -47,6 +47,9 @@
 
   <viewModel key="smpi.reverseRelationship">
     <definition>/org.santedb.smpi/models/reverseRelationship.xml</definition>
+  </viewModel>
+  <viewModel key="smpi.fastRelationship">
+    <definition>/org.santedb.smpi/models/fastRelationship.xml</definition>
   </viewModel>
   <strings lang="en" extern="locales/en/strings.xml" />
 
