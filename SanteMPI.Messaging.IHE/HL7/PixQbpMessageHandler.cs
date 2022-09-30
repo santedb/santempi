@@ -82,6 +82,9 @@ namespace SanteMPI.Messaging.IHE.HL7
                 retVal.ERR.HL7ErrorCode.Text.Value = "Unknown Key Identifier";
             }
 
+            // Fiter on what domains returned
+
+
             return retVal;
         }
     }

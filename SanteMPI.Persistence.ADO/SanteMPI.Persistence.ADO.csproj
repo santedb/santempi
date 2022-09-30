@@ -37,7 +37,7 @@
     <Description>SanteMPI Persistence Extensin functions </Description>
     <Authors>SanteSuite Contributors</Authors>
     <PackageTags>SanteDB</PackageTags>
-    <RepositoryUrl>https://github.com/santedb/santedb-restsvc</RepositoryUrl>
+    <RepositoryUrl>https://github.com/santedb/santempi</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
@@ -61,7 +61,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="SanteDB.OrmLite" Version="3.0.0" />
+    <PackageReference Include="SanteDB.OrmLite" Version="$(VersionNumber)" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SanteMPI.i18n\SanteMPI.i18n.csproj" />
   </ItemGroup>
  
 </Project>

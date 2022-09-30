@@ -69,8 +69,6 @@ namespace SanteMPI.Messaging.IHE.Test
 
             // Step 30
             var message = adtMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-17-30", this.DeviceSecretB));
-            TestUtil.AssertOutcome(message, "AA", "CA");
-
             var response = message as ACK;
             TestUtil.AssertOutcome(response, "AR", "CR", "CE", "AE");
             Assert.AreEqual("TEST_HARNESS_B", response.MSH.ReceivingApplication.NamespaceID.Value);
@@ -79,8 +77,6 @@ namespace SanteMPI.Messaging.IHE.Test
 
             // Step 40
             message = adtMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-17-40", this.DeviceSecretB));
-            TestUtil.AssertOutcome(message, "AA", "CA");
-
             response = message as ACK;
             TestUtil.AssertOutcome(response, "AR", "CR", "CE", "AE");
             Assert.AreEqual("TEST_HARNESS_B", response.MSH.ReceivingApplication.NamespaceID.Value);
@@ -89,8 +85,7 @@ namespace SanteMPI.Messaging.IHE.Test
 
             // Step 50
             message = adtMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-17-50", this.DeviceSecretB));
-            TestUtil.AssertOutcome(message, "AA", "CA");
-
+            
             response = message as ACK;
             TestUtil.AssertOutcome(response, "AR", "CR", "CE", "AE");
             Assert.AreEqual("TEST_HARNESS_B", response.MSH.ReceivingApplication.NamespaceID.Value);

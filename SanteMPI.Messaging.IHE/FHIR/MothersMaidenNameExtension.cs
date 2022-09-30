@@ -6,11 +6,11 @@ using SanteDB.Core.Model.Interfaces;
 using SanteDB.Core.Services;
 using SanteDB.Messaging.FHIR.Extensions;
 using SanteDB.Messaging.FHIR.Util;
-using SanteDB.Persistence.MDM.Extensions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using SanteDB.Core;
 
 namespace SanteMPI.Messaging.IHE.FHIR
 {
@@ -54,7 +54,7 @@ namespace SanteMPI.Messaging.IHE.FHIR
             if (modelObject is SanteDB.Core.Model.Roles.Patient patient)
             {
                 var mother = patient.LoadCollection(o => o.Relationships).Where(o => o.RelationshipTypeKey == EntityRelationshipTypeKeys.Mother).FirstOrDefault().LoadProperty(o => o.TargetEntity);
-                mother = mother.GetMaster();
+                mother = mother.ResolveManagedTarget();
 
                 if (mother != null)
                 {

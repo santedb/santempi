@@ -99,7 +99,7 @@ namespace SanteMPI.Messaging.IHE.Test
                 {
                     var pubId = $"{applicationName}|TEST";
                     var device = devIdService.GetIdentity(pubId);
-                    if (device == null)
+                    if (device == null && authenticationCertificate != null)
                     {
                         device = devIdService.CreateIdentity(pubId, Guid.NewGuid().ToString(), AuthenticationContext.Current.Principal);
                         policyInfoService.AddPolicies(device, PolicyGrantType.Grant, AuthenticationContext.Current.Principal, PermissionPolicyIdentifiers.LoginAsService);
@@ -123,26 +123,31 @@ namespace SanteMPI.Messaging.IHE.Test
                 {
                     aa = new IdentityDomain(nsid, nsid, oid)
                     {
-                        AssigningAuthority = new System.Collections.Generic.List<AssigningAuthority>()
-                        {
-                            new AssigningAuthority()
-                            {
-                                AssigningApplicationKey = appIdService.GetSid(applicationName)
-                            }
-                        },
+                        AssigningAuthority = new System.Collections.Generic.List<AssigningAuthority>(),
                         IsUnique = true,
                         Url = url
                     };
+                    if (!String.IsNullOrEmpty(applicationName))
+                    {
+                        aa.AssigningAuthority.Add(new AssigningAuthority()
+                        {
+                            AssigningApplicationKey = appIdService.GetSid(applicationName)
+                        });
+                    }
                     metadataService.Insert(aa);
                 }
                 else
                 {
-                    aa.LoadProperty(o => o.AssigningAuthority).Add(new AssigningAuthority()
+                    var sid = appIdService.GetSid(applicationName);
+                    if (!aa.LoadProperty(o => o.AssigningAuthority).Any(r => r.AssigningApplicationKey == sid))
                     {
-                        AssigningApplicationKey = appIdService.GetSid(applicationName)
-                    });
-                    aa.Url = url;
-                    metadataService.Save(aa);
+                        aa.AssigningAuthority.Add(new AssigningAuthority()
+                        {
+                            AssigningApplicationKey = sid
+                        });
+                        aa.Url = url;
+                        metadataService.Save(aa);
+                    }
                 }
             }
         }
@@ -169,18 +174,11 @@ namespace SanteMPI.Messaging.IHE.Test
             using (var sw = new StreamReader(s))
             {
                 var message = MessageUtils.ParseMessage(sw.ReadToEnd(), out var originalVersion);
-                (message.GetAll("MSH")[0] as ISegment).GetField(8).SetValue("I_AM_A_TEAPOT", 1);
+                (message.GetAll("MSH")[0] as MSH).Security.Value = "I_AM_A_TEAPOT";
                 return message;
             }
         }
 
-        /// <summary>
-        /// Get the message from the test assembly
-        /// </summary>
-        public static Hl7MessageReceivedEventArgs GetMessageEvent(string messageName)
-        {
-            return new Hl7MessageReceivedEventArgs(GetMessage(messageName), new Uri("test://sut"), new Uri("test://test"), DateTime.Now);
-        }
 
         /// <summary>
         /// Get the message from the test assembly

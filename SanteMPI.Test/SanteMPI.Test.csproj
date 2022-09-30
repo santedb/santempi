@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net47</TargetFramework>
+    <TargetFramework>net48</TargetFramework>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
@@ -200,13 +200,14 @@
   <ItemGroup>
     <PackageReference Include="FirebirdSql.Data.FirebirdClient" Version="9.0.2" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
-    <PackageReference Include="NUnit" Version="3.13.2" />
+    <PackageReference Include="NUnit" Version="3.13.3" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
     <PackageReference Include="NUnit.Analyzers" Version="3.3.0" />
     <PackageReference Include="coverlet.collector" Version="3.1.2" />
-    <PackageReference Include="SanteDB.Caching.Memory" Version="3.0.0" />
-    <PackageReference Include="SanteDB.Core.TestFramework" Version="3.0.0" />
-    <PackageReference Include="SanteDB.Matcher" Version="3.0.0" />
+    <PackageReference Include="SanteDB.Caching.Memory" Version="$(VersionNumber)" />
+    <PackageReference Include="SanteDB.Core.TestFramework" Version="$(VersionNumber)" />
+    <PackageReference Include="SanteDB.Persistence.Data" Version="$(VersionNumber)" />
+    <PackageReference Include="SanteDB.Matcher" Version="$(VersionNumber)" />
   </ItemGroup>
 
   <ItemGroup>
@@ -220,6 +221,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="_pub2.cer">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="_pub3.cer">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="_pub4.cer">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

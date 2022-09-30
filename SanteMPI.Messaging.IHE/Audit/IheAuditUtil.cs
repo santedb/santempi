@@ -268,27 +268,30 @@ namespace SanteMPI.Messaging.IHE.Audit
             }
             AuditUtil.SendAudit(retVal);
 
-            foreach (var r in recordMergeResult.Replaced)
+            if (outcome == OutcomeIndicator.Success)
             {
-                retVal = CreateITIAuditEvent(EventIdentifierType.PatientRecord, ActionType.Delete, outcome, ITI8);
-                AuditUtil.AddLocalDeviceActor(retVal);
-                AuditUtil.AddUserActor(retVal);
-                if (outcome == OutcomeIndicator.Success)
+                foreach (var r in recordMergeResult.Replaced)
                 {
-                    retVal.AuditableObjects.Add(new AuditableObject()
+                    retVal = CreateITIAuditEvent(EventIdentifierType.PatientRecord, ActionType.Delete, outcome, ITI8);
+                    AuditUtil.AddLocalDeviceActor(retVal);
+                    AuditUtil.AddUserActor(retVal);
+                    if (outcome == OutcomeIndicator.Success)
                     {
-                        Type = AuditableObjectType.Person,
-                        Role = AuditableObjectRole.Patient,
-                        LifecycleType = AuditableObjectLifecycle.LogicalDeletion,
-                        IDTypeCode = AuditableObjectIdType.PatientNumber,
-                        ObjectId = $"{r}^^^{m_configuration.LocalAuthority?.DomainName}&{m_configuration.LocalAuthority.Oid}&ISO",
-                        ObjectData = new List<ObjectDataExtension>()
+                        retVal.AuditableObjects.Add(new AuditableObject()
+                        {
+                            Type = AuditableObjectType.Person,
+                            Role = AuditableObjectRole.Patient,
+                            LifecycleType = AuditableObjectLifecycle.LogicalDeletion,
+                            IDTypeCode = AuditableObjectIdType.PatientNumber,
+                            ObjectId = $"{r}^^^{m_configuration.LocalAuthority?.DomainName}&{m_configuration.LocalAuthority.Oid}&ISO",
+                            ObjectData = new List<ObjectDataExtension>()
                 {
                     new ObjectDataExtension("MSH-10", Encoding.UTF8.GetBytes((request.GetStructure("MSH") as ISegment).GetField(10).ToString()))
                 }
-                    });
+                        });
+                    }
+                    AuditUtil.SendAudit(retVal);
                 }
-                AuditUtil.SendAudit(retVal);
             }
         }
 

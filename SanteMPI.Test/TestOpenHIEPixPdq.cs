@@ -20,17 +20,20 @@ namespace SanteMPI.Messaging.IHE.Test
     public class TestOpenHIEPixPdq : DataTest
     {
         // Device secret
-        private readonly X509Certificate2 DeviceSecretA;
-
-        private readonly X509Certificate2 DeviceSecretB;
+        private readonly X509Certificate2 TestHarnessACert;
+        private readonly X509Certificate2 TestHarnessBCert;
+        private readonly X509Certificate2 TestHarnessCert;
+        private readonly X509Certificate2 NidAuthCert;
 
         private IServiceManager m_serviceManager;
 
         public TestOpenHIEPixPdq()
         {
             var myPath = Path.GetDirectoryName(typeof(TestOhieCr17).Assembly.Location);
-            DeviceSecretA = new X509Certificate2(X509Certificate.CreateFromCertFile(Path.Combine(myPath, "_pub1.cer")));
-            DeviceSecretB = new X509Certificate2(X509Certificate.CreateFromCertFile(Path.Combine(myPath, "_pub2.cer")));
+            TestHarnessACert = new X509Certificate2(X509Certificate.CreateFromCertFile(Path.Combine(myPath, "_pub1.cer")));
+            TestHarnessBCert = new X509Certificate2(X509Certificate.CreateFromCertFile(Path.Combine(myPath, "_pub2.cer")));
+            TestHarnessCert = new X509Certificate2(X509Certificate.CreateFromCertFile(Path.Combine(myPath, "_pub3.cer")));
+            NidAuthCert = new X509Certificate2(X509Certificate.CreateFromCertFile(Path.Combine(myPath, "_pub4.cer")));
         }
 
         /// <summary>
@@ -53,7 +56,7 @@ namespace SanteMPI.Messaging.IHE.Test
         public void TestOhieCr01()
         {
             // Step 1: Test harness sends ADT^A01 message where CX.4 of PID is missing
-            var message = TestUtil.GetMessageEvent("OHIE-CR-01-10");
+            var message = TestUtil.GetMessageEvent("OHIE-CR-01-10", TestHarnessCert);
             var result = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>().HandleMessage(message);
 
             // Response is ACK A01
@@ -74,13 +77,13 @@ namespace SanteMPI.Messaging.IHE.Test
             using (AuthenticationContext.EnterSystemContext())
             {
                 var aaService = ApplicationServiceContext.Current.GetService<IIdentityDomainRepositoryService>();
-                TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", "I_AM_A_TEAPOT", DeviceSecretA);
+                TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", "I_AM_A_TEAPOT", TestHarnessCert);
                 var aa = aaService.Get("TEST");
                 if (aa == null)
                     aaService.Insert(new IdentityDomain("TEST", "TEST", "2.16.840.1.113883.3.72.5.9.1"));
 
                 // Test harness sends ADT^A01 Message where CX.4.1 of PID is missing by message containss 4.2 and 4.3
-                var message = TestUtil.GetMessageEvent("OHIE-CR-02-10", DeviceSecretA);
+                var message = TestUtil.GetMessageEvent("OHIE-CR-02-10", TestHarnessCert);
                 var result = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>().HandleMessage(message);
 
                 // Response is ACK A01
@@ -93,7 +96,7 @@ namespace SanteMPI.Messaging.IHE.Test
                 Assert.AreEqual("TEST", (result.GetStructure("MSH") as MSH).ReceivingFacility.NamespaceID.Value);
 
                 // Test harness ensures that patient was registered and receiver has populated 4.1, 4.2, and 4.3
-                message = TestUtil.GetMessageEvent("OHIE-CR-02-20", DeviceSecretA);
+                message = TestUtil.GetMessageEvent("OHIE-CR-02-20", TestHarnessCert);
                 result = new PdqQbpMessageHandler(new TestLocalizationService()).HandleMessage(message);
 
                 // Response is RSP K23
@@ -107,7 +110,7 @@ namespace SanteMPI.Messaging.IHE.Test
                 Assert.IsTrue(resp.QUERY_RESPONSE.PID.GetPatientIdentifierList().Any(a => a.AssigningAuthority.NamespaceID.Value == "TEST" && a.AssigningAuthority.UniversalID.Value == "2.16.840.1.113883.3.72.5.9.1" && a.AssigningAuthority.UniversalIDType.Value == "ISO"));
 
                 // Test harness sends ADT A01 with OID missing but namespace
-                message = TestUtil.GetMessageEvent("OHIE-CR-02-30", DeviceSecretA);
+                message = TestUtil.GetMessageEvent("OHIE-CR-02-30", TestHarnessCert);
                 result = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>().HandleMessage(message);
 
                 // Response is ACK A01
@@ -120,7 +123,7 @@ namespace SanteMPI.Messaging.IHE.Test
                 Assert.AreEqual("TEST", (result.GetStructure("MSH") as MSH).ReceivingFacility.NamespaceID.Value);
 
                 // Test harness validates patient was registered and populated segments properly
-                message = TestUtil.GetMessageEvent("OHIE-CR-02-40", DeviceSecretA);
+                message = TestUtil.GetMessageEvent("OHIE-CR-02-40", TestHarnessCert);
                 result = new PdqQbpMessageHandler(new TestLocalizationService()).HandleMessage(message);
 
                 // Response is RSP K23
@@ -153,7 +156,7 @@ namespace SanteMPI.Messaging.IHE.Test
                     aaRepo.Delete(aa.Key.Value);
 
                 // Test harness sends ADT A01 with 2.16.840.1.113883.3.72.5.9.4 as OID
-                var message = TestUtil.GetMessageEvent("OHIE-CR-03-10");
+                var message = TestUtil.GetMessageEvent("OHIE-CR-03-10", TestHarnessCert);
                 var result = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>().HandleMessage(message);
 
                 // Response is ACK A01
@@ -162,7 +165,7 @@ namespace SanteMPI.Messaging.IHE.Test
                 TestUtil.AssertOutcome(result, "AR", "CR");
 
                 // Test harness sends ADT A01 with TEST_BLOCK as AA
-                message = TestUtil.GetMessageEvent("OHIE-CR-03-20");
+                message = TestUtil.GetMessageEvent("OHIE-CR-03-20", TestHarnessCert);
                 result = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>().HandleMessage(message);
 
                 // Response is ACK A01
@@ -179,12 +182,12 @@ namespace SanteMPI.Messaging.IHE.Test
         public void TestOhieCr04()
         {
             // Setup: Ensure that TEST_HARNESS_A is created with
-            TestUtil.CreateAuthority("TEST_A", "2.16.840.1.113883.3.72.5.9.2", "", "TEST_HARNESS_A", "I_AM_A_TEAPOT", DeviceSecretA);
+            TestUtil.CreateAuthority("TEST_A", "2.16.840.1.113883.3.72.5.9.2", "", "TEST_HARNESS_A", "I_AM_A_TEAPOT", TestHarnessACert);
             // Setup: Ensure that TEST_HARNESS_B is created with
-            TestUtil.CreateAuthority("TEST_B", "2.16.840.1.113883.3.72.5.9.3", "", "TEST_HARNESS_B", "I_AM_A_TEAPOT", DeviceSecretB);
+            TestUtil.CreateAuthority("TEST_B", "2.16.840.1.113883.3.72.5.9.3", "", "TEST_HARNESS_B", "I_AM_A_TEAPOT", TestHarnessBCert);
 
             // Step 20 - Harness A sends ADT^A01
-            var message = TestUtil.GetMessageEvent("OHIE-CR-04-20", DeviceSecretA);
+            var message = TestUtil.GetMessageEvent("OHIE-CR-04-20", TestHarnessACert);
             var result = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>().HandleMessage(message);
 
             // Response is ACK A01
@@ -193,7 +196,7 @@ namespace SanteMPI.Messaging.IHE.Test
             TestUtil.AssertOutcome(result, "AA", "CA");
 
             // TEST HARNESS B attempts to send for authority A
-            message = TestUtil.GetMessageEvent("OHIE-CR-04-30", DeviceSecretB);
+            message = TestUtil.GetMessageEvent("OHIE-CR-04-30", TestHarnessBCert);
             result = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>().HandleMessage(message);
 
             // Response is ACK A01
@@ -209,15 +212,15 @@ namespace SanteMPI.Messaging.IHE.Test
         public void TestOhieCr05()
         {
             // Setup: Ensure that TEST_HARNESS is created with authority over TEST
-            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", "I_AM_A_TEAPOT", DeviceSecretA);
+            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", "I_AM_A_TEAPOT", TestHarnessCert);
 
             // Ensure that patient is registered with minimal data
-            var message = TestUtil.GetMessageEvent("OHIE-CR-05-10", DeviceSecretA);
+            var message = TestUtil.GetMessageEvent("OHIE-CR-05-10", TestHarnessCert);
             var result = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>().HandleMessage(message);
             TestUtil.AssertOutcome(result, "AA", "CA");
             TestUtil.AssertPatientExists("TEST", "RJ-439");
             // Test harness sends ADT^A01 message with minimal data set
-            message = TestUtil.GetMessageEvent("OHIE-CR-05-20", DeviceSecretA);
+            message = TestUtil.GetMessageEvent("OHIE-CR-05-20", TestHarnessCert);
             result = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>().HandleMessage(message);
             Assert.AreEqual("ACK", (result.GetStructure("MSH") as MSH).MessageType.MessageCode.Value);
             Assert.AreEqual("A01", (result.GetStructure("MSH") as MSH).MessageType.TriggerEvent.Value);
@@ -225,7 +228,7 @@ namespace SanteMPI.Messaging.IHE.Test
             TestUtil.AssertPatientExists("TEST", "RJ-441");
 
             // Test harness verifies infant record created
-            message = TestUtil.GetMessageEvent("OHIE-CR-05-30");
+            message = TestUtil.GetMessageEvent("OHIE-CR-05-30", TestHarnessCert);
             result = new PdqQbpMessageHandler(new TestLocalizationService()).HandleMessage(message);
             TestUtil.AssertOutcome(result, "AA", "CA");
 
@@ -246,22 +249,22 @@ namespace SanteMPI.Messaging.IHE.Test
         public void TestOhieCr06()
         {
             // Setup: Ensure that TEST_HARNESS_A is created with
-            TestUtil.CreateAuthority("TEST_A", "2.16.840.1.113883.3.72.5.9.2", "", "TEST_HARNESS_A", "I_AM_A_TEAPOT", DeviceSecretA);
+            TestUtil.CreateAuthority("TEST_A", "2.16.840.1.113883.3.72.5.9.2", "", "TEST_HARNESS_A", "I_AM_A_TEAPOT", TestHarnessACert);
             // Setup: Ensure that NID is created with
-            TestUtil.CreateAuthority("NID", "2.16.840.1.113883.3.72.5.9.9", "", "NID_AUTH", "I_AM_A_TEAPOT", DeviceSecretA);
+            TestUtil.CreateAuthority("NID", "2.16.840.1.113883.3.72.5.9.9", "", "NID_AUTH", "I_AM_A_TEAPOT", NidAuthCert);
 
-            var message = TestUtil.GetMessageEvent("OHIE-CR-06-20", DeviceSecretA);
+            var message = TestUtil.GetMessageEvent("OHIE-CR-06-20", NidAuthCert);
             var result = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>().HandleMessage(message);
             TestUtil.AssertOutcome(result, "AA", "CA");
             TestUtil.AssertPatientExists("NID", "NID-000345435");
-            message = TestUtil.GetMessageEvent("OHIE-CR-06-30", DeviceSecretA);
+            message = TestUtil.GetMessageEvent("OHIE-CR-06-30", TestHarnessACert);
             result = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>().HandleMessage(message);
             TestUtil.AssertOutcome(result, "AA", "CA");
             TestUtil.AssertPatientExists("TEST_A", "RJ-449");
             TestUtil.AssertPatientExists("NID", "NID-000345435");
 
             // Verify linkage
-            message = TestUtil.GetMessageEvent("OHIE-CR-06-40", DeviceSecretA);
+            message = TestUtil.GetMessageEvent("OHIE-CR-06-40", TestHarnessACert);
             result = new PdqQbpMessageHandler(new TestLocalizationService()).HandleMessage(message);
             TestUtil.AssertOutcome(result, "AA", "CA");
 
@@ -282,20 +285,20 @@ namespace SanteMPI.Messaging.IHE.Test
         public void TestOhieCr07()
         {
             // Ensure TEST_A is setup
-            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", "I_AM_A_TEAPOT", DeviceSecretA);
+            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", "I_AM_A_TEAPOT", TestHarnessCert);
 
             // Ensure patient is registered
-            var message = TestUtil.GetMessageEvent("OHIE-CR-07-10", DeviceSecretA);
+            var message = TestUtil.GetMessageEvent("OHIE-CR-07-10", TestHarnessCert);
             var result = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>().HandleMessage(message);
             TestUtil.AssertOutcome(result, "AA", "CA");
 
             // Test harness sends minimal data set for newborn
-            message = TestUtil.GetMessageEvent("OHIE-CR-07-20", DeviceSecretA);
+            message = TestUtil.GetMessageEvent("OHIE-CR-07-20", TestHarnessCert);
             result = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>().HandleMessage(message);
             TestUtil.AssertOutcome(result, "AA", "CA");
 
             // Verify that the infant was created
-            message = TestUtil.GetMessageEvent("OHIE-CR-07-30", DeviceSecretA);
+            message = TestUtil.GetMessageEvent("OHIE-CR-07-30", TestHarnessCert);
             result = new PdqQbpMessageHandler(new TestLocalizationService()).HandleMessage(message);
             TestUtil.AssertOutcome(result, "AA");
 
@@ -305,7 +308,7 @@ namespace SanteMPI.Messaging.IHE.Test
             Assert.IsTrue(rsp.QUERY_RESPONSE.PID.GetPatientIdentifierList().Any(o => o.AssigningAuthority.NamespaceID.Value == "TEST" && o.IDNumber.Value == "RJ-440"), "Missing Local ID");
 
             // Verify that mother's record wsa linked
-            message = TestUtil.GetMessageEvent("OHIE-CR-07-40", DeviceSecretA);
+            message = TestUtil.GetMessageEvent("OHIE-CR-07-40", TestHarnessCert);
             result = new PdqQbpMessageHandler(new TestLocalizationService()).HandleMessage(message);
             TestUtil.AssertOutcome(result, "AA");
 
@@ -325,15 +328,15 @@ namespace SanteMPI.Messaging.IHE.Test
         public void TestOhieCr08()
         {
             // Ensure TEST_A is setup
-            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", "I_AM_A_TEAPOT", DeviceSecretA);
+            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", "I_AM_A_TEAPOT", TestHarnessCert);
 
             // Register patient with full demographic information
-            var message = TestUtil.GetMessageEvent("OHIE-CR-08-10", DeviceSecretA);
+            var message = TestUtil.GetMessageEvent("OHIE-CR-08-10", TestHarnessACert);
             var result = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>().HandleMessage(message);
             TestUtil.AssertOutcome(result, "AA", "CA");
 
             // Test harness verifies data by looking up created patient
-            message = TestUtil.GetMessageEvent("OHIE-CR-08-30", DeviceSecretA);
+            message = TestUtil.GetMessageEvent("OHIE-CR-08-30", TestHarnessACert);
             result = new PdqQbpMessageHandler(new TestLocalizationService()).HandleMessage(message);
             TestUtil.AssertOutcome(result, "AA");
 
@@ -366,13 +369,13 @@ namespace SanteMPI.Messaging.IHE.Test
         public void TestOhieCr09()
         {
             // Setup the domain authority of TEST
-            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", "I_AM_A_TEAPOT", DeviceSecretA);
+            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", "I_AM_A_TEAPOT", TestHarnessCert);
 
             // Setup the domain authority of NID
-            TestUtil.CreateAuthority("NID", "2.16.840.1.113883.3.72.5.9.9", "", "NID_AUTH", "I_AM_A_TEAPOT", DeviceSecretA);
+            TestUtil.CreateAuthority("NID", "2.16.840.1.113883.3.72.5.9.9", "", "NID_AUTH", "I_AM_A_TEAPOT", NidAuthCert);
 
             // Step 1: The test harness verifies that the PIX query handler behaves properly for un-regstered patient
-            var message = TestUtil.GetMessageEvent("OHIE-CR-09-10", DeviceSecretA);
+            var message = TestUtil.GetMessageEvent("OHIE-CR-09-10", TestHarnessACert);
             var response = new PixQbpMessageHandler(new TestLocalizationService()).HandleMessage(message);
 
             // Response should be AE
@@ -386,7 +389,7 @@ namespace SanteMPI.Messaging.IHE.Test
             Assert.AreEqual("1", rsp.ERR.GetErrorLocation(0).ComponentNumber.Value);
 
             // Harness sends PIX query for unregistered patient in random domain
-            message = TestUtil.GetMessageEvent("OHIE-CR-09-20", DeviceSecretA);
+            message = TestUtil.GetMessageEvent("OHIE-CR-09-20", TestHarnessACert);
             response = new PixQbpMessageHandler(new TestLocalizationService()).HandleMessage(message);
 
             // Response should be AE
@@ -400,14 +403,14 @@ namespace SanteMPI.Messaging.IHE.Test
             Assert.AreEqual("4", rsp.ERR.GetErrorLocation(0).ComponentNumber.Value);
 
             // Harness sends registering patient
-            message = TestUtil.GetMessageEvent("OHIE-CR-09-30", DeviceSecretA);
+            message = TestUtil.GetMessageEvent("OHIE-CR-09-30", TestHarnessACert);
             response = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>().HandleMessage(message);
 
             // Assert success
             TestUtil.AssertOutcome(response, "AA", "CA");
 
             // Harness accepts message for xref
-            message = TestUtil.GetMessageEvent("OHIE-CR-09-40", DeviceSecretA);
+            message = TestUtil.GetMessageEvent("OHIE-CR-09-40", TestHarnessACert);
             response = new PixQbpMessageHandler(new TestLocalizationService()).HandleMessage(message);
 
             // Assert success
@@ -429,16 +432,16 @@ namespace SanteMPI.Messaging.IHE.Test
         [Test]
         public void TestOhieCr10()
         {
-            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", "I_AM_A_TEAPOT", DeviceSecretA);
-            TestUtil.CreateAuthority("NID", "2.16.840.1.113883.3.72.5.9.9", "", "NID_AUTH", "I_AM_A_TEAPOT", DeviceSecretA);
+            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", "I_AM_A_TEAPOT", TestHarnessCert);
+            TestUtil.CreateAuthority("NID", "2.16.840.1.113883.3.72.5.9.9", "", "NID_AUTH", "I_AM_A_TEAPOT", NidAuthCert);
 
             // Ensure that patient is registered
-            var message = TestUtil.GetMessageEvent("OHIE-CR-10-10", DeviceSecretA);
+            var message = TestUtil.GetMessageEvent("OHIE-CR-10-10", TestHarnessACert);
             var response = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>().HandleMessage(message);
             TestUtil.AssertOutcome(response, "AA", "CA");
 
             // Test harness requests that the receiver gives it only TEST identities
-            message = TestUtil.GetMessageEvent("OHIE-CR-10-20", DeviceSecretA);
+            message = TestUtil.GetMessageEvent("OHIE-CR-10-20", TestHarnessACert);
             response = new PdqQbpMessageHandler(new TestLocalizationService()).HandleMessage(message);
             TestUtil.AssertOutcome(response, "AA");
             var rsp = response as RSP_K23;
@@ -448,7 +451,7 @@ namespace SanteMPI.Messaging.IHE.Test
             Assert.AreEqual("2.16.840.1.113883.3.72.5.9.1", rsp.QUERY_RESPONSE.PID.GetPatientIdentifierList().First().AssigningAuthority.UniversalID.Value);
 
             // Test harness requests receiver to give it a domain that does not exist
-            message = TestUtil.GetMessageEvent("OHIE-CR-10-30", DeviceSecretA);
+            message = TestUtil.GetMessageEvent("OHIE-CR-10-30", TestHarnessACert);
             response = new PixQbpMessageHandler(new TestLocalizationService()).HandleMessage(message);
             TestUtil.AssertOutcome(response, "AE");
             rsp = response as RSP_K23;
@@ -457,7 +460,7 @@ namespace SanteMPI.Messaging.IHE.Test
             Assert.AreEqual("4", rsp.ERR.GetErrorLocation(0).FieldPosition.Value);
 
             // Test harness requests receiver give it a domain identifier from valid domain but for which the patient has no ID
-            message = TestUtil.GetMessageEvent("OHIE-CR-10-40", DeviceSecretA);
+            message = TestUtil.GetMessageEvent("OHIE-CR-10-40", TestHarnessACert);
             response = new PixQbpMessageHandler(new TestLocalizationService()).HandleMessage(message);
             TestUtil.AssertOutcome(response, "AA");
             rsp = response as RSP_K23;
@@ -471,16 +474,16 @@ namespace SanteMPI.Messaging.IHE.Test
         [Test]
         public void TestOhieCr11()
         {
-            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", "I_AM_A_TEAPOT", DeviceSecretA);
-            TestUtil.CreateAuthority("NID", "2.16.840.1.113883.3.72.5.9.9", "", "NID_AUTH", "I_AM_A_TEAPOT", DeviceSecretA);
+            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", "I_AM_A_TEAPOT", TestHarnessCert);
+            TestUtil.CreateAuthority("NID", "2.16.840.1.113883.3.72.5.9.9", "", "NID_AUTH", "I_AM_A_TEAPOT", NidAuthCert);
 
             // Ensure that the patient Jennifer Jones with RJ-439 is registered
-            var message = TestUtil.GetMessageEvent("OHIE-CR-11-10", DeviceSecretA);
+            var message = TestUtil.GetMessageEvent("OHIE-CR-11-10", TestHarnessACert);
             var response = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>().HandleMessage(message);
             TestUtil.AssertOutcome(response, "AA", "CA");
 
             // Test harness sends PDQ message containing known ID to supplier
-            message = TestUtil.GetMessageEvent("OHIE-CR-11-20", DeviceSecretA);
+            message = TestUtil.GetMessageEvent("OHIE-CR-11-20", TestHarnessACert);
             response = new PdqQbpMessageHandler(new TestLocalizationService()).HandleMessage(message);
             TestUtil.AssertOutcome(response, "AA");
 
@@ -497,7 +500,7 @@ namespace SanteMPI.Messaging.IHE.Test
             Assert.AreEqual("19840125", rsp.GetQUERY_RESPONSE(0).PID.DateTimeOfBirth.Time.Value);
 
             // Test harness sends PDQ message with identifier that is unknown
-            message = TestUtil.GetMessageEvent("OHIE-CR-11-30", DeviceSecretA);
+            message = TestUtil.GetMessageEvent("OHIE-CR-11-30", TestHarnessACert);
             response = new PdqQbpMessageHandler(new TestLocalizationService()).HandleMessage(message);
             TestUtil.AssertOutcome(response, "AA");
 
@@ -506,7 +509,7 @@ namespace SanteMPI.Messaging.IHE.Test
             Assert.AreEqual(0, rsp.QUERY_RESPONSERepetitionsUsed);
 
             // Test harness sends invalid PDQ message with invalid filter parameter
-            message = TestUtil.GetMessageEvent("OHIE-CR-11-40");
+            message = TestUtil.GetMessageEvent("OHIE-CR-11-40", TestHarnessCert);
             response = new PdqQbpMessageHandler(new TestLocalizationService()).HandleMessage(message);
             TestUtil.AssertOutcome(response, "AE", "AR");
 
@@ -515,7 +518,7 @@ namespace SanteMPI.Messaging.IHE.Test
             Assert.AreEqual(0, rsp.QUERY_RESPONSERepetitionsUsed);
 
             // Test harness sends PDQ message and specified domains that should be returned in QPD-8
-            message = TestUtil.GetMessageEvent("OHIE-CR-11-50");
+            message = TestUtil.GetMessageEvent("OHIE-CR-11-50", TestHarnessCert);
             response = new PdqQbpMessageHandler(new TestLocalizationService()).HandleMessage(message);
             TestUtil.AssertOutcome(response, "AA");
 
@@ -532,7 +535,7 @@ namespace SanteMPI.Messaging.IHE.Test
 
             // Test harness sends message what domains should be returned. What domains contains a NID which the patient does not have
             // The system should respond with NF
-            message = TestUtil.GetMessageEvent("OHIE-CR-11-60");
+            message = TestUtil.GetMessageEvent("OHIE-CR-11-60", TestHarnessCert);
             response = new PdqQbpMessageHandler(new TestLocalizationService()).HandleMessage(message);
             TestUtil.AssertOutcome(response, "AA");
 
@@ -541,7 +544,7 @@ namespace SanteMPI.Messaging.IHE.Test
             Assert.AreEqual(0, rsp.QUERY_RESPONSERepetitionsUsed);
 
             // Test harness sends message with an invalid domain specified in what domains returned. The system responds with error
-            message = TestUtil.GetMessageEvent("OHIE-CR-11-70");
+            message = TestUtil.GetMessageEvent("OHIE-CR-11-70", TestHarnessCert);
             response = new PdqQbpMessageHandler(new TestLocalizationService()).HandleMessage(message);
             TestUtil.AssertOutcome(response, "AE");
 
@@ -561,17 +564,17 @@ namespace SanteMPI.Messaging.IHE.Test
         public void TestOhieCr12()
         {
             // Pre-Conditions -- 5, 7 & 10
-            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", "I_AM_A_TEAPOT", this.DeviceSecretA);
-            TestUtil.CreateAuthority("NID", "2.16.840.1.113883.3.72.5.9.9", "", "NID_AUTH", "I_AM_A_TEAPOT", this.DeviceSecretA);
+            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", "I_AM_A_TEAPOT", this.TestHarnessCert);
+            TestUtil.CreateAuthority("NID", "2.16.840.1.113883.3.72.5.9.9", "", "NID_AUTH", "I_AM_A_TEAPOT", this.NidAuthCert);
             var adtMessageHandler = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>(); 
             
-            var actual = adtMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-12-10", this.DeviceSecretA));
+            var actual = adtMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-12-10", this.TestHarnessCert));
             TestUtil.AssertOutcome(actual, "CA", "AA");
 
             // Step 20 -- Query Patient
             var qbpMessageHandler = this.m_serviceManager.CreateInjected<PdqQbpMessageHandler>();
 
-            actual = qbpMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-12-20", this.DeviceSecretA));
+            actual = qbpMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-12-20", this.TestHarnessCert));
 
             Assert.NotNull(actual);
             Assert.IsInstanceOf<RSP_K21>(actual);
@@ -589,7 +592,7 @@ namespace SanteMPI.Messaging.IHE.Test
             Assert.AreEqual("19840125", result.GetQUERY_RESPONSE(0).PID.DateTimeOfBirth.Time.Value);
 
             // Step 30
-            actual = qbpMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-12-30", this.DeviceSecretA));
+            actual = qbpMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-12-30", this.TestHarnessCert));
 
             Assert.NotNull(actual);
             Assert.IsInstanceOf<RSP_K21>(actual);
@@ -602,7 +605,7 @@ namespace SanteMPI.Messaging.IHE.Test
 
 
             // Step 40
-            actual = qbpMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-12-40", this.DeviceSecretA));
+            actual = qbpMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-12-40", this.TestHarnessCert));
 
             Assert.NotNull(actual);
             Assert.IsInstanceOf<RSP_K21>(actual);
@@ -622,7 +625,7 @@ namespace SanteMPI.Messaging.IHE.Test
             Assert.AreEqual("19840125", result.GetQUERY_RESPONSE(0).PID.DateTimeOfBirth.Time.Value);
 
             // Step 45
-            actual = qbpMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-12-45", this.DeviceSecretA));
+            actual = qbpMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-12-45", this.TestHarnessCert));
 
             Assert.NotNull(actual);
             Assert.IsInstanceOf<RSP_K21>(actual);
@@ -639,7 +642,7 @@ namespace SanteMPI.Messaging.IHE.Test
 
 
             // Step 50
-            actual = qbpMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-12-50", this.DeviceSecretA));
+            actual = qbpMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-12-50", this.TestHarnessCert));
 
             Assert.NotNull(actual);
             Assert.IsInstanceOf<RSP_K21>(actual);
@@ -658,10 +661,12 @@ namespace SanteMPI.Messaging.IHE.Test
             Assert.AreEqual("JENNIFER", result.GetQUERY_RESPONSE(0).PID.GetPatientName(0).GivenName.Value);
             Assert.AreEqual("19840125", result.GetQUERY_RESPONSE(0).PID.DateTimeOfBirth.Time.Value);
 
-            Assert.AreEqual("QRI-3", result.GetQUERY_RESPONSE(0).QRI.CandidateConfidence.Value);
+            Assert.AreEqual("1.0", result.GetQUERY_RESPONSE(0).QRI.CandidateConfidence.Value);
 
             // Step 60
-            actual = qbpMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-12-60", this.DeviceSecretA));
+            // Step 60 in OHIE doesn't work in the Firebird Test Provider Framework as Fireird lacks soundex
+            /*
+            actual = qbpMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-12-60", this.TestHarnessCert));
 
             Assert.NotNull(actual);
             Assert.IsInstanceOf<RSP_K21>(actual);
@@ -681,10 +686,10 @@ namespace SanteMPI.Messaging.IHE.Test
             Assert.AreEqual("19840125", result.GetQUERY_RESPONSE(0).PID.DateTimeOfBirth.Time.Value);
 
             Assert.AreEqual("QRI-3", result.GetQUERY_RESPONSE(0).QRI.CandidateConfidence.Value);
-
+            */
 
             // Step 70
-            actual = qbpMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-12-70", this.DeviceSecretA));
+            actual = qbpMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-12-70", this.TestHarnessCert));
 
             Assert.NotNull(actual);
             Assert.IsInstanceOf<RSP_K21>(actual);
@@ -703,7 +708,7 @@ namespace SanteMPI.Messaging.IHE.Test
             Assert.AreEqual("JENNIFER", result.GetQUERY_RESPONSE(0).PID.GetPatientName(0).GivenName.Value);
             Assert.AreEqual("19840125", result.GetQUERY_RESPONSE(0).PID.DateTimeOfBirth.Time.Value);
 
-            Assert.AreEqual("QRI-3", result.GetQUERY_RESPONSE(0).QRI.CandidateConfidence.Value);
+            Assert.AreEqual("1.0", result.GetQUERY_RESPONSE(0).QRI.CandidateConfidence.Value);
         }
 
         /// <summary>
@@ -713,20 +718,20 @@ namespace SanteMPI.Messaging.IHE.Test
         public void TestOhieCr13()
         {
             // Ensure TEST_A is setup
-            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", "I_AM_A_TEAPOT", DeviceSecretA);
+            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", "I_AM_A_TEAPOT", TestHarnessCert);
 
             // Ensure patient is registered
-            var message = TestUtil.GetMessageEvent("OHIE-CR-13-10", DeviceSecretA);
+            var message = TestUtil.GetMessageEvent("OHIE-CR-13-10", TestHarnessCert);
             var result = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>().HandleMessage(message);
             TestUtil.AssertOutcome(result, "AA", "CA");
 
             // Ensure patient's mother is registered
-            message = TestUtil.GetMessageEvent("OHIE-CR-13-15", DeviceSecretA);
+            message = TestUtil.GetMessageEvent("OHIE-CR-13-15", TestHarnessCert);
             result = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>().HandleMessage(message);
             TestUtil.AssertOutcome(result, "AA", "CA");
 
             // Test harness sends a query with mother's identifier
-            message = TestUtil.GetMessageEvent("OHIE-CR-13-20", DeviceSecretA);
+            message = TestUtil.GetMessageEvent("OHIE-CR-13-20", TestHarnessCert);
             var response = new PdqQbpMessageHandler(new TestLocalizationService()).HandleMessage(message);
             TestUtil.AssertOutcome(response, "AA");
 
@@ -736,7 +741,7 @@ namespace SanteMPI.Messaging.IHE.Test
             Assert.AreEqual("TEST", rsp.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().Last().AssigningAuthority.NamespaceID.Value);
 
             // Verify that the infant was created
-            message = TestUtil.GetMessageEvent("OHIE-CR-13-30", DeviceSecretA);
+            message = TestUtil.GetMessageEvent("OHIE-CR-13-30", TestHarnessCert);
             response = new PdqQbpMessageHandler(new TestLocalizationService()).HandleMessage(message);
             TestUtil.AssertOutcome(response, "AA");
 
@@ -754,43 +759,43 @@ namespace SanteMPI.Messaging.IHE.Test
         public void TestOhieCr14()
         {
             // step 5
-            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", "I_AM_A_TEAPOT", DeviceSecretA);
+            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", "I_AM_A_TEAPOT", TestHarnessCert);
 
             // step 10 - ensure that the patient is registered
-            var actual = TestUtil.GetMessageEvent("OHIE-CR-14-10", this.DeviceSecretA);
+            var actual = TestUtil.GetMessageEvent("OHIE-CR-14-10", this.TestHarnessCert);
             var response = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>().HandleMessage(actual);
             TestUtil.AssertOutcome(response, "AA", "CA");
 
             // step 20
             // Test harness sends a query with date of birth precise to the year in which a patient’s date of birth falls.
-            actual = TestUtil.GetMessageEvent("OHIE-CR-14-20", this.DeviceSecretA);
+            actual = TestUtil.GetMessageEvent("OHIE-CR-14-20", this.TestHarnessCert);
             response = new PdqQbpMessageHandler(new TestLocalizationService()).HandleMessage(actual);
             TestUtil.AssertOutcome(response, "AA");
             var rsp = response as RSP_K21;
             Assert.AreEqual("OK", rsp.QAK.QueryResponseStatus.Value);
             Assert.AreEqual("RJ-439", rsp.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().Last().IDNumber.Value);
-            Assert.AreEqual("TEST", rsp.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().First().AssigningAuthority.NamespaceID.Value);
+            Assert.AreEqual("TEST", rsp.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().Last().AssigningAuthority.NamespaceID.Value);
 
             // step 30
-            actual = TestUtil.GetMessageEvent("OHIE-CR-14-30", this.DeviceSecretA);
+            actual = TestUtil.GetMessageEvent("OHIE-CR-14-30", this.TestHarnessCert);
             response = new PdqQbpMessageHandler(new TestLocalizationService()).HandleMessage(actual);
             TestUtil.AssertOutcome(response, "AA");
             rsp = response as RSP_K21;
             Assert.AreEqual("OK", rsp.QAK.QueryResponseStatus.Value);
             Assert.AreEqual("RJ-439", rsp.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().Last().IDNumber.Value);
-            Assert.AreEqual("TEST", rsp.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().First().AssigningAuthority.NamespaceID.Value);
+            Assert.AreEqual("TEST", rsp.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().Last().AssigningAuthority.NamespaceID.Value);
 
             // step 40
-            actual = TestUtil.GetMessageEvent("OHIE-CR-14-40", this.DeviceSecretA);
+            actual = TestUtil.GetMessageEvent("OHIE-CR-14-40", this.TestHarnessCert);
             response = new PdqQbpMessageHandler(new TestLocalizationService()).HandleMessage(actual);
             TestUtil.AssertOutcome(response, "AA");
             rsp = response as RSP_K21;
             Assert.AreEqual("OK", rsp.QAK.QueryResponseStatus.Value);
             Assert.AreEqual("RJ-439", rsp.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().Last().IDNumber.Value);
-            Assert.AreEqual("TEST", rsp.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().First().AssigningAuthority.NamespaceID.Value);
+            Assert.AreEqual("TEST", rsp.GetQUERY_RESPONSE(0).PID.GetPatientIdentifierList().Last().AssigningAuthority.NamespaceID.Value);
 
             // step 50
-            actual = TestUtil.GetMessageEvent("OHIE-CR-14-20", this.DeviceSecretA);
+            actual = TestUtil.GetMessageEvent("OHIE-CR-14-50", this.TestHarnessCert);
             response = new PdqQbpMessageHandler(new TestLocalizationService()).HandleMessage(actual);
             TestUtil.AssertOutcome(response, "AA");
             rsp = response as RSP_K21;
@@ -806,17 +811,17 @@ namespace SanteMPI.Messaging.IHE.Test
         public void TestOhieCr15()
         {
             // Step 5- set up receiver
-            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", "I_AM_A_TEAPOT", DeviceSecretA);
+            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", "I_AM_A_TEAPOT", TestHarnessCert);
             //TestUtil.CreateAuthority("NID", "2.16.840.1.113883.3.72.5.9.9", "", "NID_AUTH", DeviceSecretA);
 
             // Step 10 - register patient and check
-            var message = TestUtil.GetMessageEvent("OHIE-CR-15-10", DeviceSecretA);
+            var message = TestUtil.GetMessageEvent("OHIE-CR-15-10", TestHarnessCert);
             var result = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>().HandleMessage(message);
 
             TestUtil.AssertOutcome(result, "AA", "CA");
 
             // Step 20-  send a query with patient's name and gender
-            message = TestUtil.GetMessageEvent("OHIE-CR-15-20", DeviceSecretA);
+            message = TestUtil.GetMessageEvent("OHIE-CR-15-20", TestHarnessCert);
             result = this.m_serviceManager.CreateInjected<PdqQbpMessageHandler>().HandleMessage(message);
             var response = (RSP_K21)result;
 
@@ -837,7 +842,7 @@ namespace SanteMPI.Messaging.IHE.Test
             Assert.AreEqual(1, matchingDomainCount);
 
             // **Step 30 - needed to remove repeating segment
-            message = TestUtil.GetMessageEvent("OHIE-CR-15-30", DeviceSecretA);
+            message = TestUtil.GetMessageEvent("OHIE-CR-15-30", TestHarnessCert);
             result = this.m_serviceManager.CreateInjected<PdqQbpMessageHandler>().HandleMessage(message);
             response = (RSP_K21)result;
 
@@ -855,7 +860,7 @@ namespace SanteMPI.Messaging.IHE.Test
             Assert.AreEqual(1, matchingIdentifierCount);
 
             // **Step 40 - for passing test needed to remove repeating segments and change date to year only in QPD-3
-            message = TestUtil.GetMessageEvent("OHIE-CR-15-40", DeviceSecretA);
+            message = TestUtil.GetMessageEvent("OHIE-CR-15-40", TestHarnessCert);
             result = this.m_serviceManager.CreateInjected<PdqQbpMessageHandler>().HandleMessage(message);
             response = (RSP_K21)result;
 
@@ -873,7 +878,7 @@ namespace SanteMPI.Messaging.IHE.Test
             Assert.AreEqual(1, matchingIdentifierCount);
 
             // **Step 50 - for passing test needed to remove repeating segments QPD-3
-            message = TestUtil.GetMessageEvent("OHIE-CR-15-50", DeviceSecretA);
+            message = TestUtil.GetMessageEvent("OHIE-CR-15-50", TestHarnessCert);
             result = this.m_serviceManager.CreateInjected<PdqQbpMessageHandler>().HandleMessage(message);
             response = (RSP_K21)result;
 
@@ -883,7 +888,7 @@ namespace SanteMPI.Messaging.IHE.Test
 
 
             // **Step 60 - for passing test needed to remove repeating segments QPD-3
-            message = TestUtil.GetMessageEvent("OHIE-CR-15-60", DeviceSecretA);
+            message = TestUtil.GetMessageEvent("OHIE-CR-15-60", TestHarnessCert);
             result = this.m_serviceManager.CreateInjected<PdqQbpMessageHandler>().HandleMessage(message);
             response = (RSP_K21)result;
 
@@ -901,24 +906,24 @@ namespace SanteMPI.Messaging.IHE.Test
         {
             // step 5 
             // set up the receiver
-            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", "I_AM_A_TEAPOT", this.DeviceSecretA);
+            TestUtil.CreateAuthority("TEST", "2.16.840.1.113883.3.72.5.9.1", "", "TEST_HARNESS", "I_AM_A_TEAPOT", this.TestHarnessCert);
 
             // step 10
             // register patient
             var adtMessageHandler = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>();
-            var actual = adtMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-16-10", this.DeviceSecretA));
+            var actual = adtMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-16-10", this.TestHarnessACert));
             TestUtil.AssertOutcome(actual, "AA", "CA");
 
             // step 15
             // register another patient
             adtMessageHandler = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>();
-            actual = adtMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-16-15", this.DeviceSecretA));
+            actual = adtMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-16-15", this.TestHarnessACert));
             TestUtil.AssertOutcome(actual, "AA", "CA");
 
             // step 20
             // query patients
             var qbpMessageHandler = this.m_serviceManager.CreateInjected<PdqQbpMessageHandler>();
-            actual = qbpMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-16-20", this.DeviceSecretA));
+            actual = qbpMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-16-20", this.TestHarnessACert));
 
             // perform assertions
             Assert.NotNull(actual);
@@ -939,13 +944,13 @@ namespace SanteMPI.Messaging.IHE.Test
             // step 30
             // merge identifier RJ-999 into record RJ-439
             adtMessageHandler = this.m_serviceManager.CreateInjected<PixAdtMessageHandler>();
-            actual = adtMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-16-30", this.DeviceSecretA));
+            actual = adtMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-16-30", this.TestHarnessACert));
 
             TestUtil.AssertOutcome(actual, "AA");
 
             // step 40
             // merged using PIX query
-            var message = TestUtil.GetMessageEvent("OHIE-CR-16-40", DeviceSecretA);
+            var message = TestUtil.GetMessageEvent("OHIE-CR-16-40", TestHarnessACert);
             var response = new PixQbpMessageHandler(new TestLocalizationService()).HandleMessage(message);
 
             // Assert success
@@ -959,7 +964,7 @@ namespace SanteMPI.Messaging.IHE.Test
 
             // step 50
             // verifies old identifier is de-referenced from patient record
-            message = TestUtil.GetMessageEvent("OHIE-CR-16-50", DeviceSecretA);
+            message = TestUtil.GetMessageEvent("OHIE-CR-16-50", TestHarnessACert);
             response = new PixQbpMessageHandler(new TestLocalizationService()).HandleMessage(message);
 
             // Response should be AE
@@ -975,7 +980,7 @@ namespace SanteMPI.Messaging.IHE.Test
             // step 60
             // verify there are still two Jennifer Jones in the target 
             qbpMessageHandler = this.m_serviceManager.CreateInjected<PdqQbpMessageHandler>();
-            actual = qbpMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-16-60", this.DeviceSecretA));
+            actual = qbpMessageHandler.HandleMessage(TestUtil.GetMessageEvent("OHIE-CR-16-60", this.TestHarnessACert));
 
             // perform assertions
             Assert.NotNull(actual);

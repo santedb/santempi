@@ -1,8 +1,8 @@
 ﻿/** 
- * <feature scope="SanteDB.Persistence.Data.ADO" id="20200530-01" name="Update:20200529-01" applyRange="1.1.0.0-1.2.0.0"  invariantName="npgsql">
+ * <feature scope="SanteMPI.Persistence.Data" id="20200530-01" name="Update:20200529-01" applyRange="1.1.0.0-1.2.0.0"  invariantName="npgsql">
  *	<summary>Update: English name aliases</summary>
  *	<remarks>This adds supposrt for the IAliasProvider implementation</remarks>
- *	<isInstalled>select ck_patch('20200530-01')</isInstalled>
+ *	<isInstalled>SELECT to_regclass('public.sec_usr_tbl') IS NOT NULL;</isInstalled>
  * </feature>
  */
 
@@ -549,6 +549,5 @@ INSERT INTO MPI_NAME_SYN_CDTBL (PRI_NAME, SYN_NAME, STRENGTH) VALUES ('WINNY','W
 INSERT INTO MPI_NAME_SYN_CDTBL (PRI_NAME, SYN_NAME, STRENGTH) VALUES ('WOODY','ELWOOD',0.25);
 INSERT INTO MPI_NAME_SYN_CDTBL (PRI_NAME, SYN_NAME, STRENGTH) VALUES ('ZACH','ZACHARIAH',0.75);
 
-SELECT REG_PATCH('20200530-01');
 COMMIT;
 
