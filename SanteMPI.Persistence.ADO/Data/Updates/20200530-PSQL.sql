@@ -1,8 +1,8 @@
 ﻿/** 
- * <feature scope="SanteMPI.Persistence.Data" id="20200530-01" name="Update:20200529-01" applyRange="1.1.0.0-1.2.0.0"  invariantName="npgsql">
+ * <feature scope="SanteMPI.Persistence.Data" id="MPI-20200530-01" name="Update:MPI-20200529-01" applyRange="1.1.0.0-1.2.0.0"  invariantName="npgsql">
  *	<summary>Update: English name aliases</summary>
  *	<remarks>This adds supposrt for the IAliasProvider implementation</remarks>
- *	<isInstalled>SELECT to_regclass('public.sec_usr_tbl') IS NOT NULL;</isInstalled>
+ *	<isInstalled>SELECT to_regclass('public.mpi_name_syn_cdtbl') IS NOT NULL;</isInstalled>
  * </feature>
  */
 

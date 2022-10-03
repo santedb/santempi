@@ -56,11 +56,6 @@
     <EmbeddedResource Include="Data\Updates\20200530-PSQL.sql" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="config\santempi.data.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="SanteDB.OrmLite" Version="$(VersionNumber)" />
   </ItemGroup>
   <ItemGroup>

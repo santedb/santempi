@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 using SanteDB.OrmLite;
 using SanteDB.OrmLite.Providers;
 using SanteDB.OrmLite.Providers.Postgres;
+using SanteMPI.i18n;
 
 namespace SanteMPI.Persistence.ADO.Filters
 {

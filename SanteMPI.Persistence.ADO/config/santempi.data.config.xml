@@ -22,7 +22,7 @@
     <add type="SanteMPI.Persistence.ADO.Configuration.AdoConfigurationSection, SanteMPI.Persistence.ADO" />
   </sections>
   <!-- This section configures the MPI Features -->
-  <section  xsi:type="AdoPersistenceConfigurationSection"
+  <section  xsi:type="santempi:AdoConfigurationSection"
            readWriteConnectionString="PSQL"
            readOnlyConnectionString="PSQL"
            traceSql="false"
