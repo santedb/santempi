@@ -3,6 +3,7 @@ using SanteDB.Core;
 using SanteDB.Core.BusinessRules;
 using SanteDB.Core.Exceptions;
 using SanteDB.Core.Model.Audit;
+using SanteDB.Core.Security;
 using SanteDB.Core.Services;
 using SanteDB.Messaging.FHIR;
 using SanteDB.Messaging.FHIR.Extensions;
@@ -36,6 +37,7 @@ namespace SanteMPI.Messaging.IHE.FHIR
 
         // Bundle handler
         private BundleResourceHandler m_bundleHandler;
+        private readonly IAuditService m_auditService;
 
         // The methods allowed on this interface
         private readonly HTTPVerb[] RequestMethods = new HTTPVerb[] { HTTPVerb.DELETE, HTTPVerb.POST, HTTPVerb.PUT };
@@ -43,10 +45,12 @@ namespace SanteMPI.Messaging.IHE.FHIR
         /// <summary>
         /// Patient master identity operation
         /// </summary>
-        public PatientMasterIdentityOperation(IServiceManager serviceManager, IRepositoryService<SanteDB.Core.Model.Roles.Patient> patientRepository, IRepositoryService<SanteDB.Core.Model.Collection.Bundle> bundleRepository, IRecordMergingService<SanteDB.Core.Model.Roles.Patient> mergingService = null)
+        public PatientMasterIdentityOperation(IServiceManager serviceManager, IRepositoryService<SanteDB.Core.Model.Roles.Patient> patientRepository, IRepositoryService<SanteDB.Core.Model.Collection.Bundle> bundleRepository,
+            IAuditService auditService,
+            IRecordMergingService<SanteDB.Core.Model.Roles.Patient> mergingService = null)
         {
             this.m_bundleHandler = serviceManager.CreateInjected<BundleResourceHandler>();
-
+            this.m_auditService = auditService;
             // These services can be initialized after - so we want to wait for them because they're dynaimc
             this.m_repository = patientRepository;
             this.m_batchRepository = bundleRepository;
@@ -203,7 +207,7 @@ namespace SanteMPI.Messaging.IHE.FHIR
                                         });
                                     }
 
-                                    IheAuditUtil.SendAuditPatientMasterIdentityRegistry(OutcomeIndicator.Success, requestHeader, patientsAdded.ToArray());
+                                    this.m_auditService.Audit().ForPatientMasterIdentityRegistry(OutcomeIndicator.Success, requestHeader, patientsAdded).Send();
                                     return retVal;
                                 }
                             case HTTPVerb.DELETE:
@@ -215,7 +219,7 @@ namespace SanteMPI.Messaging.IHE.FHIR
                                         Diagnostics = $"Deleted {focalObject}"
                                     });
 
-                                    IheAuditUtil.SendAuditPatientMasterIdentityRegistry(OutcomeIndicator.Success, requestHeader, patientsAdded.ToArray());
+                                    this.m_auditService.Audit().ForPatientMasterIdentityRegistry(OutcomeIndicator.Success, requestHeader, patientsAdded).Send();
                                     return retVal;
                                 }
                             default:
@@ -229,7 +233,7 @@ namespace SanteMPI.Messaging.IHE.FHIR
             }
             catch
             {
-                IheAuditUtil.SendAuditPatientMasterIdentityRegistry(OutcomeIndicator.MinorFail, requestHeader);
+                this.m_auditService.Audit().ForPatientMasterIdentityRegistry(OutcomeIndicator.MinorFail, requestHeader, new Patient[0]).Send();
                 throw;
             }
         }

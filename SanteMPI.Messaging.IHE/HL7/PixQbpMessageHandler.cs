@@ -3,6 +3,7 @@ using NHapi.Model.V25.Message;
 using SanteDB.Core.Model;
 using SanteDB.Core.Model.Audit;
 using SanteDB.Core.Model.Roles;
+using SanteDB.Core.Security;
 using SanteDB.Core.Services;
 using SanteDB.Messaging.HL7.Messages;
 using SanteDB.Messaging.HL7.ParameterMap;
@@ -23,11 +24,14 @@ namespace SanteMPI.Messaging.IHE.HL7
     [DisplayName("SanteMPI IHE PIX ITI-9 QBP Handler")]
     public class PixQbpMessageHandler : QbpMessageHandler
     {
+        private readonly IAuditService m_auditService;
+
         /// <summary>
         /// DI injected handler
         /// </summary>
-        public PixQbpMessageHandler(ILocalizationService localizationService) : base(localizationService)
+        public PixQbpMessageHandler(ILocalizationService localizationService, IAuditService auditService) : base(localizationService, auditService)
         {
+            this.m_auditService = auditService;
         }
 
         /// <summary>
@@ -57,7 +61,7 @@ namespace SanteMPI.Messaging.IHE.HL7
         /// </summary>
         protected override void SendAuditQuery(OutcomeIndicator success, IMessage message, IEnumerable<IdentifiedData> results)
         {
-            IheAuditUtil.SendAuditPatientIdentityXref(success, message, results?.OfType<Patient>().ToArray());
+            this.m_auditService.Audit().ForPatientIdentityXref(success, message, results?.OfType<Patient>()).Send();
         }
 
         /// <summary>
@@ -68,7 +72,7 @@ namespace SanteMPI.Messaging.IHE.HL7
             var retVal = base.CreateQueryResponse(request, filter, map, results, queryId, offset, count, totalResults) as RSP_K23;
 
             // CASE 3: Domains are recognized but no results
-            if (results.OfType<Patient>().Count() == 0)
+            if (results?.OfType<Patient>().Count() == 0)
             {
                 retVal.MSA.AcknowledgmentCode.Value = "AE";
                 retVal.MSA.TextMessage.Value = "Query Error";

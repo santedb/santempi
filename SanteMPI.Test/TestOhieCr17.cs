@@ -90,7 +90,7 @@ namespace SanteMPI.Messaging.IHE.Test
             TestUtil.AssertOutcome(response, "AR", "CR", "CE", "AE");
             Assert.AreEqual("TEST_HARNESS_B", response.MSH.ReceivingApplication.NamespaceID.Value);
             Assert.AreEqual("TEST", response.MSH.SendingApplication.NamespaceID.Value);
-            Assert.AreEqual("204", response.ERRs.FirstOrDefault().ApplicationErrorCode.Identifier.Value);
+            Assert.AreEqual("204", response.ERRs.FirstOrDefault().HL7ErrorCode.Identifier.Value);
         }
     }
 }

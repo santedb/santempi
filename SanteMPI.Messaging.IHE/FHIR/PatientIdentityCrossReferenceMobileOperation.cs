@@ -4,6 +4,7 @@ using SanteDB;
 using SanteDB.Core.Model;
 using SanteDB.Core.Model.Audit;
 using SanteDB.Core.Model.DataTypes;
+using SanteDB.Core.Security;
 using SanteDB.Core.Services;
 using SanteDB.Messaging.FHIR.Exceptions;
 using SanteDB.Messaging.FHIR.Extensions;
@@ -22,6 +23,7 @@ namespace SanteMPI.Messaging.IHE.FHIR
     [DisplayName("IHE PIXm Operation Handler")]
     public class PatientIdentityCrossReferenceMobileOperation : IFhirOperationHandler
     {
+        private readonly IAuditService m_auditService;
 
         // Patient repository
         private readonly IRepositoryService<SanteDB.Core.Model.Roles.Patient> m_patientRepository;
@@ -30,8 +32,10 @@ namespace SanteMPI.Messaging.IHE.FHIR
         /// <summary>
         /// Creates a new patient identity cross reference service
         /// </summary>
-        public PatientIdentityCrossReferenceMobileOperation(IIdentityDomainRepositoryService assigningAuthorityRepositoryService, IRepositoryService<SanteDB.Core.Model.Roles.Patient> repositoryService)
+        public PatientIdentityCrossReferenceMobileOperation(IIdentityDomainRepositoryService assigningAuthorityRepositoryService, IRepositoryService<SanteDB.Core.Model.Roles.Patient> repositoryService
+            , IAuditService auditService)
         {
+            this.m_auditService = auditService;
             this.m_patientRepository = repositoryService;
             this.m_assigningAuthorityRepository = assigningAuthorityRepositoryService;
         }
@@ -129,12 +133,12 @@ namespace SanteMPI.Messaging.IHE.FHIR
                     retVal.Add("targetId", DataTypeConverter.CreateNonVersionedReference<Patient>(res));
                 }
 
-                IheAuditUtil.SendAuditPatientIdentityXrefMobile(OutcomeIndicator.Success, result.Select(o => new Patient() { Id = o.Key.ToString() }).ToArray());
+                this.m_auditService.Audit().ForPatientIdentityXrefMobile(OutcomeIndicator.Success, result.OfType<Patient>()).Send();
                 return retVal;
             }
             catch (Exception)
             {
-                IheAuditUtil.SendAuditPatientIdentityXrefMobile(OutcomeIndicator.MinorFail);
+                this.m_auditService.Audit().ForPatientIdentityXrefMobile(OutcomeIndicator.MinorFail, new Patient[0]);
                 throw;
             }
         }

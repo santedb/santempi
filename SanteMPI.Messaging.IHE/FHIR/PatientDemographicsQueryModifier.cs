@@ -1,6 +1,7 @@
 ﻿using Hl7.Fhir.Model;
 using RestSrvr;
 using SanteDB.Core.Model.Audit;
+using SanteDB.Core.Security;
 using SanteDB.Core.Services;
 using SanteDB.Messaging.FHIR.Extensions;
 using SanteMPI.Messaging.IHE.Audit;
@@ -17,6 +18,7 @@ namespace SanteMPI.Messaging.IHE.FHIR
     [DisplayName("IHE PDQm Patient Query Modifier")]
     public class PatientDemographicsQueryModifier : IFhirRestBehaviorModifier
     {
+        private readonly IAuditService m_auditService;
 
         // Authority repository
         private readonly IIdentityDomainRepositoryService m_authorityRepository;
@@ -24,9 +26,9 @@ namespace SanteMPI.Messaging.IHE.FHIR
         /// <summary>
         /// Mother's maiden name
         /// </summary>
-        public PatientDemographicsQueryModifier(IIdentityDomainRepositoryService authorityRepository)
+        public PatientDemographicsQueryModifier(IIdentityDomainRepositoryService authorityRepository, IAuditService auditService)
         {
-            
+            this.m_auditService = auditService;
             this.m_authorityRepository = authorityRepository;
         }
 
@@ -97,7 +99,7 @@ namespace SanteMPI.Messaging.IHE.FHIR
                         }
 
                         // We want to audit this operation according to the ITI
-                        IheAuditUtil.SendAuditPatientDemographicsQueryMobile(OutcomeIndicator.Success, bundle.Entry.Where(o => o.Resource is Patient).Select(o => o.Resource as Patient).ToArray());
+                        this.m_auditService.Audit().ForPatientDemographicsQueryMobile(OutcomeIndicator.Success, bundle.Entry.OfType<Patient>()).Send();
                         return bundle;
                     }
                     else
@@ -113,7 +115,7 @@ namespace SanteMPI.Messaging.IHE.FHIR
             }
             catch
             {
-                IheAuditUtil.SendAuditPatientDemographicsQueryMobile(OutcomeIndicator.MinorFail);
+                this.m_auditService.Audit().ForPatientDemographicsQueryMobile(OutcomeIndicator.MinorFail, new Patient[0]).Send();
                 throw;
             }
         }

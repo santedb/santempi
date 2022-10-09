@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<con:soapui-project id="4a5afb57-e60c-4cea-b9fb-1ac822a0328f" activeEnvironment="Default" name="SanteMPI Test Cases" resourceRoot="" soapui-version="5.4.0" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config">
+<con:soapui-project id="4a5afb57-e60c-4cea-b9fb-1ac822a0328f" activeEnvironment="Default" name="SanteMPI Test Cases v3" resourceRoot="" soapui-version="5.4.0" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config">
   <con:settings/>
   <con:interface xsi:type="con:RestService" id="ee723db0-c309-4917-9013-d25dea528f0e" wadlVersion="http://wadl.dev.java.net/2009/02" name="HL7 Fast Health Interoperability Resources (FHIR) R4" type="rest" basePath="/fhir" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <con:description>SanteSB Server implementation of the HL7 FHIR R4 Contract</con:description>
@@ -212,7 +212,7 @@
         </con:representation>
         <con:representation type="FAULT">
           <con:mediaType>application/fhir+json;charset=UTF-8</con:mediaType>
-          <con:status>500 400 404 422 405 403</con:status>
+          <con:status>500 400 404 422 405 403 503</con:status>
           <con:params/>
           <con:element xmlns:bun="http://localhost/fhir/fhir/Bundle">bun:Fault</con:element>
         </con:representation>
@@ -474,7 +474,7 @@
           <con:params/>
           <con:element>data</con:element>
         </con:representation>
-        <con:representation type="FAULT"><con:mediaType>application/fhir+json; charset=utf-8</con:mediaType><con:status>500 422</con:status><con:params/><con:element xmlns:bun="http://localhost/fhir/Bundle">bun:Fault</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/fhir+json; charset=utf-8</con:mediaType><con:status>201</con:status><con:params/><con:element xmlns:bun="http://localhost/fhir/Bundle">bun:Response</con:element></con:representation><con:representation type="FAULT"><con:mediaType>application/fhir+json</con:mediaType><con:status>403 400</con:status><con:params/><con:element xmlns:bun="http://localhost/fhir/Bundle">bun:Fault</con:element></con:representation><con:request name="Request 1" id="76269c91-9d6c-4d93-899b-06c4252f0377" mediaType="application/fhir+json">
+        <con:representation type="FAULT"><con:mediaType>application/fhir+json; charset=utf-8</con:mediaType><con:status>500 422</con:status><con:params/><con:element xmlns:bun="http://localhost/fhir/Bundle">bun:Fault</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/fhir+json; charset=utf-8</con:mediaType><con:status>201</con:status><con:params/><con:element xmlns:bun="http://localhost/fhir/Bundle">bun:Response</con:element></con:representation><con:representation type="FAULT"><con:mediaType>application/fhir+json</con:mediaType><con:status>403 400</con:status><con:params/><con:element xmlns:bun="http://localhost/fhir/Bundle">bun:Fault</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Request 1" id="76269c91-9d6c-4d93-899b-06c4252f0377" mediaType="application/fhir+json">
           <con:settings/>
           <con:endpoint>http://localhost:8080</con:endpoint>
           <con:parameters/>
@@ -2053,7 +2053,7 @@
           <con:params/>
           <con:element>data</con:element>
         </con:representation>
-        <con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html; charset=us-ascii</con:mediaType><con:status>503</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Request 1" id="030ac8aa-1a61-4185-8771-7a79d3216c26" mediaType="application/fhir+json">
+        <con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html; charset=us-ascii</con:mediaType><con:status>503</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Request 1" id="030ac8aa-1a61-4185-8771-7a79d3216c26" mediaType="application/fhir+json">
           <con:settings>
             <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="accept" value="application/fhir+json" xmlns="http://eviware.com/soapui/config"/></con:setting>
           </con:settings>
@@ -2686,7 +2686,7 @@
         </con:representation>
         <con:representation type="FAULT">
           <con:mediaType>application/fhir+json</con:mediaType>
-          <con:status>404</con:status>
+          <con:status>404 500 503 410</con:status>
           <con:params/>
           <con:element xmlns:b18="http://localhost/fhir/Patient/8b1875d3-50bb-4d33-aff6-f1d1796c81d7">b18:Fault</con:element>
         </con:representation>
@@ -2696,7 +2696,7 @@
           <con:params/>
           <con:element xmlns:b18="http://localhost/fhir/Patient/8b1875d3-50bb-4d33-aff6-f1d1796c81d7">b18:Response</con:element>
         </con:representation>
-        <con:request name="Request 1" id="ad08d91e-48ad-4cec-89f6-07a90f248417" mediaType="application/fhir+json">
+        <con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Request 1" id="ad08d91e-48ad-4cec-89f6-07a90f248417" mediaType="application/fhir+json">
           <con:settings>
             <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
           </con:settings>
@@ -18497,22 +18497,20 @@
       </con:testStep>
       <con:testStep type="restrequest" name="Create TEST_HARNESS_A" id="886f0b83-3e3b-421d-8788-31917d73e563">
         <con:settings/>
-        <con:config service="Administration Management Interface (AMI)" methodName="POST" resourcePath="/ami/SecurityApplication" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <con:config service="Administration Management Interface (AMI)" methodName="POST" resourcePath="/ami/SecurityApplication/{key}" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="Create TEST_HARNESS_A" id="4b79024d-aa71-4dc5-8e21-fa61ecfce55d" mediaType="application/xml" postQueryString="false">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config" /></con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config"/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080</con:endpoint>
             <con:request><![CDATA[
               <SecurityApplicationInfo xmlns="http://santedb.org/ami">
 	<entity>
-	      <id xmlns="http://santedb.org/model">DE5BEC1E-8C41-4FF1-8E65-A39AC1DDAE60</id>
 	      <!-- Secret: TEST_HARNESS -->
 	      <applicationSecret xmlns="http://santedb.org/model">TEST_HARNESS</applicationSecret>
 	      <name xmlns="http://santedb.org/model">TEST_HARNESS_A</name>
 	</entity>
-	<id>DE5BEC1E-8C41-4FF1-8E65-A39AC1DDAE60</id>
 </SecurityApplicationInfo>
             ]]></con:request>
             <con:originalUri>http://localhost/ami/SecurityApplication</con:originalUri>
@@ -18538,28 +18536,26 @@
             </con:credentials>
             <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
             <con:jmsPropertyConfig/>
-            <con:parameters/>
+            <con:parameters><entry key="key" value="${#TestSuite#TestHarnessASid}" xmlns="http://eviware.com/soapui/config"/></con:parameters>
           </con:restRequest>
         </con:config>
       </con:testStep>
       <con:testStep type="restrequest" name="Create TEST_HARNESS_B" id="9f3042f5-d3dd-405c-99d8-ff85fb106345">
         <con:settings/>
-        <con:config service="Administration Management Interface (AMI)" methodName="POST" resourcePath="/ami/SecurityApplication" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <con:config service="Administration Management Interface (AMI)" methodName="POST" resourcePath="/ami/SecurityApplication/{key}" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="Create TEST_HARNESS_B" id="4b79024d-aa71-4dc5-8e21-fa61ecfce55d" mediaType="application/xml" postQueryString="false">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config" /></con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config"/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080</con:endpoint>
             <con:request><![CDATA[
               <SecurityApplicationInfo xmlns="http://santedb.org/ami">
 	<entity>
-	      <id xmlns="http://santedb.org/model">58275680-5129-4832-9668-131F76E8DFB6</id>
 	      <!-- Secret: TEST_HARNESS -->
 	      <applicationSecret xmlns="http://santedb.org/model">TEST_HARNESS</applicationSecret>
 	      <name xmlns="http://santedb.org/model">TEST_HARNESS_B</name>
 	</entity>
-	<id>58275680-5129-4832-9668-131F76E8DFB6</id>
 </SecurityApplicationInfo>
             ]]></con:request>
             <con:originalUri>http://localhost/ami/SecurityApplication</con:originalUri>
@@ -18585,16 +18581,19 @@
             </con:credentials>
             <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
             <con:jmsPropertyConfig/>
-            <con:parameters/>
+            <con:parameters><entry key="key" value="${#TestSuite#TestHarnessBSid}" xmlns="http://eviware.com/soapui/config"/></con:parameters>
           </con:restRequest>
         </con:config>
       </con:testStep>
+      <con:testStep type="transfer" name="Copy of Transfer SIDs" id="36a3cc87-3f2c-4742-a0ff-66627d5b8e44"><con:settings/><con:config xsi:type="con:PropertyTransfersStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:transfers setNullOnMissingSource="true" transferTextContent="true" failOnError="true" ignoreEmpty="false" transferToAll="false" entitize="false" transferChildNodes="false"><con:name>Transfer Harness A</con:name><con:sourceType>ResponseAsXml</con:sourceType><con:sourceStep>Create TEST_HARNESS_A</con:sourceStep><con:sourcePath> declare namespace ami='http://santedb.org/ami';
+/ami:SecurityApplicationInfo/ami:id</con:sourcePath><con:targetType>TestHarnessASid</con:targetType><con:targetStep>#TestSuite#</con:targetStep><con:upgraded>true</con:upgraded></con:transfers><con:transfers setNullOnMissingSource="true" transferTextContent="true" failOnError="true" ignoreEmpty="false" transferToAll="false" entitize="false" transferChildNodes="false"><con:name>Transfer Harness B</con:name><con:sourceType>ResponseAsXml</con:sourceType><con:sourceStep>Create TEST_HARNESS_B</con:sourceStep><con:sourcePath> declare namespace ami='http://santedb.org/ami';
+/ami:SecurityApplicationInfo/ami:id</con:sourcePath><con:targetType>TestHarnessBSid</con:targetType><con:targetStep>#TestSuite#</con:targetStep><con:upgraded>true</con:upgraded></con:transfers></con:config></con:testStep>
       <con:testStep type="restrequest" name="Setup" id="b871f8a7-138e-4980-aba5-52b68bc433e0">
         <con:settings/>
         <con:config service="Health Data Service Interface (HDSI)" methodName="POST" resourcePath="/hdsi/Bundle" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="Setup" id="6eda0618-fbe4-4236-b10b-6acadb7b6a24" mediaType="application/xml" postQueryString="false">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config" /></con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config"/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080</con:endpoint>
@@ -18687,12 +18686,10 @@
         <con:config service="HL7 Fast Health Interoperability Resources (FHIR) R4" methodName="GET" resourcePath="/fhir/Patient/$ihe-pix" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="Execute PIXm For Non-Existent Patient" id="61be28e5-d07d-421a-8222-6640bec0abac" mediaType="application/fhir+json">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">
-                &lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
-                &lt;con:entry key="Authorization" value="BEARER ${#TestSuite#Token}" />
-                &lt;con:entry key="accept" value="application/fhir+json" />
-                &lt;/xml-fragment>
-              </con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  &lt;con:entry key="Authorization" value="BEARER ${#TestSuite#Token}"/>
+  &lt;con:entry key="accept" value="application/fhir+json"/>
+&lt;/xml-fragment></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080/</con:endpoint>
@@ -18741,7 +18738,7 @@
         <con:config service="HL7 Fast Health Interoperability Resources (FHIR) R4" methodName="POST" resourcePath="/fhir/Bundle" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="Register New Identity" id="a27193b7-b458-4d10-9276-e866f6107b0a" mediaType="application/fhir+json" postQueryString="false">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config" /></con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config"/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080/</con:endpoint>
@@ -18988,7 +18985,7 @@
         <con:config service="HL7 Fast Health Interoperability Resources (FHIR) R4" methodName="POST" resourcePath="/fhir/Bundle" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="Register New Identity in B" id="a27193b7-b458-4d10-9276-e866f6107b0a" mediaType="application/fhir+json" postQueryString="false">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config" /></con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config"/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080/</con:endpoint>
@@ -19123,12 +19120,10 @@
         <con:config service="HL7 Fast Health Interoperability Resources (FHIR) R4" methodName="GET" resourcePath="/fhir/Patient/$ihe-pix" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="PIXm For Patient using NID" id="61be28e5-d07d-421a-8222-6640bec0abac" mediaType="application/fhir+json">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">
-                &lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
-                &lt;con:entry key="Authorization" value="BEARER ${#TestSuite#Token}" />
-                &lt;con:entry key="accept" value="application/fhir+json" />
-                &lt;/xml-fragment>
-              </con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  &lt;con:entry key="Authorization" value="BEARER ${#TestSuite#Token}"/>
+  &lt;con:entry key="accept" value="application/fhir+json"/>
+&lt;/xml-fragment></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080/</con:endpoint>
@@ -19196,12 +19191,10 @@
         <con:config service="HL7 Fast Health Interoperability Resources (FHIR) R4" methodName="GET" resourcePath="/fhir/Patient/$ihe-pix" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="PIXm For Patient for TEST_X" id="61be28e5-d07d-421a-8222-6640bec0abac" mediaType="application/fhir+json">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">
-                &lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
-                &lt;con:entry key="Authorization" value="BEARER ${#TestSuite#Token}" />
-                &lt;con:entry key="accept" value="application/fhir+json" />
-                &lt;/xml-fragment>
-              </con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  &lt;con:entry key="Authorization" value="BEARER ${#TestSuite#Token}"/>
+  &lt;con:entry key="accept" value="application/fhir+json"/>
+&lt;/xml-fragment></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080/</con:endpoint>
@@ -19245,8 +19238,7 @@
             </con:parameterOrder>
           </con:restRequest>
         </con:config>
-      </con:testStep>
-      <con:properties/>
+      </con:testStep><con:properties/>
     </con:testCase>
     <con:testCase id="9620a7d2-bec6-4a90-affe-20ecedbbaadd" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="OHIE-CR-07-FHIR" searchProperties="true">
       <con:settings/>
@@ -19837,12 +19829,10 @@
         <con:config service="HL7 Fast Health Interoperability Resources (FHIR) R4" methodName="GET" resourcePath="/fhir/Patient" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="Query By Patient ID" id="8df42651-46cf-4bc8-a4b0-c5587686b86a" mediaType="application/fhir+json">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">
-                &lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
-                &lt;con:entry key="Authorization" value="BEARER ${#TestSuite#Token}" />
-                &lt;con:entry key="Accept" value="application/fhir+json" />
-                &lt;/xml-fragment>
-              </con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  &lt;con:entry key="Authorization" value="BEARER ${#TestSuite#Token}"/>
+  &lt;con:entry key="Accept" value="application/fhir+json"/>
+&lt;/xml-fragment></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080/</con:endpoint>
@@ -19991,12 +19981,10 @@
         <con:config service="HL7 Fast Health Interoperability Resources (FHIR) R4" methodName="GET" resourcePath="/fhir/Patient" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="Retrieve Full Patient Profile" id="8df42651-46cf-4bc8-a4b0-c5587686b86a" mediaType="application/fhir+json">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">
-                &lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
-                &lt;con:entry key="Authorization" value="BEARER ${#TestSuite#Token}" />
-                &lt;con:entry key="Accept" value="application/fhir+json" />
-                &lt;/xml-fragment>
-              </con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  &lt;con:entry key="Authorization" value="BEARER ${#TestSuite#Token}"/>
+  &lt;con:entry key="Accept" value="application/fhir+json"/>
+&lt;/xml-fragment></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080/</con:endpoint>
@@ -21805,9 +21793,8 @@
             <con:request/>
             <con:originalUri>http://localhost/fhir/Patient/8b1875d3-50bb-4d33-aff6-f1d1796c81d7</con:originalUri>
             <con:assertion type="Valid HTTP Status Codes" id="7136df98-1c18-4a51-a5b6-7f39de879d4b" name="Valid HTTP Status Codes">
-              <con:configuration>
-                <codes>404,200</codes>
-              </con:configuration>
+              <con:configuration><codes>404,200,410
+</codes></con:configuration>
             </con:assertion>
             <con:credentials>
               <con:authType>No Authorization</con:authType>
@@ -21825,12 +21812,10 @@
         <con:config service="HL7 Fast Health Interoperability Resources (FHIR) R4" methodName="GET" resourcePath="/fhir/Patient/$ihe-pix" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="Execute PIXm To Validate Merge" id="f9a2025e-ed22-46b1-a5e2-05cb9e98324f" mediaType="application/fhir+json">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">
-                &lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
-                &lt;con:entry key="Authorization" value="BEARER ${#TestSuite#Token}" />
-                &lt;con:entry key="Accept" value="application/fhir+json" />
-                &lt;/xml-fragment>
-              </con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  &lt;con:entry key="Authorization" value="BEARER ${#TestSuite#Token}"/>
+  &lt;con:entry key="Accept" value="application/fhir+json"/>
+&lt;/xml-fragment></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080/</con:endpoint>
@@ -21876,7 +21861,7 @@
       <con:properties>
         <con:property>
           <con:name>VictimID</con:name>
-          <con:value>3647e495-1882-4c63-84e7-ea93ee4664b1</con:value>
+          <con:value>194dc2e2-e681-47ea-80be-847f7ed561a7</con:value>
         </con:property>
       </con:properties>
     </con:testCase>
@@ -21925,22 +21910,20 @@
       </con:testStep>
       <con:testStep type="restrequest" name="Create TEST_HARNESS_A" id="d06867f4-d473-4f5f-ab0b-56f4a180ec8b">
         <con:settings/>
-        <con:config service="Administration Management Interface (AMI)" methodName="POST" resourcePath="/ami/SecurityApplication" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <con:config service="Administration Management Interface (AMI)" methodName="POST" resourcePath="/ami/SecurityApplication/{key}" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="Create TEST_HARNESS_A" id="4b79024d-aa71-4dc5-8e21-fa61ecfce55d" mediaType="application/xml" postQueryString="false">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config" /></con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config"/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080</con:endpoint>
             <con:request><![CDATA[
               <SecurityApplicationInfo xmlns="http://santedb.org/ami">
 	<entity>
-	      <id xmlns="http://santedb.org/model">DE5BEC1E-8C41-4FF1-8E65-A39AC1DDAE60</id>
 	      <!-- Secret: TEST_HARNESS -->
 	      <applicationSecret xmlns="http://santedb.org/model">TEST_HARNESS</applicationSecret>
 	      <name xmlns="http://santedb.org/model">TEST_HARNESS_A</name>
 	</entity>
-	<id>DE5BEC1E-8C41-4FF1-8E65-A39AC1DDAE60</id>
 </SecurityApplicationInfo>
             ]]></con:request>
             <con:originalUri>http://localhost/ami/SecurityApplication</con:originalUri>
@@ -21966,28 +21949,26 @@
             </con:credentials>
             <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
             <con:jmsPropertyConfig/>
-            <con:parameters/>
+            <con:parameters><entry key="key" value="${#TestSuite#TestHarnessASid}" xmlns="http://eviware.com/soapui/config"/></con:parameters>
           </con:restRequest>
         </con:config>
       </con:testStep>
       <con:testStep type="restrequest" name="Create TEST_HARNESS_B" id="c9380ec3-598e-45a5-8d44-f68aa65632b2">
         <con:settings/>
-        <con:config service="Administration Management Interface (AMI)" methodName="POST" resourcePath="/ami/SecurityApplication" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <con:config service="Administration Management Interface (AMI)" methodName="POST" resourcePath="/ami/SecurityApplication/{key}" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="Create TEST_HARNESS_B" id="4b79024d-aa71-4dc5-8e21-fa61ecfce55d" mediaType="application/xml" postQueryString="false">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config" /></con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config"/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080</con:endpoint>
             <con:request><![CDATA[
               <SecurityApplicationInfo xmlns="http://santedb.org/ami">
 	<entity>
-	      <id xmlns="http://santedb.org/model">58275680-5129-4832-9668-131F76E8DFB6</id>
 	      <!-- Secret: TEST_HARNESS -->
 	      <applicationSecret xmlns="http://santedb.org/model">TEST_HARNESS</applicationSecret>
 	      <name xmlns="http://santedb.org/model">TEST_HARNESS_B</name>
 	</entity>
-	<id>58275680-5129-4832-9668-131F76E8DFB6</id>
 </SecurityApplicationInfo>
             ]]></con:request>
             <con:originalUri>http://localhost/ami/SecurityApplication</con:originalUri>
@@ -22013,7 +21994,7 @@
             </con:credentials>
             <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
             <con:jmsPropertyConfig/>
-            <con:parameters/>
+            <con:parameters><entry key="key" value="${#TestSuite#TestHarnessBSid}" xmlns="http://eviware.com/soapui/config"/></con:parameters>
           </con:restRequest>
         </con:config>
       </con:testStep>
@@ -23268,9 +23249,9 @@
     <con:properties>
       <con:property>
         <con:name>Token</con:name>
-        <con:value>D4CD5EE4BC41ED11AD3D0242AC120002.59222D33230158C1170B1E331B0F87F6A6FD2A90E5DDAA8495B17657C947C3F2</con:value>
+        <con:value>AD184C4DB7662F799F5A5F35E306DCFE.60E187DF06717D3DD01E46DD50D5BE11D2DEFC0FC20A28BE4A2CB21AAD724AA0</con:value>
       </con:property>
-    <con:property><con:name>TestHarnessSid</con:name><con:value>e0171c68-41bc-11ed-bff0-0242ac120002</con:value></con:property><con:property><con:name>TestHarnessASid</con:name><con:value>e1b117e0-41bc-11ed-b55f-0242ac120002</con:value></con:property><con:property><con:name>TestHarnessBSid</con:name><con:value>e1b9735e-41bc-11ed-860f-0242ac120002</con:value></con:property></con:properties>
+    <con:property><con:name>TestHarnessSid</con:name><con:value>85be6a1f-167f-3244-960e-ac2bf6cfba0f</con:value></con:property><con:property><con:name>TestHarnessASid</con:name><con:value>7aee91e4-411b-68a2-7f6d-bf1ae349d20d</con:value></con:property><con:property><con:name>TestHarnessBSid</con:name><con:value>3a723733-1aa0-69b8-3875-17584cd1f32b</con:value></con:property></con:properties>
   </con:testSuite>
   <con:restMockService id="3ad92989-3d79-4a44-baf8-2f18cf469623" port="8989" path="/" host="localhost" name="FHIR Mock Service" docroot="">
     <con:settings/>
