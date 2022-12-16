@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<con:soapui-project id="4a5afb57-e60c-4cea-b9fb-1ac822a0328f" activeEnvironment="Default" name="SanteMPI Test Cases" resourceRoot="" soapui-version="5.4.0" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config">
+<con:soapui-project id="4a5afb57-e60c-4cea-b9fb-1ac822a0328f" activeEnvironment="Default" name="SanteMPI Test Cases v3" resourceRoot="" soapui-version="5.4.0" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config">
   <con:settings/>
   <con:interface xsi:type="con:RestService" id="ee723db0-c309-4917-9013-d25dea528f0e" wadlVersion="http://wadl.dev.java.net/2009/02" name="HL7 Fast Health Interoperability Resources (FHIR) R4" type="rest" basePath="/fhir" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <con:description>SanteSB Server implementation of the HL7 FHIR R4 Contract</con:description>
