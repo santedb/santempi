@@ -6,6 +6,7 @@ using SanteDB.Core.Model.Collection;
 using SanteDB.Core.Model.Roles;
 using SanteDB.Core.Security;
 using SanteDB.Core.Security.Audit;
+using SanteDB.Core.Security.Services;
 using SanteDB.Core.Services;
 using SanteDB.Messaging.HL7.Messages;
 using SanteDB.Messaging.HL7.TransportProtocol;
@@ -69,8 +70,9 @@ namespace SanteMPI.Messaging.IHE.HL7
                     .WithAction(ActionType.Update)
                     .WithOutcome(outcome)
                     .WithEventType(IheAuditExtensions.ITI8)
-                    .WithLocalDevice()
-                    .WithUser();
+                    .WithLocalDestination()
+                    .WithRemoteSource(RemoteEndpointUtil.Current.GetRemoteClient())
+                    .WithPrincipal();
 
 
             }

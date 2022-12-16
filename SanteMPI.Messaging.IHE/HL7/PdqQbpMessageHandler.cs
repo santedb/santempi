@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using SanteDB.Core.Security;
+using SanteDB.Core.Security.Services;
 
 namespace SanteMPI.Messaging.IHE.HL7
 {

@@ -49,7 +49,7 @@ namespace SanteMPI.Messaging.IHE.FHIR
         /// <summary>
         /// Construct the extension value
         /// </summary>
-        public IEnumerable<Extension> Construct(IIdentifiedData modelObject)
+        public IEnumerable<Extension> Construct(IAnnotatedResource modelObject)
         {
             if (modelObject is SanteDB.Core.Model.Roles.Patient patient)
             {

@@ -61,5 +61,10 @@
   <ItemGroup>
     <ProjectReference Include="..\SanteMPI.i18n\SanteMPI.i18n.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="config\santempi.data.config.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
  
 </Project>

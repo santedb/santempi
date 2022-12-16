@@ -4,6 +4,7 @@ using SanteDB.Core.BusinessRules;
 using SanteDB.Core.Exceptions;
 using SanteDB.Core.Model.Audit;
 using SanteDB.Core.Security;
+using SanteDB.Core.Security.Services;
 using SanteDB.Core.Services;
 using SanteDB.Messaging.FHIR;
 using SanteDB.Messaging.FHIR.Extensions;

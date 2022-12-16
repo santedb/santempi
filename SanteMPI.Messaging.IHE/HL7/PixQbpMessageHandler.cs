@@ -4,6 +4,7 @@ using SanteDB.Core.Model;
 using SanteDB.Core.Model.Audit;
 using SanteDB.Core.Model.Roles;
 using SanteDB.Core.Security;
+using SanteDB.Core.Security.Services;
 using SanteDB.Core.Services;
 using SanteDB.Messaging.HL7.Messages;
 using SanteDB.Messaging.HL7.ParameterMap;

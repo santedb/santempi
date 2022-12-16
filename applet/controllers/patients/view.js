@@ -19,14 +19,14 @@
  * User: Justin Fyfe
  * Date: 2019-9-27
  */
-angular.module('santedb').controller('MpiPatientViewController', ["$scope", "$rootScope", "$state", "$templateCache", "$stateParams", function ($scope, $rootScope, $state, $templateCache, $stateParams) {
+angular.module('santedb').controller('MpiPatientViewController', ["$scope", "$rootScope", "$state", "$templateCache", "$stateParams", "$timeout", function ($scope, $rootScope, $state, $templateCache, $stateParams, $timeout) {
 
 
     // Loads the specified patient
     async function loadPatient(id) {
         try {
-            $scope.patient = await SanteDB.resources.patient.getAsync(id, "full");
-            $scope.$apply();
+            var patient = await SanteDB.resources.patient.getAsync(id, "full");
+            $timeout(() => $scope.patient = patient);
         }
         catch (e) {
             // Remote patient perhaps?

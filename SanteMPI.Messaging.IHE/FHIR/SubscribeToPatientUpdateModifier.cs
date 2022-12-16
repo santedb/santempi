@@ -1,6 +1,7 @@
 ﻿using Hl7.Fhir.Model;
 using SanteDB.Core.Model.Audit;
 using SanteDB.Core.Security;
+using SanteDB.Core.Security.Services;
 using SanteDB.Messaging.FHIR.Extensions;
 using SanteMPI.Messaging.IHE.Audit;
 using System.ComponentModel;

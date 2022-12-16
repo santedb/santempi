@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using static Hl7.Fhir.Model.CapabilityStatement;
+using SanteDB.Core.Security;
 
 [assembly: PluginTraceSource("SanteMPI")]
 
@@ -92,7 +93,10 @@ namespace SanteMPI.Messaging.IHE.Audit
                     break;
             }
 
-            return me.WithLocalDevice().WithUser().WithAuditableObjects(new AuditableObject()
+            return me.WithLocalDestination()
+                .WithRemoteSource(RemoteEndpointUtil.Current.GetRemoteClient())
+                .WithPrincipal()
+                .WithAuditableObjects(new AuditableObject()
             {
                 Type = AuditableObjectType.SystemObject,
                 Role = AuditableObjectRole.Query,
@@ -112,8 +116,9 @@ namespace SanteMPI.Messaging.IHE.Audit
                 .WithAction(ActionType.Execute)
                 .WithOutcome(outcome)
                 .WithEventType(ITI93)
-                .WithLocalDevice()
-                .WithUser();
+                .WithLocalDestination()
+                .WithRemoteSource(RemoteEndpointUtil.Current.GetRemoteClient())
+                .WithPrincipal();
 
             if (outcome == OutcomeIndicator.Success)
             {
@@ -145,8 +150,9 @@ namespace SanteMPI.Messaging.IHE.Audit
                 .WithAction(ActionType.Execute)
                 .WithOutcome(outcome)
                 .WithEventType(ITI9)
-                .WithLocalDevice()
-                .WithUser();
+                .WithLocalDestination()
+                .WithRemoteSource(RemoteEndpointUtil.Current.GetRemoteClient())
+                .WithPrincipal();
 
             if (outcome == OutcomeIndicator.Success)
             {
@@ -183,8 +189,9 @@ namespace SanteMPI.Messaging.IHE.Audit
                 .WithAction(ActionType.Execute)
                 .WithOutcome(outcome)
                 .WithEventType(ITI83)
-                .WithLocalDevice()
-                .WithUser();
+                .WithLocalDestination()
+                .WithRemoteSource(RemoteEndpointUtil.Current.GetRemoteClient())
+                .WithPrincipal();
 
 
             if (outcome == OutcomeIndicator.Success)
@@ -221,8 +228,9 @@ namespace SanteMPI.Messaging.IHE.Audit
                 .WithAction(action)
                 .WithOutcome(outcome)
                 .WithEventType(ITI8)
-                .WithLocalDevice()
-                .WithUser();
+                .WithLocalDestination()
+                .WithRemoteSource(RemoteEndpointUtil.Current.GetRemoteClient())
+                .WithPrincipal();
 
             if (outcome == OutcomeIndicator.Success)
             {
@@ -251,8 +259,9 @@ namespace SanteMPI.Messaging.IHE.Audit
                 .WithAction(ActionType.Update)
                 .WithOutcome(outcome)
                 .WithEventType(ITI8)
-                .WithLocalDevice()
-                .WithUser()
+                .WithLocalDestination()
+                .WithRemoteSource(RemoteEndpointUtil.Current.GetRemoteClient())
+                .WithPrincipal()
                 .WithAuditableObjects(new AuditableObject()
                 {
                     Type = AuditableObjectType.Person,
@@ -277,8 +286,9 @@ namespace SanteMPI.Messaging.IHE.Audit
                 .WithAction(ActionType.Delete)
                 .WithOutcome(outcome)
                 .WithEventType(ITI8)
-                .WithLocalDevice()
-                .WithUser()
+                .WithLocalDestination()
+                .WithRemoteSource(RemoteEndpointUtil.Current.GetRemoteClient())
+                .WithPrincipal()
                 .WithAuditableObjects(new AuditableObject()
                 {
                     Type = AuditableObjectType.Person,
@@ -302,8 +312,9 @@ namespace SanteMPI.Messaging.IHE.Audit
                 .WithAction(ActionType.Execute)
                 .WithOutcome(outcome)
                 .WithEventType(ITI21)
-                .WithLocalDevice()
-                .WithUser()
+                .WithLocalDestination()
+                .WithRemoteSource(RemoteEndpointUtil.Current.GetRemoteClient())
+                .WithPrincipal()
                 .WithAuditableObjects(results?.Select(o => new AuditableObject()
                 {
                     Type = AuditableObjectType.Person,
@@ -335,8 +346,9 @@ namespace SanteMPI.Messaging.IHE.Audit
                 .WithAction(ActionType.Execute)
                 .WithOutcome(outcome)
                 .WithEventType(ITI78)
-                .WithLocalDevice()
-                .WithUser()
+                .WithLocalDestination()
+                .WithRemoteSource(RemoteEndpointUtil.Current.GetRemoteClient())
+                .WithPrincipal()
                 .WithAuditableObjects(results?.Select(o => new AuditableObject()
                 {
                     Type = AuditableObjectType.Person,
