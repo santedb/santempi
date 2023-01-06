@@ -1,8 +1,11 @@
 <div xmlns="http://www.w3.org/1999/xhtml" xmlns:sdb="http://santedb.org/applet">
-    <sdb:widget order="0" name="ui.mpi.matches.config.scoring.properties" type="Panel" size="Large" altViews="Edit"
+    <sdb:widget order="0" name="ui.mpi.matches.config.scoring.properties" type="Panel" size="Large" 
         headerClass="alert-info" context="org.santedb.mpi.matches.config.scoring">
         <sdb:icon>fas fa-list-alt</sdb:icon>
         <sdb:description lang="en">Properties</sdb:description>
+        <sdb:views>
+            <sdb:view type="Edit" />
+        </sdb:views>
     </sdb:widget>
 
     <div class="container-fluid" ng-if="panel.view != 'Edit'" id="scoreAccordion">

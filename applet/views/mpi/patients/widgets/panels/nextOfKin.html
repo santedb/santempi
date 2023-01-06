@@ -1,10 +1,14 @@
 <div xmlns="http://www.w3.org/1999/xhtml" xmlns:sdb="http://santedb.org/applet" class="container-fluid p-0"
     oc-lazy-load="{ name: 'MpiPatientNextOfKinController', files: ['/org.santedb.smpi/controllers/widgets/nextOfKin.js', '/org.santedb.smpi/js/mpi.js'] }">
-    <sdb:widget order="15" name="org.santedb.widget.patient.nok" altViews="Edit" headerClass="bl-light" size="Medium"
+    <sdb:widget order="15" name="org.santedb.widget.patient.nok" headerClass="bl-light" size="Medium"
         type="Panel" context="org.santedb.patient.demographics" priority="1">
         <sdb:icon>fas fa-users</sdb:icon>
         <sdb:description lang="en">Patient Family Members</sdb:description>
+        <sdb:views>
+            <sdb:view type="Edit" />
+        </sdb:views>
     </sdb:widget>
+
     <div class="row" ng-if="!scopedObject">
         <div class="col">
             <p class="m-auto"><i class="fas fa-circle-notch fa-spin"></i> {{ 'ui.wait' | i18n }}</p>
