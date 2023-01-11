@@ -311,7 +311,7 @@ Source: "{#iCDRBase}\bin\Release\config\template\SanteDB MDM.xml"; DestDir: {app
 
 ; SQLIte
 Source: {#iCDRBase}\bin\Release\Microsoft.Data.Sqlite.dll; DestDir: {app}; Components: db\sqlite
-Source: {#iCDRBase}\Solution Items\sqlcipher.dll; DestName: e_sqlcipher.dll; DestDir: {app}; Components: db\sqlite
+Source: {#iCDRBase}\bin\Release\runtimes\*; DestDir: {app}\runtimes; Flags: recursesubdirs; Components: db\sqlite
 Source: {#iCDRBase}\Solution Items\spellfix.dll; DestDir: {app}; Components: db\sqlite
 Source: {#iCDRBase}\bin\Release\SQLitePCLRaw.batteries_v2.dll; DestDir: {app}; Components: db\sqlite
 Source: {#iCDRBase}\bin\Release\SQLitePCLRaw.core.dll; DestDir: {app}; Components: db\sqlite
