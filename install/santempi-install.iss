@@ -136,7 +136,6 @@ Source: {#iCDRBase}\bin\Release\SanteDB.Queue.Msmq.dll; DestDir: {app}; Componen
 
 ; Demo Data
 Source: {#iCDRBase}\SanteDB\Data\Demo\*.dataset; DestDir: {app}\data; Components: demo
-Source: {#iCDRBase}\SanteDB\santedb.config.fbsql.xml; DestDir: {app}; DestName: santedb.config.xml; Components: demo
 
 ; Config Samples
 Source: {#iCDRBase}\SanteDB\santedb.config.fbsql.xml; DestDir: {app}; DestName: santedb.config.fbsql.xml; Components: db\fbsql
@@ -377,8 +376,8 @@ begin
     EnableFsRedirection(true);
     WizardForm.PreparingLabel.Visible := True;
     WizardForm.PreparingLabel.Caption := 'Installing Visual C++ Redistributable';
-    ExtractTemporaryFile('vc2010.exe');
-    Exec(ExpandConstant('{tmp}\vc2010.exe'), '/install /passive', '', SW_SHOW, ewWaitUntilTerminated, ResultCode);
+    ExtractTemporaryFile('\vc_redist.x64.exe');
+    Exec(ExpandConstant('{tmp}\\vc_redist.x64.exe'), '/install /passive /norestart', '', SW_SHOW, ewWaitUntilTerminated, ResultCode);
     WizardForm.PreparingLabel.Caption := 'Installing Microsoft .NET Framework 4.8';
     ExtractTemporaryFile('netfx.exe');
     Exec(ExpandConstant('{tmp}\netfx.exe'), '/q', '', SW_SHOW, ewWaitUntilTerminated, ResultCode);
