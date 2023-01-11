@@ -103,7 +103,7 @@ Name: mpi; Description: SanteMPI; types: full imsi ami auth bis demo tools;
  
 ; Microsoft .NET Framework 4.5 Installation
 Source: {#iCDRBase}\installer\netfx.exe; DestDir: {tmp} ; Flags: dontcopy
-
+           
 ; VC Redist for FBSQL
 Source: {#iCDRBase}\installer\vc_redist.x64.exe; DestDir: {tmp} ; Flags: dontcopy
 
@@ -376,8 +376,8 @@ begin
     EnableFsRedirection(true);
     WizardForm.PreparingLabel.Visible := True;
     WizardForm.PreparingLabel.Caption := 'Installing Visual C++ Redistributable';
-    ExtractTemporaryFile('\vc_redist.x64.exe');
-    Exec(ExpandConstant('{tmp}\\vc_redist.x64.exe'), '/install /passive /norestart', '', SW_SHOW, ewWaitUntilTerminated, ResultCode);
+    ExtractTemporaryFile('vc_redist.x64.exe');
+    Exec(ExpandConstant('{tmp}\vc_redist.x64.exe'), '/install /passive /norestart', '', SW_SHOW, ewWaitUntilTerminated, ResultCode);
     WizardForm.PreparingLabel.Caption := 'Installing Microsoft .NET Framework 4.8';
     ExtractTemporaryFile('netfx.exe');
     Exec(ExpandConstant('{tmp}\netfx.exe'), '/q', '', SW_SHOW, ewWaitUntilTerminated, ResultCode);
