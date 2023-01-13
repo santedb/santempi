@@ -1,6 +1,6 @@
 
 <ViewModel xmlns="http://santedb.org/model/view">
-  <include>mdm</include>
+  <include>base</include>
   <type type="EntityRelationship" all="true">
     <property name="target" all="true" behavior="always"/>
     <property name="holder" all="true"/>
@@ -8,5 +8,8 @@
     <property name="key" all="true"/>
     <property name="quantity" all="true"/>
     <property name="strength" all="true"/>
+    <property name="holderModel" behavior="always" />
+    <property name="targetModel" behavior="always" />
   </type>
+
 </ViewModel>

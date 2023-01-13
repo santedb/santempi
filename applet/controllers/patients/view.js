@@ -98,7 +98,7 @@ angular.module('santedb').controller('MpiPatientViewController', ["$scope", "$ro
                     })
                 ]
             });
-            await SanteDB.resources.entity.patchAsync($stateParams.id, $scope.patient.etag, patch, false, true);
+            await SanteDB.resources.entity.patchAsync($stateParams.id, $scope.patient.etag, patch);
             toastr.info(SanteDB.locale.getString("ui.model.patient.saveSuccess"));
             $state.reload();
 

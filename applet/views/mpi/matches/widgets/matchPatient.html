@@ -126,14 +126,14 @@
                 <td>
                     <ul class="list-unstyled">
                         <li ng-if="dup.id != scopedObject.candidate.id &amp;&amp; dup.refModel" ng-repeat="dup in scopedObject.recordA.relationship['MDM-Duplicate']">
-                            <a ui-sref=".({ candidateId : dup.id })">{{ dup.refModel.name | name }} / {{ dup.refModel.identifier | identifier }} / {{ dup.refModel.genderConceptModel | concept }} ({{ dup.strength * 100 | number: 0 }}%)</a>
+                            <a ui-sref=".({ id : dup.id })">{{ dup.refModel.name | name }} / {{ dup.refModel.identifier | identifier }} / {{ dup.refModel.genderConceptModel | concept }} ({{ dup.strength * 100 | number: 0 }}%)</a>
                         </li>
                     </ul>
                 </td>
                 <td>
                     <ul class="list-unstyled">
                         <li  ng-if="dup.id != scopedObject.candidate.id &amp;&amp; dup.refModel" ng-repeat="dup in scopedObject.recordB.relationship['MDM-Duplicate']">
-                            <a ui-sref=".({ candidateId : dup.id })">{{ dup.refModel.name | name }} / {{ dup.refModel.identifier | identifier }} / {{ dup.refModel.genderConceptModel | concept }}  ({{ dup.strength * 100 | number: 0 }}%)</a>
+                            <a ui-sref=".({ id : dup.id })"> {{ dup.refModel.name | name }} / {{ dup.refModel.identifier | identifier }} / {{ dup.refModel.genderConceptModel | concept }}  ({{ dup.strength * 100 | number: 0 }}%)</a>
                             
                         </li>
                     </ul>
