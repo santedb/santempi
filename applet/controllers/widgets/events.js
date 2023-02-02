@@ -12,7 +12,7 @@ angular.module('santedb').controller('MpiRegistrationEventController', ['$scope'
                 altKeys.push(patient.id);
             }
             var events = await SanteDB.resources.act.findAsync({ 'participation[RecordTarget].player' : altKeys, 'classConcept' : [ActClassKeys.Registration, ActClassKeys.ControlAct ] }, "full");
-            $timeout(_ => $scope.events = events.resource);
+            $timeout(_ => $scope.events = events.resource || []);
         }
         catch(e) {
             $rootScope.errorHandler(e);

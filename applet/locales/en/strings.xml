@@ -259,4 +259,7 @@
   <string name="ui.mpi.entity.relationship.mode">Graph Mode</string>
   <string name="ui.mpi.entity.relationship.mode.advanced">Detailed Relationship Diagram</string>
   <string name="ui.mpi.entity.relationship.mode.simple">Simple Relationship Diagram</string>
+
+  <!-- Event Widget -->
+  <string name="org.santedb.widget.patient.reg">Registration Event(s)</string>
 </resources>

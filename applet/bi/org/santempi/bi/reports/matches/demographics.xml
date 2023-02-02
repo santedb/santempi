@@ -21,6 +21,7 @@
  -->
 <BiReportDefinition xmlns="http://santedb.org/bi" id="org.santempi.bi.reports.matches.demographics" label="ui.mpi.bi.reports.matches.demographics">
   <meta>
+    <public>true</public>
     <authors>
       <add>Justin Fyfe (Fyfe Software Inc.) &lt;justin@fyfesoftware.ca></add>
     </authors>

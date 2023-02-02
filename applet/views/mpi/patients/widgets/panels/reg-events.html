@@ -4,6 +4,7 @@
         context="org.santedb.patient.demographics">
         <sdb:icon>fas fa-users</sdb:icon>
         <sdb:description lang="en">Registration Events</sdb:description>
+        <sdb:guard>scopedObject.determinerConcept != '6b1d6764-12be-42dc-a5dc-52fc275c4935' || scopedObject.tag['$generated']</sdb:guard>
     </sdb:widget>
 
 
@@ -11,26 +12,29 @@
         <div ng-if="!events">
             <i class="fas fa-circle-notch fa-spin"></i> {{ 'ui.wait' | i18n }}
         </div>
+        <div ng-if="events.length == 0">
+            <i class="fas fa-info-circle"></i> {{ 'ui.table.empty' | i18n }}
+        </div>
         <div class="accordion" id="regevtaccordion">
-            <div class="panel" ng-repeat="evt in events track by $index">
-                <div class="panel-heading">
-                    <h2 class="mb-2">
+            <div class="card card-default" ng-repeat="evt in events track by $index">
+                <div class="card-header">
+                    <h2 class="mb-0">
                         <button type="button" class="collapse-indicator btn btn-link p-0" data-toggle="collapse"
                         data-target="#evt{{$index}}" aria-expanded="true">{{ evt.classConceptModel | concept }} <i class="fa fa-chevron-right"></i></button>
                     </h2>
                 </div>
                 <div class="collapse show" data-parent="#regevtaccordion" id="evt{{$index}}">
-                    <div class="panel-body container-fluid">
+                    <div class="card-body container-fluid">
                         <div class="row">
-                            <label class="col-md-3 col-xs-12 control-label">{{ 'ui.model.act.actTime' }}</label>
+                            <label class="col-md-3 col-xs-12 control-label">{{ 'ui.model.act.actTime' | i18n }}</label>
                             <div class="col-md-9 col-xs-12">{{ evt.actTime | extDate }}</div>
                         </div>
                         <div class="row">
-                            <label class="col-md-3 col-xs-12 control-label">{{ 'ui.model.act.typeConcept' }}</label>
+                            <label class="col-md-3 col-xs-12 control-label">{{ 'ui.model.act.typeConcept' | i18n }}</label>
                             <div class="col-md-9 col-xs-12">{{ evt.typeConceptModel | concept }}</div>
                         </div>
                         <div class="row" ng-if="evt.participation.Performer">
-                            <label class="col-md-3 col-xs-12 control-label">{{ 'ui.model.act.participation.Performer' }}</label>
+                            <label class="col-md-3 col-xs-12 control-label">{{ 'ui.model.act.participation.Performer' | i18n }}</label>
                             <div class="col-md-9 col-xs-12">
                                 <ul class="list-group">
                                     <li class="list-group-item" ng-repeat="ptcpt in evt.participation.Performer">
@@ -40,7 +44,7 @@
                             </div>
                         </div>
                         <div class="row" ng-if="evt.participation.Location">
-                            <label class="col-md-3 col-xs-12 control-label">{{ 'ui.model.act.participation.Location' }}</label>
+                            <label class="col-md-3 col-xs-12 control-label">{{ 'ui.model.act.participation.Location' | i18n }}</label>
                             <div class="col-md-9 col-xs-12">
                                 <ul class="list-group">
                                     <li class="list-group-item" ng-repeat="ptcpt in evt.participation.Location track by $index">
