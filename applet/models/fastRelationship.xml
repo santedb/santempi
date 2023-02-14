@@ -8,8 +8,8 @@
     <property name="key" all="true"/>
     <property name="quantity" all="true"/>
     <property name="strength" all="true"/>
-    <property name="holderModel" behavior="always" />
-    <property name="targetModel" behavior="always" />
+    <property name="holderModel" behavior="never" />
+    <property name="targetModel" behavior="never" />
   </type>
 
 </ViewModel>

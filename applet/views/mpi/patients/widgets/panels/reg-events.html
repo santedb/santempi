@@ -33,26 +33,17 @@
                             <label class="col-md-3 col-xs-12 control-label">{{ 'ui.model.act.typeConcept' | i18n }}</label>
                             <div class="col-md-9 col-xs-12">{{ evt.typeConceptModel | concept }}</div>
                         </div>
-                        <div class="row" ng-if="evt.participation.Performer">
-                            <label class="col-md-3 col-xs-12 control-label">{{ 'ui.model.act.participation.Performer' | i18n }}</label>
+                        <div class="row" ng-repeat="(typ, ptcpt) in evt.participation">
+                            <label class="col-md-3 col-xs-12 control-label">{{ 'ui.model.act.participation.' + typ | i18n }}</label>
                             <div class="col-md-9 col-xs-12">
                                 <ul class="list-group">
-                                    <li class="list-group-item" ng-repeat="ptcpt in evt.participation.Performer">
-                                        <i class="fas fa-doctor"></i> {{ ptcpt.playerModel.name | name }}
+                                    <li class="list-group-item" ng-repeat="p in ptcpt">
+                                        {{ p.playerModel.name | name }}
                                     </li>
                                 </ul>
                             </div>
                         </div>
-                        <div class="row" ng-if="evt.participation.Location">
-                            <label class="col-md-3 col-xs-12 control-label">{{ 'ui.model.act.participation.Location' | i18n }}</label>
-                            <div class="col-md-9 col-xs-12">
-                                <ul class="list-group">
-                                    <li class="list-group-item" ng-repeat="ptcpt in evt.participation.Location track by $index">
-                                        <i class="fas fa-hospital"></i> {{ ptcpt.playerModel.name | name }}
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
+                       
                     </div>
                 </div>
             </div>
