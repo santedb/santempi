@@ -111,4 +111,26 @@ angular.module('santedb').controller('MpiPatientViewController', ["$scope", "$ro
         }
     }
 
+    
+    // Set the active state
+    $scope.setTag = async function (tagName, tagValue) {
+        try {
+
+            SanteDB.display.buttonWait("#btnClearTag", true);
+
+            var parameters = {};
+            parameters[tagName] = tagValue;
+            await SanteDB.resources.entity.invokeOperationAsync($stateParams.id, "tag", parameters);
+            toastr.info(SanteDB.locale.getString("ui.model.patient.saveSuccess"));
+            $state.reload();
+
+        }
+        catch (e) {
+            $rootScope.errorHandler(e);
+        }
+        finally {
+            SanteDB.display.buttonWait("#btnClearTag", false);
+        }
+    }
+
 }]);
