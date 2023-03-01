@@ -269,4 +269,6 @@
   <string name="ui.mpi.bi.reports.matches.demographics">Patient Match Summary Report</string>
   <string name="ui.mpi.bi.reports.matches.full">Full MDM Match Report</string>
 
+  <string name="ui.mpi.bi.core.dob.to">DOB (To)</string>
+  <string name="ui.mpi.bi.core.dob.from">DOB (From)</string>
 </resources>

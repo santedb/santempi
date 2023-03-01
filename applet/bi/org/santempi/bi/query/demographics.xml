@@ -34,8 +34,8 @@
     <add ref="#org.santedb.bi.dataSource.main"/>
   </dataSources>
   <parameters>
-    <add ref="#org.santedb.bi.core.parameter.common.date.from" name="from-date" type="date"/>
-    <add ref="#org.santedb.bi.core.parameter.common.date.to" name="to-date" type="date"/>
+    <add ref="#org.santedb.bi.core.parameter.common.date.from" name="from-date" label="ui.mpi.bi.core.dob.from" type="date"/>
+    <add ref="#org.santedb.bi.core.parameter.common.date.to" name="to-date"  label="ui.mpi.bi.core.dob.to" type="date"/>
     <add ref="#org.santedb.bi.core.parameter.patient.gender" name="gender" type="uuid" />
     <add ref="#org.santedb.bi.core.parameter.common.state" name="state" type="string" />
 

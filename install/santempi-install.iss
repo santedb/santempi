@@ -341,7 +341,7 @@ Source: {#iCDRBase}\bin\Release\System.*.dll; DestDir: {app};
 Source: ..\bin\release\config\*.*; DestDir: {app}\config; Components: mpi
 Source: ..\bin\release\config\template\*.*; DestDir: {app}\config\template; Components: mpi
 Source: ..\dist\santempi.sln.pak; DestDir: {app}\applets; Components: mpi 
-Source: ..\bin\release\match\*.*; DestDir: {app}\matching; Components: mpi
+Source: ..\bin\release\match\*.*; DestDir: {app}\matching; Components: mpi; Flags: onlyifdoesntexist
 ; SanteMPI Integration
 Source: ..\bin\Release\SanteMPI.*; DestDir: {app}; Components: mpi
 
