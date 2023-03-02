@@ -45,7 +45,7 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
         }
         else if (value[0] == '~') // sound
         {
-            return `:(approx|'${value.substring(1)}')`;
+            return `:(approx|${value.substring(1)})`;
         }
         else if (value.indexOf("*") > -1) // fuzzy
         {
