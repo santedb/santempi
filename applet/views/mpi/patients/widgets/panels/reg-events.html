@@ -20,10 +20,10 @@
                 <div class="card-header">
                     <h2 class="mb-0">
                         <button type="button" class="collapse-indicator btn btn-link p-0" data-toggle="collapse"
-                        data-target="#evt{{$index}}" aria-expanded="true">{{ evt.classConceptModel | concept }} <i class="fa fa-chevron-right"></i></button>
+                        data-target="#evt{{$index}}" aria-expanded="{{ $index == 0 }}">{{ evt.classConceptModel | concept }} <i class="fa fa-chevron-right"></i></button>
                     </h2>
                 </div>
-                <div class="collapse show" data-parent="#regevtaccordion" id="evt{{$index}}">
+                <div class="collapse" ng-class="{ 'show' : $index == 0}" data-parent="#regevtaccordion" id="evt{{$index}}">
                     <div class="card-body container-fluid">
                         <div class="row">
                             <label class="col-md-3 col-xs-12 control-label">{{ 'ui.model.act.actTime' | i18n }}</label>
