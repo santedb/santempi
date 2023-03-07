@@ -1,6 +1,6 @@
 ﻿using NHapi.Base.Model;
 using NHapi.Model.V25.Message;
-using SanteDB.Core.Auditing;
+using SanteDB.Core.Model.Audit;
 using SanteDB.Core.Model;
 using SanteDB.Core.Model.Roles;
 using SanteDB.Core.Services;
@@ -11,6 +11,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using SanteDB.Core.Security;
+using SanteDB.Core.Security.Services;
 
 namespace SanteMPI.Messaging.IHE.HL7
 {
@@ -20,11 +22,14 @@ namespace SanteMPI.Messaging.IHE.HL7
     [DisplayName("SanteMPI PDQ Message Handler")]
     public class PdqQbpMessageHandler : QbpMessageHandler
     {
+        private readonly IAuditService m_auditService;
+
         /// <summary>
         /// PDQ message handler
         /// </summary>
-        public PdqQbpMessageHandler(ILocalizationService localizationService) : base(localizationService)
+        public PdqQbpMessageHandler(ILocalizationService localizationService, IAuditService auditService) : base(localizationService, auditService)
         {
+            this.m_auditService = auditService;
         }
 
         /// <summary>
@@ -51,7 +56,7 @@ namespace SanteMPI.Messaging.IHE.HL7
         /// </summary>
         protected override void SendAuditQuery(OutcomeIndicator success, IMessage message, IEnumerable<IdentifiedData> results)
         {
-            IheAuditUtil.SendAuditPatientDemographicsQuery(success, message, results?.OfType<Patient>().ToArray());
+            this.m_auditService.Audit().ForPatientDemographicsQuery(success, message, results?.OfType<Patient>()).Send();
         }
     }
 }

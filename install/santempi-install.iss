@@ -5,6 +5,9 @@
 #define MyAppPublisher "SanteDB Community"
 #define MyAppURL "http://santesuite.org"
 #define iCDRBase "..\..\santedb-server\"
+#ifndef MyAppVersion
+#define MyAppVersion "3.0"
+#endif
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -65,15 +68,19 @@ Name: msg; Description: Core Messaging Interfaces; Types: full demo
 Name: msg\hdsi; Description: Health Administration Interface; Types: full imsi demo 
 Name: msg\ami; Description: Administration Management Interface; Types: full ami demo 
 Name: msg\auth; Description: OAuth2.0 Authentication Server; Types: full auth demo 
+Name: msg\www; Description: Web Hosting Services; Types: full auth demo 
+Name: msg\app; Description: Client Application Services; Types: full auth demo 
+Name: dcdr; Description: dCDR Client Services; Types: full demo
 Name: bi; Description: Business Intelligence Services; Types: full auth demo 
 Name: interop; Description: Integration Interfaces; Types: full demo 
 Name: interop\fhir; Description: HL7 Fast Health Integration Resources; Types: full demo 
 Name: interop\hl7; Description: HL7v2 Messaging; Types: full demo
 Name: interop\gs1; Description: GS1 BMS Messaging; Types: full demo
 Name: interop\jira; Description: JIRA Integration; Types: full
+Name: interop\msmq; Description: Microsoft Message Queue (MSMQ); Types: full
+Name: interop\rabbitmq; Description: RabbitMQ Integration; Types: full
 Name: interop\atna; Description: ATNA & DICOM Auditing; Types: full
 Name: interop\openapi; Description: OpenAPI; Types: full demo
-Name: interop\msmq; Description: Microsoft Message Queue Support; Types: full demo
 Name: reporting; Description: Reporting Services; Types: full
 Name: reporting\bis; Description: Business Intelligence Services; Types: full bis 
 Name: tfa; Description: Two Factor Authentication; Types: full
@@ -83,23 +90,31 @@ Name: mdm; Description: Master Data Management (MDM); Types: full
 Name: match; Description: Record Matcher (SanteMatch); Types: full 
 Name: db; Description: Data Persistence; Types: full demo 
 Name: db\fbsql; Description: FirebirdSQL Persistence Services; Types: full demo 
+Name: db\sqlite; Description: SQLite Persistence Services; Types: full demo 
 Name: db\psql; Description: PostgreSQL Persistence Services; Types: full 
 Name: cache; Description: Memory Caching Services; Types: full demo 
 Name: cache\redis; Description: REDIS Shared Memory Caching; Types: full 
 Name: tools; Description: Management Tooling; Types: full demo
+Name: dev; Description: Development Tooling; Types: full demo
 Name: demo; Description: Elbonia Quickstart; Types: demo
 Name: mpi; Description: SanteMPI; types: full imsi ami auth bis demo tools;
 
 [Files]
-        
+ 
 ; Microsoft .NET Framework 4.5 Installation
 Source: {#iCDRBase}\installer\netfx.exe; DestDir: {tmp} ; Flags: dontcopy
-
+           
 ; VC Redist for FBSQL
-Source: {#iCDRBase}\installer\vc2010.exe; DestDir: {tmp} ; Flags: dontcopy
+Source: {#iCDRBase}\installer\vc_redist.x64.exe; DestDir: {tmp} ; Flags: dontcopy
+
+; LIcenses
+Source: {#iCDRBase}\bin\Release\IDPLicense.txt; DestDir: {app}\licenses; Components: db\fbsql
+Source: {#iCDRBase}\bin\Release\IPLicense.txt; DestDir: {app}\licenses; Components: db\fbsql
+Source: {#iCDRBase}\bin\Release\License.rtf; DestDir: {app}\licenses
 
 ; Firebird SQL 
 Source: {#iCDRBase}\bin\Release\fbclient.dll; DestDir: {app}; Components: db\fbsql
+Source: {#iCDRBase}\bin\Release\firebird.conf; DestDir: {app}; Components: db\fbsql
 ; Source: {#iCDRBase}\bin\Release\fbembed.dll; DestDir: {app}; Components: db\fbsql
 Source: {#iCDRBase}\bin\Release\FirebirdSql.Data.FirebirdClient.dll; DestDir: {app}; Components: db\fbsql
 Source: {#iCDRBase}\bin\Release\ib_util.dll; DestDir: {app}; Components: db\fbsql
@@ -108,16 +123,19 @@ Source: {#iCDRBase}\bin\Release\icuin52.dll; DestDir: {app}; Components: db\fbsq
 Source: {#iCDRBase}\bin\Release\icuuc52.dll; DestDir: {app}; Components: db\fbsql
 Source: {#iCDRBase}\bin\Release\plugins\engine12.dll; DestDir: {app}\plugins; Components: db\fbsql
 Source: {#iCDRBase}\bin\Release\icudt52l.dat; DestDir: {app}; Components: db\fbsql
-Source: {#iCDRBase}\bin\Release\firebird.conf; DestDir: {app}; Components: db\fbsql
 Source: {#iCDRBase}\bin\Release\firebird.msg; DestDir: {app}; Components: db\fbsql
 ;Source: {#iCDRBase}\bin\Release\fbembed.dll; DestDir: {app}; Components: db\fbsql
 Source: {#iCDRBase}\bin\Release\fbclient.dll; DestDir: {app}; Components: db\fbsql
+
+; RabbitMQ 
+Source: {#iCDRBase}\bin\Release\RabbitMQ.Client.dll; DestDir: {app}; Components: interop\rabbitmq
+Source: {#iCDRBase}\bin\Release\SanteDB.Queue.RabbitMq.dll; DestDir: {app}; Components: interop\rabbitmq
+
 ; MSMQ Support
 Source: {#iCDRBase}\bin\Release\SanteDB.Queue.Msmq.dll; DestDir: {app}; Components: interop\msmq
 
 ; Demo Data
 Source: {#iCDRBase}\SanteDB\Data\Demo\*.dataset; DestDir: {app}\data; Components: demo
-Source: {#iCDRBase}\SanteDB\santedb.config.fbsql.xml; DestDir: {app}; DestName: santedb.config.xml; Components: demo
 
 ; Config Samples
 Source: {#iCDRBase}\SanteDB\santedb.config.fbsql.xml; DestDir: {app}; DestName: santedb.config.fbsql.xml; Components: db\fbsql
@@ -127,49 +145,45 @@ Source: {#iCDRBase}\SanteDB\Data\SDB_AUDIT.FDB; DestDir: {app}; Components: db\f
 Source: {#iCDRBase}\SanteDB\santedb.config.psql.xml; DestDir: {app}; DestName: santedb.config.psql.xml; Components: db\psql; 
 ; Security AMI stuff
 Source: {#iCDRBase}\bin\Release\SanteDB.Core.Model.AMI.dll; DestDir: {app}; Components: msg\ami
-Source: {#iCDRBase}\bin\Release\SanteDB.Messaging.AMI.dll; DestDir: {app}; Components: msg\ami
 Source: {#iCDRBase}\bin\Release\SanteDB.Rest.AMI.dll; DestDir: {app}; Components: msg\ami
 
 ; Config Parts 
 ; TODO: Individual files here
-Source: {#iCDRBase}\bin\release\config\*.*; DestDir: {app}\config; Components: server
-Source: {#iCDRBase}\bin\release\config\template\*.*; DestDir: {app}\config; Components: server
+Source: {#iCDRBase}\bin\release\config\*.*; DestDir: {app}\config; Components: server; 
+Source: "{#iCDRBase}\bin\release\config\template\Standard SanteDB.xml"; DestDir: {app}\config; Components: server
 ; Data Stuff
 Source: {#iCDRBase}\bin\release\data\*.dataset; DestDir: {app}\data; Components: server
 Source: {#iCDRBase}\bin\release\applets\*.pak; DestDir: {app}\applets; Components: server
 
 ; Tools
-Source: {#iCDRBase}\bin\release\sdbac.exe; DestDir: {app}; Components: tools
-Source: {#iCDRBase}\bin\Release\Mono.Posix.dll; DestDir: {app}; Components: core
+Source: {#iCDRBase}\santedb-tools\bin\Release\net4.8\sdbac.exe; DestDir: {app}; Components: tools
+Source: {#iCDRBase}\santedb-tools\bin\Release\net4.8\sdbac.exe.config; DestDir: {app}; Components: tools
+Source: {#iCDRBase}\santedb-tools\bin\Release\net4.8\SanteDB.AdminConsole.Api.dll; DestDir: {app}; Components: tools
 Source: {#iCDRBase}\bin\Release\SanteDB.exe.config; DestDir: {app}; DestName: sdbac.exe.config; Components: tools
-Source: {#iCDRBase}\bin\release\SanteDB.Server.AdminConsole.Api.dll; DestDir: {app}; Components: tools
+Source: {#iCDRBase}\bin\Release\Mono.Posix.dll; DestDir: {app}; Components: core
 
 Source: {#iCDRBase}\bin\release\SanteDB.Messaging.AMI.Client.dll; DestDir: {app}; Components: tools
-Source: {#iCDRBase}\bin\release\SanteDB.Tools.Debug.dll; DestDir: {app}; Components: tools
 
 ;Documentation For OpenAPI
 Source: {#iCDRBase}\bin\Release\RestSrvr.xml; DestDir: {app}; Components: interop\openapi
-Source: {#iCDRBase}\bin\Release\SanteDB.Authentication.OAuth2.xml; DestDir: {app}; Components: interop\openapi
+Source: {#iCDRBase}\bin\Release\SanteDB.Rest.OAuth.xml; DestDir: {app}; Components: interop\openapi
 Source: {#iCDRBase}\bin\Release\SanteDB.BI.xml; DestDir: {app}; Components: interop\openapi
 ; Source: {#iCDRBase}\bin\Release\SanteDB.Core.Applets.xml; DestDir: {app}; Components: interop\openapi
 ;Source: {#iCDRBase}\bin\Release\SanteDB.Core.Model.AMI.xml; DestDir: {app}; Components: interop\openapi
 ;Source: {#iCDRBase}\bin\Release\SanteDB.Core.Model.ViewModelSerializers.xml; DestDir: {app}; Components: interop\openapi
-Source: {#iCDRBase}\bin\Release\SanteDB.Core.Model.xml; DestDir: {app}; Components: interop\openapi
-Source: {#iCDRBase}\bin\Release\SanteDB.Messaging.AMI.xml; DestDir: {app}; Components: interop\openapi
 Source: {#iCDRBase}\bin\Release\SanteDB.Messaging.FHIR.xml; DestDir: {app}; Components: interop\openapi
 Source: {#iCDRBase}\bin\Release\SanteDB.Messaging.GS1.xml; DestDir: {app}; Components: interop\openapi
-Source: {#iCDRBase}\bin\Release\SanteDB.Messaging.HDSI.xml; DestDir: {app}; Components: interop\openapi
 Source: {#iCDRBase}\bin\Release\SanteDB.Messaging.Metadata.xml; DestDir: {app}; Components: interop\openapi
 ;Source: {#iCDRBase}\bin\Release\SanteDB.Rest.AMI.xml; DestDir: {app}; Components: interop\openapi
 ;Source: {#iCDRBase}\bin\Release\SanteDB.Rest.BIS.xml; DestDir: {app}; Components: interop\openapi
 ;Source: {#iCDRBase}\bin\Release\SanteDB.Rest.Common.xml; DestDir: {app}; Components: interop\openapi
 Source: {#iCDRBase}\bin\Release\SanteDB.Rest.HDSI.xml; DestDir: {app}; Components: interop\openapi
+Source: {#iCDRBase}\bin\Release\SanteDB.Rest.AMI.xml; DestDir: {app}; Components: interop\openapi
 Source: {#iCDRBase}\bin\Release\SanteDB.Messaging.Metadata.dll; DestDir: {app}; Components: interop\openapi
 ; Core Services
 Source: {#iCDRBase}\bin\Release\ConfigTool.exe; DestDir: {app}; Components: server
 Source: {#iCDRBase}\bin\Release\ConfigTool.exe.config; DestDir: {app}; Components: server
 Source: {#iCDRBase}\bin\Release\SanteDB.exe; DestDir: {app}; Components: server
-Source: {#iCDRBase}\bin\Release\SanteDB.Server.dll; DestDir: {app}; Components: server
 Source: {#iCDRBase}\bin\Release\SanteDB.exe.config; DestDir: {app}; Components: server
 Source: {#iCDRBase}\bin\Release\MohawkCollege.Util.Console.Parameters.dll; DestDir: {app}; Components: core server
 Source: {#iCDRBase}\bin\Release\Newtonsoft.Json.dll; DestDir: {app}; Components: core server
@@ -177,9 +191,7 @@ Source: {#iCDRBase}\bin\Release\RestSrvr.dll; DestDir: {app}; Components: core s
 Source: {#iCDRBase}\bin\Release\SanteDB.Configuration.dll; DestDir: {app}; Components: server
 Source: {#iCDRBase}\bin\Release\SanteDB.Core.Api.dll; DestDir: {app}; Components: core server
 Source: {#iCDRBase}\bin\Release\SanteDB.Core.Applets.dll; DestDir: {app}; Components: core server
-Source: {#iCDRBase}\bin\Release\SanteDB.Server.Core.dll; DestDir: {app}; Components: core
 Source: {#iCDRBase}\bin\Release\SanteDB.Docker.Core.dll; DestDir: {app}; Components: core
-Source: {#iCDRBase}\bin\Release\SanteDB.Server.dll; DestDir: {app}; Components: core
 Source: {#iCDRBase}\bin\Release\SanteDB.Core.Model.dll; DestDir: {app}; Components: core server
 Source: {#iCDRBase}\bin\Release\SharpCompress.dll; DestDir: {app}; Components: core
 Source: {#iCDRBase}\bin\release\System.Runtime.CompilerServices.Unsafe.dll; DestDir: {app}; Components: core
@@ -187,10 +199,30 @@ Source: {#iCDRBase}\bin\Release\SanteDB.Messaging.AMI.Client.dll; DestDir: {app}
 Source: {#iCDRBase}\bin\Release\SanteDB.Messaging.HDSI.Client.dll; DestDir: {app}; Components: core
 Source: {#iCDRBase}\bin\Release\SanteDB.OrmLite.dll; DestDir: {app}; Components: server
 Source: {#iCDRBase}\bin\Release\SanteDB.Persistence.Auditing.ADO.dll; DestDir: {app}; Components: server
-Source: {#iCDRBase}\bin\Release\SanteDB.Persistence.Data.ADO.dll; DestDir: {app}; Components: server
+Source: {#iCDRBase}\bin\Release\SanteDB.Persistence.Data.dll; DestDir: {app}; Components: server
 Source: {#iCDRBase}\bin\Release\SanteDB.Persistence.PubSub.ADO.dll; DestDir: {app}; Components: server
 Source: {#iCDRBase}\bin\Release\SanteDB.Persistence.Diagnostics.Email.dll; DestDir: {app}; Components: server
-Source: {#iCDRBase}\bin\Release\RazorTemplates.Core.dll; DestDir: {app}; Components: server
+Source: {#iCDRBase}\bin\Release\BouncyCastle.Crypto.dll; DestDir: {app}; Components: server core
+Source: {#iCDRBase}\bin\Release\SanteDB.Security.Certs.BouncyCastle.dll; DestDir: {app}; Components: server core
+Source: {#iCDRBase}\bin\Release\SanteDB.Core.i18n.dll; DestDir: {app}; Components: server core
+Source: {#iCDRBase}\bin\Release\zxing.dll; DestDir: {app}; Components: server core
+Source: {#iCDRBase}\bin\Release\zxing.presentation.dll; DestDir: {app}; Components: server core
+Source: {#iCDRBase}\bin\Release\ZXing.Windows.Compatibility.dll; DestDir: {app}; Components: server core
+;Source: {#iCDRBase}\bin\Release\fr\*; DestDir: {app}\fr; Components: server core
+
+; Client Services
+Source: {#iCDRBase}\bin\Release\SanteDB.Client.dll; DestDir: {app}; Components: msg\app dcdr;
+Source: {#iCDRBase}\bin\Release\SanteDB.Rest.AppService.dll; DestDir: {app}; Components: msg\app dcdr;
+Source: {#iCDRBase}\bin\Release\SanteDB.Client.Disconnected.dll; DestDir: {app}; Components: dcdr;
+Source: {#iCDRBase}\bin\Release\SanteDB.Persistence.Synchronization.ADO.dll; DestDir: {app}; Components: dcdr;
+
+; WWW Services
+Source: {#iCDRBase}\bin\Release\SanteDB.Rest.Www.dll; DestDir: {app}; Components: msg\www dcdr;
+
+; Dev tooling
+Source: {#iCDRBase}\bin\Release\SanteDB.DevTools.dll; DestDir: {app}; Components: dev
+Source: {#iCDRBase}\bin\Release\SanteDB.PakMan.Common.dll; DestDir: {app}; Components: dev
+
 
 ; Common BRE
 Source: {#iCDRBase}\bin\Release\Antlr3.Runtime.dll; DestDir: {app}; Components: core\bre core\protocol core
@@ -205,20 +237,20 @@ Source: {#iCDRBase}\bin\Release\AtnaApi.dll; DestDir: {app}; Components: interop
 
 ; FHIR R4 Support
 Source: {#iCDRBase}\bin\Release\Hl7.Fhir.ElementModel.dll; DestDir: {app}; Components: interop\fhir
-Source: {#iCDRBase}\bin\Release\Microsoft.IdentityModel.Tokens.dll; DestDir: {app}; Components: interop\fhir
-Source: {#iCDRBase}\bin\Release\Microsoft.IdentityModel.Logging.dll; DestDir: {app}; Components: interop\fhir
 Source: {#iCDRBase}\bin\Release\Hl7.Fhir.R4.Core.dll; DestDir: {app}; Components: interop\fhir
 Source: {#iCDRBase}\bin\Release\Hl7.Fhir.Serialization.dll; DestDir: {app}; Components: interop\fhir
+Source: {#iCDRBase}\bin\Release\Microsoft.IdentityModel.Tokens.dll; DestDir: {app}; Components: interop\fhir
+Source: {#iCDRBase}\bin\Release\Microsoft.IdentityModel.Logging.dll; DestDir: {app}; Components: interop\fhir
 Source: {#iCDRBase}\bin\Release\Hl7.Fhir.Support.dll; DestDir: {app}; Components: interop\fhir
 Source: {#iCDRBase}\bin\Release\Hl7.Fhir.Support.Poco.dll; DestDir: {app}; Components: interop\fhir
 Source: {#iCDRBase}\bin\Release\Hl7.FhirPath.dll; DestDir: {app}; Components: interop\fhir
 Source: {#iCDRBase}\santedb-fhir\SanteDB.Messaging.FHIR\Data\*.dataset; DestDir: {app}\data; Components: interop\fhir
 Source: {#iCDRBase}\bin\Release\SanteDB.Messaging.FHIR.dll; DestDir: {app}; Components: interop\fhir
+Source: {#iCDRBase}\bin\Release\FhirParameterMap.xml; DestDir: {app}; components: interop\fhir
 
 ; Twilio Integration
-Source: {#iCDRBase}\bin\Release\JWT.dll; DestDir: {app}; Components: tfa\twilio
 Source: {#iCDRBase}\bin\Release\RestSharp.dll; DestDir: {app}; Components: tfa\twilio
-Source: {#iCDRBase}\bin\Release\Twilio.Api.dll; DestDir: {app}; Components: tfa\twilio
+Source: {#iCDRBase}\bin\Release\Twilio.dll; DestDir: {app}; Components: tfa\twilio
 Source: {#iCDRBase}\bin\Release\SanteDB.Core.Security.Tfa.Twilio.dll; DestDir: {app}; Components: tfa\twilio
 
 ; HL7v2
@@ -230,22 +262,19 @@ Source: {#iCDRBase}\bin\Release\SanteDB.Messaging.HL7.dll; DestDir: {app}; Compo
 
 ; NPSQL
 Source: {#iCDRBase}\bin\Release\Npgsql.dll; DestDir: {app}; Components: db\psql
-Source: {#iCDRBase}\bin\Release\Data\SQL\PSQL\*.sql; DestDir: {app}\data\sql\psql; Components: db\psql;
-Source: {#iCDRBase}\bin\Release\Data\SQL\Updates\*-PSQL*.sql; DestDir: {app}\data\sql\psql\updates; Components: db\psql;
-Source: {#iCDRBase}\bin\Release\Data\SQL\AuditDB\PSQL\*.sql; DestDir: {app}\data\sql\psql\auditdb; Components: db\psql;
-
-Source: {#iCDRBase}\bin\Release\Data\SQL\FBSQL\*.sql; DestDir: {app}\data\sql\fbsql; Components: db\fbsql;
-Source: {#iCDRBase}\bin\Release\Data\SQL\Updates\*-FBSQL*.sql; DestDir: {app}\data\sql\fbsql\updates; Components: db\fbsql;
-Source: {#iCDRBase}\bin\Release\Data\SQL\AuditDB\FBSQL\*.sql; DestDir: {app}\data\sql\fbsql\auditdb; Components: db\fbsql;
+Source: {#iCDRBase}\santedb-data\bin\Release\netstandard2.0\SQL\PSQL\*.sql; Flags: recursesubdirs; DestDir: {app}\data\sql\psql; Components: db\psql; 
+Source: {#iCDRBase}\santedb-data\bin\Release\netstandard2.0\SQL\FBSQL\*.sql; Flags: recursesubdirs; DestDir: {app}\data\sql\fbsql; Components: db\fbsql;
+Source: {#iCDRBase}\santedb-data\bin\Release\netstandard2.0\SQL\SQLite\*.sql; Flags: recursesubdirs; DestDir: {app}\data\sql\sqlite; Components: db\sqlite;
+Source: {#iCDRBase}\santedb-data\SanteDB.Persistence.Auditing.ADO\bin\Release\netstandard2.0\Data\SQL\AuditDB\PSQL\*.sql; DestDir: {app}\data\sql\psql\auditdb; Components: db\psql;
+Source: {#iCDRBase}\santedb-data\SanteDB.Persistence.Auditing.ADO\bin\Release\netstandard2.0\Data\SQL\AuditDB\FBSQL\*.sql; DestDir: {app}\data\sql\fbsql\auditdb; Components: db\fbsql;
+Source: {#iCDRBase}\santedb-data\SanteDB.Persistence.Auditing.ADO\bin\Release\netstandard2.0\Data\SQL\AuditDB\SQLITE\*.sql; DestDir: {app}\data\sql\sqlite\auditdb; Components: db\sqlite;
 
 ; Matching Infrastructure
 Source: {#iCDRBase}\bin\Release\Phonix.dll; DestDir: {app}; Components: match
 Source: {#iCDRBase}\bin\Release\SanteDB.Matcher.dll; DestDir: {app}; Components: match
-Source: {#iCDRBase}\bin\Release\Pipelines.Sockets.Unofficial.dll; DestDir: {app}; Components: cache\redis
 
 ; OAUTH
-Source: {#iCDRBase}\bin\Release\SanteDB.Authentication.OAuth2.dll; DestDir: {app}; Components: msg\auth
-Source: {#iCDRBase}\SanteDB.Authentication.OAuth\Data\*.dataset; DestDir: {app}\data; Components: msg\auth
+Source: {#iCDRBase}\bin\Release\SanteDB.Rest.OAuth.dll; DestDir: {app}; Components: msg\auth
 
 ; BI REPORTING
 Source: {#iCDRBase}\bin\Release\SanteDB.BI.dll; DestDir: {app}; Components: reporting\bis
@@ -254,7 +283,9 @@ Source: {#iCDRBase}\bin\Release\SanteDB.Rest.BIS.dll; DestDir: {app}; Components
 ; Caching 
 Source: {#iCDRBase}\bin\Release\SanteDB.Caching.Memory.dll; DestDir: {app}; Components: cache
 Source: {#iCDRBase}\bin\Release\SanteDB.Caching.Redis.dll; DestDir: {app}; Components: cache\redis
+Source: {#iCDRBase}\bin\Release\Pipelines.Sockets.Unofficial.dll; DestDir: {app}; Components: cache\redis
 Source: {#iCDRBase}\bin\Release\StackExchange.Redis.dll; DestDir: {app}; Components: cache\redis
+
 
 ; Core Messaging
 Source: {#iCDRBase}\bin\Release\SanteDB.Core.Model.ViewModelSerializers.dll; DestDir: {app}; Components: msg\hdsi msg\ami
@@ -267,7 +298,7 @@ Source: {#iCDRBase}\bin\Release\SanteDB.Messaging.GS1.dll; DestDir: {app}; Compo
 Source: {#iCDRBase}\santedb-gs1\SanteDB.Messaging.GS1\Data\*.dataset; DestDir: {app}\data; Components: interop\gs1
 
 ; JDSO
-Source: {#iCDRBase}\bin\Release\SanteDB.Messaging.HDSI.dll; DestDir: {app}; Components: msg\hdsi
+Source: {#iCDRBase}\bin\Release\SanteDB.Rest.HDSI.dll; DestDir: {app}; Components: msg\hdsi
 
 ; JIRA Integration
 Source: {#iCDRBase}\bin\Release\SanteDB.Persistence.Diagnostics.Jira.dll; DestDir: {app}; Components: interop\jira
@@ -275,12 +306,33 @@ Source: {#iCDRBase}\bin\Release\SanteDB.Persistence.Diagnostics.Jira.dll; DestDi
 ; MDM INfrastructure
 Source: {#iCDRBase}\bin\Release\SanteDB.Persistence.MDM.dll; DestDir: {app}; Components: mdm
 Source: {#iCDRBase}\santedb-mdm\SanteDB.Persistence.MDM\Data\*.dataset; DestDir: {app}\data; Components: mdm
+Source: "{#iCDRBase}\bin\Release\config\template\SanteDB MDM.xml"; DestDir: {app}\config\template; Components: mdm
+
+; SQLIte
+Source: {#iCDRBase}\bin\Release\Microsoft.Data.Sqlite.dll; DestDir: {app}; Components: db\sqlite
+Source: {#iCDRBase}\bin\Release\runtimes\*; DestDir: {app}\runtimes; Flags: recursesubdirs; Components: db\sqlite
+Source: {#iCDRBase}\Solution Items\spellfix.dll; DestDir: {app}; Components: db\sqlite
+Source: {#iCDRBase}\bin\Release\SQLitePCLRaw.batteries_v2.dll; DestDir: {app}; Components: db\sqlite
+Source: {#iCDRBase}\bin\Release\SQLitePCLRaw.core.dll; DestDir: {app}; Components: db\sqlite
+Source: {#iCDRBase}\bin\Release\SQLitePCLRaw.provider.dynamic_cdecl.dll; DestDir: {app}; Components: db\sqlite
 
 
 Source: {#iCDRBase}\bin\Release\SanteDB.Rest.Common.dll; DestDir: {app}; Components: msg reporting
 Source: {#iCDRBase}\bin\Release\SanteDB.Rest.HDSI.dll; DestDir: {app}; Components: msg\hdsi
 
 ; Common .NET Standard
+Source: {#iCDRBase}\bin\Release\Microsoft.AspNetCore.WebUtilities.dll; DestDir: {app};
+Source: {#iCDRBase}\bin\Release\Microsoft.Bcl.HashCode.dll; DestDir: {app};
+Source: {#iCDRBase}\bin\Release\Microsoft.Extensions.Logging.Abstractions.dll; DestDir: {app};
+Source: {#iCDRBase}\bin\Release\Microsoft.Extensions.Primitives.dll; DestDir: {app};
+Source: {#iCDRBase}\bin\Release\Microsoft.IdentityModel.Abstractions.dll; DestDir: {app};
+Source: {#iCDRBase}\bin\Release\Microsoft.IdentityModel.JsonWebTokens.dll; DestDir: {app};
+Source: {#iCDRBase}\bin\Release\Microsoft.IdentityModel.Logging.dll; DestDir: {app};
+Source: {#iCDRBase}\bin\Release\Microsoft.IdentityModel.Tokens.dll; DestDir: {app};
+Source: {#iCDRBase}\bin\Release\Microsoft.Net.Http.Headers.dll; DestDir: {app};
+Source: {#iCDRBase}\bin\Release\MimeMapping.dll; DestDir: {app};
+Source: {#iCDRBase}\bin\Release\MimeTypesMap.dll; DestDir: {app};
+Source: {#iCDRBase}\bin\Release\Polly.dll; DestDir: {app};
 Source: {#iCDRBase}\bin\Release\Microsoft.Bcl.AsyncInterfaces.dll; DestDir: {app}; 
 Source: {#iCDRBase}\bin\Release\Microsoft.Win32.Primitives.dll; DestDir: {app}; 
 Source: {#iCDRBase}\bin\Release\netstandard.dll; DestDir: {app}; Components: core server
@@ -289,7 +341,7 @@ Source: {#iCDRBase}\bin\Release\System.*.dll; DestDir: {app};
 Source: ..\bin\release\config\*.*; DestDir: {app}\config; Components: mpi
 Source: ..\bin\release\config\template\*.*; DestDir: {app}\config\template; Components: mpi
 Source: ..\dist\santempi.sln.pak; DestDir: {app}\applets; Components: mpi 
-Source: ..\bin\release\match\*.*; DestDir: {app}\matching; Components: mpi
+Source: ..\bin\release\match\*.*; DestDir: {app}\matching; Components: mpi; Flags: onlyifdoesntexist
 ; SanteMPI Integration
 Source: ..\bin\Release\SanteMPI.*; DestDir: {app}; Components: mpi
 
@@ -324,8 +376,8 @@ begin
     EnableFsRedirection(true);
     WizardForm.PreparingLabel.Visible := True;
     WizardForm.PreparingLabel.Caption := 'Installing Visual C++ Redistributable';
-    ExtractTemporaryFile('vc2010.exe');
-    Exec(ExpandConstant('{tmp}\vc2010.exe'), '/install /passive', '', SW_SHOW, ewWaitUntilTerminated, ResultCode);
+    ExtractTemporaryFile('vc_redist.x64.exe');
+    Exec(ExpandConstant('{tmp}\vc_redist.x64.exe'), '/install /passive /norestart', '', SW_SHOW, ewWaitUntilTerminated, ResultCode);
     WizardForm.PreparingLabel.Caption := 'Installing Microsoft .NET Framework 4.8';
     ExtractTemporaryFile('netfx.exe');
     Exec(ExpandConstant('{tmp}\netfx.exe'), '/q', '', SW_SHOW, ewWaitUntilTerminated, ResultCode);

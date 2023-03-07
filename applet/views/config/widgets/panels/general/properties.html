@@ -1,10 +1,12 @@
 <div xmlns="http://www.w3.org/1999/xhtml" xmlns:sdb="http://santedb.org/applet">
-    <sdb:widget order="0" name="ui.mpi.matches.config.general.properties" type="Panel" altViews="Edit" size="Large"
+    <sdb:widget order="0" name="ui.mpi.matches.config.general.properties" type="Panel" size="Large"
         context="org.santedb.mpi.matches.config.general">
         <sdb:icon>fas fa-info-circle</sdb:icon>
         <sdb:description lang="en">General</sdb:description>
+        <sdb:views>
+            <sdb:view type="Edit" />
+        </sdb:views>
     </sdb:widget>
-
     <div ng-if="panel.view != 'Edit'" class="container">
         <div class="form-group row">
             <label class="control-label col-sm-12 col-md-3">{{ 'ui.model.matchConfiguration.id' | i18n }} <hint-popover hint-title="ui.model.matchConfiguration.id" /></label>

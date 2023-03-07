@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+ - Portions Copyright 2015-2019 Mohawk College of Applied Arts and Technology
+ - Portions Copyright 2019-2019 SanteSuite Contributors (See NOTICE)
+ - 
+ - 
+ - Licensed under the Apache License, Version 2.0 (the "License"); you 
+ - may not use this file except in compliance with the License. You may 
+ - obtain a copy of the License at 
+ - 
+ - http://www.apache.org/licenses/LICENSE-2.0 
+ - 
+ - Unless required by applicable law or agreed to in writing, software
+ - distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ - WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the 
+ - License for the specific language governing permissions and limitations under 
+ - the License.
+ - 
+ - User: Justin Fyfe
+ - Date: 2019-12-16
+ -->
+<BiQueryDefinition xmlns="http://santedb.org/bi" id="org.santempi.bi.query.patients" label="ui.mpi.bi.query.patients" name="MPI Patient Demographics">
+  <meta status="active">
+    <authors>
+      <add>Justin Fyfe (Fyfe Software Inc.) &lt;justin@fyfesoftware.ca></add>
+    </authors>
+    <annotation>
+      <div xmlns="http://www.w3.org/1999/xhtml">
+        <p>This query provides a list of all patients under MDM management in SanteDB (masters only)</p>
+      </div>
+    </annotation>
+  </meta>
+  <dataSources>
+    <add ref="#org.santedb.bi.dataSource.main"/>
+  </dataSources>
+  <parameters>
+    <add ref="#org.santedb.bi.core.parameter.common.date.from" name="from-date" label="ui.mpi.bi.core.dob.from" type="date"/>
+    <add ref="#org.santedb.bi.core.parameter.common.date.to" name="to-date"  label="ui.mpi.bi.core.dob.to" type="date"/>
+    <add ref="#org.santedb.bi.core.parameter.patient.gender" name="gender" type="uuid" />
+    <add ref="#org.santedb.bi.core.parameter.common.state" name="state" type="string" />
+
+  </parameters>
+  <definitions>
+    <add>
+      <providers>
+        <invariant>npgsql</invariant>
+      </providers>
+	  <materialize name="org_santempi_bi_query_patients">
+		<![CDATA[
+        -- COMMON TABLE EXPRESSION JOINING IDENTITY VALUES WITH IDENTITY DOMAIN
+	with cte_id_tbl as (
+		select ent_id, id_val, nsid 
+		from 
+			ent_id_tbl
+			inner join id_dmn_tbl using (dmn_id)
+		where 
+			obslt_vrsn_seq_id is null
+		order by 
+			id_val
+	), 
+	-- CTE WHICH JOINS THE ADDRESSING AND SELECTS ADDRESS PARTS USING THEIR TYPE COMPONENT ID
+	cte_addr_tbl as (
+		select 
+			ent_id, 
+			mnemonic as addr_type, 
+			string_agg(case when typ_cd_id = '4F342D28-8850-4DAF-8BCA-0B44A255F7ED' or typ_cd_id = 'F69DCFA8-DF18-403B-9217-C59680BAD99E' then val end , ' ' order by seq_id) as adr_line,
+			string_agg(case when typ_cd_id = '05B85461-578B-4988-BCA6-E3E94BE9DB76' then val end , ' ' order by seq_id ) as adr_city,
+			string_agg(case when typ_cd_id = '48B2FFB3-07DB-47BA-AD73-FC8FB8502471' then val end , ' ' order by  seq_id) as adr_country,
+			string_agg(case when typ_cd_id = '8CF4B0B0-84E5-4122-85FE-6AFA8240C218' then val end , ' ' order by  seq_id) as adr_state		
+		from 
+			ent_addr_cmp_tbl 
+			inner join ent_addr_tbl using (addr_id)
+			inner join cd_vrsn_tbl on (cd_id = ent_addr_tbl.use_cd_id and obslt_utc is null)
+		where 
+			obslt_vrsn_seq_id is null
+			and typ_cd_id in ('8CF4B0B0-84E5-4122-85FE-6AFA8240C218','F69DCFA8-DF18-403B-9217-C59680BAD99E','48B2FFB3-07DB-47BA-AD73-FC8FB8502471','05B85461-578B-4988-BCA6-E3E94BE9DB76','4F342D28-8850-4DAF-8BCA-0B44A255F7ED')
+		group by 
+			ent_id, mnemonic 
+	), 
+	-- CTE WHICH JOINS THE NAME COMPONENTS AND SELECTS FAMILY/GIVEN BASED ON COMPONENT ID
+	cte_name_tbl as (
+		select 
+			ent_id,
+			string_agg(case when typ_cd_id = '2F64BDE2-A696-4B0A-9690-B21EBD7E5092' then val end, ' ' order by  seq_id) as nam_given,
+			string_agg(case when typ_cd_id = '29B98455-ED61-49F8-A161-2D73363E1DF0' then val end, ' ' order by  seq_id) as nam_family
+		from 
+			ent_name_cmp_tbl 
+			inner join ent_name_tbl using (name_id)
+		where 
+			obslt_vrsn_seq_id is null
+			and typ_cd_id in ('2F64BDE2-A696-4B0A-9690-B21EBD7E5092', '29B98455-ED61-49F8-A161-2D73363E1DF0')
+		
+		group by 
+			ent_id
+		
+	), 
+	-- CTE WHICH EXTRACTS PATIENT PROFILE DATA
+	-- NOTE: THE LEFT JOINS HANDLE THE CASE WHERE ONE PATIENT HAS MULTIPLE NAME TYPES AND IDENTIFIERS
+	--		 AND THE QUERY USES A GROUP BY TO ENSURE DISTINCT PATIENT RECORDS ARE SELECTED
+	cte_psn_tbl as (
+		select 
+			ent_id,
+			sec_app_tbl.app_pub_id as source_app,
+			ent_vrsn_tbl.crt_utc as crt_utc,
+			psn_tbl.dob,
+			psn_tbl.dob_prec,
+			psn_tbl.dcsd_utc,
+			psn_tbl.dcsd_prec,
+			psn_tbl.occ_cd_id,
+			psn_tbl.gndr_cd_id,
+			psn_tbl.vip_sts_cd_id,
+			psn_tbl.nat_cd_id,
+			pat_tbl.mb_ord ,
+			pat_tbl.mrtl_sts_cd_id ,
+			pat_tbl.edu_lvl_cd_id ,
+			pat_tbl.lvn_arg_cd_id ,
+			string_agg(distinct tel_val , ',' ) as tel_val,
+			string_agg(distinct nam_given , ' ') as nam_given,
+			string_agg(distinct nam_family, ' ') as nam_family,
+			string_agg(distinct adr_line, ' ') as adr_line ,
+			string_agg(distinct adr_city , ' ') as adr_city,
+			string_agg(distinct adr_state , ' ') as adr_state,
+			string_agg(distinct adr_country , ' ') as adr_country,
+			string_agg(distinct id_val || '[' || nsid || ']', ',') as id_val
+		from 
+			ent_vrsn_tbl 
+			inner join psn_tbl using (ent_vrsn_id)
+			left join pat_tbl using(ent_vrsn_id)
+			inner join sec_prov_tbl on (ent_vrsn_tbl.crt_prov_id = sec_prov_tbl.prov_id)
+			inner join sec_app_tbl using (app_id)
+			left join cte_name_tbl using (ent_id)
+			left join cte_addr_tbl using (ent_id)
+			left join cte_id_tbl using (ent_id)
+			left join ent_tel_tbl using(ent_id)
+		where
+			ent_vrsn_tbl.obslt_utc is null
+			and (ent_tel_tbl.tel_val is not null and ent_tel_tbl.obslt_vrsn_seq_id is null or ent_tel_tbl.tel_val is null)
+		group by
+			ent_id, dob, dcsd_utc,  ent_vrsn_tbl.crt_utc , app_pub_id, dob_prec, dcsd_prec, occ_cd_id,psn_tbl.occ_cd_id,
+			psn_tbl.gndr_cd_id,
+			psn_tbl.vip_sts_cd_id,
+			psn_tbl.nat_cd_id,
+			pat_tbl.mb_ord ,
+			pat_tbl.mrtl_sts_cd_id ,
+			pat_tbl.edu_lvl_cd_id ,
+			pat_tbl.lvn_arg_cd_id
+	)
+		select distinct
+			master_rel.trg_ent_id as ent_id,
+			MAX(pat_tbl.crt_utc) as crt_utc,
+			FIRST_NVL(pat_tbl.dob) dob,
+			FIRST_NVL(pat_tbl.dob_prec) dob_prec,
+			FIRST_NVL(pat_tbl.dcsd_utc) dcsd_utc,
+			FIRST_NVL(pat_tbl.dcsd_prec) dcsd_prec,
+			FIRST_NVL(pat_tbl.occ_cd_id) occ_cd_id,
+			FIRST_NVL(pat_tbl.gndr_cd_id) gndr_cd_id,
+			FIRST_NVL(pat_tbl.vip_sts_cd_id) vip_sts_cd_id,
+			FIRST_NVL(pat_tbl.nat_cd_id) nat_cd_id,
+			FIRST_NVL(pat_tbl.mb_ord) mb_ord ,
+			FIRST_NVL(pat_tbl.mrtl_sts_cd_id) mrtl_sts_cd_id ,
+			FIRST_NVL(pat_tbl.edu_lvl_cd_id) edu_lvl_cd_id,
+			FIRST_NVL(pat_tbl.lvn_arg_cd_id) lvn_arg_cd_id ,
+			FIRST_NVL(pat_tbl.tel_val) tel_val,
+			FIRST_NVL(pat_tbl.nam_given) nam_given,
+			FIRST_NVL(pat_tbl.nam_family) nam_family,
+			FIRST_NVL(pat_tbl.adr_line) adr_line,
+			FIRST_NVL(pat_tbl.adr_city) adr_city,
+			FIRST_NVL(pat_tbl.adr_state) adr_state,
+			FIRST_NVL(pat_tbl.adr_country) adr_country,
+			string_agg(distinct pat_tbl.id_val, ',') id_val,
+			
+			FIRST_NVL(mth.dob) mth_dob,
+			FIRST_NVL(mth.dob_prec) mth_dob_prec,
+			FIRST_NVL(mth.dcsd_utc) mth_dcsd_utc,
+			FIRST_NVL(mth.dcsd_prec) mth_dcsd_prec,
+			FIRST_NVL(mth.vip_sts_cd_id) mth_vip_sts_cd_id ,
+			FIRST_NVL(mth.occ_cd_id) mth_occ_cd_id ,
+			FIRST_NVL(mth.nat_cd_id) mth_nat_cd_id ,
+			FIRST_NVL(mth.mrtl_sts_cd_id) mth_mrtl_sts_cd_id ,
+			FIRST_NVL(mth.edu_lvl_cd_id) mth_edu_lvl_cd_id,
+			FIRST_NVL(mth.lvn_arg_cd_id) mth_lvn_arg_cd_id ,
+			FIRST_NVL(mth.tel_val) mth_tel_val,
+			FIRST_NVL(mth.nam_given) mth_nam_given,
+			FIRST_NVL(mth.nam_family) mth_nam_family,
+			FIRST_NVL(mth.adr_line) mth_adr_line,
+			FIRST_NVL(mth.adr_city) mth_adr_city,
+			FIRST_NVL(mth.adr_state) mth_adr_state,
+			FIRST_NVL(mth.adr_country) mth_adr_country,
+			string_agg(distinct mth.id_val, ',') mth_id_val,
+			
+			FIRST_NVL(fth.dob) fth_dob,
+			FIRST_NVL(fth.dob_prec) fth_dob_prec,
+			FIRST_NVL(fth.dcsd_utc) fth_dcsd_utc,
+			FIRST_NVL(fth.dcsd_prec) fth_dcsd_prec,
+            FIRST_NVL(fth.vip_sts_cd_id) fth_vip_sts_cd_id ,
+			FIRST_NVL(fth.occ_cd_id) fth_occ_cd_id ,
+			FIRST_NVL(fth.nat_cd_id) fth_nat_cd_id ,
+			FIRST_NVL(fth.mrtl_sts_cd_id) fth_mrtl_sts_cd_id ,
+			FIRST_NVL(fth.edu_lvl_cd_id) fth_edu_lvl_cd_id,
+			FIRST_NVL(fth.lvn_arg_cd_id) fth_lvn_arg_cd_id ,
+			FIRST_NVL(fth.tel_val) fth_tel_val,
+			FIRST_NVL(fth.nam_given) fth_nam_given,
+			FIRST_NVL(fth.nam_family) fth_nam_family,
+			FIRST_NVL(fth.adr_line) fth_adr_line,
+			FIRST_NVL(fth.adr_city) fth_adr_city,
+			FIRST_NVL(fth.adr_state) fth_adr_state,
+			FIRST_NVL(fth.adr_country) fth_adr_country,
+			string_agg(distinct fth.id_val, ',') fth_id_val,
+			
+			FIRST_NVL(guar.dob) guar_dob,
+			FIRST_NVL(guar.dob_prec) guar_dob_prec,
+			FIRST_NVL(guar.dcsd_utc) guar_dcsd_utc,
+			FIRST_NVL(guar.dcsd_prec) guar_dcsd_prec,
+            FIRST_NVL(guar.vip_sts_cd_id) guar_vip_sts_cd_id ,
+			FIRST_NVL(guar.occ_cd_id) guar_occ_cd_id ,
+			FIRST_NVL(guar.nat_cd_id) guar_nat_cd_id ,
+            FIRST_NVL(guar.mrtl_sts_cd_id) guar_mrtl_sts_cd_id ,
+			FIRST_NVL(guar.edu_lvl_cd_id) guar_edu_lvl_cd_id,
+			FIRST_NVL(guar.lvn_arg_cd_id) guar_lvn_arg_cd_id ,
+			FIRST_NVL(guar.tel_val) guar_tel_val,
+			FIRST_NVL(guar.nam_given) guar_nam_given,
+			FIRST_NVL(guar.nam_family) guar_nam_family,
+			FIRST_NVL(guar.adr_line) guar_adr_line,
+			FIRST_NVL(guar.adr_city) guar_adr_city,
+			FIRST_NVL(guar.adr_state) guar_adr_state,
+			FIRST_NVL(guar.adr_country) guar_adr_country,
+			string_agg(distinct guar.id_val, ',') guar_id_val
+		from 
+			ent_rel_tbl as master_rel
+			left join cte_psn_tbl as pat_tbl on (ent_id = master_rel.src_ent_id)
+			left join ent_rel_tbl as mth_tbl on (mth_tbl.src_ent_id = ent_id and mth_tbl.rel_typ_cd_id = '29FF64E5-B564-411A-92C7-6818C02A9E48' and mth_tbl.obslt_vrsn_seq_id is null)
+			left join ent_rel_tbl as fth_tbl on (fth_tbl.src_ent_id = ent_id and fth_tbl.rel_typ_cd_id = '40D18ECC-8FF8-4E03-8E58-97A980F04060' and fth_tbl.obslt_vrsn_seq_id is null)
+			left join ent_rel_tbl as guar_tbl on (guar_tbl.src_ent_id = ent_id and guar_tbl.rel_typ_cd_id = '3B8E2334-4CCC-4F24-8AAE-37341EA03D3E' and guar_tbl.obslt_vrsn_seq_id is null)
+			left join cte_psn_tbl mth on (mth.ent_id = mth_tbl.trg_ent_id)
+			left join cte_psn_tbl fth on (fth.ent_id = fth_tbl.trg_ent_id)
+			left join cte_psn_tbl guar on (guar.ent_id = guar_tbl.trg_ent_id)
+		where 
+			master_rel.rel_typ_cd_id = '97730a52-7e30-4dcd-94cd-fd532d111578' and master_rel.obslt_vrsn_seq_id is null
+		group by master_rel.trg_ent_id
+			
+		
+            
+		]]>
+		</materialize>
+		<![CDATA[
+			SELECT * 
+			FROM 
+            org_santempi_bi_query_patients
+            WHERE
+                dob BETWEEN COALESCE(${from-date}, '0001-01-01'::DATE) AND COALESCE(${to-date}, CURRENT_DATE + '1 DAY'::INTERVAL)
+                AND gndr_cd_id = COALESCE(${gender}, gndr_cd_id)
+                AND adr_state = COALESCE(${state}, adr_state)
+		]]>
+    </add>
+   
+  </definitions>
+</BiQueryDefinition>

@@ -22,6 +22,71 @@
             </div>
         </div>
     </div>
+    <div class="form-group row">
+        <label
+            class="col-sm-12 col-md-3 control-label">{{ 'ui.model.patient.deceased' | i18n }}</label>
+        <div class="col-sm-12 col-md-9">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">
+                        <input type="checkbox" ng-model="rel.targetModel.deceasedIndicator" />
+                    </label>
+                </div>
+                <input type="date" class="form-control" ng-disabled="!rel.targetModel.deceasedIndicator" ng-model="rel.targetModel.deceasedDate" />
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <label>
+                            <input type="checkbox" ng-disabled="!rel.targetModel.deceasedIndicator" ng-model="rel.targetModel.deceasedDatePrecision"
+                                ng-true-value="4" ng-false-value="10" />
+                            {{ 'ui.model.patient.dateOfBirth.approx' | i18n }}
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <telecom-edit single-edit="'MobileContact'" telecom="rel.targetModel.telecom"/>
     <address-edit control-prefix="'nok' + rel.id" owner-form="panel.editForm" no-add="true" no-type="true" simple-entry="true" address="rel.targetModel.address"/>
+
+    <div class="p-2">
+        <div class="form-group row">
+            <label class="col-sm-12 col-md-3 control-label">
+                {{ 'ui.model.person.occupation' | i18n }}</label>
+            <div class="col-sm-12 col-md-9">
+                <concept-select ng-model="rel.targetModel.occupation"
+                    concept-set="'OccupationType'"
+                    add-concept="['6052712a-340e-4480-ad6b-409ba320db4f','61d8f65c-747e-4a99-982f-a42ac5437473']"
+                    class="form-control" />
+            </div>
+        </div>
+    </div>
+
+    <div class="p-2">
+        <div class="form-group row">
+            <label class="col-sm-12 col-md-3 control-label">
+                {{ 'ui.model.patient.vipStatus' |  i18n }}</label>
+            <div class="col-sm-12 col-md-9">
+                <concept-select ng-model="rel.targetModel.vipStatus"
+                    concept-set="'VeryImportantPersonStatus'"
+                    add-concept="['6052712a-340e-4480-ad6b-409ba320db4f','61d8f65c-747e-4a99-982f-a42ac5437473']"
+                    class="form-control" />
+            </div>
+        </div>
+    </div>
+
+     <!-- BEGIN SENSITIVE FIELDS WHICH MAY BE REMOVED VIA CONFIGURATION -->
+     <div class="p-2" ng-if="$root.system.config.application.setting['allow.patient.nationality']">
+        <div class="form-group row">
+            <label class="col-sm-12 col-md-3 control-label">
+                {{ 'ui.model.person.nationality' | i18n }}</label>
+            <div class="col-sm-12 col-md-9">
+                <concept-select ng-model="rel.targetModel.nationality"
+                    concept-set="'Nationality'"
+                    add-concept="['6052712a-340e-4480-ad6b-409ba320db4f','61d8f65c-747e-4a99-982f-a42ac5437473']"
+                    class="form-control" />
+            </div>
+        </div>
+
+    </div>
 </div>

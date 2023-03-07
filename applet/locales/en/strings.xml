@@ -259,4 +259,16 @@
   <string name="ui.mpi.entity.relationship.mode">Graph Mode</string>
   <string name="ui.mpi.entity.relationship.mode.advanced">Detailed Relationship Diagram</string>
   <string name="ui.mpi.entity.relationship.mode.simple">Simple Relationship Diagram</string>
+
+  <!-- Event Widget -->
+  <string name="org.santedb.widget.patient.reg">Registration Event(s)</string>
+
+  <!-- Reports -->
+  <string name="ui.mpi.bi.reports.full">Full MPI Patient List</string>
+  <string name="ui.mpi.bi.reports.demographics">Demographics List</string>
+  <string name="ui.mpi.bi.reports.matches.demographics">Patient Match Summary Report</string>
+  <string name="ui.mpi.bi.reports.matches.full">Full MDM Match Report</string>
+
+  <string name="ui.mpi.bi.core.dob.to">DOB (To)</string>
+  <string name="ui.mpi.bi.core.dob.from">DOB (From)</string>
 </resources>

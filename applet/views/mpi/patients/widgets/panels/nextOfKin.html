@@ -1,10 +1,16 @@
 <div xmlns="http://www.w3.org/1999/xhtml" xmlns:sdb="http://santedb.org/applet" class="container-fluid p-0"
     oc-lazy-load="{ name: 'MpiPatientNextOfKinController', files: ['/org.santedb.smpi/controllers/widgets/nextOfKin.js', '/org.santedb.smpi/js/mpi.js'] }">
-    <sdb:widget order="15" name="org.santedb.widget.patient.nok" altViews="Edit" headerClass="bl-light" size="Medium"
+    <sdb:widget order="15" name="org.santedb.widget.patient.nok" headerClass="bl-light" size="Medium"
         type="Panel" context="org.santedb.patient.demographics" priority="1">
         <sdb:icon>fas fa-users</sdb:icon>
         <sdb:description lang="en">Patient Family Members</sdb:description>
+        <sdb:views>
+            <sdb:view type="Edit">
+                <sdb:demand>1.3.6.1.4.1.33349.3.1.5.9.2.6.4</sdb:demand>
+            </sdb:view>
+        </sdb:views>
     </sdb:widget>
+
     <div class="row" ng-if="!scopedObject">
         <div class="col">
             <p class="m-auto"><i class="fas fa-circle-notch fa-spin"></i> {{ 'ui.wait' | i18n }}</p>
@@ -31,7 +37,10 @@
         </div>
 
 
-        <ul class="nav nav-tabs" role="tablist" id="demographicEditTabs">
+        <div ng-if="!relationships.length">
+            <i class="fas fa-info-circle"></i> {{ 'ui.table.empty' | i18n }}
+        </div>
+        <ul class="nav nav-tabs" ng-if="relationships.length" role="tablist" id="demographicEditTabs">
             <li class="nav-item" ng-repeat="rel in relationships track by $index" ng-if="!rel._delete" role="presentation">
                 <a class="nav-link" ng-class="{'active': $index == 0}"
                     data-target="#{{rel.relationshipTypeModel.mnemonic}}{{$index}}relative" data-toggle="tab">

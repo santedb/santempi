@@ -2,6 +2,7 @@
 using SanteDB.Core.Configuration.Data;
 using SanteDB.Core.Diagnostics;
 using SanteDB.Core.Services;
+using SanteDB.OrmLite.Migration;
 using SanteMPI.Persistence.ADO.Configuration;
 using SanteMPI.Persistence.ADO.Data.Model;
 using System;
@@ -27,7 +28,19 @@ namespace SanteMPI.Persistence.ADO.Services
         private Tracer m_tracer = Tracer.GetTracer(typeof(AdoNameAliasService));
 
         // Get configuration
-        private AdoConfigurationSection m_configuration = ApplicationServiceContext.Current.GetService<IConfigurationManager>().GetSection<AdoConfigurationSection>();
+        private readonly AdoConfigurationSection m_configuration;
+
+        /// <summary>
+        /// DI constructor
+        /// </summary>
+        public AdoNameAliasService(IConfigurationManager configurationManager)
+        {
+            this.m_configuration = configurationManager.GetSection<AdoConfigurationSection>();
+            // Upgrade the schema
+            this.m_tracer.TraceInfo("Installing SanteMPI Name Aliasing Tables...");
+            this.m_configuration.Provider.UpgradeSchema("SanteMPI.Persistence.Data");
+
+        }
 
         /// <summary>
         /// Get the specified alias for the repository
@@ -39,8 +52,8 @@ namespace SanteMPI.Persistence.ADO.Services
                 name = name.ToLower();
                 using(var dbContext = this.m_configuration.Provider.GetReadonlyConnection())
                 {
-                    return dbContext.Query<DbNameAlias>(o => o.PrimaryName.ToLower() == name)
-                            .Union(dbContext.Query<DbNameAlias>(o => o.Synonym.ToLower() == name))
+                    return dbContext.Query<DbNameAlias>(o => o.PrimaryName.ToUpper() == name)
+                            .Union(dbContext.Query<DbNameAlias>(o => o.Synonym.ToUpper() == name))
                             .Select(o => new ComponentAlias(o.PrimaryName.Equals(name, StringComparison.OrdinalIgnoreCase) ? o.Synonym : o.PrimaryName, o.Strength))
                             .ToList();
                 }
@@ -63,8 +76,8 @@ namespace SanteMPI.Persistence.ADO.Services
                 {
                     var dbNameAlias = new DbNameAlias()
                     {
-                        PrimaryName = name.ToLower(),
-                        Synonym = alias.ToLower(),
+                        PrimaryName = name.ToUpper(),
+                        Synonym = alias.ToUpper(),
                         Strength = (float)weight
                     };
                     dbContext.Insert(dbNameAlias);
@@ -86,7 +99,7 @@ namespace SanteMPI.Persistence.ADO.Services
             {
                 using (var dbContext = this.m_configuration.Provider.GetWriteConnection())
                 {
-                    dbContext.Delete<DbNameAlias>(o => o.PrimaryName.ToLower() == name.ToLower() && o.Synonym.ToLower() == alias.ToLower());
+                    dbContext.DeleteAll<DbNameAlias>(o => o.PrimaryName.ToUpper() == name.ToUpper() && o.Synonym.ToUpper() == alias.ToUpper());
                 }
             }
             catch (Exception e)
@@ -107,7 +120,7 @@ namespace SanteMPI.Persistence.ADO.Services
                 using (var dbContext = this.m_configuration.Provider.GetWriteConnection())
                 {
                     filter = filter.ToLower();
-                    var data = dbContext.Query<DbNameAlias>(o => o.PrimaryName.ToLower().Contains(filter));
+                    var data = dbContext.Query<DbNameAlias>(o => o.PrimaryName.ToUpper().Contains(filter));
                     totalResults = data.Count();
                     return data.Skip(offset).Take(count ?? 100).ToArray().GroupBy(o => o.PrimaryName).ToDictionary(o => o.Key, o => o.Select(c => new ComponentAlias(c.Synonym, c.Strength)).AsEnumerable());
                 }

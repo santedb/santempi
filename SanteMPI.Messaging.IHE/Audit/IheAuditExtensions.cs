@@ -3,8 +3,9 @@ using NHapi.Base.Model;
 using NHapi.Base.Parser;
 using RestSrvr;
 using SanteDB.Core;
+using SanteDB.Core.Security.Audit;
 using SanteDB.Core.Attributes;
-using SanteDB.Core.Auditing;
+using SanteDB.Core.Model.Audit;
 using SanteDB.Core.Security.Audit;
 using SanteDB.Core.Services;
 using SanteDB.Messaging.HL7.Configuration;
@@ -13,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using static Hl7.Fhir.Model.CapabilityStatement;
+using SanteDB.Core.Security;
 
 [assembly: PluginTraceSource("SanteMPI")]
 
@@ -21,7 +23,7 @@ namespace SanteMPI.Messaging.IHE.Audit
     /// <summary>
     /// IHE Audit utility which constructs audits in a manner which matches the ITI
     /// </summary>
-    public static class IheAuditUtil
+    public static class IheAuditExtensions
     {
         /// <summary>
         /// The ITI-8 audit code representing the Patient Identity Feed transaction from the IHE IT Infrastructure Technical Framework.
@@ -64,46 +66,37 @@ namespace SanteMPI.Messaging.IHE.Audit
         private static readonly Hl7ConfigurationSection m_configuration = ApplicationServiceContext.Current.GetService<IConfigurationManager>().GetSection<Hl7ConfigurationSection>();
 
         /// <summary>
-        /// Create an ITI audit event structure.
-        /// </summary>
-        /// <param name="eventIdentifier">The event identifier.</param>
-        /// <param name="actionType">The action type.</param>
-        /// <param name="outcome">The outcome of the operation.</param>
-        /// <param name="eventTypeCode">The event type code.</param>
-        public static AuditData CreateITIAuditEvent(EventIdentifierType eventIdentifier, ActionType actionType, OutcomeIndicator outcome, AuditCode eventTypeCode)
-        {
-            return new AuditData(DateTime.Now, actionType, outcome, eventIdentifier, eventTypeCode);
-        }
-
-        /// <summary>
         /// Send an audit for PDQM
         /// </summary>
-        public static void SendSubscribeToPatientUpdates(OutcomeIndicator outcome, TypeRestfulInteraction interaction, Subscription subscription)
+        public static IAuditBuilder ForSubscribeToPatientUpdate(this IAuditBuilder me, OutcomeIndicator outcome, TypeRestfulInteraction interaction, Subscription subscription)
         {
-            var retVal = CreateITIAuditEvent(EventIdentifierType.ApplicationActivity, ActionType.Execute, outcome, ITI94);
+            me = me.WithEventIdentifier(EventIdentifierType.ApplicationActivity)
+                .WithOutcome(outcome)
+                .WithEventType(ITI94);
 
             switch (interaction)
             {
                 case TypeRestfulInteraction.Create:
-                    retVal.ActionCode = ActionType.Create;
+                    me = me.WithAction(ActionType.Create);
                     break;
 
                 case TypeRestfulInteraction.Delete:
-                    retVal.ActionCode = ActionType.Delete;
+                    me = me.WithAction(ActionType.Delete);
                     break;
 
                 case TypeRestfulInteraction.Update:
-                    retVal.ActionCode = ActionType.Update;
+                    me = me.WithAction(ActionType.Update);
                     break;
 
                 case TypeRestfulInteraction.Read:
-                    retVal.ActionCode = ActionType.Read;
+                    me = me.WithAction(ActionType.Read);
                     break;
             }
 
-            AuditUtil.AddLocalDeviceActor(retVal);
-            AuditUtil.AddUserActor(retVal);
-            retVal.AuditableObjects.Add(new AuditableObject()
+            return me.WithLocalDestination()
+                .WithRemoteSource(RemoteEndpointUtil.Current.GetRemoteClient())
+                .WithPrincipal()
+                .WithAuditableObjects(new AuditableObject()
             {
                 Type = AuditableObjectType.SystemObject,
                 Role = AuditableObjectRole.Query,
@@ -112,30 +105,33 @@ namespace SanteMPI.Messaging.IHE.Audit
                 ObjectId = subscription.Id,
                 QueryData = subscription.Criteria
             });
-
-            AuditUtil.SendAudit(retVal);
         }
 
         /// <summary>
         /// Send an audit for PDQM
         /// </summary>
-        public static void SendAuditPatientMasterIdentityRegistry(OutcomeIndicator outcome, MessageHeader messageHeader, params Patient[] patients)
+        public static IAuditBuilder ForPatientMasterIdentityRegistry(this IAuditBuilder me, OutcomeIndicator outcome, MessageHeader messageHeader, IEnumerable<Patient> patients)
         {
-            var retVal = CreateITIAuditEvent(EventIdentifierType.PatientRecord, ActionType.Execute, outcome, ITI93);
-            AuditUtil.AddLocalDeviceActor(retVal);
-            AuditUtil.AddUserActor(retVal);
+            me = me.WithEventIdentifier(EventIdentifierType.PatientRecord)
+                .WithAction(ActionType.Execute)
+                .WithOutcome(outcome)
+                .WithEventType(ITI93)
+                .WithLocalDestination()
+                .WithRemoteSource(RemoteEndpointUtil.Current.GetRemoteClient())
+                .WithPrincipal();
+
             if (outcome == OutcomeIndicator.Success)
             {
-                retVal.AuditableObjects = patients.Select(o => new AuditableObject()
+                me = me.WithAuditableObjects(patients.Select(o => new AuditableObject()
                 {
                     Type = AuditableObjectType.Person,
                     Role = AuditableObjectRole.Patient,
                     LifecycleType = AuditableObjectLifecycle.Disclosure,
                     IDTypeCode = AuditableObjectIdType.PatientNumber,
                     ObjectId = o.Id
-                }).ToList();
+                }).ToArray());
             }
-            retVal.AuditableObjects.Add(new AuditableObject()
+            return me.WithAuditableObjects(new AuditableObject()
             {
                 Type = AuditableObjectType.SystemObject,
                 Role = AuditableObjectRole.Resource,
@@ -143,30 +139,33 @@ namespace SanteMPI.Messaging.IHE.Audit
                 ObjectId = messageHeader.Id,
                 NameData = messageHeader.Event.ToString()
             });
-
-            AuditUtil.SendAudit(retVal);
         }
 
         /// <summary>
         /// Send audit for patient identity cross reference
         /// </summary>
-        public static void SendAuditPatientIdentityXref(OutcomeIndicator outcome, IMessage request, params SanteDB.Core.Model.Roles.Patient[] results)
+        public static IAuditBuilder ForPatientIdentityXref(this IAuditBuilder me, OutcomeIndicator outcome, IMessage request, IEnumerable< SanteDB.Core.Model.Roles.Patient > results)
         {
-            var retVal = CreateITIAuditEvent(EventIdentifierType.Query, ActionType.Execute, outcome, ITI9);
-            AuditUtil.AddLocalDeviceActor(retVal);
-            AuditUtil.AddUserActor(retVal);
+            me = me.WithEventIdentifier(EventIdentifierType.Query)
+                .WithAction(ActionType.Execute)
+                .WithOutcome(outcome)
+                .WithEventType(ITI9)
+                .WithLocalDestination()
+                .WithRemoteSource(RemoteEndpointUtil.Current.GetRemoteClient())
+                .WithPrincipal();
+
             if (outcome == OutcomeIndicator.Success)
             {
-                retVal.AuditableObjects = results.Select(o => new AuditableObject()
+                me = me.WithAuditableObjects(results.Select(o => new AuditableObject()
                 {
                     Type = AuditableObjectType.Person,
                     Role = AuditableObjectRole.Patient,
                     LifecycleType = AuditableObjectLifecycle.Disclosure,
                     IDTypeCode = AuditableObjectIdType.PatientNumber,
                     ObjectId = String.Join("~", $"{o.Key}^^^{m_configuration.LocalAuthority.DomainName}&{m_configuration.LocalAuthority.Oid}&ISO")
-                }).ToList();
+                }).ToArray());
             }
-            retVal.AuditableObjects.Add(new AuditableObject()
+            return me.WithAuditableObjects(new AuditableObject()
             {
                 Type = AuditableObjectType.SystemObject,
                 Role = AuditableObjectRole.Query,
@@ -179,29 +178,34 @@ namespace SanteMPI.Messaging.IHE.Audit
                 }
             });
 
-            AuditUtil.SendAudit(retVal);
         }
 
         /// <summary>
         /// Send an audit for PDQM
         /// </summary>
-        public static void SendAuditPatientIdentityXrefMobile(OutcomeIndicator outcome, params Patient[] results)
+        public static IAuditBuilder ForPatientIdentityXrefMobile(this IAuditBuilder me, OutcomeIndicator outcome, IEnumerable<Patient> results)
         {
-            var retVal = CreateITIAuditEvent(EventIdentifierType.Query, ActionType.Execute, outcome, ITI83);
-            AuditUtil.AddLocalDeviceActor(retVal);
-            AuditUtil.AddUserActor(retVal);
+            me = me.WithEventIdentifier(EventIdentifierType.Query)
+                .WithAction(ActionType.Execute)
+                .WithOutcome(outcome)
+                .WithEventType(ITI83)
+                .WithLocalDestination()
+                .WithRemoteSource(RemoteEndpointUtil.Current.GetRemoteClient())
+                .WithPrincipal();
+
+
             if (outcome == OutcomeIndicator.Success)
             {
-                retVal.AuditableObjects = results.Select(o => new AuditableObject()
+                me = me.WithAuditableObjects(results.Select(o => new AuditableObject()
                 {
                     Type = AuditableObjectType.Person,
                     Role = AuditableObjectRole.Patient,
                     LifecycleType = AuditableObjectLifecycle.Disclosure,
                     IDTypeCode = AuditableObjectIdType.PatientNumber,
                     ObjectId = o.Id
-                }).ToList();
+                }).ToArray());
             }
-            retVal.AuditableObjects.Add(new AuditableObject()
+            return me.WithAuditableObjects(new AuditableObject()
             {
                 Type = AuditableObjectType.SystemObject,
                 Role = AuditableObjectRole.Query,
@@ -213,20 +217,24 @@ namespace SanteMPI.Messaging.IHE.Audit
                     ).ToList()
             });
 
-            AuditUtil.SendAudit(retVal);
         }
 
         /// <summary>
         /// Send audit for patient identity feed
         /// </summary>
-        public static void SendAuditPatientIdentityFeed(OutcomeIndicator outcome, ActionType action, IMessage request, SanteDB.Core.Model.Roles.Patient patient)
+        public static IAuditBuilder ForPatientIdentityFeed(this IAuditBuilder me, OutcomeIndicator outcome, ActionType action, IMessage request, SanteDB.Core.Model.Roles.Patient patient)
         {
-            var retVal = CreateITIAuditEvent(EventIdentifierType.PatientRecord, action, outcome, ITI8);
-            AuditUtil.AddLocalDeviceActor(retVal);
-            AuditUtil.AddUserActor(retVal);
+            me = me.WithEventIdentifier(EventIdentifierType.PatientRecord)
+                .WithAction(action)
+                .WithOutcome(outcome)
+                .WithEventType(ITI8)
+                .WithLocalDestination()
+                .WithRemoteSource(RemoteEndpointUtil.Current.GetRemoteClient())
+                .WithPrincipal();
+
             if (outcome == OutcomeIndicator.Success)
             {
-                retVal.AuditableObjects.Add(new AuditableObject()
+                me = me.WithAuditableObjects(new AuditableObject()
                 {
                     Type = AuditableObjectType.Person,
                     Role = AuditableObjectRole.Patient,
@@ -239,127 +247,127 @@ namespace SanteMPI.Messaging.IHE.Audit
                 }
                 });
             }
-            AuditUtil.SendAudit(retVal);
+            return me;
         }
 
         /// <summary>
         /// Send audit for patient identity feed
         /// </summary>
-        public static void SendAuditPatientIdentityFeedMerge(OutcomeIndicator outcome, IMessage request, RecordMergeResult recordMergeResult)
+        public static IAuditBuilder ForPatientIdentityFeedMergeUpdate(this IAuditBuilder me, OutcomeIndicator outcome, IMessage request, Guid survivorId)
         {
-            var retVal = CreateITIAuditEvent(EventIdentifierType.PatientRecord, ActionType.Update, outcome, ITI8);
-            AuditUtil.AddLocalDeviceActor(retVal);
-            AuditUtil.AddUserActor(retVal);
-
-            if (outcome == OutcomeIndicator.Success)
-            {
-                retVal.AuditableObjects.Add(new AuditableObject()
+            return me.WithEventIdentifier(EventIdentifierType.PatientRecord)
+                .WithAction(ActionType.Update)
+                .WithOutcome(outcome)
+                .WithEventType(ITI8)
+                .WithLocalDestination()
+                .WithRemoteSource(RemoteEndpointUtil.Current.GetRemoteClient())
+                .WithPrincipal()
+                .WithAuditableObjects(new AuditableObject()
                 {
                     Type = AuditableObjectType.Person,
                     Role = AuditableObjectRole.Patient,
                     LifecycleType = AuditableObjectLifecycle.Amendment,
                     IDTypeCode = AuditableObjectIdType.PatientNumber,
-                    ObjectId = $"{recordMergeResult.Survivors.First()}^^^{m_configuration.LocalAuthority?.DomainName}&{m_configuration.LocalAuthority.Oid}&ISO",
+                    ObjectId = $"{survivorId}^^^{m_configuration.LocalAuthority?.DomainName}&{m_configuration.LocalAuthority.Oid}&ISO",
                     ObjectData = new List<ObjectDataExtension>()
                 {
                     new ObjectDataExtension("MSH-10", Encoding.UTF8.GetBytes((request.GetStructure("MSH") as ISegment).GetField(10).ToString()))
                 }
                 });
-            }
-            AuditUtil.SendAudit(retVal);
 
-            foreach (var r in recordMergeResult.Replaced)
-            {
-                retVal = CreateITIAuditEvent(EventIdentifierType.PatientRecord, ActionType.Delete, outcome, ITI8);
-                AuditUtil.AddLocalDeviceActor(retVal);
-                AuditUtil.AddUserActor(retVal);
-                if (outcome == OutcomeIndicator.Success)
+        }
+
+        /// <summary>
+        /// Create the merge portion of the update
+        /// </summary>
+        public static IAuditBuilder ForPatientIdentityFeedMergeDelete(this IAuditBuilder me, OutcomeIndicator outcome, IMessage request, Guid replacedId)
+        {
+            return me.WithEventIdentifier(EventIdentifierType.PatientRecord)
+                .WithAction(ActionType.Delete)
+                .WithOutcome(outcome)
+                .WithEventType(ITI8)
+                .WithLocalDestination()
+                .WithRemoteSource(RemoteEndpointUtil.Current.GetRemoteClient())
+                .WithPrincipal()
+                .WithAuditableObjects(new AuditableObject()
                 {
-                    retVal.AuditableObjects.Add(new AuditableObject()
-                    {
-                        Type = AuditableObjectType.Person,
-                        Role = AuditableObjectRole.Patient,
-                        LifecycleType = AuditableObjectLifecycle.LogicalDeletion,
-                        IDTypeCode = AuditableObjectIdType.PatientNumber,
-                        ObjectId = $"{r}^^^{m_configuration.LocalAuthority?.DomainName}&{m_configuration.LocalAuthority.Oid}&ISO",
-                        ObjectData = new List<ObjectDataExtension>()
+                    Type = AuditableObjectType.Person,
+                    Role = AuditableObjectRole.Patient,
+                    LifecycleType = AuditableObjectLifecycle.LogicalDeletion,
+                    IDTypeCode = AuditableObjectIdType.PatientNumber,
+                    ObjectId = $"{replacedId}^^^{m_configuration.LocalAuthority?.DomainName}&{m_configuration.LocalAuthority.Oid}&ISO",
+                    ObjectData = new List<ObjectDataExtension>()
                 {
                     new ObjectDataExtension("MSH-10", Encoding.UTF8.GetBytes((request.GetStructure("MSH") as ISegment).GetField(10).ToString()))
                 }
-                    });
-                }
-                AuditUtil.SendAudit(retVal);
-            }
+                });
         }
 
         /// <summary>
         /// Send an audit for PDQM
         /// </summary>
-        public static void SendAuditPatientDemographicsQuery(OutcomeIndicator outcome, IMessage request, params SanteDB.Core.Model.Roles.Patient[] results)
+        public static IAuditBuilder ForPatientDemographicsQuery(this IAuditBuilder me, OutcomeIndicator outcome, IMessage request, IEnumerable<SanteDB.Core.Model.Roles.Patient> results)
         {
-            var retVal = CreateITIAuditEvent(EventIdentifierType.Query, ActionType.Execute, outcome, ITI21);
-            AuditUtil.AddLocalDeviceActor(retVal);
-            AuditUtil.AddUserActor(retVal);
-
-            if (outcome == OutcomeIndicator.Success)
-            {
-                retVal.AuditableObjects = results.Select(o => new AuditableObject()
+            return me.WithEventIdentifier(EventIdentifierType.Query)
+                .WithAction(ActionType.Execute)
+                .WithOutcome(outcome)
+                .WithEventType(ITI21)
+                .WithLocalDestination()
+                .WithRemoteSource(RemoteEndpointUtil.Current.GetRemoteClient())
+                .WithPrincipal()
+                .WithAuditableObjects(results?.Select(o => new AuditableObject()
                 {
                     Type = AuditableObjectType.Person,
                     Role = AuditableObjectRole.Patient,
                     LifecycleType = AuditableObjectLifecycle.Disclosure,
                     IDTypeCode = AuditableObjectIdType.PatientNumber,
                     ObjectId = String.Join("~", $"{o.Key}^^^{m_configuration.LocalAuthority.DomainName}&{m_configuration.LocalAuthority.Oid}&ISO")
-                }).ToList();
-            }
-            retVal.AuditableObjects.Add(new AuditableObject()
-            {
-                Type = AuditableObjectType.SystemObject,
-                Role = AuditableObjectRole.Query,
-                IDTypeCode = AuditableObjectIdType.Custom,
-                CustomIdTypeCode = ITI9,
-                QueryData = new PipeParser().Encode(request),
-                ObjectData = new List<ObjectDataExtension>()
+                }).ToArray())
+                .WithAuditableObjects(new AuditableObject()
+                {
+                    Type = AuditableObjectType.SystemObject,
+                    Role = AuditableObjectRole.Query,
+                    IDTypeCode = AuditableObjectIdType.Custom,
+                    CustomIdTypeCode = ITI9,
+                    QueryData = new PipeParser().Encode(request),
+                    ObjectData = new List<ObjectDataExtension>()
                 {
                     new ObjectDataExtension("MSH-10", Encoding.UTF8.GetBytes((request.GetStructure("MSH") as ISegment).GetField(10).ToString()))
                 }
-            });
-
-            AuditUtil.SendAudit(retVal);
+                });
         }
 
         /// <summary>
         /// Send an audit for PDQM
         /// </summary>
-        public static void SendAuditPatientDemographicsQueryMobile(OutcomeIndicator outcome, params Patient[] results)
+        public static IAuditBuilder ForPatientDemographicsQueryMobile(this IAuditBuilder me, OutcomeIndicator outcome, IEnumerable<Patient> results)
         {
-            var retVal = CreateITIAuditEvent(EventIdentifierType.Query, ActionType.Execute, outcome, ITI78);
-            AuditUtil.AddLocalDeviceActor(retVal);
-            AuditUtil.AddUserActor(retVal);
-            if (outcome == OutcomeIndicator.Success)
-            {
-                retVal.AuditableObjects = results.Select(o => new AuditableObject()
+            return me.WithEventIdentifier(EventIdentifierType.Query)
+                .WithAction(ActionType.Execute)
+                .WithOutcome(outcome)
+                .WithEventType(ITI78)
+                .WithLocalDestination()
+                .WithRemoteSource(RemoteEndpointUtil.Current.GetRemoteClient())
+                .WithPrincipal()
+                .WithAuditableObjects(results?.Select(o => new AuditableObject()
                 {
                     Type = AuditableObjectType.Person,
                     Role = AuditableObjectRole.Patient,
                     LifecycleType = AuditableObjectLifecycle.Disclosure,
                     IDTypeCode = AuditableObjectIdType.PatientNumber,
                     ObjectId = o.Id
-                }).ToList();
-            }
-            retVal.AuditableObjects.Add(new AuditableObject()
-            {
-                Type = AuditableObjectType.SystemObject,
-                Role = AuditableObjectRole.Query,
-                IDTypeCode = AuditableObjectIdType.Custom,
-                CustomIdTypeCode = ITI78,
-                QueryData = RestOperationContext.Current?.IncomingRequest.Url.ToString(),
-                ObjectData = RestOperationContext.Current?.IncomingRequest.Headers.AllKeys.Where(o => o.Equals("accept", StringComparison.OrdinalIgnoreCase)).Select(
+                }).ToArray())
+                .WithAuditableObjects(new AuditableObject()
+                {
+                    Type = AuditableObjectType.SystemObject,
+                    Role = AuditableObjectRole.Query,
+                    IDTypeCode = AuditableObjectIdType.Custom,
+                    CustomIdTypeCode = ITI78,
+                    QueryData = RestOperationContext.Current?.IncomingRequest.Url.ToString(),
+                    ObjectData = RestOperationContext.Current?.IncomingRequest.Headers.AllKeys.Where(o => o.Equals("accept", StringComparison.OrdinalIgnoreCase)).Select(
                     h => new ObjectDataExtension(h, Encoding.UTF8.GetBytes(RestOperationContext.Current?.IncomingRequest.Headers[h]))
                     ).ToList()
-            });
-
-            AuditUtil.SendAudit(retVal);
+                });
         }
     }
 }

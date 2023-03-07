@@ -19,7 +19,7 @@ namespace SanteMPI.i18n {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class ErrorMessages {
@@ -102,6 +102,15 @@ namespace SanteMPI.i18n {
         public static string ERR_ITI93_UNIQUE {
             get {
                 return ResourceManager.GetString("ERR_ITI93_UNIQUE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing parameter for filter function.
+        /// </summary>
+        public static string ERR_MISSING_PARAMETER {
+            get {
+                return ResourceManager.GetString("ERR_MISSING_PARAMETER", resourceCulture);
             }
         }
         

@@ -1,4 +1,7 @@
 ﻿using Hl7.Fhir.Model;
+using SanteDB.Core.Model.Audit;
+using SanteDB.Core.Security;
+using SanteDB.Core.Security.Services;
 using SanteDB.Messaging.FHIR.Extensions;
 using SanteMPI.Messaging.IHE.Audit;
 using System.ComponentModel;
@@ -12,6 +15,16 @@ namespace SanteMPI.Messaging.IHE.FHIR
     [DisplayName("IHE PMIR Subscription Handler")]
     public class SubscribeToPatientUpdateModifier : IFhirRestBehaviorModifier
     {
+        private readonly IAuditService m_auditService;
+
+        /// <summary>
+        /// DI constructor
+        /// </summary>
+        public SubscribeToPatientUpdateModifier(IAuditService auditService)
+        {
+            this.m_auditService = auditService;
+        }
+
         /// <summary>
         /// After request is received
         /// </summary>
@@ -30,7 +43,7 @@ namespace SanteMPI.Messaging.IHE.FHIR
                 
                 if (responseResource is Subscription subscription && subscription.Criteria.StartsWith("Patient"))
                 {
-                    IheAuditUtil.SendSubscribeToPatientUpdates(SanteDB.Core.Auditing.OutcomeIndicator.Success, interaction, subscription);
+                    this.m_auditService.Audit().ForSubscribeToPatientUpdate(OutcomeIndicator.Success, interaction, subscription).Send();
                 }
             }
             return responseResource;

@@ -437,9 +437,9 @@ angular.module('santedb').controller('MpiConfigurationDetailController', ["$scop
                 for (var i = 0; i < maxResults; i += 10) {
 
                     var resultSlice = test.results.slice(i, i + 10);
-                    var resultBatch = await SanteDB.resources.patient.findAsync({ "_id": resultSlice.map(o => o.record) });
+                    var resultBatch = await Promise.all(resultSlice.map(r=>SanteDB.resources.patient.getAsync(r.record)));
                     resultSlice.forEach((r) => {
-                        var patientDetail = resultBatch.resource.find(o => o.id == r.record);
+                        var patientDetail = resultBatch.find(o => o.id == r.record);
                         patientDetail._match = r;
                         resultCollection.push(patientDetail);
                     });

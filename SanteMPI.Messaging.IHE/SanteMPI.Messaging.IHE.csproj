@@ -2,32 +2,20 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>1.0.0</Version>
+    <Version>$(VersionNumber)</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(VersionNumber)' == ''">
-    <VersionNumber>2.1.0-debug</VersionNumber>
+    <VersionNumber>3.0-debug</VersionNumber>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Hl7.Fhir.R4" Version="3.7.0" />
-    <PackageReference Include="SanteDB.Messaging.FHIR" Version="2.2.3" />
-    <PackageReference Include="SanteDB.Messaging.HL7" Version="2.2.3" />
-    <PackageReference Include="SanteDB.Persistence.MDM" Version="2.2.3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\SanteMPI.i18n\SanteMPI.i18n.csproj" />
-  </ItemGroup>
-
   <PropertyGroup>
     <PackageId>SanteMPI.Messaging.IHE</PackageId>
     <Title>SanteMPI.Messaging.IHE</Title>
     <Version>$(VersionNumber)</Version>
-    <Description>SanteMPI Integrating the Health Enterprise (IHE) Messaging Interfaces</Description>
+    <Description>SanteMPI Messaging Functions for IHE</Description>
     <Authors>SanteSuite Contributors</Authors>
     <PackageTags>SanteDB</PackageTags>
-    <RepositoryUrl>https://github.com/santedb/sante-mpi</RepositoryUrl>
+    <RepositoryUrl>https://github.com/santedb/santempi</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
@@ -35,18 +23,28 @@
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Product>SanteDB</Product>
-    <Copyright>Copyright (C) 2015-2021 SanteSuite Contributors (See: NOTICES)</Copyright>
+    <Copyright>Copyright (C) 2015-2022 SanteSuite Contributors (See: NOTICES)</Copyright>
     <Company>SanteSuite Contributors</Company>
     <PackageIconUrl>http://santesuite.org/assets/img/logo.png</PackageIconUrl>
     <PackageProjectUrl>http://santesuite.org</PackageProjectUrl>
-    <RootNamespace>SanteMPI.Messaging.IHE</RootNamespace>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Hl7.Fhir.R4" Version="4.3.0" />
+    <PackageReference Include="SanteDB.Messaging.FHIR" Version="$(VersionNumber)" />
+    <PackageReference Include="SanteDB.Messaging.HL7" Version="$(VersionNumber)" />
+    <PackageReference Include="SanteDB.Persistence.MDM" Version="$(VersionNumber)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SanteMPI.i18n\SanteMPI.i18n.csproj" />
+  </ItemGroup>
+
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <OutputPath>..\bin\release</OutputPath>
+    <OutputPath>..\bin\Release</OutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>..\bin\debug</OutputPath>
+    <OutputPath>..\bin\Debug</OutputPath>
   </PropertyGroup>
 </Project>

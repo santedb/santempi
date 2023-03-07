@@ -2,7 +2,7 @@
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup Condition="'$(VersionNumber)' == ''">
-    <VersionNumber>2.1.0-debug</VersionNumber>
+    <VersionNumber>3.0-debug</VersionNumber>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -47,13 +47,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="SanteDB.Caching.Memory" Version="2.2.3" />
-    <PackageReference Include="SanteDB.Caching.Redis" Version="2.2.3" />
-    <PackageReference Include="SanteDB.Matcher" Version="2.2.3" />
-    <PackageReference Include="SanteDB.Messaging.Atna" Version="2.2.3" />
-    <PackageReference Include="SanteDB.Rest.BIS" Version="2.2.3" />
-    <PackageReference Include="SanteDB.Server" Version="2.2.3" />
-    <PackageReference Include="SanteDB.Server.Plugin" Version="2.2.3" />
+    <PackageReference Include="SanteDB.Caching.Memory" Version="$(VersionNumber)" />
+    <PackageReference Include="SanteDB.Caching.Redis" Version="$(VersionNumber)" />
+    <PackageReference Include="SanteDB.Matcher" Version="$(VersionNumber)" />
+    <PackageReference Include="SanteDB.Messaging.Atna" Version="$(VersionNumber)" />
+    <PackageReference Include="SanteDB.Rest.BIS" Version="$(VersionNumber)" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="config\santempi.fhir.ihe.config.xml">
