@@ -25,7 +25,7 @@ namespace SanteMPI.Messaging.IHE.Test
     public class TestPMIR : DataTest
     {
         // Device secret
-        private readonly byte[] HarnessSecret = System.Text.Encoding.UTF8.GetBytes("TEST_HARNESS");
+        private readonly string HarnessSecret = "I_AM_A_TEAPOT";
 
         // Bundler 
         private IServiceManager m_serviceManager;
@@ -159,18 +159,18 @@ namespace SanteMPI.Messaging.IHE.Test
             using (AuthenticationContext.EnterSystemContext())
             {
                 var idService = ApplicationServiceContext.Current.GetService<IRepositoryService<AssigningAuthority>>();
-                var idDomain = idService.Find(o => o.Url == "http://ohie.org/test/test_block" && o.ObsoletionTime == null, 0, 1, out int total);
-                if (total > 0)
+                var idDomain = idService.Find(o => o.Url == "http://ohie.org/test/test_block" && o.ObsoletionTime == null);
+                if (idDomain.Any())
                 {
                     idService.Obsolete(idDomain.First().Key.Value);
                 }
-                idDomain = idService.Find(o => o.Oid == "1.3.6.1.4.1.52820.3.72.5.9.4" && o.ObsoletionTime == null, 0, 1, out total);
-                if (total > 0)
+                idDomain = idService.Find(o => o.Oid == "1.3.6.1.4.1.52820.3.72.5.9.4" && o.ObsoletionTime == null);
+                if (idDomain.Any())
                 {
                     idService.Obsolete(idDomain.First().Key.Value);
                 }
 
-                // Register via URL 
+                // Register via de   
                 try
                 {
                     var rqo = TestUtil.GetFhirMessage("OHIE-CR-03-10");

@@ -54,7 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Hl7.Fhir.R4">
-      <Version>3.7.0</Version>
+      <Version>3.8.3</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.1</Version>
@@ -181,6 +181,10 @@
     <EmbeddedResource Include="Resources\FHIR\OHIE-CR-08-20.json" />
     <EmbeddedResource Include="Resources\FHIR\OHIE-CR-08-30.json" />
     <None Include="test.runsettings" />
+    <None Include="_pub1.cer" />
+    <None Include="_pub2.cer" />
+    <None Include="_pub3.cer" />
+    <None Include="_pub4.cer" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="MatchConfiguration.xml" />
