@@ -83,22 +83,7 @@ angular.module('santedb').controller('MpiPatientViewController', ["$scope", "$ro
         try {
 
             SanteDB.display.buttonWait("#btnSetState", true);
-
-            // Set the status and update
-            var patch = new Patch({
-                appliesTo: new PatchTarget({
-                    id : $scope.patient.id,
-                    version: $scope.patient.version
-                }),
-                change: [
-                    new PatchOperation({
-                        op: PatchOperationType.Replace,
-                        path: "statusConcept",
-                        value: status
-                    })
-                ]
-            });
-            await SanteDB.resources.entity.patchAsync($stateParams.id, $scope.patient.etag, patch);
+            await setEntityState($scope.patient.id, $scope.patient.etag, status);
             toastr.info(SanteDB.locale.getString("ui.model.patient.saveSuccess"));
             $state.reload();
 
@@ -115,15 +100,10 @@ angular.module('santedb').controller('MpiPatientViewController', ["$scope", "$ro
     // Set the active state
     $scope.setTag = async function (tagName, tagValue) {
         try {
-
             SanteDB.display.buttonWait("#btnClearTag", true);
-
-            var parameters = {};
-            parameters[tagName] = tagValue;
-            await SanteDB.resources.entity.invokeOperationAsync($stateParams.id, "tag", parameters);
+            await setEntityTag($stateParams.id, tagName, tagValue);
             toastr.info(SanteDB.locale.getString("ui.model.patient.saveSuccess"));
             $state.reload();
-
         }
         catch (e) {
             $rootScope.errorHandler(e);
