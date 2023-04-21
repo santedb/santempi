@@ -321,22 +321,11 @@ Source: {#iCDRBase}\bin\Release\SanteDB.Rest.Common.dll; DestDir: {app}; Compone
 Source: {#iCDRBase}\bin\Release\SanteDB.Rest.HDSI.dll; DestDir: {app}; Components: msg\hdsi
 
 ; Common .NET Standard
-Source: {#iCDRBase}\bin\Release\Microsoft.AspNetCore.WebUtilities.dll; DestDir: {app};
-Source: {#iCDRBase}\bin\Release\Microsoft.Bcl.HashCode.dll; DestDir: {app};
-Source: {#iCDRBase}\bin\Release\Microsoft.Extensions.Logging.Abstractions.dll; DestDir: {app};
-Source: {#iCDRBase}\bin\Release\Microsoft.Extensions.Primitives.dll; DestDir: {app};
-Source: {#iCDRBase}\bin\Release\Microsoft.IdentityModel.Abstractions.dll; DestDir: {app};
-Source: {#iCDRBase}\bin\Release\Microsoft.IdentityModel.JsonWebTokens.dll; DestDir: {app};
-Source: {#iCDRBase}\bin\Release\Microsoft.IdentityModel.Logging.dll; DestDir: {app};
-Source: {#iCDRBase}\bin\Release\Microsoft.IdentityModel.Tokens.dll; DestDir: {app};
-Source: {#iCDRBase}\bin\Release\Microsoft.Net.Http.Headers.dll; DestDir: {app};
 Source: {#iCDRBase}\bin\Release\MimeMapping.dll; DestDir: {app};
 Source: {#iCDRBase}\bin\Release\MimeTypesMap.dll; DestDir: {app};
 Source: {#iCDRBase}\bin\Release\Polly.dll; DestDir: {app};
-Source: {#iCDRBase}\bin\Release\Microsoft.Bcl.AsyncInterfaces.dll; DestDir: {app}; 
-Source: {#iCDRBase}\bin\Release\Microsoft.Win32.Primitives.dll; DestDir: {app}; 
-Source: {#iCDRBase}\bin\Release\netstandard.dll; DestDir: {app}; Components: core server
 Source: {#iCDRBase}\bin\Release\System.*.dll; DestDir: {app}; 
+Source: {#iCDRBase}\bin\Release\Microsoft.*.dll; DestDir: {app}; 
 
 Source: ..\bin\release\config\*.*; DestDir: {app}\config; Components: mpi
 Source: ..\bin\release\config\template\*.*; DestDir: {app}\config\template; Components: mpi
