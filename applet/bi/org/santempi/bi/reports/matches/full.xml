@@ -22,6 +22,7 @@
 <BiReportDefinition xmlns="http://santedb.org/bi" 
   id="org.santempi.bi.reports.matches.full" 
   label="ui.mpi.bi.reports.matches.full"
+   status="active"
   name="MDM Export Report">
   <meta>
     <public>true</public>

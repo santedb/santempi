@@ -29,6 +29,7 @@ Justin Fyfe
  -->
 <BiReportDefinition xmlns="http://santedb.org/bi"
     id="org.santempi.bi.reports.full"
+     status="active"
     label="ui.mpi.bi.reports.full">
     <meta>
         <public>true</public>
