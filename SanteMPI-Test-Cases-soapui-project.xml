@@ -23253,9 +23253,9 @@
     <con:properties>
       <con:property>
         <con:name>Token</con:name>
-        <con:value>bjBEKwB77RGi3wJCrBIAAg.KSpslwSRpFzTeSuOE2uBlMhSLVRZ_k5wBjpNPtrmVtc</con:value>
+        <con:value>lODXNsn17RGcQwJCrBMAAg.M-SmgirYH-b8ZiR-TF_WRtG5AdNZxbTzqArmBaTjH9w</con:value>
       </con:property>
-    <con:property><con:name>TestHarnessSid</con:name><con:value>2569af02-7b00-11ed-b9d0-0242ac120002</con:value></con:property><con:property><con:name>TestHarnessASid</con:name><con:value>2714f9ec-7b00-11ed-a2df-0242ac120002</con:value></con:property><con:property><con:name>TestHarnessBSid</con:name><con:value>271a6274-7b00-11ed-9cac-0242ac120002</con:value></con:property></con:properties>
+    <con:property><con:name>TestHarnessSid</con:name><con:value>001e9a02-f5c9-11ed-a801-0242ac130002</con:value></con:property><con:property><con:name>TestHarnessASid</con:name><con:value>2aecb598-f5c9-11ed-a286-0242ac130002</con:value></con:property><con:property><con:name>TestHarnessBSid</con:name><con:value>2af3ee62-f5c9-11ed-87bd-0242ac130002</con:value></con:property></con:properties>
   </con:testSuite>
   <con:restMockService id="3ad92989-3d79-4a44-baf8-2f18cf469623" port="8989" path="/" host="localhost" name="FHIR Mock Service" docroot="">
     <con:settings/>
