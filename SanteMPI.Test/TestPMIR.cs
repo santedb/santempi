@@ -158,16 +158,16 @@ namespace SanteMPI.Messaging.IHE.Test
 
             using (AuthenticationContext.EnterSystemContext())
             {
-                var idService = ApplicationServiceContext.Current.GetService<IRepositoryService<AssigningAuthority>>();
+                var idService = ApplicationServiceContext.Current.GetService<IRepositoryService<IdentityDomain>>();
                 var idDomain = idService.Find(o => o.Url == "http://ohie.org/test/test_block" && o.ObsoletionTime == null);
                 if (idDomain.Any())
                 {
-                    idService.Obsolete(idDomain.First().Key.Value);
+                    idService.Delete(idDomain.First().Key.Value);
                 }
                 idDomain = idService.Find(o => o.Oid == "1.3.6.1.4.1.52820.3.72.5.9.4" && o.ObsoletionTime == null);
                 if (idDomain.Any())
                 {
-                    idService.Obsolete(idDomain.First().Key.Value);
+                    idService.Delete(idDomain.First().Key.Value);
                 }
 
                 // Register via de   

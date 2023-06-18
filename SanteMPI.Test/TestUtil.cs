@@ -7,7 +7,6 @@ using NHapi.Model.V25.Segment;
 using NUnit.Framework;
 using SanteDB;
 using SanteDB.Core;
-using SanteDB.Core.Model;
 using SanteDB.Core.Model.DataTypes;
 using SanteDB.Core.Model.Security;
 using SanteDB.Core.Security;
@@ -62,7 +61,7 @@ namespace SanteMPI.Messaging.IHE.Test
         {
             using (AuthenticationContext.EnterSystemContext())
             {
-                var results = ApplicationServiceContext.Current.GetService<IRepositoryService<Patient>>().Find(o => o.Identifiers.Any(i => i.Authority.DomainName == authority && i.Value == identifier));
+                var results = ApplicationServiceContext.Current.GetService<IRepositoryService<Patient>>().Find(o => o.Identifiers.Any(i => i.IdentityDomain.DomainName == authority && i.Value == identifier));
                 Assert.AreEqual(1, results.Count());
             }
         }
@@ -88,9 +87,9 @@ namespace SanteMPI.Messaging.IHE.Test
             // Create the test harness device / application
             var securityDevService = ApplicationServiceContext.Current.GetService<IRepositoryService<SecurityDevice>>();
             var securityAppService = ApplicationServiceContext.Current.GetService<IRepositoryService<SecurityApplication>>();
-            var metadataService = ApplicationServiceContext.Current.GetService<IAssigningAuthorityRepositoryService>();
+            var metadataService = ApplicationServiceContext.Current.GetService<IIdentityDomainRepositoryService>();
             var policyInfoService = ApplicationServiceContext.Current.GetService<IPolicyInformationService>();
-            var certIdService = ApplicationServiceContext.Current.GetService<ICertificateIdentityProvider>();
+            var certIdService= ApplicationServiceContext.Current.GetService<ICertificateIdentityProvider>();
             var devIdService = ApplicationServiceContext.Current.GetService<IDeviceIdentityProviderService>();
             var appIdService = ApplicationServiceContext.Current.GetService<IApplicationIdentityProviderService>();
 
@@ -102,31 +101,19 @@ namespace SanteMPI.Messaging.IHE.Test
                     var device = devIdService.GetIdentity(pubId);
                     if (device == null && authenticationCertificate != null)
                     {
-                        var nd = new SecurityDevice
-                        {
-                            DeviceSecret = Guid.NewGuid().ToString(),
-                            Name = $"{applicationName}|TEST"
-                        };
-                        nd.AddPolicy(PermissionPolicyIdentifiers.LoginAsService);
-                        securityDevService.Insert(nd);
-                        device = devIdService.GetIdentity(pubId);
+                        device = devIdService.CreateIdentity(pubId, Guid.NewGuid().ToString(), AuthenticationContext.Current.Principal);
                         policyInfoService.AddPolicies(device, PolicyGrantType.Grant, AuthenticationContext.Current.Principal, PermissionPolicyIdentifiers.LoginAsService);
                         certIdService.AddIdentityMap(device, authenticationCertificate, AuthenticationContext.Current.Principal);
                     }
 
                     // Application
-                    var app = securityAppService.Find(o => o.Name == applicationName).FirstOrDefault();
+                    var app = appIdService.GetIdentity(applicationName);
                     if (app == null)
                     {
-                        app = new SecurityApplication
-                        {
-                            Name = applicationName,
-                            ApplicationSecret = applicationSecret
-                        };
-                        app.AddPolicy(PermissionPolicyIdentifiers.LoginAsService);
-                        app.AddPolicy(PermissionPolicyIdentifiers.UnrestrictedClinicalData);
-                        app.AddPolicy(PermissionPolicyIdentifiers.UnrestrictedMetadata);
-                        app = securityAppService.Insert(app);
+
+                        app = appIdService.CreateIdentity(applicationName, applicationSecret, AuthenticationContext.Current.Principal);
+                        policyInfoService.AddPolicies(app, PolicyGrantType.Grant, AuthenticationContext.Current.Principal, PermissionPolicyIdentifiers.LoginAsService, PermissionPolicyIdentifiers.UnrestrictedClinicalData, PermissionPolicyIdentifiers.UnrestrictedMetadata);
+
                     }
                 }
 
@@ -134,23 +121,33 @@ namespace SanteMPI.Messaging.IHE.Test
                 var aa = metadataService.Get(nsid);
                 if (aa == null)
                 {
-                    aa = new AssigningAuthority(nsid, nsid, oid)
+                    aa = new IdentityDomain(nsid, nsid, oid)
                     {
+                        AssigningAuthority = new System.Collections.Generic.List<AssigningAuthority>(),
                         IsUnique = true,
                         Url = url
                     };
                     if (!String.IsNullOrEmpty(applicationName))
                     {
-                        aa.AssigningApplicationKey = securityAppService.Find(o => o.Name == applicationName).FirstOrDefault().Key;
+                        aa.AssigningAuthority.Add(new AssigningAuthority()
+                        {
+                            AssigningApplicationKey = appIdService.GetSid(applicationName)
+                        });
                     }
                     metadataService.Insert(aa);
                 }
                 else
                 {
-                    var sid = securityAppService.Find(o => o.Name == applicationName)?.FirstOrDefault().Key;
-                    aa.AssigningApplicationKey = sid;
-                    aa.Url = url;
-                    metadataService.Save(aa);
+                    var sid = appIdService.GetSid(applicationName);
+                    if (!aa.LoadProperty(o => o.AssigningAuthority).Any(r => r.AssigningApplicationKey == sid))
+                    {
+                        aa.AssigningAuthority.Add(new AssigningAuthority()
+                        {
+                            AssigningApplicationKey = sid
+                        });
+                        aa.Url = url;
+                        metadataService.Save(aa);
+                    }
                 }
             }
         }
