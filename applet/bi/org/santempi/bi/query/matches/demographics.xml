@@ -19,8 +19,8 @@
  - User: Justin Fyfe
  - Date: 2019-12-16
  -->
-<BiQueryDefinition xmlns="http://santedb.org/bi" id="org.santempi.bi.query.matches.demographics" label="ui.mpi.bi.query.matches.demographics">
-  <meta status="active">
+<BiQueryDefinition xmlns="http://santedb.org/bi" id="org.santempi.bi.query.matches.demographics" label="ui.mpi.bi.query.matches.demographics"  status="active">
+  <meta>
     <authors>
       <add>Justin Fyfe (Fyfe Software Inc.) &lt;justin@fyfesoftware.ca></add>
     </authors>
