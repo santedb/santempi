@@ -19,7 +19,8 @@
  - User: Justin Fyfe
  - Date: 2019-12-16
  -->
-<BiReportDefinition xmlns="http://santedb.org/bi" id="org.santempi.bi.reports.matches.demographics" label="ui.mpi.bi.reports.matches.demographics">
+<BiReportDefinition xmlns="http://santedb.org/bi" id="org.santempi.bi.reports.matches.demographics" label="ui.mpi.bi.reports.matches.demographics"
+name="Patient Matches with Demographics">
   <meta>
     <public>true</public>
     <authors>

@@ -15684,7 +15684,7 @@
             <con:encoding>UTF-8</con:encoding>
             <con:endpoint>http://localhost:8080</con:endpoint>
             <con:request><![CDATA[
-              <Bundle xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://santedb.org/model">
+<Bundle xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://santedb.org/model">
   <!-- TEST -->
   <resource xsi:type="IdentityDomain">
       <id>EFFC4322-948D-4986-A06C-DA603A77EDDE</id>
