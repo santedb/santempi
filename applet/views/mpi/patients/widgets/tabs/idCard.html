@@ -3,7 +3,6 @@
     <sdb:widget name="ui.mpi.widgets.patient.card" size="Medium" type="Tab" context="org.santedb.patient" order="110">
         <sdb:icon>fas fa-qrcode</sdb:icon>
         <sdb:description lang="en">Patient Demographics Widget Tab</sdb:description>
-        <sdb:guard>scopedObject.barcodeUrl</sdb:guard>
     </sdb:widget>
 
     <div class="can-print print-only">
@@ -13,7 +12,7 @@
                 </caption>
                 <tr>
                     <td colspan="2" align="center" class="bg-light">
-                        <img  class="m-auto" src="{{scopedObject.barcodeUrl}}" style="height:432px; width:432px" />
+                        <img  class="m-auto" id="printBarcodeUrl" style="height:432px; width:432px" />
                     </td>
                 </tr>
                 <tr>
@@ -42,12 +41,12 @@
         </div>
     </div>
 
-    <table class="table" ng-controller="MpiIdCardWidgetController">
+    <table class="table" ng-controller="MpiIdCardWidgetController" >
         
         <tbody>
             <tr>
                 <td width="35%" rowspan="4" align="center" class="bg-light">
-                    <img ng-if="scopedObject.barcodeUrl" class="m-auto" src="{{scopedObject.barcodeUrl}}" style="height:432px; width:432px" />
+                    <img class="m-auto" id="displayBarcodeUrl" style="height:432px; width:432px" />
                     <br/> {{ 'ui.mpi.vrp.title' | i18n }}
                 </td>
                 <td width="65%">
