@@ -25,8 +25,8 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
 
     var defaultSearch = {
         advanced: {
-            name: [new EntityName()],
-            address: [new EntityAddress()],
+            name: { $other : [  new EntityName() ] },
+            address: { $other : [ new EntityAddress() ]},
             dateOfBirth: {
                 from: null,
                 to: null
@@ -62,14 +62,17 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
         if (!$scope.search._advanced) return false;
 
         var fields = 0, advanced = $scope.search.advanced;
-        var address = (advanced.address.$other[0].component || {});
-        var name = (advanced.name.$other[0].component || {});
-        if (name.Given || name.Family) fields++;
-        if (advanced.identifier) fields += 3; // identifier= pass
-        if (address.City || address.State || address.StreetAddressLine || address.County) fields++;
+        if (advanced.name && advanced.name.$other) {
+            var name = (advanced.name.$other[0].component || {});
+            if (name.Given || name.Family) fields++;
+        }
+        if (advanced.address && advanced.address.$other) {
+            var address = (advanced.address.$other[0].component || {});
+            if (advanced.identifier) fields += 3; // identifier= pass
+            if (address.City || address.State || address.StreetAddressLine || address.County) fields++;
+        }
         if (advanced.genderConcept) fields++;
         if (advanced.dateofBirth && (advanced.dateOfBirth.from || advanced.dateOfBirth.to)) fields++;
-
         return fields >= 1;
     }
 
@@ -145,21 +148,21 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
                 // Query 
                 if (advanced.name.$other[0].component) {
                     if (advanced.name.$other[0].component.Given)
-                        queryObject["name.component[Given].value"] = makeSearchClause(advanced.name.$other[0].component.Given);
+                        queryObject["name.component[Given].value"] = makeSearchClause(advanced.name.$other[0].component.Given[0]);
                     if (advanced.name.$other[0].component.Family)
-                        queryObject["name.component[Family].value"] = makeSearchClause(advanced.name.$other[0].component.Family);
+                        queryObject["name.component[Family].value"] = makeSearchClause(advanced.name.$other[0].component.Family[0]);
                 }
                 if (advanced.address.$other[0].component) {
                     if (advanced.address.$other[0].component.City)
-                        queryObject["address.component[City].value"] = makeSearchClause(advanced.address.$other[0].component.City);
+                        queryObject["address.component[City].value"] = makeSearchClause(advanced.address.$other[0].component.City[0]);
                     if (advanced.address.$other[0].component.County)
-                        queryObject["address.component[County].value"] = makeSearchClause(advanced.address.$other[0].component.County);
+                        queryObject["address.component[County].value"] = makeSearchClause(advanced.address.$other[0].component.County[0]);
                     if (advanced.address.$other[0].component.State)
-                        queryObject["address.component[State].value"] = makeSearchClause(advanced.address.$other[0].component.State);
+                        queryObject["address.component[State].value"] = makeSearchClause(advanced.address.$other[0].component.State[0]);
                     if (advanced.address.$other[0].component.Country)
-                        queryObject["address.component[Country].value"] = makeSearchClause(advanced.address.$other[0].component.Country);
+                        queryObject["address.component[Country].value"] = makeSearchClause(advanced.address.$other[0].component.Country[0]);
                     if (advanced.address.$other[0].component.StreetAddressLine)
-                        queryObject["address.component[StreetAddressLine].value"] = makeSearchClause(advanced.address.$other[0].component.StreetAddressLine);
+                        queryObject["address.component[StreetAddressLine].value"] = makeSearchClause(advanced.address.$other[0].component.StreetAddressLine[0]);
                 }
                 if (advanced.identifier)
                     queryObject["identifier.value"] = makeSearchClause(advanced.identifier);

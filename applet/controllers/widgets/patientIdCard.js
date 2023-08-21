@@ -4,7 +4,9 @@ angular.module("santedb").controller("MpiIdCardWidgetController", ["$scope", "$r
 
     $scope.$watch("scopedObject", async function (n, o) {
         if (n && n.id) {
-            n.barcodeUrl = `/hdsi/Patient/${n.id}/_code?_format=santedb-vrp`;
+            var barcodeUrl = `/hdsi/Patient/${n.id}/_code?_format=santedb-vrp`;
+            $("#printBarcodeUrl").attr("src", barcodeUrl);
+            $("#displayBarcodeUrl").attr("src", barcodeUrl);
         }
     });
 
@@ -16,7 +18,6 @@ angular.module("santedb").controller("MpiIdCardWidgetController", ["$scope", "$r
     $scope.showFull = function () {
         $(".id-card-print").removeClass("d-none id-card-fade id-card-fadeOut").addClass("id-card-fade id-card-fadeIn").addClass("d-block");
     }
-
 
     $scope.print = function () {
         SanteDB.application.printView();

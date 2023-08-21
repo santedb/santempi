@@ -29,7 +29,7 @@ Justin Fyfe
  -->
 <BiReportDefinition xmlns="http://santedb.org/bi"
     id="org.santempi.bi.reports.full"
-     status="active"
+    name="Full MPI Patient Report"
     label="ui.mpi.bi.reports.full">
     <meta>
         <public>true</public>
@@ -37,7 +37,6 @@ Justin Fyfe
             <add>Justin Fyfe (Fyfe Software Inc.) &lt;justin@fyfesoftware.ca></add>
         </authors>
         <annotation>
-            <public>true</public>
             <div xmlns="http://www.w3.org/1999/xhtml">
                 <p>Full export of all patients in the MPI</p>
             </div>

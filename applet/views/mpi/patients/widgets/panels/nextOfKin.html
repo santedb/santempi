@@ -37,10 +37,10 @@
         </div>
 
 
-        <div ng-if="!relationships.length">
+        <div ng-if="!relationships.length &amp;&amp; panel.view != 'Edit'">
             <i class="fas fa-info-circle"></i> {{ 'ui.table.empty' | i18n }}
         </div>
-        <ul class="nav nav-tabs" ng-if="relationships.length" role="tablist" id="demographicEditTabs">
+        <ul class="nav nav-tabs" ng-if="relationships.length || panel.view == 'Edit'" role="tablist" id="demographicEditTabs">
             <li class="nav-item" ng-repeat="rel in relationships track by $index" ng-if="!rel._delete" role="presentation">
                 <a class="nav-link" ng-class="{'active': $index == 0}"
                     data-target="#{{rel.relationshipTypeModel.mnemonic}}{{$index}}relative" data-toggle="tab">
