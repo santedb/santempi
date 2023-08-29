@@ -163,9 +163,9 @@ Source: {#iCDRBase}\bin\release\data\*.dataset; DestDir: {app}\data; Components:
 Source: {#iCDRBase}\bin\release\applets\*.pak; DestDir: {app}\applets; Components: server
 
 ; Tools
-Source: {#iCDRBase}\santedb-tools\bin\Release\net4.8\sdbac.exe; DestDir: {app}; Components: tools
-Source: {#iCDRBase}\santedb-tools\bin\Release\net4.8\sdbac.exe.config; DestDir: {app}; Components: tools
-Source: {#iCDRBase}\santedb-tools\bin\Release\net4.8\SanteDB.AdminConsole.Api.dll; DestDir: {app}; Components: tools
+Source: {#iCDRBase}\santedb-tools\bin\Release\sdbac.exe; DestDir: {app}; Components: tools
+Source: {#iCDRBase}\santedb-tools\bin\Release\sdbac.exe.config; DestDir: {app}; Components: tools
+Source: {#iCDRBase}\santedb-tools\bin\Release\SanteDB.AdminConsole.Api.dll; DestDir: {app}; Components: tools
 Source: {#iCDRBase}\bin\Release\SanteDB.exe.config; DestDir: {app}; DestName: sdbac.exe.config; Components: tools
 Source: {#iCDRBase}\bin\Release\Mono.Posix.dll; DestDir: {app}; Components: core
 
