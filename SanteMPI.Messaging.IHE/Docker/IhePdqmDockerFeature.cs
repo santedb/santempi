@@ -49,7 +49,7 @@ namespace SanteMPI.Messaging.IHE.Docker
             {
                 fhirConfig.BehaviorModifiers = new List<TypeReferenceConfiguration>()
                 {
-                    new TypeReferenceConfiguration(typeof(PatientIdentityCrossReferenceMobileOperation))
+                    new TypeReferenceConfiguration(typeof(PatientDemographicsQueryModifier))
                 };
             }
 

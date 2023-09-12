@@ -63,7 +63,7 @@ namespace SanteMPI.Messaging.IHE.FHIR
                         }
 
                         // Get domains
-                        var domainsToReturn = whatDomains.Split(',').Select(o => o.Split('|')).Where(o => o.Length == 1 || String.IsNullOrEmpty(o[1])).Select(o => o[0]);
+                        var domainsToReturn = whatDomains.Split(',').Select(o => o.Split('|')).Where(o => o.Length == 2 && String.IsNullOrEmpty(o[1])).Select(o => o[0]);
                         if (!domainsToReturn.Any())
                         {
                             return responseResource;
