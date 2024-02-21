@@ -48,7 +48,16 @@
           </select>
         </add>
       </aggregations>
-      <pivot key="date_of_match" columnDef="type" fn="sum" value="n"/>
+      <pivot key="date_of_match" columnDef="type" fn="sum" value="n">
+        <columns>
+          <add>date_of_match</add>
+          <add>MasterSystemLink</add>
+          <add>MasterAutomagicLink</add>
+          <add>MasterVerified</add>
+          <add>DuplicateAutomagicLink</add>
+          <add>IgnoreCandidateRecord</add>
+        </columns>
+        </pivot>
     </view>
   </dataSources>
   <views>

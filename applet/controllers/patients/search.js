@@ -40,7 +40,7 @@ angular.module('santedb').controller('MpiPatientSearchController', ["$scope", "$
 
     // Convert value to a search clause
     function makeSearchClause(value) {
-        if (value == "") {
+        if (value == "" || !value) {
             return null;
         }
         else if (value[0] == '~') // sound

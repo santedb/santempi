@@ -103,3 +103,6 @@ async function attachCandidateAsync(recordA, recordB) {
 if(!SanteDB.application.getResourceViewer("Patient")) {
     SanteDB.application.addResourceViewer("Patient", function(state, parms) { state.transitionTo("santedb-admin.mpi.patients.view", parms); return true; });
 }
+if(!SanteDB.application.getResourceViewer("Match")) {
+    SanteDB.application.addResourceViewer("Match", function(state, parms) { state.transitionTo("santedb-admin.mpi.matches.view", parms); return true; });
+}
