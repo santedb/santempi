@@ -19,7 +19,7 @@
  - User: Justin Fyfe
  - Date: 2019-12-16
  -->
-<BiReportDefinition xmlns="http://santedb.org/bi" id="org.santempi.bi.reports.matches.date" label="ui.mpi.bi.reports.matches.date">
+<BiReportDefinition xmlns="http://santedb.org/bi" id="org.santempi.bi.reports.matches.date" label="ui.mpi.bi.reports.matches.date"  status="active">
   <meta>
     <authors>
       <add>Justin Fyfe (Fyfe Software Inc.) &lt;justin@fyfesoftware.ca></add>
@@ -48,7 +48,16 @@
           </select>
         </add>
       </aggregations>
-      <pivot key="date_of_match" columnDef="type" fn="sum" value="n"/>
+      <pivot key="date_of_match" columnDef="type" fn="sum" value="n">
+        <columns>
+          <add>date_of_match</add>
+          <add>MasterSystemLink</add>
+          <add>MasterAutomagicLink</add>
+          <add>MasterVerified</add>
+          <add>DuplicateAutomagicLink</add>
+          <add>IgnoreCandidateRecord</add>
+        </columns>
+        </pivot>
     </view>
   </dataSources>
   <views>

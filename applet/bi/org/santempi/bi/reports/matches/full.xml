@@ -19,14 +19,20 @@
  - User: Justin Fyfe
  - Date: 2019-12-16
  -->
-<BiReportDefinition xmlns="http://santedb.org/bi" id="org.santempi.bi.reports.matches.full" label="ui.mpi.bi.reports.matches.full">
+<BiReportDefinition xmlns="http://santedb.org/bi" 
+  id="org.santempi.bi.reports.matches.full" 
+  label="ui.mpi.bi.reports.matches.full"
+   status="active"
+  name="MDM Export Report">
   <meta>
+    <public>true</public>
     <authors>
       <add>Justin Fyfe (Fyfe Software Inc.) &lt;justin@fyfesoftware.ca></add>
     </authors>
     <annotation>
+      <public>true</public>
       <div xmlns="http://www.w3.org/1999/xhtml">
-        <p>Full MDM dump  with demographics</p>
+        <p>Full export of all MDM data  with demographics</p>
       </div>
     </annotation>
   </meta>

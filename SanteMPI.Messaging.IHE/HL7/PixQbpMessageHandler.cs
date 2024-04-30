@@ -1,10 +1,10 @@
 ﻿using NHapi.Base.Model;
 using NHapi.Model.V25.Message;
-using NHapi.Model.V25.Segment;
-using SanteDB.Core;
-using SanteDB.Core.Auditing;
 using SanteDB.Core.Model;
+using SanteDB.Core.Model.Audit;
 using SanteDB.Core.Model.Roles;
+using SanteDB.Core.Security;
+using SanteDB.Core.Security.Services;
 using SanteDB.Core.Services;
 using SanteDB.Messaging.HL7.Messages;
 using SanteDB.Messaging.HL7.ParameterMap;
@@ -16,8 +16,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SanteMPI.Messaging.IHE.HL7
 {
@@ -27,11 +25,14 @@ namespace SanteMPI.Messaging.IHE.HL7
     [DisplayName("SanteMPI IHE PIX ITI-9 QBP Handler")]
     public class PixQbpMessageHandler : QbpMessageHandler
     {
+        private readonly IAuditService m_auditService;
+
         /// <summary>
         /// DI injected handler
         /// </summary>
-        public PixQbpMessageHandler(ILocalizationService localizationService) : base(localizationService)
+        public PixQbpMessageHandler(ILocalizationService localizationService, IAuditService auditService) : base(localizationService, auditService)
         {
+            this.m_auditService = auditService;
         }
 
         /// <summary>
@@ -61,18 +62,18 @@ namespace SanteMPI.Messaging.IHE.HL7
         /// </summary>
         protected override void SendAuditQuery(OutcomeIndicator success, IMessage message, IEnumerable<IdentifiedData> results)
         {
-            IheAuditUtil.SendAuditPatientIdentityXref(success, message, results?.OfType<Patient>().ToArray());
+            this.m_auditService.Audit().ForPatientIdentityXref(success, message, results?.OfType<Patient>()).Send();
         }
 
         /// <summary>
         /// Create query response for the data according to ITI-9
         /// </summary>
-        protected override IMessage CreateQueryResponse(Hl7MessageReceivedEventArgs request, Expression filter, Hl7QueryParameterType map, IEnumerable results, Guid queryId, int offset, int count, int totalResults)
+        protected override IMessage CreateQueryResponse(Hl7MessageReceivedEventArgs request, Expression filter, Hl7QueryParameterType map, Array results, Guid queryId, int offset, int count, int totalResults)
         {
             var retVal = base.CreateQueryResponse(request, filter, map, results, queryId, offset, count, totalResults) as RSP_K23;
 
             // CASE 3: Domains are recognized but no results
-            if (results.OfType<Patient>().Count() == 0)
+            if (results?.OfType<Patient>().Count() == 0)
             {
                 retVal.MSA.AcknowledgmentCode.Value = "AE";
                 retVal.MSA.TextMessage.Value = "Query Error";
@@ -85,6 +86,9 @@ namespace SanteMPI.Messaging.IHE.HL7
                 retVal.ERR.HL7ErrorCode.Identifier.Value = "204";
                 retVal.ERR.HL7ErrorCode.Text.Value = "Unknown Key Identifier";
             }
+
+            // Fiter on what domains returned
+
 
             return retVal;
         }

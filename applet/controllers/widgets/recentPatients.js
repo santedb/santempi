@@ -46,13 +46,13 @@ angular.module('santedb').controller('recentPatientsController', ["$scope", "$ro
 
     $scope.renderIdentifier = function(patient) {
 
-        var preferred = $rootScope.system.config.application.setting['aa.preferred'];
-
+        var preferred = SanteDB.configuration.getAppSetting('aa.preferred');
+        
         var retVal = "";
         if(patient.identifier) {
             Object.keys(patient.identifier).forEach(function(id) {
                 if(preferred && id == preferred || !preferred)
-                    retVal += `${patient.identifier[id][0].value} <span class="badge badge-dark">${ patient.identifier[id][0].authority ? patient.identifier[id][0].authority.name : id }</span> ,`;
+                    retVal += `${patient.identifier[id][0].value} <span class="badge badge-dark">${ patient.identifier[id][0].domainModel ? patient.identifier[id][0].domainModel.name : id }</span> ,`;
             });
         }
         else retVal += "N/A ";

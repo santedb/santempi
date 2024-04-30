@@ -19,8 +19,8 @@
  - User: Justin Fyfe
  - Date: 2019-12-16
  -->
-<BiQueryDefinition xmlns="http://santedb.org/bi" id="org.santempi.bi.query.matches.demographics" label="ui.mpi.bi.query.matches.demographics">
-  <meta status="active">
+<BiQueryDefinition xmlns="http://santedb.org/bi" id="org.santempi.bi.query.matches.demographics" label="ui.mpi.bi.query.matches.demographics"  status="active">
+  <meta>
     <authors>
       <add>Justin Fyfe (Fyfe Software Inc.) &lt;justin@fyfesoftware.ca></add>
     </authors>
@@ -45,7 +45,7 @@
 		select ent_id, id_val, nsid 
 		from 
 			ent_id_tbl
-			inner join asgn_aut_tbl using (aut_id)
+			inner join id_dmn_tbl using (dmn_id)
 		where 
 			obslt_vrsn_seq_id is null
 	), 
@@ -59,8 +59,7 @@
 			string_agg(case when typ_cd_id = '48B2FFB3-07DB-47BA-AD73-FC8FB8502471' then val end , ' ') as adr_country,
 			string_agg(case when typ_cd_id = '8CF4B0B0-84E5-4122-85FE-6AFA8240C218' then val end , ' ') as adr_state		
 		from 
-			ent_addr_cmp_val_tbl
-			inner join ent_addr_cmp_tbl using (val_seq_id)
+			ent_addr_cmp_tbl 
 			inner join ent_addr_tbl using (addr_id)
 			inner join cd_vrsn_tbl on (cd_id = ent_addr_tbl.use_cd_id and obslt_utc is null)
 		where 
@@ -76,8 +75,7 @@
 			string_agg(case when typ_cd_id = '2F64BDE2-A696-4B0A-9690-B21EBD7E5092' then val end, ' ') as nam_given,
 			string_agg(case when typ_cd_id = '29B98455-ED61-49F8-A161-2D73363E1DF0' then val end, ' ') as nam_family
 		from 
-			phon_val_tbl 
-			inner join ent_name_cmp_tbl using (val_seq_id)
+			ent_name_cmp_tbl 
 			inner join ent_name_tbl using (name_id)
 		where 
 			obslt_vrsn_seq_id is null
@@ -94,7 +92,7 @@
 			sec_app_tbl.app_pub_id as source_app,
 			ent_vrsn_tbl.crt_utc as crt_utc,
 			psn_tbl.dob,
-			pat_tbl.dcsd_utc,
+			psn_tbl.dcsd_utc,
 			gender.mnemonic as gender,
 			string_agg(distinct nam_given , ' ') as nam_given,
 			string_agg(distinct nam_family, ' ') as nam_family,
@@ -186,7 +184,7 @@ with cte_id_tbl as (
 	select ent_id, id_val, nsid 
 	from 
 		ent_id_tbl
-		inner join asgn_aut_tbl using (aut_id)
+		inner join id_dmn_tbl using (dmn_id)
 	where 
 		obslt_vrsn_seq_id is null
 ), cte_addr_tbl as (
@@ -198,8 +196,7 @@ with cte_id_tbl as (
 		list(case when typ_cd_id =  char_to_uuid('48B2FFB3-07DB-47BA-AD73-FC8FB8502471') then val end , ' ') as adr_country,
 		list(case when typ_cd_id =  char_to_uuid('8CF4B0B0-84E5-4122-85FE-6AFA8240C218') then val end , ' ') as adr_state		
 	from 
-		ent_addr_cmp_val_tbl
-		inner join ent_addr_cmp_tbl using (val_seq_id)
+		 ent_addr_cmp_tbl 
 		inner join ent_addr_tbl using (addr_id)
 		inner join cd_vrsn_tbl on (cd_id = ent_addr_tbl.use_cd_id and obslt_utc is null)
 	where 
@@ -213,8 +210,7 @@ with cte_id_tbl as (
 		list(case when typ_cd_id =  char_to_uuid('2F64BDE2-A696-4B0A-9690-B21EBD7E5092') then val end, ' ') as nam_given,
 		list(case when typ_cd_id =  char_to_uuid('29B98455-ED61-49F8-A161-2D73363E1DF0') then val end, ' ') as nam_family
 	from 
-		phon_val_tbl 
-		inner join ent_name_cmp_tbl using (val_seq_id)
+		 ent_name_cmp_tbl 
 		inner join ent_name_tbl using (name_id)
 	where 
 		obslt_vrsn_seq_id is null
@@ -227,7 +223,7 @@ with cte_id_tbl as (
 		sec_app_tbl.app_pub_id as source_app,
 		ent_vrsn_tbl.crt_utc as crt_utc,
 		psn_tbl.dob,
-		pat_tbl.dcsd_utc,
+		psn_tbl.dcsd_utc,
 		gender.mnemonic as gender,
 		list(nam_given , ' ') as nam_given,
 		list(nam_family, ' ') as nam_family,

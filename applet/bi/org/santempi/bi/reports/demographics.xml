@@ -1,0 +1,440 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ - Portions Copyright 2015-2019 Mohawk College of Applied Arts and Technology
+ - Portions
+Copyright 2019-2019 SanteSuite Contributors (See NOTICE)
+ - 
+ - 
+ - Licensed under the Apache
+License, Version 2.0 (the "License"); you 
+ - may not use this file except in compliance with the
+License. You may 
+ - obtain a copy of the License at 
+ - 
+ -
+http://www.apache.org/licenses/LICENSE-2.0 
+ - 
+ - Unless required by applicable law or agreed to
+in writing, software
+ - distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ -
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the 
+ - License for the
+specific language governing permissions and limitations under 
+ - the License.
+ - 
+ - User:
+Justin Fyfe
+ - Date: 2019-12-16
+ -->
+<BiReportDefinition xmlns="http://santedb.org/bi"
+    id="org.santempi.bi.reports.full"
+    name="Full MPI Patient Report"
+    label="ui.mpi.bi.reports.full">
+    <meta>
+        <public>true</public>
+        <authors>
+            <add>Justin Fyfe (Fyfe Software Inc.) &lt;justin@fyfesoftware.ca></add>
+        </authors>
+        <annotation>
+            <div xmlns="http://www.w3.org/1999/xhtml">
+                <p>Full export of all patients in the MPI</p>
+            </div>
+        </annotation>
+    </meta>
+    <dataSources>
+        <query ref="#org.santempi.bi.query.patients" name="demographics" />
+    </dataSources>
+    <views>
+        <add id="ui.mpi.bi.reports.demographics.table" label="ui.mpi.bi.reports.demographics"
+            name="table">
+            <div xmlns="http://www.w3.org/1999/xhtml" xmlns:bi="http://santedb.org/bi/view">
+                <bi:dataTable source="demographics">
+                    <bi:column>
+                        <bi:header>Patient</bi:header>
+                        <bi:column>
+                            <bi:header>UUID</bi:header>
+                            <bi:cell>
+                                <bi:value>ent_id</bi:value>
+                            </bi:cell>
+                        </bi:column>
+                        <bi:column>
+                            <bi:header>Created</bi:header>
+                            <bi:cell>
+                                <bi:value format="yyyy-MM-dd">crt_utc</bi:value>
+                            </bi:cell>
+                        </bi:column>
+                        <bi:column>
+                            <bi:header>Given</bi:header>
+                            <bi:cell>
+                                <bi:value>nam_given</bi:value>
+                            </bi:cell>
+                        </bi:column>
+                        <bi:column>
+                            <bi:header>Family</bi:header>
+                            <bi:cell>
+                                <bi:value>nam_family</bi:value>
+                            </bi:cell>
+                        </bi:column>
+                        <bi:column>
+                            <bi:header>Address</bi:header>
+                            <bi:cell>
+                                <bi:value>adr_line</bi:value>
+                            </bi:cell>
+                        </bi:column>
+                        <bi:column>
+                            <bi:header>City</bi:header>
+                            <bi:cell>
+                                <bi:value>adr_city</bi:value>
+                            </bi:cell>
+                        </bi:column>
+                        <bi:column>
+                            <bi:header>State/Province</bi:header>
+                            <bi:cell>
+                                <bi:value>adr_state</bi:value>
+                            </bi:cell>
+                        </bi:column>
+                        <bi:column>
+                            <bi:header>Country</bi:header>
+                            <bi:cell>
+                                <bi:value>adr_country</bi:value>
+                            </bi:cell>
+                        </bi:column>
+
+                        <bi:column>
+                            <bi:header>DOB</bi:header>
+                            <bi:cell>
+                                <bi:switch value="dob_prec">
+                                    <bi:when op="eq" value="D">
+                                        <bi:value format="yyyy-MM-dd">dob</bi:value>
+                                    </bi:when>
+                                    <bi:when op="eq" value="M">
+                                        <bi:value format="yyyy-MM">dob</bi:value>
+                                    </bi:when>
+                                    <bi:when op="eq" value="Y">
+                                        <bi:value format="yyyy">dob</bi:value>
+                                    </bi:when>
+                                </bi:switch>
+                            </bi:cell>
+                        </bi:column>
+                        <bi:column>
+                            <bi:header>Deceased</bi:header>
+                            <bi:cell>
+                                <bi:switch value="dcsd_prec">
+                                    <bi:when op="eq" value="D">
+                                        <bi:value format="yyyy-MM-dd">dcsc_utc</bi:value>
+                                    </bi:when>
+                                    <bi:when op="eq" value="M">
+                                        <bi:value format="yyyy-MM">dcsc_utc</bi:value>
+                                    </bi:when>
+                                    <bi:when op="eq" value="Y">
+                                        <bi:value format="yyyy">dcsc_utc</bi:value>
+                                    </bi:when>
+                                </bi:switch>
+                            </bi:cell>
+                        </bi:column>
+                        <bi:column>
+                            <bi:header>Gender</bi:header>
+                            <bi:cell>
+                                <bi:refer resource="Concept" render="name[en].value">gndr_cd_id</bi:refer>
+                            </bi:cell>
+                        </bi:column>
+                        <bi:column>
+                            <bi:header>Multiple Birth</bi:header>
+                            <bi:cell>
+                                <bi:value>mb_ord</bi:value>
+                            </bi:cell>
+                        </bi:column>
+                        <bi:column>
+                            <bi:header>Contact</bi:header>
+                            <bi:cell>
+                                <bi:value>tel_val</bi:value>
+                            </bi:cell>
+                        </bi:column>
+
+                        <bi:column>
+                            <bi:header>Identifiers</bi:header>
+                            <bi:cell>
+                                <bi:value>id_val</bi:value>
+                            </bi:cell>
+                        </bi:column>
+
+
+                        <bi:column>
+                            <bi:header>Occupation</bi:header>
+                            <bi:cell>
+                                <bi:refer resource="Concept" render="name[en].value">occ_cd_id</bi:refer>
+                            </bi:cell>
+                        </bi:column>
+                        <bi:column>
+                            <bi:header>VIP</bi:header>
+                            <bi:cell>
+                                <bi:refer resource="Concept" render="name[en].value">vip_sts_cd_id</bi:refer>
+                            </bi:cell>
+                        </bi:column>
+                        <bi:column>
+                            <bi:header>Nationality</bi:header>
+                            <bi:cell>
+                                <bi:refer resource="Concept" render="name[en].value">nat_cd_id</bi:refer>
+                            </bi:cell>
+                        </bi:column>
+                        <bi:column>
+                            <bi:header>Marital Status</bi:header>
+                            <bi:cell>
+                                <bi:refer resource="Concept" render="name[en].value">mrtl_sts_cd_id</bi:refer>
+                            </bi:cell>
+                        </bi:column>
+                        <bi:column>
+                            <bi:header>Education Level</bi:header>
+                            <bi:cell>
+                                <bi:refer resource="Concept" render="name[en].value">edu_lvl_cd_id</bi:refer>
+                            </bi:cell>
+                        </bi:column>
+
+                    </bi:column>
+                    <bi:column>
+                        <bi:header>Mother</bi:header>
+                        
+                        <bi:column>
+                            <bi:header>Given</bi:header>
+                            <bi:cell>
+                                <bi:value>mth_nam_given</bi:value>
+                            </bi:cell>
+                        </bi:column>
+                        <bi:column>
+                            <bi:header>Family</bi:header>
+                            <bi:cell>
+                                <bi:value>mth_nam_family</bi:value>
+                            </bi:cell>
+                        </bi:column>
+                        <bi:column>
+                            <bi:header>Address</bi:header>
+                            <bi:cell>
+                                <bi:value>mth_adr_line</bi:value>
+                            </bi:cell>
+                        </bi:column>
+                        <bi:column>
+                            <bi:header>City</bi:header>
+                            <bi:cell>
+                                <bi:value>mth_adr_city</bi:value>
+                            </bi:cell>
+                        </bi:column>
+                        <bi:column>
+                            <bi:header>State/Province</bi:header>
+                            <bi:cell>
+                                <bi:value>mth_adr_state</bi:value>
+                            </bi:cell>
+                        </bi:column>
+                        <bi:column>
+                            <bi:header>Country</bi:header>
+                            <bi:cell>
+                                <bi:value>mth_adr_country</bi:value>
+                            </bi:cell>
+                        </bi:column>
+
+                        <bi:column>
+                            <bi:header>DOB</bi:header>
+                            <bi:cell>
+                                <bi:switch value="mth_dob_prec">
+                                    <bi:when op="eq" value="D">
+                                        <bi:value format="yyyy-MM-dd">mth_dob</bi:value>
+                                    </bi:when>
+                                    <bi:when op="eq" value="M">
+                                        <bi:value format="yyyy-MM">mth_dob</bi:value>
+                                    </bi:when>
+                                    <bi:when op="eq" value="Y">
+                                        <bi:value format="yyyy">mth_dob</bi:value>
+                                    </bi:when>
+                                </bi:switch>
+                            </bi:cell>
+                        </bi:column>
+                        <bi:column>
+                            <bi:header>Deceased</bi:header>
+                            <bi:cell>
+                                <bi:switch value="mth_dcsd_prec">
+                                    <bi:when op="eq" value="D">
+                                        <bi:value format="yyyy-MM-dd">mth_dcsc_utc</bi:value>
+                                    </bi:when>
+                                    <bi:when op="eq" value="M">
+                                        <bi:value format="yyyy-MM">mth_dcsc_utc</bi:value>
+                                    </bi:when>
+                                    <bi:when op="eq" value="Y">
+                                        <bi:value format="yyyy">mth_dcsc_utc</bi:value>
+                                    </bi:when>
+                                </bi:switch>
+                            </bi:cell>
+                        </bi:column>
+                        
+                        <bi:column>
+                            <bi:header>Contact</bi:header>
+                            <bi:cell>
+                                <bi:value>mth_tel_val</bi:value>
+                            </bi:cell>
+                        </bi:column>
+
+                        <bi:column>
+                            <bi:header>Identifiers</bi:header>
+                            <bi:cell>
+                                <bi:value>mth_id_val</bi:value>
+                            </bi:cell>
+                        </bi:column>
+
+
+                        <bi:column>
+                            <bi:header>Occupation</bi:header>
+                            <bi:cell>
+                                <bi:refer resource="Concept" render="name[en].value">mth_occ_cd_id</bi:refer>
+                            </bi:cell>
+                        </bi:column>
+                        <bi:column>
+                            <bi:header>VIP</bi:header>
+                            <bi:cell>
+                                <bi:refer resource="Concept" render="name[en].value">mth_vip_sts_cd_id</bi:refer>
+                            </bi:cell>
+                        </bi:column>
+                        <bi:column>
+                            <bi:header>Nationality</bi:header>
+                            <bi:cell>
+                                <bi:refer resource="Concept" render="name[en].value">mth_nat_cd_id</bi:refer>
+                            </bi:cell>
+                        </bi:column>
+                        <bi:column>
+                            <bi:header>Marital Status</bi:header>
+                            <bi:cell>
+                                <bi:refer resource="Concept" render="name[en].value">mth_mrtl_sts_cd_id</bi:refer>
+                            </bi:cell>
+                        </bi:column>
+                        <bi:column>
+                            <bi:header>Education Level</bi:header>
+                            <bi:cell>
+                                <bi:refer resource="Concept" render="name[en].value">mth_edu_lvl_cd_id</bi:refer>
+                            </bi:cell>
+                        </bi:column>
+
+                    </bi:column>
+
+                    <bi:column>
+                        <bi:header>Father</bi:header>
+                        
+                        <bi:column>
+                            <bi:header>Given</bi:header>
+                            <bi:cell>
+                                <bi:value>fth_nam_given</bi:value>
+                            </bi:cell>
+                        </bi:column>
+                        <bi:column>
+                            <bi:header>Family</bi:header>
+                            <bi:cell>
+                                <bi:value>fth_nam_family</bi:value>
+                            </bi:cell>
+                        </bi:column>
+                        <bi:column>
+                            <bi:header>Address</bi:header>
+                            <bi:cell>
+                                <bi:value>fth_adr_line</bi:value>
+                            </bi:cell>
+                        </bi:column>
+                        <bi:column>
+                            <bi:header>City</bi:header>
+                            <bi:cell>
+                                <bi:value>fth_adr_city</bi:value>
+                            </bi:cell>
+                        </bi:column>
+                        <bi:column>
+                            <bi:header>State/Province</bi:header>
+                            <bi:cell>
+                                <bi:value>fth_adr_state</bi:value>
+                            </bi:cell>
+                        </bi:column>
+                        <bi:column>
+                            <bi:header>Country</bi:header>
+                            <bi:cell>
+                                <bi:value>fth_adr_country</bi:value>
+                            </bi:cell>
+                        </bi:column>
+
+                        <bi:column>
+                            <bi:header>DOB</bi:header>
+                            <bi:cell>
+                                <bi:switch value="fth_dob_prec">
+                                    <bi:when op="eq" value="D">
+                                        <bi:value format="yyyy-MM-dd">fth_dob</bi:value>
+                                    </bi:when>
+                                    <bi:when op="eq" value="M">
+                                        <bi:value format="yyyy-MM">fth_dob</bi:value>
+                                    </bi:when>
+                                    <bi:when op="eq" value="Y">
+                                        <bi:value format="yyyy">fth_dob</bi:value>
+                                    </bi:when>
+                                </bi:switch>
+                            </bi:cell>
+                        </bi:column>
+                        <bi:column>
+                            <bi:header>Deceased</bi:header>
+                            <bi:cell>
+                                <bi:switch value="fth_dcsd_prec">
+                                    <bi:when op="eq" value="D">
+                                        <bi:value format="yyyy-MM-dd">fth_dcsc_utc</bi:value>
+                                    </bi:when>
+                                    <bi:when op="eq" value="M">
+                                        <bi:value format="yyyy-MM">fth_dcsc_utc</bi:value>
+                                    </bi:when>
+                                    <bi:when op="eq" value="Y">
+                                        <bi:value format="yyyy">fth_dcsc_utc</bi:value>
+                                    </bi:when>
+                                </bi:switch>
+                            </bi:cell>
+                        </bi:column>
+                        
+                        <bi:column>
+                            <bi:header>Contact</bi:header>
+                            <bi:cell>
+                                <bi:value>fth_tel_val</bi:value>
+                            </bi:cell>
+                        </bi:column>
+
+                        <bi:column>
+                            <bi:header>Identifiers</bi:header>
+                            <bi:cell>
+                                <bi:value>fth_id_val</bi:value>
+                            </bi:cell>
+                        </bi:column>
+
+
+                        <bi:column>
+                            <bi:header>Occupation</bi:header>
+                            <bi:cell>
+                                <bi:refer resource="Concept" render="name[en].value">fth_occ_cd_id</bi:refer>
+                            </bi:cell>
+                        </bi:column>
+                        <bi:column>
+                            <bi:header>VIP</bi:header>
+                            <bi:cell>
+                                <bi:refer resource="Concept" render="name[en].value">fth_vip_sts_cd_id</bi:refer>
+                            </bi:cell>
+                        </bi:column>
+                        <bi:column>
+                            <bi:header>Nationality</bi:header>
+                            <bi:cell>
+                                <bi:refer resource="Concept" render="name[en].value">fth_nat_cd_id</bi:refer>
+                            </bi:cell>
+                        </bi:column>
+                        <bi:column>
+                            <bi:header>Marital Status</bi:header>
+                            <bi:cell>
+                                <bi:refer resource="Concept" render="name[en].value">fth_mrtl_sts_cd_id</bi:refer>
+                            </bi:cell>
+                        </bi:column>
+                        <bi:column>
+                            <bi:header>Education Level</bi:header>
+                            <bi:cell>
+                                <bi:refer resource="Concept" render="name[en].value">fth_edu_lvl_cd_id</bi:refer>
+                            </bi:cell>
+                        </bi:column>
+
+                    </bi:column>
+                </bi:dataTable>
+            </div>
+        </add>
+    </views>
+</BiReportDefinition>

@@ -19,14 +19,14 @@
  * User: Justin Fyfe
  * Date: 2019-9-27
  */
-angular.module('santedb').controller('MpiPatientViewController', ["$scope", "$rootScope", "$state", "$templateCache", "$stateParams", function ($scope, $rootScope, $state, $templateCache, $stateParams) {
+angular.module('santedb').controller('MpiPatientViewController', ["$scope", "$rootScope", "$state", "$templateCache", "$stateParams", "$timeout", function ($scope, $rootScope, $state, $templateCache, $stateParams, $timeout) {
 
 
     // Loads the specified patient
     async function loadPatient(id) {
         try {
-            $scope.patient = await SanteDB.resources.patient.getAsync(id, "full");
-            $scope.$apply();
+            var patient = await SanteDB.resources.patient.getAsync(id, "full");
+            $timeout(() => $scope.patient = patient);
         }
         catch (e) {
             // Remote patient perhaps?
@@ -83,22 +83,7 @@ angular.module('santedb').controller('MpiPatientViewController', ["$scope", "$ro
         try {
 
             SanteDB.display.buttonWait("#btnSetState", true);
-
-            // Set the status and update
-            var patch = new Patch({
-                appliesTo: new PatchTarget({
-                    id : $scope.patient.id,
-                    version: $scope.patient.version
-                }),
-                change: [
-                    new PatchOperation({
-                        op: PatchOperationType.Replace,
-                        path: "statusConcept",
-                        value: status
-                    })
-                ]
-            });
-            await SanteDB.resources.entity.patchAsync($stateParams.id, $scope.patient.etag, patch, false, true);
+            await setEntityState($scope.patient.id, $scope.patient.etag, status);
             toastr.info(SanteDB.locale.getString("ui.model.patient.saveSuccess"));
             $state.reload();
 
@@ -108,6 +93,23 @@ angular.module('santedb').controller('MpiPatientViewController', ["$scope", "$ro
         }
         finally {
             SanteDB.display.buttonWait("#btnSetState", false);
+        }
+    }
+
+    
+    // Set the active state
+    $scope.setTag = async function (tagName, tagValue) {
+        try {
+            SanteDB.display.buttonWait("#btnClearTag", true);
+            await setEntityTag($stateParams.id, tagName, tagValue);
+            toastr.info(SanteDB.locale.getString("ui.model.patient.saveSuccess"));
+            $state.reload();
+        }
+        catch (e) {
+            $rootScope.errorHandler(e);
+        }
+        finally {
+            SanteDB.display.buttonWait("#btnClearTag", false);
         }
     }
 

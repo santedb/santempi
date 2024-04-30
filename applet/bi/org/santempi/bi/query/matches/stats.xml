@@ -19,7 +19,7 @@
  - User: Justin Fyfe
  - Date: 2019-12-16
  -->
-<BiQueryDefinition xmlns="http://santedb.org/bi" id="org.santempi.bi.query.matches.stats" label="ui.mpi.bi.query.matches.stats">
+<BiQueryDefinition xmlns="http://santedb.org/bi" id="org.santempi.bi.query.matches.stats" label="ui.mpi.bi.query.matches.stats"  status="active">
   <meta status="active">
     <authors>
       <add>Justin Fyfe (Fyfe Software Inc.) &lt;justin@fyfesoftware.ca></add>

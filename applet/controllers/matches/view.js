@@ -38,6 +38,7 @@ angular.module('santedb').controller('MpiMatchViewController', ["$scope", "$root
     async function loadOtherCandidiates(patient, excludeId) {
         try {
             var retVal = [];
+            patient.relationship = patient.relationship || [];
             if(patient.tag && patient.tag['$generated'] [0]=== 'true') {
                 // MDM
                 var otherDuplicates = await SanteDB.resources.entityRelationship.find({ 'id' : `!${excludeId}`, 'relationshipType' : '56cfb115-8207-4f89-b52e-d20dbad8f8cc', 'target' : patient.id, "_viewModel" : "reverseRelationship" });
@@ -72,11 +73,13 @@ angular.module('santedb').controller('MpiMatchViewController', ["$scope", "$root
             }
             // Load other matches for the screen
             if(candidate.id) {
+                recordA.relationship = recordA.relationship || [];
+                recordB.relationship = recordB.relationship || [];
                 recordA.relationship['MDM-Duplicate'] = await loadOtherCandidiates(recordA, candidate.id);
                 recordB.relationship['MDM-Duplicate'] = await loadOtherCandidiates(recordB, candidate.id);
             }
             // Get the match report for the specified objects A<>B
-            var matchReport = await SanteDB.resources.patient.getAssociatedAsync(recordA.id, "mdm-candidate", recordB.id, { _configuration : $stateParams.configurationId }, true);
+            var matchReport = await SanteDB.resources.patient.getAssociatedAsync(recordA.id, "match-candidate", recordB.id, { _configuration : $stateParams.configurationId }, true);
             matchReport.recordA = recordA;
             matchReport.recordB = recordB;
             matchReport.candidate = candidate;

@@ -47,6 +47,7 @@ angular.module('santedb').controller('MpiPatientNextOfKinController', ["$scope",
             var patient = $scope.editObject;
             var relationships = angular.copy($scope.relationships);
 
+            
             if(!relationships)
                 relationships = [];
                 

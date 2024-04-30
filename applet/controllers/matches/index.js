@@ -5,10 +5,10 @@ angular.module('santedb').controller('MpiMatchDashboardController', ["$scope", "
     // Render holder patient
     $scope.renderHolder = function(rowData) {
         if(rowData.holderModel) {
-            return SanteDB.display.renderPatientAsString(rowData.holderModel, $rootScope.system.config.application.setting['aa.preferred']); // in mpi.js
+            return SanteDB.display.renderPatientAsString(rowData.holderModel, SanteDB.configuration.getAppSetting('aa.preferred')); // in mpi.js
         }
         else {
-            SanteDB.resources.patient.getAsync(rowData.holder, 'fastview').then((d) => $(`div.${d.id.replace("-","_")}`).html(SanteDB.display.renderPatientAsString(d,  $rootScope.system.config.application.setting['aa.preferred'])))
+            SanteDB.resources.patient.getAsync(rowData.holder, 'fastview').then((d) => $(`div.${d.id.replace("-","_")}`).html(SanteDB.display.renderPatientAsString(d,  SanteDB.configuration.getAppSetting('aa.preferred'))))
                 .catch(e=>$rootScope.errorHandler(e));
             return `<div style="min-width:20vw" class='${rowData.holder.replace("-", "_")}'><i class="fas fa-circle-notch fa-spin"></i> ${SanteDB.locale.getString("ui.wait")}</div>`;
         }
@@ -17,10 +17,10 @@ angular.module('santedb').controller('MpiMatchDashboardController', ["$scope", "
     // Render target patient
     $scope.renderTarget = function(rowData) {
         if(rowData.targetModel) {
-            return SanteDB.display.renderPatientAsString(rowData.targetModel, $rootScope.system.config.application.setting['aa.preferred']); // in mpi.js
+            return SanteDB.display.renderPatientAsString(rowData.targetModel, SanteDB.configuration.getAppSetting('aa.preferred')); // in mpi.js
         }
         else {
-            SanteDB.resources.patient.getAsync(rowData.target, 'fastview').then((d) => $(`div.${d.id.replace("-","_")}`).html(SanteDB.display.renderPatientAsString(d,  $rootScope.system.config.application.setting['aa.preferred'])))
+            SanteDB.resources.patient.getAsync(rowData.target, 'fastview').then((d) => $(`div.${d.id.replace("-","_")}`).html(SanteDB.display.renderPatientAsString(d,  SanteDB.configuration.getAppSetting('aa.preferred'))))
                 .catch(e=>$rootScope.errorHandler(e));
             return `<div style="min-width:20vw"  class='${rowData.target.replace("-", "_")}'><i class='fas fa-circle-notch fa-spin'></i>  ${SanteDB.locale.getString("ui.wait")}</div>`;
         }

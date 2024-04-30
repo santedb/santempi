@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29509.3
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32519.379
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SanteMPI.Persistence.ADO", "SanteMPI.Persistence.ADO\SanteMPI.Persistence.ADO.csproj", "{CDDDCFC9-7F4E-41C9-AE70-DBA115044275}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SanteMPI.Persistence.ADO", "SanteMPI.Persistence.ADO\SanteMPI.Persistence.ADO.csproj", "{CDDDCFC9-7F4E-41C9-AE70-DBA115044275}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CC41FDC2-DA37-42A1-BE9D-49F779067390}"
 	ProjectSection(SolutionItems) = preProject
@@ -13,11 +13,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SanteMPI.Messaging.IHE", "SanteMPI.Messaging.IHE\SanteMPI.Messaging.IHE.csproj", "{D5F5C6E2-FBED-4295-85FA-00777C8E7353}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SanteMPI.Messaging.IHE.Test", "SanteMPI.Messaging.IHE.Test\SanteMPI.Messaging.IHE.Test.csproj", "{25B0FA42-9F7F-45B5-979A-2C2DCF2EDEEF}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SanteMPI", "SanteMPI\SanteMPI.csproj", "{D6481699-8BDE-495D-B28E-BE6F309718DE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SanteMPI.i18n", "SanteMPI.i18n\SanteMPI.i18n.csproj", "{B5773AB6-F15D-4474-A852-B355C830ABA4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SanteMPI.Test", "SanteMPI.Test\SanteMPI.Test.csproj", "{59478BD0-8748-4E74-B175-74C989606901}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,10 +33,6 @@ Global
 		{D5F5C6E2-FBED-4295-85FA-00777C8E7353}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D5F5C6E2-FBED-4295-85FA-00777C8E7353}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D5F5C6E2-FBED-4295-85FA-00777C8E7353}.Release|Any CPU.Build.0 = Release|Any CPU
-		{25B0FA42-9F7F-45B5-979A-2C2DCF2EDEEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{25B0FA42-9F7F-45B5-979A-2C2DCF2EDEEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{25B0FA42-9F7F-45B5-979A-2C2DCF2EDEEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{25B0FA42-9F7F-45B5-979A-2C2DCF2EDEEF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D6481699-8BDE-495D-B28E-BE6F309718DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D6481699-8BDE-495D-B28E-BE6F309718DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D6481699-8BDE-495D-B28E-BE6F309718DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -45,6 +41,10 @@ Global
 		{B5773AB6-F15D-4474-A852-B355C830ABA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B5773AB6-F15D-4474-A852-B355C830ABA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B5773AB6-F15D-4474-A852-B355C830ABA4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59478BD0-8748-4E74-B175-74C989606901}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59478BD0-8748-4E74-B175-74C989606901}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59478BD0-8748-4E74-B175-74C989606901}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59478BD0-8748-4E74-B175-74C989606901}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

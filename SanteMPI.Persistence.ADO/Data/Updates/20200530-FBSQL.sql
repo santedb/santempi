@@ -1,8 +1,8 @@
 ﻿/** 
- * <feature scope="SanteDB.Persistence.Data.ADO" id="20200530-01" name="Update:20200530-01" applyRange="1.1.0.0-1.2.0.0"  invariantName="FirebirdSQL">
+ * <feature scope="SanteMPI.Persistence.Data" id="20200530-01" name="Update:20200530-01" applyRange="1.1.0.0-1.2.0.0"  invariantName="FirebirdSQL">
  *	<summary>Update: English name aliases</summary>
  *	<remarks>This adds supposrt for the IAliasProvider implementation</remarks>
- *	<isInstalled>select ck_patch('20200530-01') from rdb$database</isInstalled>
+ *	<isInstalled>select true from rdb$database where exists (select 1 from rdb$relations where rdb$relation_name = 'MPI_NAME_SYN_CDTBL');</isInstalled>
  * </feature>
  */
  -- NAME SYNONYMN TABLE 
@@ -547,7 +547,4 @@ INSERT INTO MPI_NAME_SYN_CDTBL (PRI_NAME, SYN_NAME, STRENGTH) VALUES ('WINNY','W
 INSERT INTO MPI_NAME_SYN_CDTBL (PRI_NAME, SYN_NAME, STRENGTH) VALUES ('WOODY','ELWOOD',0.25); --#!
 INSERT INTO MPI_NAME_SYN_CDTBL (PRI_NAME, SYN_NAME, STRENGTH) VALUES ('ZACH','ZACHARIAH',0.75); --#!
 
-CREATE INDEX ENT_ID_AUT_IDX ON ENT_ID_TBL(AUT_ID);--#!
-
-SELECT REG_PATCH('20200530-01') FROM RDB$DATABASE;
 --#!
