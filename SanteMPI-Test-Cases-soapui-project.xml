@@ -7,7 +7,7 @@
     
     <con:definitionCache type="TEXT" rootPart=""/><con:endpoints>
       <con:endpoint>http://localhost:8080/</con:endpoint>
-    </con:endpoints>
+    <con:endpoint>https://fji-mpi.santesuite.net:8443</con:endpoint></con:endpoints>
     <con:resource name="/" path="/" id="08a66efb-0ec4-47d8-bccd-dbf8193aaf35">
       <con:settings/>
       <con:parameters/>
@@ -3669,7 +3669,7 @@
     <con:definitionCache type="TEXT" rootPart=""/>
     <con:endpoints>
       <con:endpoint>http://localhost:8080</con:endpoint>
-    </con:endpoints>
+    <con:endpoint>https://fji-mpi.santesuite.net:8443</con:endpoint></con:endpoints>
     <con:resource name="/Bundle" path="/Bundle" id="205c5c64-ed7f-4238-96ac-1225b211e47a">
       <con:settings/>
       <con:parameters/>
@@ -4165,7 +4165,7 @@
     <con:definitionCache type="TEXT" rootPart=""/>
     <con:endpoints>
       <con:endpoint>http://localhost:8080</con:endpoint>
-    </con:endpoints>
+    <con:endpoint>https://fji-mpi.santesuite.net:8443</con:endpoint></con:endpoints>
     <con:resource name="/" path="/" id="fed2dbe5-8a54-490f-b5c0-977131aaf052">
       <con:settings/>
       <con:parameters/>
@@ -4295,7 +4295,7 @@
           <con:params/>
           <con:element>data</con:element>
         </con:representation>
-        <con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Request 1" id="cd7ca6ca-60a1-4fd7-b7ff-ca9c6232b904" mediaType="application/x-www-form-urlencoded">
+        <con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Request 1" id="cd7ca6ca-60a1-4fd7-b7ff-ca9c6232b904" mediaType="application/x-www-form-urlencoded">
           <con:settings/>
           <con:endpoint>http://localhost:8080</con:endpoint>
           <con:parameters/>
@@ -4359,7 +4359,7 @@
     <con:definitionCache type="TEXT" rootPart=""/>
     <con:endpoints>
       <con:endpoint>http://localhost:8080</con:endpoint>
-    </con:endpoints>
+    <con:endpoint>https://fji-mpi.santesuite.net:8443</con:endpoint></con:endpoints>
     <con:resource name="/AssigningAuthority" path="/AssigningAuthority" id="e56a3556-3830-4625-bdae-68452ac81a03">
       <con:settings/>
       <con:parameters/>
@@ -15595,7 +15595,7 @@
               <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
-            <con:endpoint>http://localhost:8080</con:endpoint>
+            <con:endpoint>https://fji-mpi.santesuite.net:8443</con:endpoint>
             <con:request>grant_type=client_credentials&amp;scope=*&amp;client_secret=fiddler&amp;client_id=fiddler</con:request>
             <con:originalUri>http://localhost/auth/oauth2_token</con:originalUri>
             <con:assertion type="Valid HTTP Status Codes" id="81966b70-70b7-40f5-ba00-ed45a647f2b2" name="Valid HTTP Status Codes">
@@ -15636,7 +15636,7 @@
               <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config"/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
-            <con:endpoint>http://localhost:8080</con:endpoint>
+            <con:endpoint>https://fji-mpi.santesuite.net:8443</con:endpoint>
             <con:request><![CDATA[
               <SecurityApplicationInfo xmlns="http://santedb.org/ami">
 	<entity>
@@ -15682,7 +15682,7 @@
               <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config"/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
-            <con:endpoint>http://localhost:8080</con:endpoint>
+            <con:endpoint>https://fji-mpi.santesuite.net:8443</con:endpoint>
             <con:request><![CDATA[
 <Bundle xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://santedb.org/model">
   <!-- TEST -->
@@ -15744,7 +15744,7 @@
               <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
-            <con:endpoint>http://localhost:8080</con:endpoint>
+            <con:endpoint>https://fji-mpi.santesuite.net:8443</con:endpoint>
             <con:request>grant_type=client_credentials&amp;scope=*&amp;client_secret=TEST_HARNESS&amp;client_id=TEST_HARNESS</con:request>
             <con:originalUri>http://localhost/auth/oauth2_token</con:originalUri>
             <con:assertion type="Valid HTTP Status Codes" id="412f670d-7327-4ef7-8040-71f43004ff7f" name="Valid HTTP Status Codes">
@@ -15785,7 +15785,7 @@
               <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config"/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
-            <con:endpoint>http://localhost:8080/</con:endpoint>
+            <con:endpoint>https://fji-mpi.santesuite.net:8443</con:endpoint>
             <con:request>
               {
               "resourceType": "Bundle",
@@ -21126,7 +21126,7 @@
               <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
-            <con:endpoint>http://localhost:8080</con:endpoint>
+            <con:endpoint>https://fji-mpi.santesuite.net:8443</con:endpoint>
             <con:request>grant_type=client_credentials&amp;scope=*&amp;client_secret=TEST_HARNESS&amp;client_id=TEST_HARNESS</con:request>
             <con:originalUri>http://localhost/auth/oauth2_token</con:originalUri>
             <con:assertion type="Valid HTTP Status Codes" id="b5134ff9-14f5-47fa-99b8-e1be386b4f2b" name="Valid HTTP Status Codes">
@@ -21164,10 +21164,10 @@
         <con:config service="HL7 Fast Health Interoperability Resources (FHIR) R4" methodName="POST" resourcePath="/fhir/Bundle" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="Register Patient 1" id="87ed10b9-5373-4cf2-bfc5-42b93585b601" mediaType="application/fhir+json" postQueryString="false">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config" /></con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config"/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
-            <con:endpoint>http://localhost:8080/</con:endpoint>
+            <con:endpoint>https://fji-mpi.santesuite.net:8443</con:endpoint>
             <con:request>
               {
               "resourceType": "Bundle",
@@ -21347,7 +21347,7 @@
               <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config"/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
-            <con:endpoint>http://localhost:8080/</con:endpoint>
+            <con:endpoint>https://fji-mpi.santesuite.net:8443</con:endpoint>
             <con:request>
               {
               "resourceType": "Bundle",
@@ -21515,7 +21515,7 @@
 &lt;/xml-fragment></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
-            <con:endpoint>http://localhost:8080/</con:endpoint>
+            <con:endpoint>https://fji-mpi.santesuite.net:8443</con:endpoint>
             <con:request/>
             <con:originalUri>http://localhost/fhir/Patient</con:originalUri>
             <con:assertion type="Valid HTTP Status Codes" id="99a9878f-f6ca-4df5-bfd2-ac10aa160fbe" name="Valid HTTP Status Codes">
@@ -22062,7 +22062,7 @@
               <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
-            <con:endpoint>http://localhost:8080</con:endpoint>
+            <con:endpoint>https://fji-mpi.santesuite.net:8443</con:endpoint>
             <con:request>grant_type=client_credentials&amp;scope=*&amp;client_secret=TEST_HARNESS&amp;client_id=TEST_HARNESS_A</con:request>
             <con:originalUri>http://localhost/auth/oauth2_token</con:originalUri>
             <con:assertion type="Valid HTTP Status Codes" id="5611c124-f4b8-4507-98b5-23fec7e42725" name="Valid HTTP Status Codes">
@@ -22100,10 +22100,10 @@
         <con:config service="HL7 Fast Health Interoperability Resources (FHIR) R4" methodName="POST" resourcePath="/fhir/Bundle" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <con:restRequest name="Register New Identity" id="a27193b7-b458-4d10-9276-e866f6107b0a" mediaType="application/fhir+json" postQueryString="false">
             <con:settings>
-              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config" /></con:setting>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config"/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
-            <con:endpoint>http://localhost:8080/</con:endpoint>
+            <con:endpoint>https://fji-mpi.santesuite.net:8443</con:endpoint>
             <con:request>
               {
               "resourceType": "Bundle",
@@ -22239,7 +22239,7 @@
               <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
-            <con:endpoint>http://localhost:8080</con:endpoint>
+            <con:endpoint>https://fji-mpi.santesuite.net:8443</con:endpoint>
             <con:request>grant_type=client_credentials&amp;scope=*&amp;client_secret=TEST_HARNESS&amp;client_id=TEST_HARNESS_B</con:request>
             <con:originalUri>http://localhost/auth/oauth2_token</con:originalUri>
             <con:assertion type="Valid HTTP Status Codes" id="5611c124-f4b8-4507-98b5-23fec7e42725" name="Valid HTTP Status Codes">
@@ -22280,7 +22280,7 @@
               <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config"/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
-            <con:endpoint>http://localhost:8080/</con:endpoint>
+            <con:endpoint>https://fji-mpi.santesuite.net:8443</con:endpoint>
             <con:request>
               {
               "resourceType": "Bundle",
@@ -23253,9 +23253,9 @@
     <con:properties>
       <con:property>
         <con:name>Token</con:name>
-        <con:value>bjBEKwB77RGi3wJCrBIAAg.KSpslwSRpFzTeSuOE2uBlMhSLVRZ_k5wBjpNPtrmVtc</con:value>
+        <con:value>rJt3BYH77hGPQAAVXWQLQQ.m4PwJp_ovpkdgdOHdM_mhFBBEYvWdGTMtyxTTEBF7vmF6Qp_mGdzsRvhkTe-XG6hj8Ime2IksbzVUR-WRJh2GyeoGMEEe8nBKVjVTP7K1Pgq2wuJMkp5gg4iqywSmETPL9txCsVN-uRnN-q4Erl5yDkJgwhecxYpAONAa8ZKvDAOesFnRKaihX1k6Lr_kuBb-YiKzNv-F_yG9Ba54t0WWpqra2aau9BD6AsVezrAT_SCyLs-HbXfXOjX3YZH25NTmykiRalVTaKsrrxoyvyzXxgHy6_XHxcv9yntPK8YXmhHBB8jzSBOJZmBNC7yRer1T3rl1KNTQISTFjHwVVAmYw</con:value>
       </con:property>
-    <con:property><con:name>TestHarnessSid</con:name><con:value>2569af02-7b00-11ed-b9d0-0242ac120002</con:value></con:property><con:property><con:name>TestHarnessASid</con:name><con:value>2714f9ec-7b00-11ed-a2df-0242ac120002</con:value></con:property><con:property><con:name>TestHarnessBSid</con:name><con:value>271a6274-7b00-11ed-9cac-0242ac120002</con:value></con:property></con:properties>
+    <con:property><con:name>TestHarnessSid</con:name><con:value>70f7e768-2ecc-4025-b0ef-025e5caec1c9</con:value></con:property><con:property><con:name>TestHarnessASid</con:name><con:value>2714f9ec-7b00-11ed-a2df-0242ac120002</con:value></con:property><con:property><con:name>TestHarnessBSid</con:name><con:value>271a6274-7b00-11ed-9cac-0242ac120002</con:value></con:property></con:properties>
   </con:testSuite>
   <con:restMockService id="3ad92989-3d79-4a44-baf8-2f18cf469623" port="8989" path="/" host="localhost" name="FHIR Mock Service" docroot="">
     <con:settings/>
