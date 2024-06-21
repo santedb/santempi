@@ -138,14 +138,6 @@
     <string name="ui.mpi.match.score.label">Score</string>
     <string name="ui.mpi.match.strength.label">Strength</string>
     <string name="ui.mpi.matches.otherMatches">Other Matches</string>
-    <string name="ui.mpi.match.vector.attribute">Attribute</string>
-    <string name="ui.mpi.match.vector.value.a">A Value</string>
-    <string name="ui.mpi.match.vector.value.b">B Value</string>
-    <string name="ui.mpi.match.vector.mu">M / U</string>
-    <string name="ui.mpi.match.vector.score">Score</string>
-    <string name="ui.mpi.match.vector.weight">Weight</string>
-    <string name="ui.mpi.match.vector.evaluated.yes">This attribute was evaluated - the score is an actual evaluation of A and B</string>
-    <string name="ui.mpi.match.vector.evaluated.no">This attribute was not evaluated - the score represents the whenNull configuration option</string>
     <string name="ui.mpi.matches.configurationDisagreement">The score indicates these two records meet the criteria to be considered a MATCH however the configuration of the server has prevented automatic linking. Therefore this record must manually be resolved. Contact your system administrator to change the settings of the server to prevent this</string>
     <string name="ui.model.patient.duplicate.holderModel@Patient">Patient A</string>
     <string name="ui.model.patient.duplicate.targetModel@Patient">Patient B</string>
