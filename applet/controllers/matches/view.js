@@ -79,7 +79,7 @@ angular.module('santedb').controller('MpiMatchViewController', ["$scope", "$root
                 recordB.relationship['MDM-Duplicate'] = await loadOtherCandidiates(recordB, candidate.id);
             }
             // Get the match report for the specified objects A<>B
-            var matchReport = await SanteDB.resources.patient.getAssociatedAsync(recordA.id, "mdm-candidate", recordB.id, { _configuration : $stateParams.configurationId }, true);
+            var matchReport = await SanteDB.resources.patient.getAssociatedAsync(recordA.id, "match-candidate", recordB.id, { _configuration : $stateParams.configurationId }, true);
             matchReport.recordA = recordA;
             matchReport.recordB = recordB;
             matchReport.candidate = candidate;

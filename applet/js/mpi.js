@@ -14,7 +14,7 @@ async function ignoreCandidateAsync(recordA, recordB) {
     // Send the MDM-ignore post
     try {
         // We DELETE the candidate (ignore it)
-        var ignoreResult = await SanteDB.resources.patient.removeAssociatedAsync(recordA, "mdm-candidate", recordB, true);
+        var ignoreResult = await SanteDB.resources.patient.removeAssociatedAsync(recordA, "match-candidate", recordB, true);
         toastr.success(SanteDB.locale.getString("ui.mpi.matches.ignore.success"));
     }
     catch(e) {
@@ -38,7 +38,7 @@ async function ignoreCandidateAsync(recordA, recordB) {
     // Send the MDM-ignore post
     try {
         // We DELETE the candidate (ignore it)
-        var ignoreResult = await SanteDB.resources.patient.removeAssociatedAsync(recordA, "mdm-ignore", recordB, true);
+        var ignoreResult = await SanteDB.resources.patient.removeAssociatedAsync(recordA, "match-ignore", recordB, true);
         toastr.success(SanteDB.locale.getString("ui.mpi.matches.unignore.success"));
     }
     catch(e) {
@@ -102,4 +102,7 @@ async function attachCandidateAsync(recordA, recordB) {
 // Set the view handlers
 if(!SanteDB.application.getResourceViewer("Patient")) {
     SanteDB.application.addResourceViewer("Patient", function(state, parms) { state.transitionTo("santedb-admin.mpi.patients.view", parms); return true; });
+}
+if(!SanteDB.application.getResourceViewer("Match")) {
+    SanteDB.application.addResourceViewer("Match", function(state, parms) { state.transitionTo("santedb-admin.mpi.matches.view", parms); return true; });
 }

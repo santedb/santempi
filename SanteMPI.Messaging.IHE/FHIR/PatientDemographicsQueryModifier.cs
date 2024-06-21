@@ -1,6 +1,7 @@
 ﻿using Hl7.Fhir.Model;
 using RestSrvr;
 using SanteDB.Core.Model.Audit;
+using SanteDB.Core.Model.DataTypes;
 using SanteDB.Core.Security;
 using SanteDB.Core.Security.Services;
 using SanteDB.Core.Services;
@@ -63,7 +64,7 @@ namespace SanteMPI.Messaging.IHE.FHIR
                         }
 
                         // Get domains
-                        var domainsToReturn = whatDomains.Split(',').Select(o => o.Split('|')).Where(o => o.Length == 2 && String.IsNullOrEmpty(o[1])).Select(o => o[0]);
+                        var domainsToReturn = whatDomains.Split(',').Select(o => o.Split('|')).Where(o => o.Length == 2 && String.IsNullOrEmpty(o[1])).Select(o => o[0]).ToArray();
                         if (!domainsToReturn.Any())
                         {
                             return responseResource;
@@ -72,7 +73,16 @@ namespace SanteMPI.Messaging.IHE.FHIR
                         {
                             var aaDomains = domainsToReturn.Select(itm =>
                             {
-                                var aa = this.m_authorityRepository.Get(itm);
+                                IdentityDomain aa = null;
+                                if (Uri.TryCreate(itm, UriKind.RelativeOrAbsolute, out var uriItm))
+                                {
+                                    aa = this.m_authorityRepository.Get(uriItm);
+                                }
+                                else
+                                {
+                                    aa = this.m_authorityRepository.Get(itm);
+                                }
+
                                 if (aa == null)
                                 {
                                     throw new KeyNotFoundException($"Authority {itm} not recognized");
@@ -96,11 +106,13 @@ namespace SanteMPI.Messaging.IHE.FHIR
                             if (resource == null)
                             {
                                 bundle.Entry.Remove(res);
+                                bundle.Total--; // Remove from the bundle
                             }
                         }
 
                         // We want to audit this operation according to the ITI
                         this.m_auditService.Audit().ForPatientDemographicsQueryMobile(OutcomeIndicator.Success, bundle.Entry.OfType<Patient>()).Send();
+
                         return bundle;
                     }
                     else

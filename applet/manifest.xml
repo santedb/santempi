@@ -39,10 +39,7 @@
       <icon>fas fa-search-plus</icon>
       <text lang="en">Power Search</text>
     </menuItem>
-    <menuItem context="org.santedb.admin" launch="santedb-admin.mpi.config.index" asset="/org.santedb.smpi/views/config/index.html">
-        <icon>fas fa-users-cog</icon>
-        <text lang="en">Match Settings</text>
-      </menuItem>
+   
   </menuItem>
 
   <viewModel key="smpi.reverseRelationship">
