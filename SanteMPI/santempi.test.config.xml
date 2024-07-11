@@ -559,9 +559,6 @@
       <!-- Data Migration & Management -->
       <add type="SanteDB.Server.Core.Persistence.DataInitializationService, SanteDB.Server.Core" />
 
-      <!-- Care Planning Services -->
-      <add type="SanteDB.Core.Protocol.SimpleCarePlanService, SanteDB.Core.Api" />
-
       <!-- Messaging Services-->
       <!-- OAUTH 2.0 Plugin -->
       <add type="SanteDB.Authentication.OAuth2.OAuthMessageHandler, SanteDB.Authentication.OAuth2" />

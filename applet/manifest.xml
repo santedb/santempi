@@ -48,5 +48,10 @@
   <viewModel key="smpi.fastRelationship">
     <definition>/org.santedb.smpi/models/fastRelationship.xml</definition>
   </viewModel>
+  <strings lang="en-us" extern="locales/en/strings.xml" />
+  <strings lang="en-ca" extern="locales/en/strings.xml" />
+  <strings lang="en-iso" extern="locales/en/strings.xml" />
+  <strings lang="en-ph" extern="locales/en/strings.xml" />
+  <strings lang="en-uk" extern="locales/en/strings.xml" />
   <strings lang="en" extern="locales/en/strings.xml" />
 </AppletManifest>
