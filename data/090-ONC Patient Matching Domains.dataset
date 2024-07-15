@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<dataset xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="ONC Patient Matching Dataset Domains" xmlns="http://santedb.org/data">
+
+  <update skipIfError="false" insertIfNotExists="true">
+    <IdentityDomain xmlns="http://santedb.org/model">
+      <id>7504e496-3ecc-11ef-9121-b76f9d06cccf</id>
+      <name>ONC Patient Matching Enterprise ID</name>
+      <domainName>EID</domainName>
+      <oid>2.25.403943094320423</oid>
+      <url>urn:onc:match:eid</url>
+      <policy xsi:nil="true" />
+      <identifierClass>cb6e4f9f-5a78-408e-9b5e-a41018057fb1</identifierClass>
+      <isUnique>true</isUnique>
+      <scope>bacd9c6f-3fa9-481e-9636-37457962804d</scope>
+    </IdentityDomain>
+  </update>
+  <update skipIfError="false" insertIfNotExists="true">
+    <IdentityDomain xmlns="http://santedb.org/model">
+      <id>902c8bac-3ecc-11ef-8418-5f3ef81e318e</id>
+      <name>ONC Patient Matching Medical Record Number</name>
+      <domainName>MRN</domainName>
+      <oid>2.25.449383928373</oid>
+      <url>urn:onc:match:mrn</url>
+      <policy xsi:nil="true" />
+      <identifierClass xsi:nil="true" />
+      <scope>bacd9c6f-3fa9-481e-9636-37457962804d</scope>
+    </IdentityDomain>
+  </update>
+</dataset>
