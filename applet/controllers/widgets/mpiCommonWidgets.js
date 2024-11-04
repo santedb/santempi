@@ -3,6 +3,10 @@ angular.module('santedb').controller('MpiCommonWidgetController', ['$scope', '$r
     // Render demogrpahics function
     $scope.renderDemographics = SanteDB.display.renderPatientAsString;
 
+    $scope.doSearch = function() {
+        $state.go("santedb-admin.mpi.patients.search", {q: $scope.widgetSearchQuery});
+    }
+    
     // Scanner search
     $scope.scanSearch = async function () {
         try {
