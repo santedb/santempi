@@ -17502,7 +17502,7 @@
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             
-            <con:request>grant_type=client_credentials&amp;scope=*&amp;client_secret=fiddler&amp;client_id=fiddler</con:request>
+            <con:endpoint>http://localhost:8080</con:endpoint><con:request>grant_type=client_credentials&amp;scope=*&amp;client_secret=fiddler&amp;client_id=fiddler</con:request>
             <con:originalUri>http://localhost/auth/oauth2_token</con:originalUri>
             <con:assertion type="Valid HTTP Status Codes" id="b5134ff9-14f5-47fa-99b8-e1be386b4f2b" name="Valid HTTP Status Codes">
               <con:configuration>
@@ -17543,7 +17543,7 @@
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             
-            <con:request><![CDATA[
+            <con:endpoint>http://localhost:8080</con:endpoint><con:request><![CDATA[
               <SecurityApplicationInfo xmlns="http://santedb.org/ami">
 	<entity>
 	      <!-- Secret: TEST_HARNESS -->
@@ -17590,7 +17590,7 @@
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             
-            <con:request><![CDATA[
+            <con:endpoint>http://localhost:8080</con:endpoint><con:request><![CDATA[
 <Bundle xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://santedb.org/model">
   <!-- TEST -->
   <resource xsi:type="IdentityDomain">
@@ -17652,7 +17652,7 @@
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
             
-            <con:request>grant_type=client_credentials&amp;scope=*&amp;client_secret=TEST_HARNESS&amp;client_id=TEST_HARNESS</con:request>
+            <con:endpoint>http://localhost:8080</con:endpoint><con:request>grant_type=client_credentials&amp;scope=*&amp;client_secret=TEST_HARNESS&amp;client_id=TEST_HARNESS</con:request>
             <con:originalUri>http://localhost/auth/oauth2_token</con:originalUri>
             <con:assertion type="Valid HTTP Status Codes" id="b5134ff9-14f5-47fa-99b8-e1be386b4f2b" name="Valid HTTP Status Codes">
               <con:configuration>
@@ -17692,7 +17692,7 @@
               <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config"/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
-           <con:endpoint>https://localhost:8443</con:endpoint>
+           <con:endpoint>http://localhost:8080/</con:endpoint>
             <con:request>
               {
               "resourceType": "Bundle",
@@ -17839,7 +17839,7 @@
 &lt;/xml-fragment></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
-           <con:endpoint>https://localhost:8443</con:endpoint>
+           <con:endpoint>http://localhost:8080/</con:endpoint>
             <con:request/>
             <con:originalUri>http://localhost/fhir/Patient</con:originalUri>
             <con:assertion type="Valid HTTP Status Codes" id="5366e4ee-dc35-472a-b0c7-3a53524145ee" name="Valid HTTP Status Codes">
@@ -17955,7 +17955,7 @@
               <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Authorization" value="BEARER ${#TestSuite#Token}" xmlns="http://eviware.com/soapui/config"/></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
-           <con:endpoint>https://localhost:8443</con:endpoint>
+           <con:endpoint>http://localhost:8080/</con:endpoint>
             <con:request>
               {
               "resourceType": "Bundle",
@@ -18128,7 +18128,7 @@
 &lt;/xml-fragment></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
-           <con:endpoint>https://localhost:8443</con:endpoint>
+           <con:endpoint>http://localhost:8080/</con:endpoint>
             <con:request/>
             <con:originalUri>http://localhost/fhir/Patient</con:originalUri>
             <con:assertion type="Valid HTTP Status Codes" id="f872d580-798b-419b-bac1-847980ad2874" name="Valid HTTP Status Codes">
@@ -18264,7 +18264,7 @@
 &lt;/xml-fragment></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
-           <con:endpoint>https://localhost:8443</con:endpoint>
+           <con:endpoint>http://localhost:8080/</con:endpoint>
             <con:request/>
             <con:originalUri>http://localhost/fhir/Patient</con:originalUri>
             <con:assertion type="Valid HTTP Status Codes" id="f872d580-798b-419b-bac1-847980ad2874" name="Valid HTTP Status Codes">
@@ -18363,7 +18363,7 @@
 &lt;/xml-fragment></con:setting>
             </con:settings>
             <con:encoding>UTF-8</con:encoding>
-           <con:endpoint>https://localhost:8443</con:endpoint>
+           <con:endpoint>http://localhost:8080/</con:endpoint>
             <con:request/>
             <con:originalUri>http://localhost/fhir/Patient</con:originalUri>
             <con:assertion type="Valid HTTP Status Codes" id="f5685d6d-6966-4ceb-9724-29a8b6df8ea2" name="Valid HTTP Status Codes">
@@ -22939,7 +22939,7 @@
       "family": "Subscription"
    }],
    "active": true,
-   "id": "1c9f4ba4-15a6-4e0f-984f-3d6d5ad88adf",
+   "id": "e08c9b90-68de-4063-848d-9b79478d9b6b",
    "text":    {
       "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n\t\t\t<table>\n\t\t\t\t<tbody>\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>Name<\/td>\n\t\t\t\t\t\t<td>Peter James \n              <b>Chalmers<\/b> (&quot;Jim&quot;)\n            <\/td>\n\t\t\t\t\t<\/tr>\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>Address<\/td>\n\t\t\t\t\t\t<td>534 Erewhon, Pleasantville, Vic, 3999<\/td>\n\t\t\t\t\t<\/tr>\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>Contacts<\/td>\n\t\t\t\t\t\t<td>Home: unknown. Work: (03) 5555 6473<\/td>\n\t\t\t\t\t<\/tr>\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>Id<\/td>\n\t\t\t\t\t\t<td>MRN: 12345 (Acme Healthcare)<\/td>\n\t\t\t\t\t<\/tr>\n\t\t\t\t<\/tbody>\n\t\t\t<\/table>\n\t\t<\/div>",
       "status": "generated"
@@ -22959,7 +22959,7 @@
             </con:credentials>
             <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
             <con:jmsPropertyConfig/>
-            <con:parameters><entry key="id" value="1c9f4ba4-15a6-4e0f-984f-3d6d5ad88adf" xmlns="http://eviware.com/soapui/config"/></con:parameters>
+            <con:parameters><entry key="id" value="e08c9b90-68de-4063-848d-9b79478d9b6b" xmlns="http://eviware.com/soapui/config"/></con:parameters>
           </con:restRequest>
         </con:config>
       </con:testStep>
@@ -23249,9 +23249,9 @@
     <con:properties>
       <con:property>
         <con:name>Token</con:name>
-        <con:value>5OR8Y6OF7xGMFwJCrBcAAg.rL6_g7BhvTmBtyIDIHaNIkH6SENNs8xrC58BaOFzG24</con:value>
+        <con:value>HMQuVdCi7xGNsPdKa4oqrA.g8_iTeip0b1JxPQB2bX1Tab_zRhK6EeCF8STN0wRRTY</con:value>
       </con:property>
-    <con:property><con:name>TestHarnessSid</con:name><con:value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">2f862013-a463-45c7-b96b-6380de155313</con:value></con:property><con:property><con:name>TestHarnessASid</con:name><con:value>c3617318-4349-4d3f-89e0-a9f193105454</con:value></con:property><con:property><con:name>TestHarnessBSid</con:name><con:value>13eb60b2-384d-4d34-b17c-b6f91db5c4e2</con:value></con:property></con:properties>
+    <con:property><con:name>TestHarnessSid</con:name><con:value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">786d4523-55eb-4f56-b5ee-76323b50674d</con:value></con:property><con:property><con:name>TestHarnessASid</con:name><con:value>fc52bece-3074-43fc-a6cf-7e97fad87a5a</con:value></con:property><con:property><con:name>TestHarnessBSid</con:name><con:value>12a21c1a-5795-4f1c-9246-4ba9eec94a36</con:value></con:property></con:properties>
   </con:testSuite>
   <con:restMockService id="3ad92989-3d79-4a44-baf8-2f18cf469623" port="8989" path="/" host="localhost" name="FHIR Mock Service" docroot="">
     <con:settings/>
