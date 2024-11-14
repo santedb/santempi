@@ -1,25 +1,31 @@
 <div xmlns="http://www.w3.org/1999/xhtml" xmlns:sdb="http://santedb.org/applet">
     <sdb:script>~/controllers/widgets/mpiCommonWidgets.js</sdb:script>
-    <sdb:widget name="ui.mpi.widgets.dashboard.search" headerClass="alert-primary"  type="Panel" size="Large" order="0" context="org.santedb.admin.dashboard">
+    <sdb:widget name="ui.mpi.widgets.dashboard.search" headerClass="alert-primary" type="Panel" size="Large" order="0"
+        context="org.santedb.admin.dashboard">
         <sdb:icon>fas fa-search</sdb:icon>
         <sdb:description>Quick Search Patients</sdb:description>
         <sdb:demand>1.3.6.1.4.1.33349.3.1.5.9.2.2.3</sdb:demand>
     </sdb:widget>
-    <div class="input-group"  ng-controller="MpiCommonWidgetController">
-        <div class="input-group-prepend">
-            <label class="control-label  m-1 mr-2 d-none d-sm-inline">
-                {{ 'ui.mpi.widgets.dashboard.search.term' | i18n }}
-            </label>
-        </div>
-        <input type="text" ng-model="widgetSearchQuery" class="form-control" />
-        <div class="input-group-append">
-            <div class="btn-group">
-                <a class="btn btn-outline-primary" ui-sref="santedb-admin.mpi.patients.search({q: widgetSearchQuery})"><i class="fas fa-search"></i>
-                    <span class="d-none d-sm-inline">{{ 'ui.action.search' | i18n }}</span></a>
-                <button id="btnScan" class="btn btn-outline-secondary" ng-click="scanSearch()"><i class="fas fa-qrcode"></i>
-                    <span class="d-none d-sm-inline">{{ 'ui.action.scan' | i18n }}</span></button>
+    <div ng-controller="MpiCommonWidgetController">
+        <form novalidate="novalidate" name="mpiDashboardSearchForm" ng-submit="doSearch(mpiDashboardSearchForm)">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <label class="control-label  m-1 mr-2 d-none d-sm-inline">
+                        {{ 'ui.mpi.widgets.dashboard.search.term' | i18n }}
+                    </label>
+                </div>
+                <input type="text" ng-model="widgetSearchQuery" class="form-control" />
+                <div class="input-group-append">
+                    <div class="btn-group">
+                        <button class="btn btn-outline-primary" type="submit"><i class="fas fa-search"></i>
+                            <span class="d-none d-sm-inline">{{ 'ui.action.search' | i18n }}</span></button>
+                        <button id="btnScan" class="btn btn-outline-secondary" ng-click="scanSearch()"><i
+                                class="fas fa-qrcode"></i>
+                            <span class="d-none d-sm-inline">{{ 'ui.action.scan' | i18n }}</span></button>
+                    </div>
+                </div>
             </div>
-        </div>
+        </form>
     </div>
-    
+
 </div>
