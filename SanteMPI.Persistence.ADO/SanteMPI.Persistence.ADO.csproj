@@ -56,7 +56,7 @@
     <EmbeddedResource Include="Data\Updates\20200530-PSQL.sql" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="SanteDB.OrmLite" Version="3.0.1965-alpha" />
+    <PackageReference Include="SanteDB.OrmLite" Version="$(VersionNumber)" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SanteMPI.i18n\SanteMPI.i18n.csproj" />
