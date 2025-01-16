@@ -106,6 +106,9 @@ Name: dev; Description: Development Tooling; Types: full demo
 Name: demo; Description: Elbonia Quickstart; Types: demo
 Name: mpi; Description: SanteMPI; types: full imsi ami auth bis demo tools;
 
+[InstallDelete]
+Type: files; Name: "{app}\Hl7.Fhir.R4.Core.dll"
+
 [Files]
  
 ; Microsoft .NET Framework 4.5 Installation
