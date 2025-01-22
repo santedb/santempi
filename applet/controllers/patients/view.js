@@ -27,6 +27,12 @@ angular.module('santedb').controller('MpiPatientViewController', ["$scope", "$ro
         try {
             var patient = await SanteDB.resources.patient.getAsync(id, "full");
             $timeout(() => $scope.patient = patient);
+
+            // Detected issues
+            var issues = await SanteDB.resources.patient.invokeOperationAsync(id, "validate", {});
+            if(issues.length > 0) {
+                $timeout(() => $scope.patient._issues = issues);
+            }
         }
         catch (e) {
             // Remote patient perhaps?
