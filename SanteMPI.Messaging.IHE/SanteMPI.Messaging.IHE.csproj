@@ -29,10 +29,10 @@
     <PackageProjectUrl>http://santesuite.org</PackageProjectUrl>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Hl7.Fhir.R4" Version="4.3.0" />
-    <PackageReference Include="SanteDB.Messaging.FHIR" Version="3.0.1965-alpha" />
-    <PackageReference Include="SanteDB.Messaging.HL7" Version="3.0.1965-alpha" />
-    <PackageReference Include="SanteDB.Persistence.MDM" Version="3.0.1965-alpha" />
+    <PackageReference Include="Hl7.Fhir.R4B" Version="4.3.0" />
+    <PackageReference Include="SanteDB.Messaging.FHIR" Version="3.0.1997-alpha" />
+    <PackageReference Include="SanteDB.Messaging.HL7" Version="3.0.1997-alpha" />
+    <PackageReference Include="SanteDB.Persistence.MDM" Version="3.0.1997-alpha" />
   </ItemGroup>
 
   <ItemGroup>

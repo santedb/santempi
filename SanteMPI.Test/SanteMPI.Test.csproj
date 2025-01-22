@@ -207,10 +207,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="coverlet.collector" Version="3.1.2" />
-    <PackageReference Include="SanteDB.Caching.Memory" Version="3.0.1965-alpha" />
-    <PackageReference Include="SanteDB.Core.TestFramework.FirebirdSQL" Version="3.0.1965-alpha" />
-    <PackageReference Include="SanteDB.Persistence.Data" Version="3.0.1965-alpha" />
-    <PackageReference Include="SanteDB.Matcher" Version="3.0.1965-alpha" />
+    <PackageReference Include="SanteDB.Caching.Memory" Version="3.0.1997-alpha" />
+    <PackageReference Include="SanteDB.Core.TestFramework.FirebirdSQL" Version="3.0.1997-alpha" />
+    <PackageReference Include="SanteDB.Persistence.Data" Version="3.0.1997-alpha" />
+    <PackageReference Include="SanteDB.Matcher" Version="3.0.1997-alpha" />
   </ItemGroup>
 
   <ItemGroup>
