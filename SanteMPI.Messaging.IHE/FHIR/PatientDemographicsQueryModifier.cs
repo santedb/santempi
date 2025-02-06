@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using static Hl7.Fhir.Model.CapabilityStatement;
 
 namespace SanteMPI.Messaging.IHE.FHIR
 {
@@ -37,7 +38,7 @@ namespace SanteMPI.Messaging.IHE.FHIR
         /// <summary>
         /// After receiving a request (not applicable for PDQM)
         /// </summary>
-        public Resource AfterReceiveRequest(CapabilityStatement.TypeRestfulInteraction interaction, ResourceType resourceType, Resource requestResource)
+        public Resource AfterReceiveRequest(TypeRestfulInteraction interaction, ResourceType resourceType, Resource requestResource)
         {
             return requestResource;
         }
@@ -48,7 +49,7 @@ namespace SanteMPI.Messaging.IHE.FHIR
         /// <remarks>
         /// This function implements the "WHAT DOMAINS RETURNED" behavior on result sets as described in TF 3.78.4.1.2.4
         /// </remarks>
-        public Resource BeforeSendResponse(CapabilityStatement.TypeRestfulInteraction interaction, ResourceType resourceType, Resource responseResource)
+        public Resource BeforeSendResponse(TypeRestfulInteraction interaction, ResourceType resourceType, Resource responseResource)
         {
             try
             {
