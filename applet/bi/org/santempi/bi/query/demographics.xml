@@ -36,8 +36,8 @@
   <parameters>
     <add ref="#org.santedb.bi.core.parameter.common.date.from" name="from-date" label="ui.mpi.bi.core.dob.from" type="date"/>
     <add ref="#org.santedb.bi.core.parameter.common.date.to" name="to-date"  label="ui.mpi.bi.core.dob.to" type="date"/>
-    <add ref="#org.santedb.bi.core.parameter.patient.gender" name="gender" type="uuid" />
-    <add ref="#org.santedb.bi.core.parameter.common.state" name="state" type="string" />
+    <add ref="#org.santedb.bi.core.parameter.patient.gender" name="gender" label="ui.bi.core.patient.gender" type="uuid" />
+    <add ref="#org.santedb.bi.core.parameter.common.state" name="state"  label="ui.bi.core.common.state" type="string" />
 
   </parameters>
   <definitions>
@@ -247,9 +247,9 @@
 			FROM 
             org_santempi_bi_query_patients
             WHERE
-                dob BETWEEN COALESCE(${from-date}, '0001-01-01'::DATE) AND COALESCE(${to-date}, CURRENT_DATE + '1 DAY'::INTERVAL)
-                AND gndr_cd_id = COALESCE(${gender}, gndr_cd_id)
-                AND adr_state = COALESCE(${state}, adr_state)
+                (dob IS NULL OR dob BETWEEN COALESCE(${from-date}, '0001-01-01'::DATE) AND COALESCE(${to-date}, CURRENT_DATE + '1 DAY'::INTERVAL))
+                AND (gndr_cd_id IS NULL OR gndr_cd_id = COALESCE(${gender}, gndr_cd_id))
+                AND (adr_state IS NULL OR adr_state = COALESCE(${state}, adr_state))
 		]]>
     </add>
    

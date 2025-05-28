@@ -5,14 +5,14 @@
         <sdb:description lang="en">Patient Demographics Widget Tab</sdb:description>
     </sdb:widget>
 
-    <div class="can-print print-only">
+    <div class="can-print print-only" ng-if="scopedObject.id">
         <div>
             <table class="table w-100" ng-controller="MpiIdCardWidgetController">
                 <caption class="print-only">{{ 'ui.generated.on' | i18n }} {{ :: $root.page.currentTime | extDate: 'M' }}
                 </caption>
                 <tr>
                     <td colspan="2" align="center" class="bg-light">
-                        <img  class="m-auto" id="printBarcodeUrl" style="width:3in" />
+                        <img  class="m-auto" id="printBarcodeUrl" style="width:4in" />
                     </td>
                 </tr>
                 <tr>

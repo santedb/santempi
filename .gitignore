@@ -295,3 +295,4 @@ dist/
 **/Version.cs
 
 santempi-*/*
+*.pak

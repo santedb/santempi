@@ -106,6 +106,9 @@ Name: dev; Description: Development Tooling; Types: full demo
 Name: demo; Description: Elbonia Quickstart; Types: demo
 Name: mpi; Description: SanteMPI; types: full imsi ami auth bis demo tools;
 
+[InstallDelete]
+Type: files; Name: "{app}\Hl7.Fhir.R4.Core.dll"
+
 [Files]
  
 ; Microsoft .NET Framework 4.5 Installation
@@ -235,7 +238,7 @@ Source: {#iCDRBase}\bin\Release\SanteDB.PakMan.Common.dll; DestDir: {app}; Compo
 Source: {#iCDRBase}\bin\Release\Antlr*.dll; DestDir: {app}; Components: core\bre core\protocol core
 Source: {#iCDRBase}\bin\Release\DynamicExpresso.Core.dll; DestDir: {app}; Components: core\bre core\protocol                              
 Source: {#iCDRBase}\bin\Release\Jint.dll; DestDir: {app}; Components: core\bre
-Source: {#iCDRBase}\bin\Release\Esprima.dll; DestDir: {app}; Components: core\bre
+Source: {#iCDRBase}\bin\Release\Acornima.dll; DestDir: {app}; Components: core\bre
 Source: {#iCDRBase}\bin\Release\SanteDB.BusinessRules.JavaScript.dll; DestDir: {app}; Components: core\bre
 Source: {#iCDRBase}\bin\Release\SanteDB.Cdss.Xml.dll; DestDir: {app}; Components: core\protocol
 
@@ -244,7 +247,7 @@ Source: {#iCDRBase}\bin\Release\AtnaApi.dll; DestDir: {app}; Components: interop
 
 ; FHIR R4 Support
 Source: {#iCDRBase}\bin\Release\Hl7.Fhir.ElementModel.dll; DestDir: {app}; Components: interop\fhir
-Source: {#iCDRBase}\bin\Release\Hl7.Fhir.R4.Core.dll; DestDir: {app}; Components: interop\fhir
+Source: {#iCDRBase}\bin\Release\Hl7.Fhir.R4B.Core.dll; DestDir: {app}; Components: interop\fhir
 Source: {#iCDRBase}\bin\Release\Hl7.Fhir.Serialization.dll; DestDir: {app}; Components: interop\fhir
 Source: {#iCDRBase}\bin\Release\Microsoft.IdentityModel.Tokens.dll; DestDir: {app}; Components: interop\fhir
 Source: {#iCDRBase}\bin\Release\Microsoft.IdentityModel.Logging.dll; DestDir: {app}; Components: interop\fhir
@@ -319,7 +322,7 @@ Source: "{#iCDRBase}\bin\Release\config\template\SanteDB MDM.xml"; DestDir: {app
 Source: {#iCDRBase}\bin\Release\Microsoft.Data.Sqlite.dll; DestDir: {app}; Components: db\sqlite
 Source: {#iCDRBase}\bin\Release\runtimes\*; DestDir: {app}\runtimes; Flags: recursesubdirs; Components: db\sqlite
 Source: {#iCDRBase}\Solution Items\spellfix.dll; DestDir: {app}; Components: db\sqlite
-Source: {#iCDRBase}\bin\Release\SQLitePCLRaw.batteries_v2.dll; DestDir: {app}; Components: db\sqlite
+; Source: {#iCDRBase}\bin\Release\SQLitePCLRaw.batteries_v2.dll; DestDir: {app}; Components: db\sqlite
 Source: {#iCDRBase}\bin\Release\SQLitePCLRaw.core.dll; DestDir: {app}; Components: db\sqlite
 Source: {#iCDRBase}\bin\Release\SQLitePCLRaw.provider.dynamic_cdecl.dll; DestDir: {app}; Components: db\sqlite
 

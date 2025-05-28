@@ -1,5 +1,5 @@
 <div xmlns="http://www.w3.org/1999/xhtml">
-    <name-edit is-required="rel._active" control-prefix="'nok' + rel.id" owner-form="panel.editForm" no-add="true" readonly="readonly" no-type="true" simple-entry="true" name="rel.targetModel.name" />
+    <name-edit is-required="rel._active" control-prefix="'nok' + rel.id" owner-form="panel.editForm" no-add="true" readonly="readonly" no-type="true" simple-entry="true" model="rel.targetModel.name" />
     <div class="form-group row">
         <label
             class="col-sm-12 col-md-3 control-label">{{ 'ui.model.patient.dateOfBirth' | i18n }}</label>
@@ -46,8 +46,8 @@
         </div>
     </div>
 
-    <telecom-edit single-edit="'MobileContact'" telecom="rel.targetModel.telecom"/>
-    <address-edit control-prefix="'nok' + rel.id" owner-form="panel.editForm" no-add="true" no-type="true" simple-entry="true" address="rel.targetModel.address"/>
+    <telecom-edit single-edit="'MobileContact'" model="rel.targetModel.telecom"/>
+    <address-edit control-prefix="'nok' + rel.id" owner-form="panel.editForm" no-add="true" no-type="true" simple-entry="true" model="rel.targetModel.address"/>
 
     <div class="p-2">
         <div class="form-group row">
