@@ -15238,7 +15238,17 @@
       </con:method>
     </con:resource>
   </con:interface>
-  <con:testSuite id="1c0f63d6-f47b-405f-9fa1-a958ea7ec5d6" name="Installation Qualification">
+  <con:interface xsi:type="con:RestService" id="4d03a6e0-a258-4bf8-86ae-9955d934761a" wadlVersion="http://wadl.dev.java.net/2009/02" name="OAuth2 Access Control Service" type="rest" basePath="/auth" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:description>An Access Control Service and Token Service implemented using OAUTH 2.0</con:description><con:settings/><con:definitionCache type="TEXT" rootPart=""/><con:endpoints><con:endpoint>http://localhost:8080</con:endpoint></con:endpoints><con:resource name="/" path="/" id="af668f8c-93f2-4f0e-835f-399ba52869e9"><con:settings/><con:parameters/></con:resource><con:resource name="/.well-known/openid-configuration" path="/.well-known/openid-configuration" id="b0b2896b-dc16-4fd7-b4c6-abd1367a4ac2"><con:settings/><con:parameters/><con:method name="GET" id="29eeb105-2e88-480e-9c90-92a3f1da501c" method="GET"><con:description>
+Discovery</con:description><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/></con:representation><con:representation type="REQUEST"><con:mediaType>application/x-www-form-urlencoded</con:mediaType><con:params/></con:representation><con:request name="Request 1" id="8891a377-8c34-4390-8fec-704b4ff01d75" mediaType="application/x-www-form-urlencoded"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method></con:resource><con:resource name="/authorize" path="/authorize" id="39d1d20c-4abf-449c-85ff-1711d1ec55ec"><con:settings/><con:parameters/><con:method name="GET" id="b2811a81-d173-42aa-84b8-9ec65d95a337" method="GET"><con:description>
+Authorize</con:description><con:settings/><con:parameters><con:parameter required="true"><con:name>client_id</con:name><con:style>QUERY</con:style><con:description>The client id of the client which will accept this authorization grant.</con:description></con:parameter><con:parameter><con:name>redirect_uri</con:name><con:style>QUERY</con:style><con:description>The URI which responses should be redirected to. For response_mode of form_post, the action which the form post is sent.</con:description></con:parameter><con:parameter><con:name>response_type</con:name><con:style>QUERY</con:style><con:description>The type of response expected from the authorization service. Default is (code).</con:description></con:parameter><con:parameter><con:name>response_mode</con:name><con:style>QUERY</con:style><con:description>How the authorization server will return a response. Valid values are (query, fragment, form_post). Default is query for response_type code, and fragment for response_type id_token.</con:description></con:parameter><con:parameter><con:name>scope</con:name><con:style>QUERY</con:style><con:description>Space separated list of scopes to be included in the authorization. Default is *</con:description></con:parameter><con:parameter><con:name>login_hint</con:name><con:style>QUERY</con:style><con:description>When present, the authorization server will pre-populate the username with this value.</con:description></con:parameter><con:parameter><con:name>state</con:name><con:style>QUERY</con:style><con:description>State value that is returned with the response from the authorization server.</con:description></con:parameter><con:parameter><con:name>nonce</con:name><con:style>QUERY</con:style><con:description>Number ONCE that is returned when the authorization code is exchanged by the token service.</con:description></con:parameter></con:parameters><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>400</con:status><con:params/></con:representation><con:representation type="REQUEST"><con:mediaType>application/x-www-form-urlencoded</con:mediaType><con:params/></con:representation><con:request name="Request 1" id="d980d014-2833-4702-b6f0-660a87f7a1e2" mediaType="application/x-www-form-urlencoded"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method><con:method name="POST" id="5a4bf924-caa0-49c0-84dd-ed3bee36697f" method="POST"><con:description>
+OAuth2 Authorization Endpoint.</con:description><con:settings/><con:parameters><con:parameter required="true"><con:name>client_id</con:name><con:style>QUERY</con:style><con:description>The client id of the client which will accept this authorization grant.</con:description></con:parameter><con:parameter><con:name>redirect_uri</con:name><con:style>QUERY</con:style><con:description>The URI which responses should be redirected to. For response_mode of form_post, the action which the form post is sent.</con:description></con:parameter><con:parameter><con:name>response_type</con:name><con:style>QUERY</con:style><con:description>The type of response expected from the authorization service. Default is (code).</con:description></con:parameter><con:parameter><con:name>response_mode</con:name><con:style>QUERY</con:style><con:description>How the authorization server will return a response. Valid values are (query, fragment, form_post). Default is query for response_type code, and fragment for response_type id_token.</con:description></con:parameter><con:parameter><con:name>scope</con:name><con:style>QUERY</con:style><con:description>Space separated list of scopes to be included in the authorization. Default is *</con:description></con:parameter><con:parameter><con:name>login_hint</con:name><con:style>QUERY</con:style><con:description>When present, the authorization server will pre-populate the username with this value.</con:description></con:parameter><con:parameter><con:name>state</con:name><con:style>QUERY</con:style><con:description>State value that is returned with the response from the authorization server.</con:description></con:parameter><con:parameter><con:name>nonce</con:name><con:style>QUERY</con:style><con:description>Number ONCE that is returned when the authorization code is exchanged by the token service.</con:description></con:parameter></con:parameters><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>400</con:status><con:params/></con:representation><con:representation type="REQUEST"><con:mediaType>application/x-www-form-urlencoded</con:mediaType><con:params/></con:representation><con:request name="Request 1" id="1abf84c9-5c01-4c7d-8038-f0ed82d778b6" mediaType="application/x-www-form-urlencoded"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method></con:resource><con:resource name="/jwks" path="/jwks" id="64f526ca-b2cf-4ad1-a935-f119fc9ed9cc"><con:settings/><con:parameters/><con:method name="GET" id="3bfe176b-4046-4b28-8ff8-68eefc20b540" method="GET"><con:description>
+JsonWebKeySet</con:description><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/></con:representation><con:representation type="REQUEST"><con:mediaType>application/x-www-form-urlencoded</con:mediaType><con:params/></con:representation><con:request name="Request 1" id="424ffa80-fb2e-4dd3-bc79-546563f8ba4c" mediaType="application/x-www-form-urlencoded"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method></con:resource><con:resource name="/oauth2_token" path="/oauth2_token" id="961e4f2d-5a9d-4a61-8c1a-d0fe47353c59"><con:settings/><con:parameters/><con:method name="POST" id="66514290-7af6-48f6-9fa9-24722de120ae" method="POST"><con:description>
+OAuth2 Token Endpoint. Issues access tokens and/or id tokens and accepts a grant from the resource owner.</con:description><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/></con:representation><con:representation type="REQUEST"><con:mediaType>application/x-www-form-urlencoded</con:mediaType><con:params/></con:representation><con:request name="Request 1" id="495852f2-5084-4843-a187-7efa97a90829" mediaType="application/x-www-form-urlencoded"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method></con:resource><con:resource name="/session" path="/session" id="806aa6a6-523f-44ae-aece-151ecb844c59"><con:settings/><con:parameters/><con:method name="GET" id="6f9f693d-cac7-4b8e-beb9-df1b1d51da2f" method="GET"><con:description>
+Session</con:description><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/></con:representation><con:representation type="REQUEST"><con:mediaType>application/x-www-form-urlencoded</con:mediaType><con:params/></con:representation><con:request name="Request 1" id="3a767f0a-4258-4672-95ce-777e625a670e" mediaType="application/x-www-form-urlencoded"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method></con:resource><con:resource name="/signout" path="/signout" id="82a1a59a-f222-4826-a77a-9a0b563f40e3"><con:settings/><con:parameters/><con:method name="GET" id="a41e2a2d-3593-4141-97f2-c5de97a08143" method="GET"><con:description>
+Signout</con:description><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/></con:representation><con:representation type="REQUEST"><con:mediaType>application/x-www-form-urlencoded</con:mediaType><con:params/></con:representation><con:request name="Request 1" id="54e50541-5817-40ec-8916-273edc8e79e3" mediaType="application/x-www-form-urlencoded"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method><con:method name="POST" id="852a20fd-7586-4482-9324-7cb88625f860" method="POST"><con:description>
+Signs the current session out and optionally redirects the user agent back to the resource.</con:description><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/></con:representation><con:representation type="REQUEST"><con:mediaType>application/x-www-form-urlencoded</con:mediaType><con:params/></con:representation><con:request name="Request 1" id="513dc13a-1a3b-40ee-83d8-784413468d1d" mediaType="application/x-www-form-urlencoded"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method></con:resource><con:resource name="/userinfo" path="/userinfo" id="27ac7fc4-e799-49d1-8470-e5ff3e977ed5"><con:settings/><con:parameters/><con:method name="GET" id="ca11b284-c73c-4c8a-8266-09cf8db445cd" method="GET"><con:description>
+UserInfo</con:description><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/></con:representation><con:representation type="REQUEST"><con:mediaType>application/x-www-form-urlencoded</con:mediaType><con:params/></con:representation><con:request name="Request 1" id="e7b82f78-9c23-4578-885f-acd3272aa5c2" mediaType="application/x-www-form-urlencoded"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method></con:resource><con:resource name="/{*assetPath}" path="/{*assetPath}" id="83ed0f8a-d735-4707-818a-6b881c9810f3"><con:settings/><con:parameters/><con:method name="GET" id="bc1c08b4-d840-4c72-9538-d14b5cfc628b" method="GET"><con:description>
+Gets an asset that is used by the authorization service.</con:description><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/></con:representation><con:representation type="REQUEST"><con:mediaType>application/x-www-form-urlencoded</con:mediaType><con:params/></con:representation><con:request name="Request 1" id="03de86fb-d09d-49bc-90f8-9b4803170dc6" mediaType="application/x-www-form-urlencoded"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method></con:resource></con:interface><con:testSuite id="1c0f63d6-f47b-405f-9fa1-a958ea7ec5d6" name="Installation Qualification">
     <con:settings/>
     <con:runType>SEQUENTIAL</con:runType>
     <con:testCase id="cd95a6b5-6e84-4e0f-882a-80130d9bb6ff" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="OHIE-CR-01-FHIR" searchProperties="true">
@@ -23622,7 +23632,163 @@
         </con:responseContent>
       </con:response>
     </con:restMockAction>
-  </con:restMockService>
+  <con:restMockAction name="/auth/oauth2_token" method="POST" resourcePath="/auth/oauth2_token" id="fbf7db7f-cb49-456d-bc7c-1eff30fa3967"><con:settings/><con:defaultResponse>Response 1</con:defaultResponse><con:dispatchStyle>SEQUENCE</con:dispatchStyle><con:dispatchPath>/*
+// Script dispatcher is used to select a response based on the incoming request.
+// Here are few examples showing how to match based on path, query param, header and body
+
+// Match based on path
+def requestPath = mockRequest.getPath()
+log.info "Path: "+ requestPath
+
+if( requestPath.contains("json") )
+{
+    // return the name of the response you want to dispatch
+    return "JSON Response"
+}
+
+
+// Match based on query parameter
+def queryString = mockRequest.getRequest().getQueryString()
+log.info "QueryString: " + queryString
+
+if( queryString.contains("stockholm") )
+{
+    // return the name of the response you want to dispatch
+    return "Response Stockholm"
+}
+else if( queryString.contains("london") )
+{
+    // return the name of the response you want to dispatch
+    return "Response London"
+}
+
+
+// Match based on header
+def acceptEncodingHeaderList = mockRequest.getRequestHeaders().get("Accept-Encoding")
+log.info "AcceptEncoding Header List: " + acceptEncodingHeaderList
+
+if( acceptEncodingHeaderList.contains("gzip,deflate") )
+{
+    // return the name of the response you want to dispatch
+    return "GZiped Response"
+}
+
+
+// Match based on body
+def requestBody = mockRequest.getRequestContent()
+log.info "Request body: " + requestBody
+
+if( requestBody.contains("some data") )
+{
+    // return the name of the response you want to dispatch
+    return "Response N"
+}
+*/
+</con:dispatchPath><con:response name="Response 1" id="e230a761-f8bc-4723-b481-3708d353dfd5" httpResponseStatus="200" mediaType="application/json"><con:settings/><con:responseContent>{"refresh_token":"HeDarx8ZMVDmwre1JtdxZtNpjfGvZXlrzVhPfYm0lN0.B7-c8_OeOTtyPk3iWttIFQwQygqaPcQppUixpx8TwEo","nonce":"Og46wCEBnUZXWgrWJkdUFfLpZfJYhdjyvXOURQTKKpY","access_token":"SAHlcILi7xGmTZ8btNaqiQ.iyrydGGGAupjzmE1mJxinZ5eWzTO_rn4w0sprRfjg6o","id_token":"eyJhbGciOiJIUzI1NiIsImtpZCI6ImRlZmF1bHQiLCJ0eXAiOiJKV1QifQ.eyJhdWQiOiJvcmcuc2FudGVkYi5kZWJ1ZyIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODA4MC9hdXRoIiwiZXhwIjoxNzM4NjI3MTMzLCJpYXQiOjE3Mzg2MjM1MzMsIm5iZiI6MTczODYyMzUzMywiZXh0ZW5zaW9ucyI6eyJpaGVfaXVhIjp7InBlcnNvbl9pZCI6ImI1NWYwODM2LTQwZTYtNGVlMi05NTIyLTI3ZTNmOGJmZTUzMiIsInN1YmplY3RfbmFtZSI6IldpbGUgRS4gQ295b3RlIn0sInNhbnRlZGIiOnsiYXBwaWQiOiI0YzVhNTgxYy1hNmVlLTQyNjctOTIzMS1iMGQzZDUwY2MwOGIiLCJ1c3JpZCI6IjQyMjU2Y2E4LWUyODItMTFlZi1iODA5LTUzYWUzMjk4MTQ3NyIsImFwcG5hbWUiOiJvcmcuc2FudGVkYi5kZWJ1ZyJ9fSwic2lkIjoiNzBlNTAxNDgtZTI4Mi0xMWVmLWE2NGQtOWYxYmI0ZDZhYTg5Iiwic2NvcGUiOlsiMS4zLjYuMS40LjEuMzMzNDkuMy4xLjUuOS4yLjAiLCIxLjMuNi4xLjQuMS4zMzM0OS4zLjEuNS45LjIuMC4xIiwiMS4zLjYuMS40LjEuMzMzNDkuMy4xLjUuOS4yLjAuMiIsIjEuMy42LjEuNC4xLjMzMzQ5LjMuMS41LjkuMi4wLjMiLCIxLjMuNi4xLjQuMS4zMzM0OS4zLjEuNS45LjIuMC40IiwiMS4zLjYuMS40LjEuMzMzNDkuMy4xLjUuOS4yLjAuNSIsIjEuMy42LjEuNC4xLjMzMzQ5LjMuMS41LjkuMi4wLjYiLCIxLjMuNi4xLjQuMS4zMzM0OS4zLjEuNS45LjIuMC43IiwiMS4zLjYuMS40LjEuMzMzNDkuMy4xLjUuOS4yLjAuOCIsIjEuMy42LjEuNC4xLjMzMzQ5LjMuMS41LjkuMi4wLjkiLCIxLjMuNi4xLjQuMS4zMzM0OS4zLjEuNS45LjIuMC4xMCIsIjEuMy42LjEuNC4xLjMzMzQ5LjMuMS41LjkuMi4xIiwiMS4zLjYuMS40LjEuMzMzNDkuMy4xLjUuOS4yLjEuMCIsIjEuMy42LjEuNC4xLjMzMzQ5LjMuMS41LjkuMi4xLjAuMCIsIjEuMy42LjEuNC4xLjMzMzQ5LjMuMS41LjkuMi4xLjAuMC4xIiwiMS4zLjYuMS40LjEuMzMzNDkuMy4xLjUuOS4yLjEuMC4wLjEuMCIsIjEuMy42LjEuNC4xLjMzMzQ5LjMuMS41LjkuMi4xLjAuMC4yIiwiMS4zLjYuMS40LjEuMzMzNDkuMy4xLjUuOS4yLjEuMC4wLjIuMCIsIjEuMy42LjEuNC4xLjMzMzQ5LjMuMS41LjkuMi4xLjAuMC4zIiwiMS4zLjYuMS40LjEuMzMzNDkuMy4xLjUuOS4yLjEuMC4wLjMuMCIsIjEuMy42LjEuNC4xLjMzMzQ5LjMuMS41LjkuMi4xLjAuMC40IiwiMS4zLjYuMS40LjEuMzMzNDkuMy4xLjUuOS4yLjEuMC4wLjQuMCIsIjEuMy42LjEuNC4xLjMzMzQ5LjMuMS41LjkuMi40IiwiMS4zLjYuMS40LjEuMzMzNDkuMy4xLjUuOS4yLjQuMCIsIjEuMy42LjEuNC4xLjMzMzQ5LjMuMS41LjkuMi4xMCIsIjEuMy42LjEuNC4xLjMzMzQ5LjMuMS41LjkuMi40LjEuMCIsIjEuMy42LjEuNC4xLjMzMzQ5LjMuMS41LjkuMi40LjEuMSIsIjEuMy42LjEuNC4xLjMzMzQ5LjMuMS41LjkuMi40LjAuMS4yIiwiMS4zLjYuMS40LjEuMzMzNDkuMy4xLjUuOS4yLjQuMC4xLjMiLCIxLjMuNi4xLjQuMS4zMzM0OS4zLjEuNS45LjIuNC4yLjAiLCIxLjMuNi4xLjQuMS4zMzM0OS4zLjEuNS45LjIuNC4yLjEiLCIxLjMuNi4xLjQuMS4zMzM0OS4zLjEuNS45LjIuNC4wLjIuMiIsIjEuMy42LjEuNC4xLjMzMzQ5LjMuMS41LjkuMi40LjAuMi4zIiwiMS4zLjYuMS40LjEuMzMzNDkuMy4xLjUuOS4yLjAuMTEiLCIxLjMuNi4xLjQuMS4zMzM0OS4zLjEuNS45LjIuMC4xMiIsIjEuMy42LjEuNC4xLjMzMzQ5LjMuMS41LjkuMi4wLjEzIiwiMS4zLjYuMS40LjEuMzMzNDkuMy4xLjUuOS4yLjEuMC4xIiwiMS4zLjYuMS40LjEuMzMzNDkuMy4xLjUuOS4yLjAuNC4xIiwiMS4zLjYuMS40LjEuMzMzNDkuMy4xLjUuOS4yLjAuOC4xIiwiMS4zLjYuMS40LjEuMzMzNDkuMy4xLjUuOS4yLjAuMTgiLCIxLjMuNi4xLjQuMS4zMzM0OS4zLjEuNS45LjIuMC4xOC4xIiwiMS4zLjYuMS40LjEuMzMzNDkuMy4xLjUuOS4yLjAuMTguMS4xIiwiMS4zLjYuMS40LjEuMzMzNDkuMy4xLjUuOS4yLjAuMTkiLCIxLjMuNi4xLjQuMS4zMzM0OS4zLjEuNS45LjIuMC4xOS4xIiwiMS4zLjYuMS40LjEuMzMzNDkuMy4xLjUuOS4yLjAuMTkuMiIsIjEuMy42LjEuNC4xLjMzMzQ5LjMuMS41LjkuMi4wLjE5LjMiLCIxLjMuNi4xLjQuMS4zMzM0OS4zLjEuNS45LjIuMC4xNSIsIjEuMy42LjEuNC4xLjMzMzQ5LjMuMS41LjkuMi4wLjE3IiwiMS4zLjYuMS40LjEuMzMzNDkuMy4xLjUuOS4yLjAuMjAiLCIxLjMuNi4xLjQuMS4zMzM0OS4zLjEuNS45LjIuMC4yMSIsIjEuMy42LjEuNC4xLjMzMzQ5LjMuMS41LjkuMi4wLjIxLjEiLCIxLjMuNi4xLjQuMS4zMzM0OS4zLjEuNS45LjIuMC4yMS4yIiwiMS4zLjYuMS40LjEuMzMzNDkuMy4xLjUuOS4yLjAuMjIiLCIxLjMuNi4xLjQuMS4zMzM0OS4zLjEuNS45LjIuMC4yMi4wIiwiMS4zLjYuMS40LjEuMzMzNDkuMy4xLjUuOS4yLjAuMjIuMSIsIjEuMy42LjEuNC4xLjMzMzQ5LjMuMS41LjkuMi4wLjIyLjIiLCIxLjMuNi4xLjQuMS4zMzM0OS4zLjEuNS45LjIuMC4yMi4zIiwiMS4zLjYuMS40LjEuMzMzNDkuMy4xLjUuOS4yLjkwMCIsIjEuMy42LjEuNC4xLjMzMzQ5LjMuMS41LjkuMi4wLjE1LjEiLCIxLjMuNi4xLjQuMS4zMzM0OS4zLjEuNS45LjIuMC4xNS4xLjEiLCIxLjMuNi4xLjQuMS4zMzM0OS4zLjEuNS45LjIuMC4xNS4xLjIiLCIxLjMuNi4xLjQuMS4zMzM0OS4zLjEuNS45LjIuMC4xNS4yIiwiMS4zLjYuMS40LjEuMzMzNDkuMy4xLjUuOS4yLjAuMTUuMi4wIiwiMS4zLjYuMS40LjEuMzMzNDkuMy4xLjUuOS4yLjAuMTUuMi4xIiwiMS4zLjYuMS40LjEuMzMzNDkuMy4xLjUuOS4yLjAuMTUuMi4yIiwiMS4zLjYuMS40LjEuMzMzNDkuMy4xLjUuOS4yLjAuMTUuMyIsIjEuMy42LjEuNC4xLjMzMzQ5LjMuMS41LjkuMi4wLjE0IiwiMS4zLjYuMS40LjEuMzMzNDkuMy4xLjUuOS4yLjAuMTQuMSIsIjEuMy42LjEuNC4xLjMzMzQ5LjMuMS41LjkuMi4wLjE0LjIiLCIxLjMuNi4xLjQuMS4zMzM0OS4zLjEuNS45LjIuMC4xNC4zIiwiMS4zLjYuMS40LjEuMzMzNDkuMy4xLjUuOS4yLjAuMTQuNCIsIjEuMy42LjEuNC4xLjMzMzQ5LjMuMS41LjkuMi4wLjE2Il0sImFjdG9yIjoiMzM5MzJiNDItNmY0Yi00NjU5LTg4NDktNmFjYTU0MTM5ZDhlIiwic3ViIjoiNDIyNTZjYTgtZTI4Mi0xMWVmLWI4MDktNTNhZTMyOTgxNDc3IiwibmFtZSI6IkFkbWluaXN0cmF0b3IiLCJlbWFpbCI6ImFkbWluaXN0cmF0b3JAc2FudGVkYi5vcmciLCJwaG9uZV9udW1iZXIiOiJ0ZWw6KzE5MDU1NzUxMjEyO2V4dD00MDg1IiwidXJuOnNhbnRlZGI6b3JnOmNsYWltOnVzcmlkIjoiNDIyNTZjYTgtZTI4Mi0xMWVmLWI4MDktNTNhZTMyOTgxNDc3Iiwibm9uY2UiOiJPZzQ2d0NFQm5VWlhXZ3JXSmtkVUZmTHBaZkpZaGRqeXZYT1VSUVRLS3BZIiwiYXRfaGFzaCI6IlZvSkRMNXhZZHJOelNPU24ya3gtY3ciLCJqdGkiOiJOSGdHNENhSHdtQ1VwV2QtQXd5WUlwVzMyekEwTGFZQ29jemg3OTdjaGFvIiwicm9sZSI6IkFETUlOSVNUUkFUT1JTIn0.6ktUHDyUZeSzj7joCKc2jiGL4FtE_eHiHTp-j0mFX5c","token_type":"bearer","expires_in":3599}</con:responseContent></con:response></con:restMockAction><con:restMockAction name="/auth/.well-known/openid-configuration" method="GET" resourcePath="/auth/.well-known/openid-configuration" id="fb0dc990-6e4b-4ac3-9efd-31ac69e7d29d"><con:settings/><con:defaultResponse>Response 1</con:defaultResponse><con:dispatchStyle>SEQUENCE</con:dispatchStyle><con:dispatchPath>/*
+// Script dispatcher is used to select a response based on the incoming request.
+// Here are few examples showing how to match based on path, query param, header and body
+
+// Match based on path
+def requestPath = mockRequest.getPath()
+log.info "Path: "+ requestPath
+
+if( requestPath.contains("json") )
+{
+    // return the name of the response you want to dispatch
+    return "JSON Response"
+}
+
+
+// Match based on query parameter
+def queryString = mockRequest.getRequest().getQueryString()
+log.info "QueryString: " + queryString
+
+if( queryString.contains("stockholm") )
+{
+    // return the name of the response you want to dispatch
+    return "Response Stockholm"
+}
+else if( queryString.contains("london") )
+{
+    // return the name of the response you want to dispatch
+    return "Response London"
+}
+
+
+// Match based on header
+def acceptEncodingHeaderList = mockRequest.getRequestHeaders().get("Accept-Encoding")
+log.info "AcceptEncoding Header List: " + acceptEncodingHeaderList
+
+if( acceptEncodingHeaderList.contains("gzip,deflate") )
+{
+    // return the name of the response you want to dispatch
+    return "GZiped Response"
+}
+
+
+// Match based on body
+def requestBody = mockRequest.getRequestContent()
+log.info "Request body: " + requestBody
+
+if( requestBody.contains("some data") )
+{
+    // return the name of the response you want to dispatch
+    return "Response N"
+}
+*/
+</con:dispatchPath><con:response name="Response 1" id="8adbab07-24e7-4dd8-a9ba-cf0ab5b5aa75" httpResponseStatus="200" mediaType="application/json"><con:settings/><con:responseContent>{"issuer":"http://localhost:8080/auth","authorization_endpoint":"http://fyfej-p14s:8080/auth/authorize","token_endpoint":"http://fyfej-p14s:8080/auth/oauth2_token","userinfo_endpoint":"http://fyfej-p14s:8080/auth/userinfo","jwks_uri":"http://fyfej-p14s:8080/auth/jwks","scopes_supported":["1.3.6.1.4.1.33349.3.1.5.9.2","1.3.6.1.4.1.33349.3.1.5.9.2.0","1.3.6.1.4.1.33349.3.1.5.9.2.0.1","1.3.6.1.4.1.33349.3.1.5.9.2.0.2","1.3.6.1.4.1.33349.3.1.5.9.2.0.3","1.3.6.1.4.1.33349.3.1.5.9.2.0.4","1.3.6.1.4.1.33349.3.1.5.9.2.0.5","1.3.6.1.4.1.33349.3.1.5.9.2.0.6","1.3.6.1.4.1.33349.3.1.5.9.2.0.7","1.3.6.1.4.1.33349.3.1.5.9.2.0.8","1.3.6.1.4.1.33349.3.1.5.9.2.0.9","1.3.6.1.4.1.33349.3.1.5.9.2.0.10","1.3.6.1.4.1.33349.3.1.5.9.2.1","1.3.6.1.4.1.33349.3.1.5.9.2.1.0","1.3.6.1.4.1.33349.3.1.5.9.2.1.0.0","1.3.6.1.4.1.33349.3.1.5.9.2.1.0.0.1","1.3.6.1.4.1.33349.3.1.5.9.2.1.0.0.1.0","1.3.6.1.4.1.33349.3.1.5.9.2.1.0.0.2","1.3.6.1.4.1.33349.3.1.5.9.2.1.0.0.2.0","1.3.6.1.4.1.33349.3.1.5.9.2.1.0.0.3","1.3.6.1.4.1.33349.3.1.5.9.2.1.0.0.3.0","1.3.6.1.4.1.33349.3.1.5.9.2.1.0.0.4","1.3.6.1.4.1.33349.3.1.5.9.2.1.0.0.4.0","1.3.6.1.4.1.33349.3.1.5.9.2.2","1.3.6.1.4.1.33349.3.1.5.9.2.2.0","1.3.6.1.4.1.33349.3.1.5.9.2.2.1","1.3.6.1.4.1.33349.3.1.5.9.2.2.2","1.3.6.1.4.1.33349.3.1.5.9.2.2.3","1.3.6.1.4.1.33349.3.1.5.9.2.2.4","1.3.6.1.4.1.33349.3.1.5.9.2.999","1.3.6.1.4.1.33349.3.1.5.9.2.4","1.3.6.1.4.1.33349.3.1.5.9.2.4.0","1.3.6.1.4.1.33349.3.1.5.9.2.10","1.3.6.1.4.1.33349.3.1.5.9.2.5","1.3.6.1.4.1.33349.3.1.5.9.2.5.0","1.3.6.1.4.1.33349.3.1.5.9.2.5.1","1.3.6.1.4.1.33349.3.1.5.9.2.5.2","1.3.6.1.4.1.33349.3.1.5.9.2.5.3","1.3.6.1.4.1.33349.3.1.5.9.3","1.3.6.1.4.1.33349.3.1.5.9.2.4.1.0","1.3.6.1.4.1.33349.3.1.5.9.2.4.1.1","1.3.6.1.4.1.33349.3.1.5.9.2.4.0.1.2","1.3.6.1.4.1.33349.3.1.5.9.2.4.0.1.3","1.3.6.1.4.1.33349.3.1.5.9.2.4.2.0","1.3.6.1.4.1.33349.3.1.5.9.2.4.2.1","1.3.6.1.4.1.33349.3.1.5.9.2.4.0.2.2","1.3.6.1.4.1.33349.3.1.5.9.2.4.0.2.3","1.3.6.1.4.1.33349.3.1.5.9.2.0.11","1.3.6.1.4.1.33349.3.1.5.9.2.0.12","1.3.6.1.4.1.33349.3.1.5.9.2.0.13","1.3.6.1.4.1.33349.3.1.5.9.2.2.5","1.3.6.1.4.1.33349.3.1.5.9.2.1.0.1","1.3.6.1.4.1.33349.3.1.5.9.2.600","1.3.6.1.4.1.33349.3.1.5.9.2.600.1","1.3.6.1.4.1.33349.3.1.5.9.2.1.0.2","1.3.6.1.4.1.33349.3.1.5.9.2.0.4.1","1.3.6.1.4.1.33349.3.1.5.9.2.0.8.1","1.3.6.1.4.1.33349.3.1.5.9.2.2.6","1.3.6.1.4.1.33349.3.1.5.9.2.2.6.1","1.3.6.1.4.1.33349.3.1.5.9.2.2.6.2","1.3.6.1.4.1.33349.3.1.5.9.2.0.18","1.3.6.1.4.1.33349.3.1.5.9.2.0.18.1","1.3.6.1.4.1.33349.3.1.5.9.2.0.18.1.1","1.3.6.1.4.1.33349.3.1.5.9.2.0.19","1.3.6.1.4.1.33349.3.1.5.9.2.0.19.1","1.3.6.1.4.1.33349.3.1.5.9.2.0.19.2","1.3.6.1.4.1.33349.3.1.5.9.2.0.19.3","1.3.6.1.4.1.33349.3.1.5.9.2.0.15","1.3.6.1.4.1.33349.3.1.5.9.2.0.17","1.3.6.1.4.1.33349.3.1.5.9.2.0.20","1.3.6.1.4.1.33349.3.1.5.9.2.0.21","1.3.6.1.4.1.33349.3.1.5.9.2.0.21.1","1.3.6.1.4.1.33349.3.1.5.9.2.0.21.2","1.3.6.1.4.1.33349.3.1.5.9.2.0.22","1.3.6.1.4.1.33349.3.1.5.9.2.0.22.0","1.3.6.1.4.1.33349.3.1.5.9.2.0.22.1","1.3.6.1.4.1.33349.3.1.5.9.2.0.22.2","1.3.6.1.4.1.33349.3.1.5.9.2.0.22.3","1.3.6.1.4.1.33349.3.1.5.9.2.500","1.3.6.1.4.1.33349.3.1.5.9.2.900","1.3.6.1.4.1.33349.3.1.5.9.2.0.15.1","1.3.6.1.4.1.33349.3.1.5.9.2.0.15.1.1","1.3.6.1.4.1.33349.3.1.5.9.2.0.15.1.2","1.3.6.1.4.1.33349.3.1.5.9.2.0.15.2","1.3.6.1.4.1.33349.3.1.5.9.2.0.15.2.0","1.3.6.1.4.1.33349.3.1.5.9.2.0.15.2.1","1.3.6.1.4.1.33349.3.1.5.9.2.0.15.2.2","1.3.6.1.4.1.33349.3.1.5.9.2.0.15.3","1.3.6.1.4.1.33349.3.1.5.9.2.0.14","1.3.6.1.4.1.33349.3.1.5.9.2.0.14.1","1.3.6.1.4.1.33349.3.1.5.9.2.0.14.2","1.3.6.1.4.1.33349.3.1.5.9.2.0.14.3","1.3.6.1.4.1.33349.3.1.5.9.2.0.14.4","1.3.6.1.4.1.33349.3.1.5.9.2.0.16","1.3.6.1.4.1.33349.3.1.5.9.2.6","1.3.6.1.4.1.33349.3.1.5.9.2.6.1","1.3.6.1.4.1.33349.3.1.5.9.2.6.2","1.3.6.1.4.1.33349.3.1.5.9.2.6.3","1.3.6.1.4.1.33349.3.1.5.9.2.6.4","1.3.6.1.4.1.33349.3.1.5.9.2.6.4.1"],"response_types_supported":["code"],"grant_types_supported":["authorization_code","client_credentials","x_challenge","password","refresh_token","x-refresh-cookie"],"subject_types_supported":["public"],"id_token_signing_alg_values_supported":["HS256"],"end_session_endpoint":"http://fyfej-p14s:8080/auth/signout"}</con:responseContent></con:response></con:restMockAction><con:restMockAction name="/auth/jkws" method="GET" resourcePath="/auth/jkws" id="ce83924b-6d33-43ff-840c-4305abc9b532"><con:settings/><con:defaultResponse>Response 1</con:defaultResponse><con:dispatchStyle>SEQUENCE</con:dispatchStyle><con:dispatchPath>/*
+// Script dispatcher is used to select a response based on the incoming request.
+// Here are few examples showing how to match based on path, query param, header and body
+
+// Match based on path
+def requestPath = mockRequest.getPath()
+log.info "Path: "+ requestPath
+
+if( requestPath.contains("json") )
+{
+    // return the name of the response you want to dispatch
+    return "JSON Response"
+}
+
+
+// Match based on query parameter
+def queryString = mockRequest.getRequest().getQueryString()
+log.info "QueryString: " + queryString
+
+if( queryString.contains("stockholm") )
+{
+    // return the name of the response you want to dispatch
+    return "Response Stockholm"
+}
+else if( queryString.contains("london") )
+{
+    // return the name of the response you want to dispatch
+    return "Response London"
+}
+
+
+// Match based on header
+def acceptEncodingHeaderList = mockRequest.getRequestHeaders().get("Accept-Encoding")
+log.info "AcceptEncoding Header List: " + acceptEncodingHeaderList
+
+if( acceptEncodingHeaderList.contains("gzip,deflate") )
+{
+    // return the name of the response you want to dispatch
+    return "GZiped Response"
+}
+
+
+// Match based on body
+def requestBody = mockRequest.getRequestContent()
+log.info "Request body: " + requestBody
+
+if( requestBody.contains("some data") )
+{
+    // return the name of the response you want to dispatch
+    return "Response N"
+}
+*/
+</con:dispatchPath><con:response name="Response 1" id="8730f183-8217-469e-b33a-63087a00ac5c" httpResponseStatus="200" mediaType="application/json"><con:settings/><con:responseContent>{"keys":[{"kty":"oct","kid":"jwsdefault","k":"QFNhbnRlREJEZWZhdWx0JCQkNDA5XzIwMjMwOTQwMzk0"},{"kty":"oct","kid":"default","k":"QFNhbnRlREJEZWZhdWx0JCQkNDA5XzIwMjMwOTQwMzk0"}]}</con:responseContent></con:response></con:restMockAction></con:restMockService>
   <con:properties><con:property><con:name>accessToken</con:name><con:value>accessToken</con:value></con:property></con:properties>
   <con:wssContainer/>
   <con:oAuth2ProfileContainer>
@@ -23655,7 +23821,7 @@
       <con:refreshAccessTokenMethod>AUTOMATIC</con:refreshAccessTokenMethod>
       <con:refreshToken>4E5DABF926694342A00ED65E8CCEF3F720369C3581E69028B9902E757A58C28826CF8F72802F115D864497FF2AB8709E</con:refreshToken>
       <con:scope>*</con:scope>
-      <con:accessTokenStatus>UNKNOWN</con:accessTokenStatus>
+      <con:accessTokenStatus>RETRIEVED_FROM_SERVER</con:accessTokenStatus>
       <con:accessTokenStartingStatus>RETRIEVED_FROM_SERVER</con:accessTokenStartingStatus>
       <con:accessTokenExpirationTime>1799976</con:accessTokenExpirationTime>
       <con:accessTokenIssuedTime>1633456138</con:accessTokenIssuedTime>
