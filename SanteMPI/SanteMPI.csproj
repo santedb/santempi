@@ -53,6 +53,9 @@
     <PackageReference Include="SanteDB.Matcher" Version="3.0.1997-alpha" />
     <PackageReference Include="SanteDB.Messaging.Atna" Version="3.0.1997-alpha" />
     <PackageReference Include="SanteDB.Rest.BIS" Version="3.0.1997-alpha" />
+    <PackageReference Include="SharpCompress">
+      <Version>0.40.0</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="config\santempi.fhir.ihe.config.xml">
