@@ -33,6 +33,7 @@
     <PackageReference Include="SanteDB.Messaging.FHIR" Version="$(VersionNumber)" />
     <PackageReference Include="SanteDB.Messaging.HL7" Version="$(VersionNumber)" />
     <PackageReference Include="SanteDB.Persistence.MDM" Version="$(VersionNumber)" />
+    <PackageReference Include="SharpCompress" Version="0.40.0" />
   </ItemGroup>
 
   <ItemGroup>

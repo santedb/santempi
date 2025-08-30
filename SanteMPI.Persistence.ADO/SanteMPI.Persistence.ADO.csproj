@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="SanteDB.OrmLite" Version="$(VersionNumber)" />
+    <PackageReference Include="SharpCompress" Version="0.40.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SanteMPI.i18n\SanteMPI.i18n.csproj" />
