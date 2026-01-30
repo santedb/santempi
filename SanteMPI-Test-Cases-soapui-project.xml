@@ -2304,7 +2304,7 @@
         </con:representation>
         <con:representation type="FAULT">
           <con:mediaType>application/fhir+json</con:mediaType>
-          <con:status>500 403</con:status>
+          <con:status>500 403 400</con:status>
           <con:params/>
           <con:element xmlns:pat="http://localhost/fhir/Patient">pat:Fault</con:element>
         </con:representation>
@@ -2326,42 +2326,34 @@
           <con:params/>
           <con:element>data</con:element>
         </con:representation>
-        <con:representation type="FAULT"><con:mediaType>application/fhir+json; charset=utf-8</con:mediaType><con:status>500</con:status><con:params/><con:element xmlns:pat="http://localhost/fhir/Patient">pat:Fault</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Request 1" id="090f09a8-91ae-4aa3-b504-8419a61af74d" mediaType="application/fhir+json" postQueryString="false">
+        <con:representation type="FAULT"><con:mediaType>application/fhir+json; charset=utf-8</con:mediaType><con:status>500</con:status><con:params/><con:element xmlns:pat="http://localhost/fhir/Patient">pat:Fault</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Request 1" id="090f09a8-91ae-4aa3-b504-8419a61af74d" mediaType="application/fhir+json" postQueryString="false">
           <con:settings>
             <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
           </con:settings>
           <con:endpoint>http://localhost:8080</con:endpoint>
-          <con:request>
-            {
-            "resourceType": "Patient",
-            "id": "rec-00000338-bbb-0",
-            "identifier": [
-            {
-            "use": "usual",
-            "system": "http://ohie.org/test/bbb-0",
-            "value": "rec-00000338-bbb-0"
-            }
-            ],
-            "name": [
-            {
+          <con:request>{
+    "resourceType": "Patient",
+    "id": "rec-00000338-bbb-10",
+    "name": [
+        {
             "use": "official",
-            "family": "Kimeu",
+            "family": "Kime Take 10",
             "given": [
-            "Osfar"
+                "Osfar Take 10"
             ]
-            }
-            ],
-            "telecom": [
-            {
+        }
+    ],
+    "birthDate": "0001-01-01",
+    "telecom": [
+        {
             "system": "phone",
             "value": "011-652-7660",
             "use": "mobile",
             "rank": 1
-            }
-            ],
-            "gender": "male"
-            }
-          </con:request>
+        }
+    ],
+    "gender": "male"
+}</con:request>
           <con:originalUri>http://localhost/fhir/Patient</con:originalUri>
           <con:credentials>
             <con:selectedAuthProfile>SanteDB OAUTH</con:selectedAuthProfile>
@@ -2709,7 +2701,7 @@
           </con:credentials>
           <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
           <con:jmsPropertyConfig/>
-          <con:parameters><entry key="id" value="b5e49e27-7e8f-4807-95e2-1fbc8381a7d5" xmlns="http://eviware.com/soapui/config"/></con:parameters>
+          <con:parameters><entry key="id" value="1dde822b-cb9a-4d7c-b1bb-8a7514c49ec9" xmlns="http://eviware.com/soapui/config"/></con:parameters>
         </con:request>
       </con:method>
       <con:method name="PUT" id="5a54ddc7-7014-4dec-a21b-ee242e02c208" method="PUT">
@@ -23249,7 +23241,7 @@
     <con:properties>
       <con:property>
         <con:name>Token</con:name>
-        <con:value>HMQuVdCi7xGNsPdKa4oqrA.g8_iTeip0b1JxPQB2bX1Tab_zRhK6EeCF8STN0wRRTY</con:value>
+        <con:value>WqNJxbqM8BGQwlNcitCADw.knHTEbLqbIlA0a0illokMZazWtCrDlpB8GaYG56lk1zRmimaTLpD4ROgHEEYWZQpuhFmcIdgasg7hGO_Uk_PIwm_DTuce8nm2Cc91WJyV0zdKmqIljsyL60SMDw_H9Zcbktfvm9dbTfE-WyAvC4i4AtG8i_6S7N14cKxKgpKKXGYlfh8q_u_M9qxKYWWB8BcpQTbnOAbYOSdRiKavzFspeDXkyV3inoHsClW6_Uh3whEtMB5rZuEh9_fVeoATvQZziBFPuS24m6vZ12tyY2Q8LdwhLxZY59KGrnZ1js4WYSsY7xmLHhCS4XnS_21FEHYTj7pHcU6MhKKsNT8k6fDsw</con:value>
       </con:property>
     <con:property><con:name>TestHarnessSid</con:name><con:value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">786d4523-55eb-4f56-b5ee-76323b50674d</con:value></con:property><con:property><con:name>TestHarnessASid</con:name><con:value>fc52bece-3074-43fc-a6cf-7e97fad87a5a</con:value></con:property><con:property><con:name>TestHarnessBSid</con:name><con:value>12a21c1a-5795-4f1c-9246-4ba9eec94a36</con:value></con:property></con:properties>
   </con:testSuite>
@@ -23631,16 +23623,16 @@
       <con:clientID>fiddler</con:clientID>
       <con:clientSecret>fiddler</con:clientSecret>
       <con:accessTokenURI>http://localhost:8080/auth/oauth2_token</con:accessTokenURI>
-      <con:accessToken>6A5BFEB60D43EC118F080242AC1400022B6DA9C05D642B9D18B4E79981D632A36EBE87D44C7A60725B6E76D278D97A85</con:accessToken>
+      <con:accessToken>6kY74bqM8BGROGPwr9Ffzw.NXvuLWUR4YZ-NsJvxDsbvEumlZFP42Zo1nHS8N77NRDaHanaTAm1Taw_Z9SRP1zHC8qnZYXTd6IoFtJiElTX46ppvwbI8SQ_cshpi2qU1DU2nrcJdT0dYRH4wqlNTaii26IHwc2wGVkSei6crzg_uEM-TgUkzjB79meLqdS-mRss_g5scN62dQcA2gtMk1YYizqJU3Z8I0ReKQ0iBDjpOZkM9CunYXlhi4qjXakms69YsvbVTEJP2uJiKNF5g8lRN59yNMhF5P4jisq9mvUG9_xlqi42vY2S-SmHfXEsxKCuK2KpPSVs1oXvwAQlMIW4mxDk4FeN-LAB9cGcyXjY4A</con:accessToken>
       <con:accessTokenPosition>HEADER</con:accessTokenPosition>
       <con:oAuth2Flow>CLIENT_CREDENTIALS_GRANT</con:oAuth2Flow>
       <con:refreshAccessTokenMethod>AUTOMATIC</con:refreshAccessTokenMethod>
-      <con:refreshToken>B78E4B5DA8C0D54983DA8714BF056788050D9D0F746CE9745228B4B612DDA24B157A33FCF51C496C2D5DD76C58372D60</con:refreshToken>
+      <con:refreshToken xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
       <con:scope>*</con:scope>
-      <con:accessTokenStatus>UNKNOWN</con:accessTokenStatus>
+      <con:accessTokenStatus>RETRIEVED_FROM_SERVER</con:accessTokenStatus>
       <con:accessTokenStartingStatus>RETRIEVED_FROM_SERVER</con:accessTokenStartingStatus>
-      <con:accessTokenExpirationTime>3599974</con:accessTokenExpirationTime>
-      <con:accessTokenIssuedTime>1636648672</con:accessTokenIssuedTime>
+      <con:accessTokenExpirationTime>3599</con:accessTokenExpirationTime>
+      <con:accessTokenIssuedTime>1757339472</con:accessTokenIssuedTime>
       <con:manualAccessTokenExpirationTime/>
       <con:manualAccessTokenExpirationTimeUnit>SECONDS</con:manualAccessTokenExpirationTimeUnit>
     </con:oAuth2Profile>

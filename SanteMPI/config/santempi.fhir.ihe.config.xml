@@ -25,6 +25,7 @@
   </sections>
   <!-- Configures the FHIR service-->
   <section xsi:type="FhirServiceConfigurationSection" restEndpoint="FHIR" index="fhir.html">
+	<!-- This ensures that other resources like Immunization, Condition, etc. not realted to the MPI are disabled and only these resources are available -->
     <resourceHandlers>
       <add type="SanteDB.Messaging.FHIR.Handlers.PatientResourceHandler, SanteDB.Messaging.FHIR"/>
       <add type="SanteDB.Messaging.FHIR.Handlers.SubscriptionResourceHandler, SanteDB.Messaging.FHIR" />
@@ -38,9 +39,7 @@
       <add type="SanteMPI.Messaging.IHE.FHIR.PatientDemographicsQueryModifier, SanteMPI.Messaging.IHE" />
       <add type="SanteMPI.Messaging.IHE.FHIR.SubscribeToPatientUpdateModifier, SanteMPI.Messaging.IHE" />
     </behaviorModifiers>
-    <extensionHandlers>
-      <add type="SanteMPI.Messaging.IHE.FHIR.MothersMaidenNameExtension, SanteMPI.Messaging.IHE" />
-    </extensionHandlers>
+	<extensionHandlers />
     <operationHandlers>
       <add type="SanteMPI.Messaging.IHE.FHIR.PatientIdentityCrossReferenceMobileOperation, SanteMPI.Messaging.IHE" />
       <add type="SanteDB.Messaging.FHIR.Operations.FhirMatchResourceOperation, SanteDB.Messaging.FHIR" />
