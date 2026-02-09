@@ -111,7 +111,7 @@
 			psn_tbl.vip_sts_cd_id,
 			psn_tbl.nat_cd_id,
 			pat_tbl.mb_ord ,
-			pat_tbl.mrtl_sts_cd_id ,
+			psn_tbl.mrtl_sts_cd_id ,
 			pat_tbl.edu_lvl_cd_id ,
 			pat_tbl.lvn_arg_cd_id ,
 			string_agg(distinct tel_val , ',' ) as tel_val,
@@ -141,7 +141,7 @@
 			psn_tbl.vip_sts_cd_id,
 			psn_tbl.nat_cd_id,
 			pat_tbl.mb_ord ,
-			pat_tbl.mrtl_sts_cd_id ,
+			psn_tbl.mrtl_sts_cd_id ,
 			pat_tbl.edu_lvl_cd_id ,
 			pat_tbl.lvn_arg_cd_id
 	)

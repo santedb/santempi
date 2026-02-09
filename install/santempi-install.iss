@@ -204,7 +204,7 @@ Source: {#iCDRBase}\bin\Release\SanteDB.Core.Applets.dll; DestDir: {app}; Compon
 Source: {#iCDRBase}\bin\Release\SanteDB.Docker.Core.dll; DestDir: {app}; Components: core
 Source: {#iCDRBase}\bin\Release\SanteDB.Core.Model.dll; DestDir: {app}; Components: core server
 Source: {#iCDRBase}\bin\Release\SharpCompress.dll; DestDir: {app}; Components: core
-Source: {#iCDRBase}\bin\release\System.Runtime.CompilerServices.Unsafe.dll; DestDir: {app}; Components: core
+Source: {#iCDRBase}\bin\release\System.*; DestDir: {app}; Components: core
 Source: {#iCDRBase}\bin\Release\SanteDB.Messaging.AMI.Client.dll; DestDir: {app}; Components: core
 Source: {#iCDRBase}\bin\Release\SanteDB.Messaging.HDSI.Client.dll; DestDir: {app}; Components: core
 Source: {#iCDRBase}\bin\Release\SanteDB.OrmLite.dll; DestDir: {app}; Components: server
