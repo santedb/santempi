@@ -70,7 +70,7 @@
             </div>
         </div>
         <form ng-if="panel.view == 'Edit'" name="panel.editForm" ng-submit="update(panel.editForm)" method="dialog"
-            novalidate="novalidate">
+            novalidate="novalidate" autocomplete="off">
 
             <div class="tab-content">
                 <div role="tabpanel" class="tab-pane fade" ng-if="!rel._delete" id="{{rel.relationshipTypeModel.mnemonic}}{{$index}}relative"
