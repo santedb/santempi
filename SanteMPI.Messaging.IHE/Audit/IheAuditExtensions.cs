@@ -109,7 +109,7 @@ namespace SanteMPI.Messaging.IHE.Audit
         /// <summary>
         /// Send an audit for PDQM
         /// </summary>
-        public static IAuditBuilder ForPatientMasterIdentityRegistry(this IAuditBuilder me, OutcomeIndicator outcome, MessageHeader messageHeader, IEnumerable<Patient> patients)
+        public static IAuditBuilder ForPatientMasterIdentityRegistry(this IAuditBuilder me, OutcomeIndicator outcome, MessageHeader messageHeader, params SanteDB.Core.Model.Roles.Patient[] patients)
         {
             me = me.WithEventIdentifier(EventIdentifierType.PatientRecord)
                 .WithAction(ActionType.Execute)
@@ -125,9 +125,11 @@ namespace SanteMPI.Messaging.IHE.Audit
                 {
                     Type = AuditableObjectType.Person,
                     Role = AuditableObjectRole.Patient,
-                    LifecycleType = AuditableObjectLifecycle.Disclosure,
+                    LifecycleType = o.BatchOperation == SanteDB.Core.Model.DataTypes.BatchOperationType.Update ? AuditableObjectLifecycle.Amendment : 
+                        o.BatchOperation == SanteDB.Core.Model.DataTypes.BatchOperationType.Insert || o.BatchOperation == SanteDB.Core.Model.DataTypes.BatchOperationType.InsertOrUpdate ? AuditableObjectLifecycle.Creation :
+                        o.BatchOperation == SanteDB.Core.Model.DataTypes.BatchOperationType.Delete ? AuditableObjectLifecycle.LogicalDeletion : AuditableObjectLifecycle.Disclosure,
                     IDTypeCode = AuditableObjectIdType.PatientNumber,
-                    ObjectId = o.Id
+                    ObjectId = o.Key?.ToString()
                 }).ToArray());
             }
             return me.WithAuditableObjects(new AuditableObject()
